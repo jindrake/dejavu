@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "workspaces": [
+    "app",
+    "services"
+  ],
+  "name": "thesis",
+  "version": "1.0.0",
+  "description": "A multi-platform review app with emphasis on competitive gaming and utility",
+  "main": "index.js",
+  "repository": "git@gitlab.com:intheworks/forrevs.git",
+  "author": "Jethro Tanjay <tanjay.jethro@gmail.com>",
+  "license": "MIT",
+  "husky": {
+    "hooks": {
+      "pre-commit": "yarn workspace app lint && yarn workspace app test && yarn workspace services lint && yarn workspace services test"
+    }
+  },
+  "devDependencies": {
+    "cypress": "^3.3.1",
+    "husky": "^2.3.0"
+  }
+}
