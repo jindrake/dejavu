@@ -1,0 +1,46 @@
+stages:
+  - build
+  - test
+
+variables:
+  CYPRESS_CACHE_FOLDER: /builds/vctormb/testing-cypress/cache/Cypress
+
+cache:
+  paths:
+    - ~/.cache
+
+install:
+  image: cypress/base:10
+  stage: build
+
+  script:
+    - yarn
+    - yarn run build
+    - yarn install --frozen-lockfile
+    - yarn run cy:verify
+
+cypress-e2e:
+  image: cypress/base:10
+  stage: test
+  script:
+    - yarn
+    - yarn run cy:run
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - cypress/screenshots
+      - cypress/videos
+
+cypress-e2e-chrome:
+  image: cypress/browsers:chrome67
+  stage: test
+  script:
+    - yarn
+    - yarn run cy:browser
+  artifacts:
+    expire_in: 1 week
+    when: always
+    paths:
+      - cypress/screenshots
+      - cypress/videos

@@ -11,6 +11,13 @@
   "repository": "git@gitlab.com:intheworks/forrevs.git",
   "author": "Jethro Tanjay <tanjay.jethro@gmail.com>",
   "license": "MIT",
+  "scripts": {
+    "build": "cd ./app && yarn run build ",
+    "cy:open": "cypress open",
+    "cy:run": "cypress run",
+    "cy:verify": "cypress verify",
+    "cy:browser": "cypress run --browser chrome"
+  },
   "husky": {
     "hooks": {
       "pre-commit": "yarn workspace app lint && yarn workspace services lint && yarn workspace services test"
@@ -19,5 +26,9 @@
   "devDependencies": {
     "cypress": "^3.3.1",
     "husky": "^2.3.0"
+  },
+  "dependencies": {
+    "serve": "^11.0.1",
+    "start-server-and-test": "^1.9.1"
   }
 }
