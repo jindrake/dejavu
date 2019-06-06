@@ -17,4 +17,5 @@ SKIP_PREFLIGHT_CHECK=true
     * to ensure that it is successful, type `docker ps -a` in the command line and see if the status of forrevs_graphql and forrevs_postgres is `Up`. You can also go to [hasura console](http://localhost:8081) with access key `test`
 
   * `yarn` to install all the dependencies on all the workspaces
-* to run the frontend, go to `/app` directory and `yarn start`
+* Make sure that your hasura schema is up to date by going to `/graphql` and typing the command `hasura migrate apply --admin-secret test`
+* To run the frontend, go to `/app` directory and `yarn start`
