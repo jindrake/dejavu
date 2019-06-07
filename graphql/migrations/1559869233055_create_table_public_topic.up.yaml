@@ -1,0 +1,11 @@
+- args:
+    sql: CREATE TABLE "public"."topic"("id" uuid NOT NULL, "name" text NOT NULL, "description"
+      text NOT NULL, "isPrivate" boolean NOT NULL DEFAULT false, "cover" text , "creator_id"
+      uuid NOT NULL, "uri" text NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("creator_id")
+      REFERENCES "public"."user"("id") ON UPDATE restrict ON DELETE restrict, UNIQUE
+      ("id"), UNIQUE ("creator_id"), UNIQUE ("uri"));
+  type: run_sql
+- args:
+    name: topic
+    schema: public
+  type: add_existing_table_or_view

@@ -1,0 +1,10 @@
+- args:
+    sql: CREATE TABLE "public"."admin_topic"("id" uuid NOT NULL, "user_id" uuid NOT
+      NULL, "topic_id" uuid NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("user_id")
+      REFERENCES "public"."user"("id") ON UPDATE restrict ON DELETE restrict, UNIQUE
+      ("id"));
+  type: run_sql
+- args:
+    name: admin_topic
+    schema: public
+  type: add_existing_table_or_view

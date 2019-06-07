@@ -1,0 +1,5 @@
+- args:
+    sql: alter table "public"."user" add constraint "user_status_fkey" foreign key
+      ("status") references "public"."enum_user_status"("user_status") on update restrict
+      on delete restrict;
+  type: run_sql

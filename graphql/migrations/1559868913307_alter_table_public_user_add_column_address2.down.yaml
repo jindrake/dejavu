@@ -1,0 +1,3 @@
+- args:
+    sql: ALTER TABLE "public"."user" DROP COLUMN "address2"
+  type: run_sql
