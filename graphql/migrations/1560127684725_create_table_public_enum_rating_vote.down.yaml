@@ -1,0 +1,3 @@
+- args:
+    sql: DROP TABLE "public"."enum_rating_vote"
+  type: run_sql

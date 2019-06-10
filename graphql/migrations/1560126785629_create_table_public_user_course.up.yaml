@@ -1,0 +1,10 @@
+- args:
+    sql: CREATE TABLE "public"."user_course"("id" uuid NOT NULL, "user_id" uuid NOT
+      NULL, "user_course" text NOT NULL, PRIMARY KEY ("id") , FOREIGN KEY ("user_id")
+      REFERENCES "public"."user"("id") ON UPDATE restrict ON DELETE restrict, UNIQUE
+      ("id"));
+  type: run_sql
+- args:
+    name: user_course
+    schema: public
+  type: add_existing_table_or_view

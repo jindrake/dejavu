@@ -1,0 +1,3 @@
+- args:
+    sql: DROP TABLE "public"."enum_user_activity"
+  type: run_sql

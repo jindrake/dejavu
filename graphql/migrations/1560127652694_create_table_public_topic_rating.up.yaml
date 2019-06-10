@@ -1,0 +1,11 @@
+- args:
+    sql: CREATE TABLE "public"."topic_rating"("id" uuid NOT NULL, "user_id" uuid NOT
+      NULL, "topic_id" uuid NOT NULL, "type" text NOT NULL, PRIMARY KEY ("id") , FOREIGN
+      KEY ("user_id") REFERENCES "public"."user"("id") ON UPDATE restrict ON DELETE
+      restrict, FOREIGN KEY ("topic_id") REFERENCES "public"."topic"("id") ON UPDATE
+      restrict ON DELETE restrict, UNIQUE ("id"));
+  type: run_sql
+- args:
+    name: topic_rating
+    schema: public
+  type: add_existing_table_or_view

@@ -1,0 +1,5 @@
+- args:
+    sql: alter table "public"."user_activity" add constraint "user_activity_activity_type_fkey"
+      foreign key ("activity_type") references "public"."enum_user_activity"("user_activity")
+      on update restrict on delete restrict;
+  type: run_sql
