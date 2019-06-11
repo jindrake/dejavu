@@ -1,0 +1,13 @@
+- args:
+    name: questions
+    table:
+      name: question_topic
+      schema: public
+    using:
+      manual_configuration:
+        column_mapping:
+          question_id: id
+        remote_table:
+          name: question
+          schema: public
+  type: create_array_relationship

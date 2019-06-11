@@ -1,0 +1,13 @@
+- args:
+    name: topics
+    table:
+      name: user_activity
+      schema: public
+    using:
+      manual_configuration:
+        column_mapping:
+          topic_id: id
+        remote_table:
+          name: topic
+          schema: public
+  type: create_array_relationship

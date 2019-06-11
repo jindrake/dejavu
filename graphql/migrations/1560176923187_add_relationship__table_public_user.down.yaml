@@ -1,0 +1,6 @@
+- args:
+    relationship: enum_user_status
+    table:
+      name: user
+      schema: public
+  type: drop_relationship
