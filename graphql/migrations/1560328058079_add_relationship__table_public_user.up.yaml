@@ -1,0 +1,12 @@
+- args:
+    name: ratings
+    table:
+      name: user
+      schema: public
+    using:
+      foreign_key_constraint_on:
+        column: user_id
+        table:
+          name: topic_rating
+          schema: public
+  type: create_array_relationship

@@ -1,0 +1,7 @@
+- args:
+    name: creator
+    new_name: user
+    table:
+      name: topic
+      schema: public
+  type: rename_relationship

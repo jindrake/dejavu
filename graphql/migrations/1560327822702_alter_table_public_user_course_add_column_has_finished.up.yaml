@@ -1,0 +1,4 @@
+- args:
+    sql: ALTER TABLE "public"."user_course" ADD COLUMN "has_finished" boolean NULL
+      DEFAULT false
+  type: run_sql

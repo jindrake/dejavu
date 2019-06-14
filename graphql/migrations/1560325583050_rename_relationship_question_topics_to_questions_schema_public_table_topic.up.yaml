@@ -1,0 +1,7 @@
+- args:
+    name: question_topics
+    new_name: questions
+    table:
+      name: topic
+      schema: public
+  type: rename_relationship

@@ -1,0 +1,7 @@
+- args:
+    name: courses
+    new_name: user_courses
+    table:
+      name: user
+      schema: public
+  type: rename_relationship

@@ -1,0 +1,12 @@
+- args:
+    name: admins
+    table:
+      name: topic
+      schema: public
+    using:
+      foreign_key_constraint_on:
+        column: topic_id
+        table:
+          name: admin_topic
+          schema: public
+  type: create_array_relationship
