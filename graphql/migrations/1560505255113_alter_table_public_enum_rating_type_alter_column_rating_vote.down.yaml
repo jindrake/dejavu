@@ -1,0 +1,9 @@
+- args:
+    sql: ALTER TABLE "public"."enum_rating_type" DROP CONSTRAINT "enum_rating_type_rating_vote_key"
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."enum_rating_type"."rating_vote" IS 'null'
+  type: run_sql
+- args:
+    sql: alter table "public"."enum_rating_type" rename column "type" to "rating_vote";
+  type: run_sql

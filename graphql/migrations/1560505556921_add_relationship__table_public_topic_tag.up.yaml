@@ -1,0 +1,8 @@
+- args:
+    name: topic
+    table:
+      name: topic_tag
+      schema: public
+    using:
+      foreign_key_constraint_on: topic_id
+  type: create_object_relationship

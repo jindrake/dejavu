@@ -1,0 +1,22 @@
+- args:
+    permission:
+      filter:
+        _or:
+        - topics:
+            _or:
+            - creator_id:
+                _eq: X-Hasura-User-Id
+            - admins:
+                id:
+                  _eq: X-Hasura-User-Id
+            - user_activities:
+                _and:
+                - user_id:
+                    _eq: X-Hasura-User-Id
+                - activity_type:
+                    _eq: take
+    role: user
+    table:
+      name: topic_tag
+      schema: public
+  type: create_delete_permission

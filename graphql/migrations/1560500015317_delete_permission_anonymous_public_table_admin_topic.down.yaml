@@ -1,0 +1,13 @@
+- args:
+    permission:
+      check: {}
+      columns: []
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: anonymous
+    table:
+      name: admin_topic
+      schema: public
+  type: create_insert_permission

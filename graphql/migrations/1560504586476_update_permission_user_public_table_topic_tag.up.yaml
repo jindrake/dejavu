@@ -1,0 +1,36 @@
+- args:
+    role: user
+    table:
+      name: topic_tag
+      schema: public
+  type: drop_insert_permission
+- args:
+    permission:
+      check:
+        _or:
+        - topics:
+            _or:
+            - creator_id:
+                _eq: X-Hasura-User-Id
+            - admins:
+                id:
+                  _eq: X-Hasura-User-Id
+            - user_activities:
+                _and:
+                - user_id:
+                    _eq: X-Hasura-User-Id
+                - activity_type:
+                    _eq: take
+      columns:
+      - tag
+      - id
+      - topic_id
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: topic_tag
+      schema: public
+  type: create_insert_permission

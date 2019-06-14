@@ -1,0 +1,10 @@
+- args:
+    sql: ALTER TABLE "public"."enum_rating_type" ADD CONSTRAINT "enum_rating_type_rating_vote_key"
+      UNIQUE ("rating_vote")
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."enum_rating_type"."rating_vote" IS ''
+  type: run_sql
+- args:
+    sql: alter table "public"."enum_rating_type" rename column "rating_vote" to "type";
+  type: run_sql

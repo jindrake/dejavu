@@ -1,0 +1,20 @@
+- args:
+    role: user
+    table:
+      name: topic_tag
+      schema: public
+  type: drop_select_permission
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - id
+      - tag
+      - topic_id
+      - user_id
+      filter: {}
+    role: user
+    table:
+      name: topic_tag
+      schema: public
+  type: create_select_permission

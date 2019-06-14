@@ -1,0 +1,14 @@
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - question_id
+      - id
+      - topic_id
+      filter: {}
+      limit: null
+    role: user
+    table:
+      name: question_topic
+      schema: public
+  type: create_select_permission

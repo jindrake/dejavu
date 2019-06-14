@@ -1,0 +1,25 @@
+- args:
+    permission:
+      columns:
+      - cover
+      - description
+      - id
+      - is_private
+      - name
+      - uri
+      filter:
+        _or:
+        - creator_id:
+            _eq: X-Hasura-User-Id
+        - admins:
+            id:
+              _eq: X-Hasura-User-Id
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: topic
+      schema: public
+  type: create_update_permission

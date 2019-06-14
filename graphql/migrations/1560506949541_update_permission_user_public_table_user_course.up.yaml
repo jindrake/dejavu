@@ -1,0 +1,20 @@
+- args:
+    permission:
+      allow_upsert: true
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id
+      columns:
+      - id
+      - user_id
+      - user_course
+      - has_finished
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: user_course
+      schema: public
+  type: create_insert_permission

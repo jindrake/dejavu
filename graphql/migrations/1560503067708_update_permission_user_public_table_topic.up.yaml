@@ -1,0 +1,25 @@
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - cover
+      - description
+      - id
+      - is_private
+      - name
+      - uri
+      filter:
+        _or:
+        - creator_id:
+            _eq: X-Hasura-User-Id
+        - admins:
+            user_id:
+              _eq: X-Hasura-User-Id
+        - is_private:
+            _eq: false
+      limit: null
+    role: user
+    table:
+      name: topic
+      schema: public
+  type: create_select_permission
