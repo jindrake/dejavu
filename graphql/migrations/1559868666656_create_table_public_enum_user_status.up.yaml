@@ -1,8 +1,0 @@
-- args:
-    sql: CREATE TABLE "public"."enum_user_status"("user_status" text NOT NULL, PRIMARY
-      KEY ("user_status") , UNIQUE ("user_status"));
-  type: run_sql
-- args:
-    name: enum_user_status
-    schema: public
-  type: add_existing_table_or_view

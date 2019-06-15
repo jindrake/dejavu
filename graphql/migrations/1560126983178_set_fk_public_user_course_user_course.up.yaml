@@ -1,5 +1,0 @@
-- args:
-    sql: alter table "public"."user_course" add constraint "user_course_user_course_fkey"
-      foreign key ("user_course") references "public"."enum_user_course"("user_course")
-      on update restrict on delete restrict;
-  type: run_sql

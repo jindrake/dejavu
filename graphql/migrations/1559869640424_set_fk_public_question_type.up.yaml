@@ -1,5 +1,0 @@
-- args:
-    sql: alter table "public"."question" add constraint "question_type_fkey" foreign
-      key ("type") references "public"."enum_question_type"("question_type") on update
-      restrict on delete restrict;
-  type: run_sql

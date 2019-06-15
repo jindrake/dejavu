@@ -1,8 +1,0 @@
-- args:
-    sql: CREATE TABLE "public"."enum_user_course"("user_course" text NOT NULL, PRIMARY
-      KEY ("user_course") );
-  type: run_sql
-- args:
-    name: enum_user_course
-    schema: public
-  type: add_existing_table_or_view

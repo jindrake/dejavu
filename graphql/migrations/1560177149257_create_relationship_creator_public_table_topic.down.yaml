@@ -1,6 +1,0 @@
-- args:
-    relationship: creator
-    table:
-      name: topic
-      schema: public
-  type: drop_relationship

@@ -1,5 +1,0 @@
-- args:
-    sql: alter table "public"."question_topic" add constraint "question_topic_question_id_fkey"
-      foreign key ("question_id") references "public"."question"("id") on update restrict
-      on delete restrict;
-  type: run_sql

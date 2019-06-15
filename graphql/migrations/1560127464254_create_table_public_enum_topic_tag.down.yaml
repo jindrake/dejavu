@@ -1,3 +1,0 @@
-- args:
-    sql: DROP TABLE "public"."enum_topic_tag"
-  type: run_sql

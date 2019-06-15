@@ -1,9 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."topic" ALTER COLUMN "isPrivate" TYPE boolean;
-  type: run_sql
-- args:
-    sql: COMMENT ON COLUMN "public"."topic"."isPrivate" IS 'null'
-  type: run_sql
-- args:
-    sql: alter table "public"."topic" rename column "is_private" to "isPrivate";
-  type: run_sql

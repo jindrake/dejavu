@@ -1,3 +1,0 @@
-- args:
-    sql: DROP TABLE "public"."question_topic"
-  type: run_sql

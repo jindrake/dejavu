@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."user_course" DROP COLUMN "has_finished"
-  type: run_sql

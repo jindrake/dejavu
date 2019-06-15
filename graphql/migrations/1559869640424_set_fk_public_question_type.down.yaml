@@ -1,3 +1,0 @@
-- args:
-    sql: alter table "public"."question" drop constraint "question_type_fkey";
-  type: run_sql

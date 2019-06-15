@@ -1,8 +1,0 @@
-- args:
-    name: enum_user_status
-    table:
-      name: user
-      schema: public
-    using:
-      foreign_key_constraint_on: status
-  type: create_object_relationship

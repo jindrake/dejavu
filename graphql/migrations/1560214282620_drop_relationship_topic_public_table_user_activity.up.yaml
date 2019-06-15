@@ -1,6 +1,0 @@
-- args:
-    relationship: topic
-    table:
-      name: user_activity
-      schema: public
-  type: drop_relationship

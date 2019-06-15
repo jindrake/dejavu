@@ -1,3 +1,0 @@
-- args:
-    sql: DROP TABLE "public"."user_course"
-  type: run_sql

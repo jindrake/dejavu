@@ -1,6 +1,0 @@
-- args:
-    relationship: topic
-    table:
-      name: admin_topic
-      schema: public
-  type: drop_relationship

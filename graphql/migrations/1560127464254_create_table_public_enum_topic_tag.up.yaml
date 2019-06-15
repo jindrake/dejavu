@@ -1,8 +1,0 @@
-- args:
-    sql: CREATE TABLE "public"."enum_topic_tag"("topic_tag" text NOT NULL, PRIMARY
-      KEY ("topic_tag") );
-  type: run_sql
-- args:
-    name: enum_topic_tag
-    schema: public
-  type: add_existing_table_or_view

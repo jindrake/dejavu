@@ -1,7 +1,0 @@
-- args:
-    name: topic_ratings
-    new_name: ratings
-    table:
-      name: topic
-      schema: public
-  type: rename_relationship

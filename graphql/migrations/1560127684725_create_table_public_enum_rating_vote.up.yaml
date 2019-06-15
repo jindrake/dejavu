@@ -1,8 +1,0 @@
-- args:
-    sql: CREATE TABLE "public"."enum_rating_vote"("rating_vote" text NOT NULL, PRIMARY
-      KEY ("rating_vote") );
-  type: run_sql
-- args:
-    name: enum_rating_vote
-    schema: public
-  type: add_existing_table_or_view

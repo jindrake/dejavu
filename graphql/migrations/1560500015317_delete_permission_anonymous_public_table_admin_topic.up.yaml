@@ -1,6 +1,0 @@
-- args:
-    role: anonymous
-    table:
-      name: admin_topic
-      schema: public
-  type: drop_insert_permission
