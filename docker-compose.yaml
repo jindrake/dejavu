@@ -20,6 +20,5 @@ services:
       ## uncomment next line to set an admin secret
       HASURA_GRAPHQL_ACCESS_KEY: "test"
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: "anonymous"
-      HASURA_GRAPHQL_JWT_SECRET: ""
 volumes:
   db_data:
