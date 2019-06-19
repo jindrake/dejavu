@@ -8,7 +8,7 @@ const NavigationItem = ({ icon, onClick, active }) => (
     onClick={onClick}
     active={active}
   >
-    <Icon name={icon}/>
+    <Icon name={icon} />
   </Wrapper>
 )
 

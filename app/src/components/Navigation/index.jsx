@@ -9,18 +9,17 @@ const Navigation = ({ user, location, history }) => {
     { icon: 'account_circle', route: '/profile' },
     { icon: 'home', route: '/home' },
     { icon: 'settings', route: '/settings' },
-    { icon: 'close', route: '/exit' },
+    { icon: 'close', route: '/exit' }
   ]
-  
   return (
     <Wrapper>{
       routes.map(({ icon, route }) => (
-        <NavigationItem 
-          key={route} 
-          icon={icon} 
+        <NavigationItem
+          key={route}
+          icon={icon}
           route={route}
           active={location.pathname === route}
-          onClick={() => history.push(route)} 
+          onClick={() => history.push(route)}
         />
       ))
     }</Wrapper>
