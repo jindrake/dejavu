@@ -17,12 +17,9 @@ const test = gql`
 
 const Home = ({ extraPropsFromHOC }) => {
   return (
-    <div className='border border-primary mx-auto bg-warning'>
+    <div>
       Hey
-      <SampleCard>
-        Awesome Developer
-        {extraPropsFromHOC}
-      </SampleCard>
+      <SampleCard>Awesome Developer{extraPropsFromHOC}</SampleCard>
       <Query query={test}>
         {(data, error, loading) => {
           if (error) console.error(error)
