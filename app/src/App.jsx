@@ -46,7 +46,7 @@ const App = ({ firebase, client }) => {
     return () => {
       listener()
     }
-  }, [user])
+  }, [firebase, client])
 
   console.log('Current user is:', user)
 
