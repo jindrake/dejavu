@@ -7,7 +7,7 @@ const Navigation = ({ user, location, history }) => {
   const routes = [
     { icon: 'search', route: '/search' },
     { icon: 'account_circle', route: '/profile' },
-    { icon: 'home', route: '/home' },
+    { icon: 'home', route: '/' },
     { icon: 'settings', route: '/settings' },
     { icon: 'close', route: '/exit' }
   ]
@@ -29,11 +29,13 @@ const Navigation = ({ user, location, history }) => {
 const Wrapper = styled.div`
   height: 80px;
   width: 100%;
+  bottom: 0;
+  position: fixed;
   display: flex;
-  align-self: flex-end;
   padding-left: 40px;
   padding-right: 40px;
   justify-content: space-between;
+  z-index: 1000;
 `
 
 export default Navigation

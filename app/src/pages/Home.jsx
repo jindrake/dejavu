@@ -1,5 +1,4 @@
 import React from 'react'
-import { SampleCard } from '../components/home'
 import withLayout from '../hocs/withLayout'
 import withData from '../hocs/withData'
 import withFirebase from '../hocs/withFirebase'
@@ -18,8 +17,8 @@ const test = gql`
 const Home = ({ extraPropsFromHOC }) => {
   return (
     <div>
-      Hey
-      <SampleCard>Awesome Developer{extraPropsFromHOC}</SampleCard>
+      This is home
+      {/* <SampleCard>Awesome Developer{extraPropsFromHOC}</SampleCard> */}
       <Query query={test}>
         {(data, error, loading) => {
           if (error) console.error(error)

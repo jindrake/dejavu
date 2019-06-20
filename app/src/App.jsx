@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
 import { compose } from 'react-apollo'
 import { withFirebase, withLayout, withData } from './hocs'
 import gql from 'graphql-tag'
@@ -8,7 +8,7 @@ import { getObjectValue } from './libs'
 import Home from './pages/Home'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
-// import Navigation from './components/Navigation'
+import Navigation from './components/Navigation'
 
 const FETCH_USER = gql`
   query fetchUser($email: String) {
@@ -51,12 +51,11 @@ const App = ({ firebase, client }) => {
   console.log('Current user is:', user)
 
   return (
-    <Switch>
-      {/* <Route
+    <div>
+      <Route
         path='/'
-        exact
         render={(routeProps) => <Navigation {...routeProps} user={user} />}
-      /> */}
+      />
       <Route exact path='/' render={(routeProps) => <Home {...routeProps} user={user} />} />
       <Route
         exact
@@ -68,7 +67,7 @@ const App = ({ firebase, client }) => {
         path='/login'
         render={(routeProps) => (user ? <Redirect to='/' /> : <Login {...routeProps} />)}
       />
-    </Switch>
+    </div>
   )
 }
 
