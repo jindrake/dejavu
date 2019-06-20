@@ -24,6 +24,7 @@ const CREATE_USER = gql`
 `
 
 const SignUp = ({ firebase, history, createUser }) => {
+  console.log('>>> youre on signup')
   return (
     <Formik
       initialValues={{

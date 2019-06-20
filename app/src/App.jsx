@@ -8,7 +8,7 @@ import { getObjectValue } from './libs'
 import Home from './pages/Home'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
-import Navigation from './components/Navigation'
+// import Navigation from './components/Navigation'
 
 const FETCH_USER = gql`
   query fetchUser($email: String) {
@@ -52,10 +52,11 @@ const App = ({ firebase, client }) => {
 
   return (
     <Switch>
-      <Route
+      {/* <Route
         path='/'
+        exact
         render={(routeProps) => <Navigation {...routeProps} user={user} />}
-      />
+      /> */}
       <Route exact path='/' render={(routeProps) => <Home {...routeProps} user={user} />} />
       <Route
         exact
