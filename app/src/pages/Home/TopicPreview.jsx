@@ -13,6 +13,8 @@ const Title = styled.div`
   font-size: 20px;
   line-height: 20px;
   font-weight: 700;
+  max-height: 60%;
+  overflow-y: scroll;
 `
 
 const Author = styled.div`
@@ -20,6 +22,7 @@ const Author = styled.div`
   font-size: 12px;
   opacity: 0.8;
   line-height: 12px;
+  margin-bottom: 6px
 `
 
 const Wrapper = styled.div`
