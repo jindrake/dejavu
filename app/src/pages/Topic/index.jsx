@@ -1,12 +1,43 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Topic = ({ title, author }) => (
+import TitleSection from './TitleSection'
+
+const dummyTopic = {
+  title: 'Nursing Reviewer for Compre',
+  dateAdded: 'Jun 11, 2019',
+  author: 'Lucille Tumambo',
+  items: {
+    id: 1,
+    question: 'What',
+    correct: 'A',
+    options: ['B', 'C', 'D'],
+    answer: null
+  },
+  timeLimit: '30m',
+  tacklersNumber: 10,
+  upvotes: 1,
+  downvotes: 2,
+  tags: [ 'nursing', 'college', 'microbiology', 'lorem', 'ipsum', 'dolor' ]
+}
+
+const Topic = () => (
   <Wrapper>
     <TopSection>Top</TopSection>
     <MainSection>
       <Belt>
-        <Paper>Title</Paper>
+        <Paper>
+          <TitleSection
+            upvotes={dummyTopic.upvotes}
+            downvotes={dummyTopic.downvotes}
+            author={dummyTopic.author}
+            title={dummyTopic.title}
+            tags={dummyTopic.tags}
+            timeLimit={dummyTopic.timeLimit}
+            tacklersNumber={dummyTopic.tacklersNumber}
+            dateAdded={dummyTopic.dateAdded}
+          />
+        </Paper>
         <Paper>Item</Paper>
         <Paper>Item</Paper>
         <Paper>Item</Paper>
@@ -22,8 +53,8 @@ const Topic = ({ title, author }) => (
 
 const Paper = styled.div`
   background: #E8EAF6;
-  padding: 20px;
-  width: 300px;
+  padding: 40px;
+  width: 280px;
   &:first-child {
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
@@ -34,6 +65,7 @@ const Paper = styled.div`
     border-bottom-right-radius: 6px;
     margin-right: 40px;  
   }
+  position: relative;
   margin-bottom: 10px;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
 `
@@ -56,11 +88,11 @@ const MainSection = styled.div`
 `
 
 const TopSection = styled.div`
-  height: 80px;
+  height: 40px;
 `
 
 const BottomSection = styled.div`
-  height: 80px;
+  height: 40px;
 `
 
 const Wrapper = styled.div`
