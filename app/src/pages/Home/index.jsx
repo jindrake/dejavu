@@ -17,12 +17,24 @@ const test = gql`
   }
 `
 
+// TODO replace with query
+const dummyHotTopics = [
+  { author: 'Jess Lanchi', title: 'Dating a Med Student' },
+  { author: 'Joanna Lucero', title: 'How to be Human' },
+  { author: 'Marlon Ynion', title: 'China 101' }
+]
+const dummyRecentTopics = [
+  { author: 'Samson Review Center', title: 'Microbiology for Freshmen' },
+  { author: 'Pymy Cainglet', title: 'Proving Trigonometric Functions' },
+  { author: 'Marlon Ynion', title: 'Nursing Foundation' }
+]
+
 const Home = ({ extraPropsFromHOC, user }) => {
   return (
     <Wrapper>
       <Greeting user={user} />
-      <Section title='Recent Topics' />
-      <Section title='Hot Topics' />
+      <Section title='Recent Topics' topics={dummyRecentTopics} />
+      <Section title='Hot Topics' topics={dummyHotTopics} />
       <Query query={test}>
         {(data, error, loading) => {
           if (error) console.error(error)
