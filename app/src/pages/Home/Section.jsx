@@ -38,7 +38,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   margin-top: 20px;
-  height: 40%;
+  height: 35%;
 `
 
 export default Section

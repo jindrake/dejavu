@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { withRouter } from 'react-router-dom'
 
 import NavigationItem from './NavigationItem'
 
@@ -38,4 +39,4 @@ const Wrapper = styled.div`
   z-index: 1000;
 `
 
-export default Navigation
+export default withRouter(Navigation)

@@ -14,7 +14,7 @@ const Notifications = styled.div`
 `
 
 const Wrapper = styled.div`
-  height: 20%;
+  height: 30%;
   font-size: 18px;
   font-weight: 00;
   color: #E8EAF6;

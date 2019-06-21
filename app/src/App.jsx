@@ -8,6 +8,7 @@ import getInitializedApolloClient from './libs/getInitializedApolloClient'
 import Home from './pages/Home'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
+import Topic from './pages/Topic'
 import Navigation from './components/Navigation'
 
 const FETCH_USER = gql`
@@ -73,20 +74,24 @@ const App = ({ firebase }) => {
           if (loading) return <div>Loading Symbol...</div>
           const user = getObjectValue(data, 'user[0]')
           return (
-            <>
-              <Route path='/' render={(routeProps) => <Navigation {...routeProps} user={user} />} />
-              <Route exact path='/' render={() => <Home user={user} />} />
+            <div>
+              <Route path='/topic/:id' render={(routeProps) => <Topic {...routeProps} />} />
+              <Route
+                exact path={['/', '/signup', '/login']}
+                render={(routeProps) => <Navigation {...routeProps} user={user} />}
+              />
+              <Route exact path='/' render={(routeProps) => <Home {...routeProps} user={user} />} />
               <Route
                 exact
                 path='/signup'
-                render={(routeProps) => (user ? <Redirect to='/' /> : <SignUp />)}
+                render={(routeProps) => (user ? <Redirect to='/' /> : <SignUp {...routeProps} />)}
               />
               <Route
                 exact
                 path='/login'
-                render={(routeProps) => (user ? <Redirect to='/' /> : <Login />)}
+                render={(routeProps) => (user ? <Redirect to='/' /> : <Login {...routeProps} />)}
               />
-            </>
+            </div>
           )
         }}
       </Query>

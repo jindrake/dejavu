@@ -41,7 +41,7 @@ const Wrapper = styled.div`
   };
   border-radius: 6px;
   margin-bottom: 6px;
-  box-shadow: 0 6px 6px 0 rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
 `
 
 export default TopicPreview
