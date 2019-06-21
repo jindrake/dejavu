@@ -25,27 +25,18 @@ const Login = ({ firebase, history }) => {
           .required('Required')
       })}
       onSubmit={(values, { setSubmitting }) => {
-        try {
-          console.log(values)
-          setSubmitting(true)
-          setTimeout(() => {
-            // throw new Error()
-          }, 2000)
-        } catch (error) {
-          setSubmitting(false)
-        }
+        console.log(values)
+        setSubmitting(true)
+        firebase
+          .doSignInWithEmailAndPassword(values.loginEmail, values.loginPassword)
+          .then(() => {})
+          .catch((error) => {
+            setSubmitting(false)
+            console.error('Login error:', error)
+          })
       }}
     >
-      {({
-        values,
-        errors,
-        touched,
-        handleChange,
-        handleBlur,
-        handleSubmit,
-        isSubmitting
-        /* and other goodies */
-      }) => {
+      {({ values, errors, touched, handleChange, handleSubmit, isSubmitting }) => {
         console.log(errors, touched)
         return (
           <Form>
@@ -59,6 +50,7 @@ const Login = ({ firebase, history }) => {
                 <Input
                   type='email'
                   name='loginEmail'
+                  data-cy='email'
                   onChange={handleChange}
                   invalid={errors.loginEmail && touched.loginEmail}
                   value={values.loginEmail}
@@ -74,16 +66,22 @@ const Login = ({ firebase, history }) => {
                 <Input
                   type='password'
                   name='loginPassword'
+                  data-cy='password'
                   onChange={handleChange}
                   value={values.loginPassword}
                   invalid={errors.loginPassword && touched.loginPassword}
                 />
               </Col>
             </FormGroup>
-            <Button onClick={handleSubmit}>{isSubmitting ? 'Submitting...' : 'LOGIN'}</Button>
-            <Button color='link' onClick={() => {
-              history.push('/signup')
-            }}>
+            <Button data-cy='submit' onClick={handleSubmit}>
+              {isSubmitting ? 'Submitting...' : 'LOGIN'}
+            </Button>
+            <Button
+              color='link'
+              onClick={() => {
+                history.push('/signup')
+              }}
+            >
               Don't have an account? Sign up
             </Button>
           </Form>

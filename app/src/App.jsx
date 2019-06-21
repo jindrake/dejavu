@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { Route, Redirect } from 'react-router-dom'
-import { compose } from 'react-apollo'
-import { withFirebase, withLayout, withData } from './hocs'
+import { withFirebase, withLayout } from './hocs'
 import gql from 'graphql-tag'
 import { getObjectValue } from './libs'
-
+import { ApolloProvider, Query, compose } from 'react-apollo'
+import getInitializedApolloClient from './libs/getInitializedApolloClient'
 import Home from './pages/Home'
 import SignUp from './pages/SignUp'
 import Login from './pages/Login'
@@ -21,58 +21,75 @@ const FETCH_USER = gql`
   }
 `
 
-const App = ({ firebase, client }) => {
-  const [user, setUser] = useState(null)
+const App = ({ firebase }) => {
+  const [authState, setAuthState] = useState({ loading: true })
 
   useEffect(() => {
-    const listener = firebase.auth.onAuthStateChanged((authUser) => {
-      if (authUser) {
-        client
-          .query({
-            query: FETCH_USER,
-            variables: {
-              email: authUser.email
-            }
+    const listener = firebase.auth.onAuthStateChanged(async (user) => {
+      console.log('<< AuthStateChange user >>:', user)
+      if (user) {
+        const token = await user.getIdToken()
+        const idTokenResult = await user.getIdTokenResult()
+        const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
+
+        if (hasuraClaim) {
+          setAuthState({ user, token })
+        } else {
+          // Check if refresh is required.
+          const metadataRef = firebase.database().ref('metadata/' + user.uid + '/refreshTime')
+
+          metadataRef.on('value', async () => {
+            // Force refresh to pick up the latest custom claims changes.
+            const token = await user.getIdToken(true)
+            setAuthState({ user, token })
           })
-          .then((result) => {
-            const user = getObjectValue(result, 'data.user[0]')
-            console.log('(App.jsx) user fetched:', user, result)
-            setUser(user)
-          })
+        }
       } else {
-        setUser(null)
+        setAuthState({ user: null })
       }
     })
     return () => {
       listener()
     }
-  }, [firebase, client])
+  }, [firebase])
 
-  console.log('Current user is:', user)
+  if (authState.loading) {
+    return <div>Loading symbol ...</div>
+  }
 
   return (
-    <div>
-      <Route
-        path='/'
-        render={(routeProps) => <Navigation {...routeProps} user={user} />}
-      />
-      <Route exact path='/' render={(routeProps) => <Home {...routeProps} user={user} />} />
-      <Route
-        exact
-        path='/signup'
-        render={(routeProps) => (user ? <Redirect to='/' /> : <SignUp {...routeProps} />)}
-      />
-      <Route
-        exact
-        path='/login'
-        render={(routeProps) => (user ? <Redirect to='/' /> : <Login {...routeProps} />)}
-      />
-    </div>
+    <ApolloProvider client={getInitializedApolloClient(authState.token)}>
+      <Query query={FETCH_USER} variables={{ email: getObjectValue(authState, 'user.email') }}>
+        {({ data, error, loading }) => {
+          if (error) {
+            console.error(error)
+            return <div>Error: {JSON.stringify(error)}</div>
+          }
+          if (loading) return <div>Loading Symbol...</div>
+          const user = getObjectValue(data, 'user[0]')
+          return (
+            <>
+              <Route path='/' render={(routeProps) => <Navigation {...routeProps} user={user} />} />
+              <Route exact path='/' render={() => <Home user={user} />} />
+              <Route
+                exact
+                path='/signup'
+                render={(routeProps) => (user ? <Redirect to='/' /> : <SignUp />)}
+              />
+              <Route
+                exact
+                path='/login'
+                render={(routeProps) => (user ? <Redirect to='/' /> : <Login />)}
+              />
+            </>
+          )
+        }}
+      </Query>
+    </ApolloProvider>
   )
 }
 
 export default compose(
-  withData(),
   withLayout(),
   withFirebase()
 )(App)

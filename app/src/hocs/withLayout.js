@@ -7,7 +7,7 @@ const Body = styled.div`
     'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(45deg, #9C27B0, #1A237E, #9C27B0, #FF7043);
+  background: linear-gradient(45deg, #9c27b0, #1a237e, #9c27b0, #ff7043);
   background-size: 200% 200%;
   position: absolute;
   overflow: hidden;
@@ -17,13 +17,13 @@ const Body = styled.div`
   animation: BorealisEffect 30s ease infinite;
   @keyframes BorealisEffect {
     0% {
-      background-position: 0% 50%
+      background-position: 0% 50%;
     }
     50% {
-      background-position: 100% 50%
+      background-position: 100% 50%;
     }
     100% {
-      background-position: 0% 50%
+      background-position: 0% 50%;
     }
   }
   .material-icons {

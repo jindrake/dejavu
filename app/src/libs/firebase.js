@@ -1,5 +1,6 @@
 import React from 'react'
 import app from 'firebase/app'
+import 'firebase/database'
 import 'firebase/auth'
 
 const firebaseConfig = {
@@ -18,6 +19,7 @@ class Firebase {
     app.initializeApp(firebaseConfig)
 
     this.auth = app.auth()
+    this.database = app.database
     this.doCreateUserWithEmailAndPassword = this.doCreateUserWithEmailAndPassword.bind(this)
     this.doSignInWithEmailAndPassword = this.doSignInWithEmailAndPassword.bind(this)
     this.doSignOut = this.doSignOut.bind(this)

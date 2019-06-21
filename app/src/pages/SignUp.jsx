@@ -24,7 +24,6 @@ const CREATE_USER = gql`
 `
 
 const SignUp = ({ firebase, history, createUser }) => {
-  console.log('>>> youre on signup')
   return (
     <Formik
       initialValues={{
@@ -50,9 +49,7 @@ const SignUp = ({ firebase, history, createUser }) => {
         lastName: yup.string().required('Required')
       })}
       onSubmit={(values, { setSubmitting }) => {
-        console.log(values)
         setSubmitting(true)
-
         firebase
           .doCreateUserWithEmailAndPassword(values.email, values.password)
           .then(() => {
@@ -69,10 +66,6 @@ const SignUp = ({ firebase, history, createUser }) => {
               }
             })
           })
-          .then((result) => {
-            console.log('Signup result:', result)
-            setSubmitting(false)
-          })
           .catch((error) => {
             setSubmitting(false)
             console.error(error)
@@ -85,12 +78,9 @@ const SignUp = ({ firebase, history, createUser }) => {
         errors,
         touched,
         handleChange,
-        handleBlur,
         handleSubmit,
         isSubmitting
-        /* and other goodies */
       }) => {
-        console.log(errors, touched)
         return (
           <Form>
             SIGNUP
@@ -103,6 +93,7 @@ const SignUp = ({ firebase, history, createUser }) => {
                 <Input
                   type='email'
                   name='email'
+                  data-cy='email'
                   onChange={handleChange}
                   invalid={errors.email && touched.email}
                   value={values.email}
@@ -118,6 +109,7 @@ const SignUp = ({ firebase, history, createUser }) => {
                 <Input
                   type='text'
                   name='firstName'
+                  data-cy='first-name'
                   onChange={handleChange}
                   invalid={errors.firstName && touched.firstName}
                   value={values.firstName}
@@ -133,6 +125,7 @@ const SignUp = ({ firebase, history, createUser }) => {
                 <Input
                   type='text'
                   name='lastName'
+                  data-cy='last-name'
                   onChange={handleChange}
                   invalid={errors.lastName && touched.lastName}
                   value={values.lastName}
@@ -148,6 +141,7 @@ const SignUp = ({ firebase, history, createUser }) => {
                 <Input
                   type='password'
                   name='password'
+                  data-cy='password'
                   onChange={handleChange}
                   value={values.password}
                   invalid={errors.password && touched.password}
@@ -163,13 +157,14 @@ const SignUp = ({ firebase, history, createUser }) => {
                 <Input
                   type='password'
                   name='passwordConfirmation'
+                  data-cy='password-2'
                   onChange={handleChange}
                   value={values.passwordConfirmation}
                   invalid={errors.passwordConfirmation && touched.passwordConfirmation}
                 />
               </Col>
             </FormGroup>
-            <Button onClick={handleSubmit}>{isSubmitting ? 'Submitting...' : 'SIGNUP'}</Button>
+            <Button data-cy='submit' onClick={handleSubmit}>{isSubmitting ? 'Submitting...' : 'SIGNUP'}</Button>
             <Button
               color='link'
               onClick={() => {

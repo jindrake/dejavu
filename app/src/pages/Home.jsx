@@ -1,6 +1,5 @@
 import React from 'react'
 import withLayout from '../hocs/withLayout'
-import withData from '../hocs/withData'
 import withFirebase from '../hocs/withFirebase'
 
 import { compose, Query } from 'react-apollo'
@@ -33,7 +32,6 @@ const Home = ({ extraPropsFromHOC }) => {
 // export default Home
 
 export default compose(
-  withData(),
   withLayout(),
   withFirebase()
 )(Home)
