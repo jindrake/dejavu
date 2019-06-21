@@ -1,8 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
+import { withRouter } from 'react-router-dom'
 
-const TopicPreview = ({ author, title }) => (
-  <Wrapper>
+const TopicPreview = ({ author, title, history }) => (
+  <Wrapper onClick={() => history.push('topic/1')}>
     <Author>{author}</Author>
     <Title>{title}</Title>
   </Wrapper>
@@ -26,7 +27,7 @@ const Author = styled.div`
 `
 
 const Wrapper = styled.div`
-  background: #E8EAF6;
+  background: linear-gradient(#e8eaf6, #c5cae9);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -44,4 +45,4 @@ const Wrapper = styled.div`
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
 `
 
-export default TopicPreview
+export default withRouter(TopicPreview)

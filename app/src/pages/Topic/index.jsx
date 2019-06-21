@@ -1,7 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
+import { withRouter } from 'react-router-dom'
 
 import TitleSection from './TitleSection'
+import Button from '../../components/Button'
 
 const dummyTopic = {
   title: 'Nursing Reviewer for Compre',
@@ -14,16 +16,16 @@ const dummyTopic = {
     options: ['B', 'C', 'D'],
     answer: null
   },
-  timeLimit: '30m',
+  timeLimit: 'No time limit',
   tacklersNumber: 10,
   upvotes: 1,
   downvotes: 2,
   tags: [ 'nursing', 'college', 'microbiology', 'lorem', 'ipsum', 'dolor' ]
 }
 
-const Topic = () => (
+const Topic = ({ history }) => (
   <Wrapper>
-    <TopSection>Top</TopSection>
+    <TopSection><Button text='back' onClick={() => history.push('/')} /></TopSection>
     <MainSection>
       <Belt>
         <Paper>
@@ -47,12 +49,12 @@ const Topic = () => (
         <Paper>Results</Paper>
       </Belt>
     </MainSection>
-    <BottomSection>Bottom</BottomSection>
+    <BottomSection><Button text='tackle' type='primary' onClick={() => history.push('/')} /></BottomSection>
   </Wrapper>
 )
 
 const Paper = styled.div`
-  background: #E8EAF6;
+  background: linear-gradient(#e8eaf6, #c5cae9);
   padding: 40px;
   width: 280px;
   &:first-child {
@@ -78,8 +80,6 @@ const Belt = styled.div`
 
 const MainSection = styled.div`
   height: 100%;
-  margin-top: 20px;
-  margin-bottom: 20px;
   margin-right: -40px;
   margin-left: -40px;
   display: flex;
@@ -88,11 +88,16 @@ const MainSection = styled.div`
 `
 
 const TopSection = styled.div`
-  height: 40px;
+  display: flex;
+  align-items: center;
+  height: 100px;
 `
 
 const BottomSection = styled.div`
-  height: 40px;
+  display: flex;
+  align-items: center;
+  height: 100px;
+  justify-content: flex-end;
 `
 
 const Wrapper = styled.div`
@@ -104,4 +109,4 @@ const Wrapper = styled.div`
   right: 40px;
 `
 
-export default Topic
+export default withRouter(Topic)

@@ -75,7 +75,7 @@ const App = ({ firebase }) => {
           const user = getObjectValue(data, 'user[0]')
           return (
             <div>
-              <Route path='/topic/:id' render={(routeProps) => <Topic {...routeProps} />} />
+              <Route path='/topic/:id' component={Topic} />
               <Route
                 exact path={['/', '/signup', '/login']}
                 render={(routeProps) => <Navigation {...routeProps} user={user} />}
