@@ -41,7 +41,12 @@ const App = ({ firebase }) => {
           metadataRef.on('value', async () => {
             // Force refresh to pick up the latest custom claims changes.
             const token = await user.getIdToken(true)
-            setAuthState({ user, token })
+            const idTokenResult = await user.getIdTokenResult(true)
+            const hasuraClaim = await idTokenResult.claims['https://hasura.io/jwt/claims']
+            // if there's no hasuraClaim but token exists, maintain authState({loading: true}) state
+            if (hasuraClaim) {
+              setAuthState({ user, token })
+            }
           })
         }
       } else {
