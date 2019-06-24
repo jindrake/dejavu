@@ -1,6 +1,5 @@
 import React from 'react'
 import styled from 'styled-components'
-import withData from '../../hocs/withData'
 import withFirebase from '../../hocs/withFirebase'
 
 import Greeting from './Greeting'
@@ -39,7 +38,6 @@ const Home = ({ extraPropsFromHOC, user }) => {
         {(data, error, loading) => {
           if (error) console.error(error)
           if (loading) console.log('loading')
-          console.log('data is:', data)
           return <div />
         }}
       </Query>
@@ -59,6 +57,5 @@ const Wrapper = styled.div`
 `
 
 export default compose(
-  withData(),
   withFirebase()
 )(Home)

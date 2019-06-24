@@ -7,8 +7,8 @@ const Section = ({ title, topics }) => (
   <Wrapper>
     <Title>{title}</Title>
     <TopicsContainer><Belt>{
-      topics.map((topic) => (
-        <TopicPreview {...topic} />
+      topics.map((topic, index) => (
+        <TopicPreview key={index} {...topic} />
       ))
     }</Belt></TopicsContainer>
   </Wrapper>
