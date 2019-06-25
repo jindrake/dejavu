@@ -49,7 +49,10 @@ const Topic = ({ history }) => (
         <Paper>Results</Paper>
       </Belt>
     </MainSection>
-    <BottomSection><Button text='tackle' type='primary' onClick={() => history.push('/')} /></BottomSection>
+    <BottomSection>
+      {/* TODO add actual next function */}
+      <Button text='tackle' type='primary' onClick={() => history.push('/')} />
+    </BottomSection>
   </Wrapper>
 )
 
