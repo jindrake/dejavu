@@ -7,7 +7,7 @@ import ErrorText from '../components/ErrorText'
 import { withFirebase } from '../hocs'
 import { withRouter } from 'react-router-dom'
 
-const Login = ({ firebase, history }) => {
+const SignIn = ({ firebase, history }) => {
   return (
     <Formik
       initialValues={{
@@ -94,4 +94,4 @@ const Login = ({ firebase, history }) => {
 export default compose(
   withFirebase(),
   withRouter
-)(Login)
+)(SignIn)

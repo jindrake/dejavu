@@ -5,9 +5,10 @@ import gql from 'graphql-tag'
 import { getObjectValue } from './libs'
 import { ApolloProvider, Query, compose } from 'react-apollo'
 import getInitializedApolloClient from './libs/getInitializedApolloClient'
+
 import Home from './pages/Home'
 import SignUp from './pages/SignUp'
-import Login from './pages/Login'
+import SignIn from './pages/SignIn'
 import Topic from './pages/Topic'
 import Navigation from './components/Navigation'
 
@@ -77,20 +78,29 @@ const App = ({ firebase }) => {
             <div>
               <Route path='/topic/:id' component={Topic} />
               <Route
-                exact path={['/', '/signup', '/login']}
-                render={(routeProps) => <Navigation {...routeProps} user={user} />}
+                exact path={['/', '/search', '/settings', '/profile', '/sign-in', '/sign-up']}
+                render={() => <Navigation user={user} />}
               />
-              <Route exact path='/' render={(routeProps) => <Home {...routeProps} user={user} />} />
+              <Route exact path='/' render={() => <Home user={user} />} />
               <Route
                 exact
-                path='/signup'
-                render={(routeProps) => (user ? <Redirect to='/' /> : <SignUp {...routeProps} />)}
+                path='/sign-up'
+                render={() => (user ? <Redirect to='/' /> : <SignUp />)}
+              />
+              <Route exact path='/profile'
+                render={() => user ? <div>{`${user.first_name}'s profile`}</div> : <Redirect to='/sign-in' />}
               />
               <Route
                 exact
-                path='/login'
-                render={(routeProps) => (user ? <Redirect to='/' /> : <Login {...routeProps} />)}
+                path='/sign-in'
+                render={() => (user ? <Redirect to='/' /> : <SignIn />)}
               />
+              <Route exact path='/exit' render={() => {
+                if (user) {
+                  firebase.doSignOut()
+                }
+                return <Redirect to='/' />
+              }} />
             </div>
           )
         }}
