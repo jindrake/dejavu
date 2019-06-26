@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Route, Redirect } from 'react-router-dom'
+import { Route, Redirect, Switch } from 'react-router-dom'
 import { withFirebase, withLayout } from './hocs'
 import gql from 'graphql-tag'
 import { getObjectValue } from './libs'
@@ -10,7 +10,7 @@ import Home from './pages/Home'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import Topic from './pages/Topic'
-import CreateTopicScreen from './pages/CreateTopicScreen'
+import CreateTopic from './pages/Topic/CreateTopic'
 import Navigation from './components/Navigation'
 
 const FETCH_USER = gql`
@@ -77,8 +77,13 @@ const App = ({ firebase }) => {
           const user = getObjectValue(data, 'user[0]')
           return (
             <div>
-              <Route path='/topic/:id' component={Topic} />
-              <Route path='/create-topic' render={(routeProps) => <CreateTopicScreen {...routeProps} user={user} />} />
+              <Switch>
+                <Route
+                  exact path='/topic/create'
+                  render={(routeProps) => (user ? <Redirect to='/' /> : <CreateTopic {...routeProps} />)}
+                />
+                <Route exact path='/topic/:id' component={Topic} />
+              </Switch>
               <Route
                 exact path={['/', '/search', '/settings', '/profile']}
                 render={() => <Navigation user={user} />}
