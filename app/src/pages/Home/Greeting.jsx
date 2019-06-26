@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const Greeting = ({ user }) => (
   <Wrapper>
-    <div>Hello, {user ? user.first_name : 'Study Buddy' }!</div>
+    <div>Hello, {user ? user.first_name : 'study buddy' }!</div>
     <Notifications>This is where your notifications go.</Notifications>
   </Wrapper>
 )

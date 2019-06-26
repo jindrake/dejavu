@@ -25,7 +25,7 @@ const dummyTopic = {
 
 const Topic = ({ history }) => (
   <Wrapper>
-    <TopSection><Button text='back' onClick={() => history.push('/')} /></TopSection>
+    <TopSection><Button text='Back' onClick={() => history.push('/')} /></TopSection>
     <MainSection>
       <Belt>
         <Paper>
@@ -51,7 +51,7 @@ const Topic = ({ history }) => (
     </MainSection>
     <BottomSection>
       {/* TODO add actual next function */}
-      <Button text='tackle' type='primary' onClick={() => history.push('/')} />
+      <Button text='Tackle' type='primary' onClick={() => history.push('/')} />
     </BottomSection>
   </Wrapper>
 )

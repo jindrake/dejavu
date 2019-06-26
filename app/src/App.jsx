@@ -78,7 +78,7 @@ const App = ({ firebase }) => {
             <div>
               <Route path='/topic/:id' component={Topic} />
               <Route
-                exact path={['/', '/search', '/settings', '/profile', '/sign-in', '/sign-up']}
+                exact path={['/', '/search', '/settings', '/profile']}
                 render={() => <Navigation user={user} />}
               />
               <Route exact path='/' render={() => <Home user={user} />} />

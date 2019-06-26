@@ -13,7 +13,6 @@ const TYPE_STYLE = {
 
 const Wrapper = styled.div`
   display: flex;
-  text-transform: capitalize;
   background: linear-gradient(45deg, #212121, #424242);
   box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
   align-items: center;
