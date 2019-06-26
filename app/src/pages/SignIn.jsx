@@ -8,6 +8,7 @@ import { withRouter } from 'react-router-dom'
 
 import Button from '../components/Button'
 import Icon from '../components/Icon'
+import Alert from '../components/Alert'
 
 const SignIn = ({ firebase, history }) => {
   return (
@@ -26,7 +27,7 @@ const SignIn = ({ firebase, history }) => {
           .min(8, 'Password must be at least 8 characters')
           .required('Required')
       })}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={(values, { setSubmitting, setStatus }) => {
         console.log(values)
         setSubmitting(true)
         firebase
@@ -34,17 +35,18 @@ const SignIn = ({ firebase, history }) => {
           .then(() => {})
           .catch((error) => {
             setSubmitting(false)
-            console.error('Login error:', error)
+            setStatus({ type: 'error', text: error.message })
           })
       }}
     >
-      {({ values, errors, touched, handleChange, handleSubmit, isSubmitting }) => {
-        console.log(errors, touched)
+      {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, status }) => {
+        console.log(errors, touched, status)
         return (
           <Wrapper>
-            <Form>
+            <Form isSubmitting={isSubmitting}>
               <Close onClick={() => history.push('/')}><Icon name='close' /></Close>
               <Title>Hello, study buddy!</Title>
+              {status && <Alert {...status} />}
               <FormGroup>
                 <Label htmlFor='login email'>
                   Email {touched.loginEmail && errors.loginEmail && <Hint>{errors.loginEmail}</Hint>}
@@ -119,7 +121,7 @@ const Input = styled.input`
   outline: none;
   :focus {
     background: #e8eaf6;
-  }
+  };
 `
 
 const Label = styled.div`
@@ -159,6 +161,8 @@ const Wrapper = styled.div`
 
 const Form = styled.form`
   position: relative;
+  opacity: ${({ isSubmitting }) => isSubmitting ? 0.5 : 1};
+  transition: 300ms;
 `
 
 export default compose(
