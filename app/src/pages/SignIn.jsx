@@ -14,15 +14,15 @@ const SignIn = ({ firebase, history }) => {
   return (
     <Formik
       initialValues={{
-        loginEmail: '',
-        loginPassword: ''
+        signInEmail: '',
+        signInPassword: ''
       }}
       validationSchema={yup.object().shape({
-        loginEmail: yup
+        signInEmail: yup
           .string()
           .email('Invalid email')
           .required('Required'),
-        loginPassword: yup
+        signInPassword: yup
           .string()
           .min(8, 'Password must be at least 8 characters')
           .required('Required')
@@ -31,7 +31,7 @@ const SignIn = ({ firebase, history }) => {
         console.log(values)
         setSubmitting(true)
         firebase
-          .doSignInWithEmailAndPassword(values.loginEmail, values.loginPassword)
+          .doSignInWithEmailAndPassword(values.signInEmail, values.signInPassword)
           .then(() => {})
           .catch((error) => {
             setSubmitting(false)
@@ -43,34 +43,35 @@ const SignIn = ({ firebase, history }) => {
         console.log(errors, touched, status)
         return (
           <Wrapper>
+            {isSubmitting && <Loader>Loading...</Loader>}
             <Form isSubmitting={isSubmitting}>
               <Close onClick={() => history.push('/')}><Icon name='close' /></Close>
-              <Title>Hello, study buddy!</Title>
+              <Title>Welcome back,<br />study buddy!</Title>
               {status && <Alert {...status} />}
               <FormGroup>
-                <Label htmlFor='login email'>
-                  Email {touched.loginEmail && errors.loginEmail && <Hint>{errors.loginEmail}</Hint>}
+                <Label htmlFor='signIn email'>
+                  Email {touched.signInEmail && errors.signInEmail && <Hint>{errors.signInEmail}</Hint>}
                 </Label>
                 <Input
                   type='email'
-                  name='loginEmail'
+                  name='signInEmail'
                   data-cy='email'
                   onChange={handleChange}
-                  invalid={errors.loginEmail && touched.loginEmail}
-                  value={values.loginEmail}
+                  invalid={errors.signInEmail && touched.signInEmail}
+                  value={values.signInEmail}
                 />
               </FormGroup>
               <FormGroup>
-                <Label htmlFor='login password'>
-                  Password {touched.loginPassword && errors.loginPassword && <Hint>{errors.loginPassword}</Hint>}
+                <Label htmlFor='signIn password'>
+                  Password {touched.signInPassword && errors.signInPassword && <Hint>{errors.signInPassword}</Hint>}
                 </Label>
                 <Input
                   type='password'
-                  name='loginPassword'
+                  name='signInPassword'
                   data-cy='password'
                   onChange={handleChange}
-                  value={values.loginPassword}
-                  invalid={errors.loginPassword && touched.loginPassword}
+                  value={values.signInPassword}
+                  invalid={errors.signInPassword && touched.signInPassword}
                 />
               </FormGroup>
               <ButtonGroup>
@@ -93,8 +94,20 @@ const SignIn = ({ firebase, history }) => {
   )
 }
 
+const Loader = styled.div`
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  color: #E8EAF6;
+  font-size: 12px;
+  height: 100%;
+  width: 100%;
+`
+
 const Close = styled.div`
   position: absolute;
+  font-size: 20px;
   color: #E8EAF6;
   opacity: 0.5;
   right: 0;
@@ -102,9 +115,9 @@ const Close = styled.div`
 `
 
 const Title = styled.div`
-  font-size: 20px;
-  line-height: 20px;
-  font-weight: 900;
+  font-size: 24px;
+  line-height: 24px;
+  font-weight: 700;
   color: #E8EAF6;
 `
 
