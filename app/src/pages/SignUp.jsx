@@ -1,13 +1,16 @@
 import React from 'react'
+import styled from 'styled-components'
 import withFirebase from '../hocs/withFirebase'
 import { compose, graphql } from 'react-apollo'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { Col, Button, Form, FormGroup, Label, Input } from 'reactstrap'
-import ErrorText from '../components/ErrorText'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import uuid from 'uuid/v4'
+
+import Button from '../components/Button'
+import Icon from '../components/Icon'
+import Alert from '../components/Alert'
 
 const CREATE_USER = gql`
   mutation createUser($user: [user_insert_input!]!) {
@@ -48,7 +51,7 @@ const SignUp = ({ firebase, history, createUser }) => {
         firstName: yup.string().required('Required'),
         lastName: yup.string().required('Required')
       })}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={(values, { setSubmitting, setStatus }) => {
         setSubmitting(true)
         firebase
           .doCreateUserWithEmailAndPassword(values.email, values.password)
@@ -68,8 +71,7 @@ const SignUp = ({ firebase, history, createUser }) => {
           })
           .catch((error) => {
             setSubmitting(false)
-            console.error(error)
-            // setStatus()
+            setStatus({ type: 'error', text: error.message })
           })
       }}
     >
@@ -79,17 +81,46 @@ const SignUp = ({ firebase, history, createUser }) => {
         touched,
         handleChange,
         handleSubmit,
-        isSubmitting
+        isSubmitting,
+        status
       }) => {
         return (
-          <Form>
-            SIGNUP
-            <FormGroup row>
-              <Label for='signup email' sm={2}>
-                Email
-                <ErrorText text={touched.email && errors.email} />
-              </Label>
-              <Col sm={10}>
+          <Wrapper>
+            {isSubmitting && <Loader>Loading...</Loader>}
+            <Form isSubmitting={isSubmitting}>
+              <Close onClick={() => history.push('/')}><Icon name='close' /></Close>
+              <Title>Let's be<br />study buddies!</Title>
+              {status && <Alert {...status} />}
+              <FormGroup>
+                <Label>
+                  First name {touched.firstName && errors.firstName && <Hint>{errors.firstName}</Hint>}
+                </Label>
+                <Input
+                  type='text'
+                  name='firstName'
+                  data-cy='firstName'
+                  onChange={handleChange}
+                  invalid={errors.firstName && touched.firstName}
+                  value={values.firstName}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>
+                  Last name {touched.lastName && errors.lastName && <Hint>{errors.lastName}</Hint>}
+                </Label>
+                <Input
+                  type='text'
+                  name='lastName'
+                  data-cy='lastName'
+                  onChange={handleChange}
+                  invalid={errors.lastName && touched.lastName}
+                  value={values.lastName}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>
+                  Email {touched.email && errors.email && <Hint>{errors.email}</Hint>}
+                </Label>
                 <Input
                   type='email'
                   name='email'
@@ -98,87 +129,136 @@ const SignUp = ({ firebase, history, createUser }) => {
                   invalid={errors.email && touched.email}
                   value={values.email}
                 />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for='signup firstname' sm={2}>
-                First name
-                <ErrorText text={touched.firstName && errors.firstName} />
-              </Label>
-              <Col sm={10}>
-                <Input
-                  type='text'
-                  name='firstName'
-                  data-cy='first-name'
-                  onChange={handleChange}
-                  invalid={errors.firstName && touched.firstName}
-                  value={values.firstName}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for='signup lastname' sm={2}>
-                Last name
-                <ErrorText text={touched.lastName && errors.lastName} />
-              </Label>
-              <Col sm={10}>
-                <Input
-                  type='text'
-                  name='lastName'
-                  data-cy='last-name'
-                  onChange={handleChange}
-                  invalid={errors.lastName && touched.lastName}
-                  value={values.lastName}
-                />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for='signup password' sm={2}>
-                Password
-                <ErrorText text={touched.password && errors.password} />
-              </Label>
-              <Col sm={10}>
+              </FormGroup>
+              <FormGroup>
+                <Label>
+                  Password {touched.password && errors.password && <Hint>{errors.password}</Hint>}
+                </Label>
                 <Input
                   type='password'
                   name='password'
                   data-cy='password'
                   onChange={handleChange}
-                  value={values.password}
                   invalid={errors.password && touched.password}
+                  value={values.password}
                 />
-              </Col>
-            </FormGroup>
-            <FormGroup row>
-              <Label for='signup confirmation password' sm={2}>
-                Confirm password
-                <ErrorText text={touched.passwordConfirmation && errors.passwordConfirmation} />
-              </Label>
-              <Col sm={10}>
+              </FormGroup>
+              <FormGroup>
+                <Label>
+                  Confirm password {touched.passwordConfirmation && errors.passwordConfirmation && <Hint>{errors.passwordConfirmation}</Hint>}
+                </Label>
                 <Input
                   type='password'
                   name='passwordConfirmation'
                   data-cy='password-2'
                   onChange={handleChange}
-                  value={values.passwordConfirmation}
                   invalid={errors.passwordConfirmation && touched.passwordConfirmation}
+                  value={values.passwordConfirmation}
                 />
-              </Col>
-            </FormGroup>
-            <Button data-cy='submit' onClick={handleSubmit}>{isSubmitting ? 'Submitting...' : 'SIGNUP'}</Button>
-            <Button
-              color='link'
-              onClick={() => {
-                history.push('/login')
-              }}
-            >
-              Already have an account? Login
-            </Button>
-          </Form>
+              </FormGroup>
+              <ButtonGroup>
+                <Button
+                  onClick={() => history.push('/sign-in')}
+                  text='Have an account? Sign in.'
+                />
+                <Button
+                  data-cy='submit'
+                  onClick={handleSubmit}
+                  text='Sign up'
+                  type='primary'
+                />
+              </ButtonGroup>
+            </Form>
+          </Wrapper>
         )
       }}
     </Formik>
   )
 }
+
+const Loader = styled.div`
+  display: flex;
+  position: absolute;
+  justify-content: center;
+  align-items: center;
+  color: #E8EAF6;
+  font-size: 12px;
+  height: 100%;
+  width: 100%;
+`
+
+const Close = styled.div`
+  position: absolute;
+  font-size: 20px;
+  color: #E8EAF6;
+  opacity: 0.5;
+  right: 0;
+  top: 0;
+`
+
+const Title = styled.div`
+  font-size: 24px;
+  line-height: 24px;
+  font-weight: 700;
+  color: #E8EAF6;
+`
+
+const Input = styled.input`
+  margin-top: 6px;
+  font-size: 12px;
+  height: 36px;
+  color: #1A237E;
+  padding-left: 12px;
+  padding-right: 12px;
+  background: linear-gradient(#e8eaf6, #c5cae9);
+  border-radius: 6px;
+  border: none;
+  outline: none;
+  :focus {
+    background: #e8eaf6;
+  };
+`
+
+const Label = styled.div`
+  color: #E8EAF6;
+  font-size: 12px;
+`
+
+const Hint = styled.span`
+  color: #EF5350;
+  margin-left: 6px;
+`
+
+const FormGroup = styled.div`
+  margin-top: 20px; 
+  display: flex;
+  flex-direction: column;
+`
+
+const ButtonGroup = styled.div`
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  div:first-child {
+    margin-right: 10px;
+  }
+`
+
+const Wrapper = styled.div`
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  height: 100%;
+  left: 40px;
+  right: 40px;
+`
+
+const Form = styled.form`
+  position: relative;
+  opacity: ${({ isSubmitting }) => isSubmitting ? 0.5 : 1};
+  transition: 300ms;
+`
 
 export default compose(
   withRouter,

@@ -49,7 +49,7 @@ const SignIn = ({ firebase, history }) => {
               <Title>Welcome back,<br />study buddy!</Title>
               {status && <Alert {...status} />}
               <FormGroup>
-                <Label htmlFor='signIn email'>
+                <Label>
                   Email {touched.signInEmail && errors.signInEmail && <Hint>{errors.signInEmail}</Hint>}
                 </Label>
                 <Input
@@ -62,7 +62,7 @@ const SignIn = ({ firebase, history }) => {
                 />
               </FormGroup>
               <FormGroup>
-                <Label htmlFor='signIn password'>
+                <Label>
                   Password {touched.signInPassword && errors.signInPassword && <Hint>{errors.signInPassword}</Hint>}
                 </Label>
                 <Input
@@ -157,8 +157,8 @@ const ButtonGroup = styled.div`
   margin-top: 20px;
   display: flex;
   justify-content: flex-end;
-  div {
-    margin-left: 10px;
+  div:first-child {
+    margin-right: 10px;
   }
 `
 

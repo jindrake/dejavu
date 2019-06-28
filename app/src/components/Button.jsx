@@ -22,6 +22,7 @@ const Wrapper = styled.div`
   border-radius: 6px;
   height: 36px;
   font-size: 12px;
+  white-space: nowrap;
   ${({ type }) => TYPE_STYLE[type]}
 `
 
