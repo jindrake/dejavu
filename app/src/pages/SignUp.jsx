@@ -249,7 +249,8 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  height: 100%;
+  top: 40px;
+  bottom: 40px;
   left: 40px;
   right: 40px;
 `
@@ -258,6 +259,7 @@ const Form = styled.form`
   position: relative;
   opacity: ${({ isSubmitting }) => isSubmitting ? 0.5 : 1};
   transition: 300ms;
+  overflow: auto;
 `
 
 export default compose(

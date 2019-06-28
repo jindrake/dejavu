@@ -77,7 +77,7 @@ const SignIn = ({ firebase, history }) => {
               <ButtonGroup>
                 <Button
                   onClick={() => history.push('/sign-up')}
-                  text='No account? Sign up for free!'
+                  text='No account? Sign up!'
                 />
                 <Button
                   data-cy='submit'
