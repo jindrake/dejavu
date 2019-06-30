@@ -1,12 +1,10 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Button = ({ text, icon, onClick, type }) => (
-  <Wrapper onClick={onClick} type={type}>{text}</Wrapper>
-)
+const Button = ({ text, ...props }) => <Wrapper {...props}>{text}</Wrapper>
 
 const TYPE_STYLE = {
-  'primary': `
+  primary: `
     background: linear-gradient(45deg, #7b1fa2, #d500f9);
   `
 }

@@ -35,22 +35,26 @@ const SignIn = ({ firebase, history }) => {
           .then(() => {})
           .catch((error) => {
             setSubmitting(false)
-            setStatus({ type: 'error', text: error.message })
+            console.error(error)
+            if (error && error.code === 'auth/user-not-found') {
+              setStatus({ type: 'error', text: 'Email and password combination not found' })
+            } else {
+              setStatus({ type: 'error', text: error.message })
+            }
           })
       }}
     >
       {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, status }) => {
-        console.log(errors, touched, status)
         return (
           <Wrapper>
             {isSubmitting && <Loader>Loading...</Loader>}
             <Form isSubmitting={isSubmitting}>
               <Close onClick={() => history.push('/')}><Icon name='close' /></Close>
               <Title>Welcome back,<br />study buddy!</Title>
-              {status && <Alert {...status} />}
+              {status && <Alert {...status} data-cy='alert' />}
               <FormGroup>
                 <Label>
-                  Email {touched.signInEmail && errors.signInEmail && <Hint>{errors.signInEmail}</Hint>}
+                  Email {touched.signInEmail && errors.signInEmail && <Hint data-cy='sign-in-email-error'>{errors.signInEmail}</Hint>}
                 </Label>
                 <Input
                   type='email'
@@ -63,7 +67,7 @@ const SignIn = ({ firebase, history }) => {
               </FormGroup>
               <FormGroup>
                 <Label>
-                  Password {touched.signInPassword && errors.signInPassword && <Hint>{errors.signInPassword}</Hint>}
+                  Password {touched.signInPassword && errors.signInPassword && <Hint data-cy='sign-in-password-error'>{errors.signInPassword}</Hint>}
                 </Label>
                 <Input
                   type='password'

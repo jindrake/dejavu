@@ -16,11 +16,13 @@
     "cy:open": "cypress open",
     "cy:run": "cypress run",
     "cy:verify": "cypress verify",
-    "cy:browser": "cypress run --browser chrome"
+    "cy:browser": "cypress run --browser chrome",
+    "lint:fix": "yarn workspace app lint:fix && yarn workspace services lint:fix"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn workspace app lint && yarn workspace services lint && yarn workspace services test"
+      "pre-commit": "yarn workspace app lint && yarn workspace services lint && yarn workspace services test",
+      "pre-push": "yarn cypress run"
     }
   },
   "devDependencies": {

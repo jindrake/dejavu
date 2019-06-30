@@ -47,7 +47,8 @@ const SignUp = ({ firebase, history, createUser }) => {
           .required('Required'),
         passwordConfirmation: yup
           .string()
-          .oneOf([yup.ref('password'), null], 'Passwords must match'),
+          .oneOf([yup.ref('password'), null], 'Passwords must match')
+          .required(),
         firstName: yup.string().required('Required'),
         lastName: yup.string().required('Required')
       })}
@@ -75,30 +76,29 @@ const SignUp = ({ firebase, history, createUser }) => {
           })
       }}
     >
-      {({
-        values,
-        errors,
-        touched,
-        handleChange,
-        handleSubmit,
-        isSubmitting,
-        status
-      }) => {
+      {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, status }) => {
         return (
           <Wrapper>
             {isSubmitting && <Loader>Loading...</Loader>}
             <Form isSubmitting={isSubmitting}>
-              <Close onClick={() => history.push('/')}><Icon name='close' /></Close>
-              <Title>Let's be<br />study buddies!</Title>
+              <Close onClick={() => history.push('/')}>
+                <Icon name='close' />
+              </Close>
+              <Title>
+                Let's be
+                <br />
+                study buddies!
+              </Title>
               {status && <Alert {...status} />}
               <FormGroup>
                 <Label>
-                  First name {touched.firstName && errors.firstName && <Hint>{errors.firstName}</Hint>}
+                  First name{' '}
+                  {touched.firstName && errors.firstName && <Hint>{errors.firstName}</Hint>}
                 </Label>
                 <Input
                   type='text'
                   name='firstName'
-                  data-cy='firstName'
+                  data-cy='first-name'
                   onChange={handleChange}
                   invalid={errors.firstName && touched.firstName}
                   value={values.firstName}
@@ -111,16 +111,14 @@ const SignUp = ({ firebase, history, createUser }) => {
                 <Input
                   type='text'
                   name='lastName'
-                  data-cy='lastName'
+                  data-cy='last-name'
                   onChange={handleChange}
                   invalid={errors.lastName && touched.lastName}
                   value={values.lastName}
                 />
               </FormGroup>
               <FormGroup>
-                <Label>
-                  Email {touched.email && errors.email && <Hint>{errors.email}</Hint>}
-                </Label>
+                <Label>Email {touched.email && errors.email && <Hint>{errors.email}</Hint>}</Label>
                 <Input
                   type='email'
                   name='email'
@@ -145,24 +143,24 @@ const SignUp = ({ firebase, history, createUser }) => {
               </FormGroup>
               <FormGroup>
                 <Label>
-                  Confirm password {touched.passwordConfirmation && errors.passwordConfirmation && <Hint>{errors.passwordConfirmation}</Hint>}
+                  Confirm password{' '}
+                  {touched.passwordConfirmation && errors.passwordConfirmation && (
+                    <Hint data-cy='confirm-password-error'>{errors.passwordConfirmation}</Hint>
+                  )}
                 </Label>
                 <Input
                   type='password'
                   name='passwordConfirmation'
-                  data-cy='password-2'
+                  data-cy='password-confirmation'
                   onChange={handleChange}
                   invalid={errors.passwordConfirmation && touched.passwordConfirmation}
                   value={values.passwordConfirmation}
                 />
               </FormGroup>
               <ButtonGroup>
+                <Button onClick={() => history.push('/sign-in')} text='Have an account? Sign in.' />
                 <Button
-                  onClick={() => history.push('/sign-in')}
-                  text='Have an account? Sign in.'
-                />
-                <Button
-                  data-cy='submit'
+                  data-cy='submit-button'
                   onClick={handleSubmit}
                   text='Sign up'
                   type='primary'
@@ -181,7 +179,7 @@ const Loader = styled.div`
   position: absolute;
   justify-content: center;
   align-items: center;
-  color: #E8EAF6;
+  color: #e8eaf6;
   font-size: 12px;
   height: 100%;
   width: 100%;
@@ -190,7 +188,7 @@ const Loader = styled.div`
 const Close = styled.div`
   position: absolute;
   font-size: 20px;
-  color: #E8EAF6;
+  color: #e8eaf6;
   opacity: 0.5;
   right: 0;
   top: 0;
@@ -200,14 +198,14 @@ const Title = styled.div`
   font-size: 24px;
   line-height: 24px;
   font-weight: 700;
-  color: #E8EAF6;
+  color: #e8eaf6;
 `
 
 const Input = styled.input`
   margin-top: 6px;
   font-size: 12px;
   height: 36px;
-  color: #1A237E;
+  color: #1a237e;
   padding-left: 12px;
   padding-right: 12px;
   background: linear-gradient(#e8eaf6, #c5cae9);
@@ -216,21 +214,21 @@ const Input = styled.input`
   outline: none;
   :focus {
     background: #e8eaf6;
-  };
+  }
 `
 
 const Label = styled.div`
-  color: #E8EAF6;
+  color: #e8eaf6;
   font-size: 12px;
 `
 
 const Hint = styled.span`
-  color: #EF5350;
+  color: #ef5350;
   margin-left: 6px;
 `
 
 const FormGroup = styled.div`
-  margin-top: 20px; 
+  margin-top: 20px;
   display: flex;
   flex-direction: column;
 `
@@ -257,7 +255,7 @@ const Wrapper = styled.div`
 
 const Form = styled.form`
   position: relative;
-  opacity: ${({ isSubmitting }) => isSubmitting ? 0.5 : 1};
+  opacity: ${({ isSubmitting }) => (isSubmitting ? 0.5 : 1)};
   transition: 300ms;
   overflow: auto;
 `
