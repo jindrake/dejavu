@@ -10,6 +10,7 @@ import Home from './pages/Home'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import Topic from './pages/Topic'
+import CreateTopicScreen from './pages/CreateTopicScreen'
 import Navigation from './components/Navigation'
 
 const FETCH_USER = gql`
@@ -77,6 +78,7 @@ const App = ({ firebase }) => {
           return (
             <div>
               <Route path='/topic/:id' component={Topic} />
+              <Route path='/create_topic' render={(routeProps) => <CreateTopicScreen {...routeProps} user={user} />} />
               <Route
                 exact path={['/', '/search', '/settings', '/profile']}
                 render={() => <Navigation user={user} />}
