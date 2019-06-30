@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."topic" DROP CONSTRAINT "topic_creator_id_key"
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."topic"."creator_id" IS ''
+  type: run_sql

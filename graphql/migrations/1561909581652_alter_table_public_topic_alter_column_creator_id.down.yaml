@@ -1,0 +1,7 @@
+- args:
+    sql: ALTER TABLE "public"."topic" ADD CONSTRAINT "topic_creator_id_key" UNIQUE
+      ("creator_id")
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."topic"."creator_id" IS 'null'
+  type: run_sql
