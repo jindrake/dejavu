@@ -78,7 +78,7 @@ const App = ({ firebase }) => {
           return (
             <div>
               <Route path='/topic/:id' component={Topic} />
-              <Route path='/create_topic' render={(routeProps) => <CreateTopicScreen {...routeProps} user={user} />} />
+              <Route path='/create-topic' render={(routeProps) => <CreateTopicScreen {...routeProps} user={user} />} />
               <Route
                 exact path={['/', '/search', '/settings', '/profile']}
                 render={() => <Navigation user={user} />}

@@ -3,22 +3,28 @@ import styled from 'styled-components'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { Button, Form, FormGroup, Label, Input } from 'reactstrap'
-// import { compose, graphql } from 'react-apollo'
-// import { withRouter } from 'react-router-dom'
-// import gql from 'graphql-tag'
-// import uuid from 'uuid/v4'
+import { compose, graphql } from 'react-apollo'
+import { withRouter } from 'react-router-dom'
+import gql from 'graphql-tag'
+import uuid from 'uuid/v4'
 
+import Alert from '../../components/Alert'
 import ErrorText from '../../components/ErrorText'
 
-// const CREATE_TOPIC = gql`
-//   mutation createTopic($topic: [topic_insert_input!]!){
-//     insert_topic(object: $topic) {
+const CREATE_TOPIC = gql`
+  mutation createTopic($topic: topic_insert_input!){
+    insert_topic(objects: [$topic]) {
+      returning {
+        id
+        name
+        uri
+        description
+      }
+    }
+  }
+`
 
-//     }
-//   }
-// `
-
-const CreateTopicScreen = ({ user }) => {
+const CreateTopicScreen = ({ user, createTopic }) => {
   console.log(user)
   console.log('Hello topic screen')
   return (
@@ -45,12 +51,32 @@ const CreateTopicScreen = ({ user }) => {
           .string()
           .required('Required Please Click Generate')
       })}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={(values, { setSubmitting, setStatus }) => {
         setSubmitting(true)
+        createTopic({
+          variables: {
+            topic: {
+              name: values.name,
+              creator_id: user.id,
+              description: values.description,
+              id: uuid(),
+              uri: values.uri
+            }
+          }
+        })
+          .then((res) => {
+            console.log(res)
+            setSubmitting(false)
+          })
+          .catch((error) => {
+            setSubmitting(false)
+            console.log(error.message)
+            setStatus({ type: 'error', text: error.message })
+          })
         console.log(values)
       }}
     >
-      {({ values, errors, setValues, touched, handleChange, handleSubmit, isSubmitting }) => {
+      {({ values, status, errors, setValues, touched, handleChange, handleSubmit, isSubmitting }) => {
         return (
           <Form>
             <Header>Create Topic Screen</Header>
@@ -105,7 +131,7 @@ const CreateTopicScreen = ({ user }) => {
                   color='primary'
                   onClick={() => {
                     console.log('hellow')
-                    values.uri = 'Be like me'
+                    values.uri = `dejavu.io/topic/${uuid()}`
                     setValues(values)
                   }}
                 >
@@ -120,6 +146,7 @@ const CreateTopicScreen = ({ user }) => {
               />
               <ErrorText text={touched.uri && errors.uri} />
             </FormGroup>
+            {status && <Alert {...status} />}
             <Button data-cy='submit' onClick={handleSubmit}>
               {isSubmitting ? 'Submitting...' : 'TOPIC'}
             </Button>
@@ -140,4 +167,7 @@ const SubHeader = styled.div`
   font-size: 12;
 `
 
-export default CreateTopicScreen
+export default compose(
+  withRouter,
+  graphql(CREATE_TOPIC, { name: 'createTopic' })
+)(CreateTopicScreen)
