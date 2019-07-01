@@ -52,7 +52,7 @@ const SignIn = ({ firebase, history }) => {
               <Close onClick={() => history.push('/')}><Icon name='close' /></Close>
               <Title>Welcome back,<br />study buddy!</Title>
               {status && <Alert {...status} data-cy='alert' />}
-              <FormGroup>
+              <FormItem>
                 <Label>
                   Email {touched.signInEmail && errors.signInEmail && <Hint data-cy='sign-in-email-error'>{errors.signInEmail}</Hint>}
                 </Label>
@@ -64,8 +64,8 @@ const SignIn = ({ firebase, history }) => {
                   invalid={errors.signInEmail && touched.signInEmail}
                   value={values.signInEmail}
                 />
-              </FormGroup>
-              <FormGroup>
+              </FormItem>
+              <FormItem>
                 <Label>
                   Password {touched.signInPassword && errors.signInPassword && <Hint data-cy='sign-in-password-error'>{errors.signInPassword}</Hint>}
                 </Label>
@@ -77,7 +77,7 @@ const SignIn = ({ firebase, history }) => {
                   value={values.signInPassword}
                   invalid={errors.signInPassword && touched.signInPassword}
                 />
-              </FormGroup>
+              </FormItem>
               <ButtonGroup>
                 <Button
                   onClick={() => history.push('/sign-up')}
@@ -120,6 +120,7 @@ const Close = styled.div`
 
 const Title = styled.div`
   font-size: 24px;
+  margin-bottom: 20px;
   line-height: 24px;
   font-weight: 700;
   color: #E8EAF6;
@@ -129,6 +130,7 @@ const Input = styled.input`
   margin-top: 6px;
   font-size: 12px;
   height: 36px;
+  width: 100%;
   color: #1A237E;
   padding-left: 12px;
   padding-right: 12px;
@@ -151,8 +153,9 @@ const Hint = styled.span`
   margin-left: 6px;
 `
 
-const FormGroup = styled.div`
-  margin-top: 20px; 
+const FormItem = styled.div`
+  margin-top: 10px;
+  width: 100%;
   display: flex;
   flex-direction: column;
 `

@@ -48,7 +48,7 @@ const SignUp = ({ firebase, history, createUser }) => {
         passwordConfirmation: yup
           .string()
           .oneOf([yup.ref('password'), null], 'Passwords must match')
-          .required(),
+          .required('Required'),
         firstName: yup.string().required('Required'),
         lastName: yup.string().required('Required')
       })}
@@ -90,34 +90,36 @@ const SignUp = ({ firebase, history, createUser }) => {
                 study buddies!
               </Title>
               {status && <Alert {...status} />}
-              <FormGroup>
-                <Label>
-                  First name{' '}
-                  {touched.firstName && errors.firstName && <Hint>{errors.firstName}</Hint>}
-                </Label>
-                <Input
-                  type='text'
-                  name='firstName'
-                  data-cy='first-name'
-                  onChange={handleChange}
-                  invalid={errors.firstName && touched.firstName}
-                  value={values.firstName}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label>
-                  Last name {touched.lastName && errors.lastName && <Hint>{errors.lastName}</Hint>}
-                </Label>
-                <Input
-                  type='text'
-                  name='lastName'
-                  data-cy='last-name'
-                  onChange={handleChange}
-                  invalid={errors.lastName && touched.lastName}
-                  value={values.lastName}
-                />
-              </FormGroup>
-              <FormGroup>
+              <TwinItems>
+                <FormItem>
+                  <Label>
+                    First name{' '}
+                    {touched.firstName && errors.firstName && <Hint>{errors.firstName}</Hint>}
+                  </Label>
+                  <Input
+                    type='text'
+                    name='firstName'
+                    data-cy='first-name'
+                    onChange={handleChange}
+                    invalid={errors.firstName && touched.firstName}
+                    value={values.firstName}
+                  />
+                </FormItem>
+                <FormItem>
+                  <Label>
+                    Last name {touched.lastName && errors.lastName && <Hint>{errors.lastName}</Hint>}
+                  </Label>
+                  <Input
+                    type='text'
+                    name='lastName'
+                    data-cy='last-name'
+                    onChange={handleChange}
+                    invalid={errors.lastName && touched.lastName}
+                    value={values.lastName}
+                  />
+                </FormItem>
+              </TwinItems>
+              <FormItem>
                 <Label>Email {touched.email && errors.email && <Hint>{errors.email}</Hint>}</Label>
                 <Input
                   type='email'
@@ -127,8 +129,8 @@ const SignUp = ({ firebase, history, createUser }) => {
                   invalid={errors.email && touched.email}
                   value={values.email}
                 />
-              </FormGroup>
-              <FormGroup>
+              </FormItem>
+              <FormItem>
                 <Label>
                   Password {touched.password && errors.password && <Hint>{errors.password}</Hint>}
                 </Label>
@@ -140,8 +142,8 @@ const SignUp = ({ firebase, history, createUser }) => {
                   invalid={errors.password && touched.password}
                   value={values.password}
                 />
-              </FormGroup>
-              <FormGroup>
+              </FormItem>
+              <FormItem>
                 <Label>
                   Confirm password{' '}
                   {touched.passwordConfirmation && errors.passwordConfirmation && (
@@ -156,7 +158,7 @@ const SignUp = ({ firebase, history, createUser }) => {
                   invalid={errors.passwordConfirmation && touched.passwordConfirmation}
                   value={values.passwordConfirmation}
                 />
-              </FormGroup>
+              </FormItem>
               <ButtonGroup>
                 <Button onClick={() => history.push('/sign-in')} text='Have an account? Sign in.' />
                 <Button
@@ -196,6 +198,7 @@ const Close = styled.div`
 
 const Title = styled.div`
   font-size: 24px;
+  margin-bottom: 20px;
   line-height: 24px;
   font-weight: 700;
   color: #e8eaf6;
@@ -205,6 +208,7 @@ const Input = styled.input`
   margin-top: 6px;
   font-size: 12px;
   height: 36px;
+  width: 100%;
   color: #1a237e;
   padding-left: 12px;
   padding-right: 12px;
@@ -227,10 +231,24 @@ const Hint = styled.span`
   margin-left: 6px;
 `
 
-const FormGroup = styled.div`
-  margin-top: 20px;
+const FormItem = styled.div`
+  margin-top: 10px;
+  width: 100%;
   display: flex;
   flex-direction: column;
+`
+
+const TwinItems = styled(FormItem)`
+  flex-direction: row;
+  margin-top: -10px;
+  div:first-child input {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+  div:last-child input {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+  }
 `
 
 const ButtonGroup = styled.div`
@@ -247,17 +265,15 @@ const Wrapper = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  top: 40px;
-  bottom: 40px;
+  height: 100%;
   left: 40px;
   right: 40px;
 `
 
 const Form = styled.form`
   position: relative;
-  opacity: ${({ isSubmitting }) => (isSubmitting ? 0.5 : 1)};
+  opacity: ${({ isSubmitting }) => isSubmitting ? 0.5 : 1};
   transition: 300ms;
-  overflow: auto;
 `
 
 export default compose(
