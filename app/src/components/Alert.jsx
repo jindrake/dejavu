@@ -12,6 +12,7 @@ const TYPE_STYLE = {
 const Wrapper = styled.div`
   display: flex;
   margin-top: 10px;
+  margin-bottom: 10px;
   align-items: center;
   color: #e8eaf6;
   padding-left: 12px;
@@ -20,6 +21,14 @@ const Wrapper = styled.div`
   padding-bottom: 9px;
   border-radius: 6px;
   font-size: 12px;
+  animation-duration: 300ms;
+  animation-name: Bounce;
+  animation-timing-function: cubic-bezier(1, 0, 0, 1);
+  @keyframes Bounce {
+    0% { transform: translateY(0); opacity: 0; }
+    50% { transform: translateY(-6px); opacity: 50%; }
+    100% { transform: translateY(0); opacity: 100%; }
+  }
   ${({ type }) => TYPE_STYLE[type]}
 `
 
