@@ -12,6 +12,7 @@ import SignIn from './pages/SignIn'
 import Topic from './pages/Topic'
 import CreateTopic from './pages/Topic/CreateTopic'
 import Navigation from './components/Navigation'
+import AddQuestions from './pages/Topic/AddQuestions'
 
 const FETCH_USER = gql`
   query fetchUser($email: String) {
@@ -81,6 +82,11 @@ const App = ({ firebase }) => {
                 <Route
                   exact path='/topic/create'
                   render={(routeProps) => (user ? <Redirect to='/' /> : <CreateTopic {...routeProps} />)}
+                />
+                <Route
+                  exact path='/topic/:topic_id/add-questions'
+                  render={(routeProps) => (user ? <Redirect to='/' /> : <AddQuestions {...routeProps} />)}
+                  rende
                 />
                 <Route exact path='/topic/:id' component={Topic} />
               </Switch>
