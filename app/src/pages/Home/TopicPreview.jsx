@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 
-const TopicPreview = ({ author, title, history }) => (
-  <Wrapper onClick={() => history.push('topic/1')}>
+const TopicPreview = ({ n, author, title, history }) => (
+  <Wrapper n={n} onClick={() => history.push('topic/1')}>
     <Author>{author}</Author>
     <Title>{title}</Title>
   </Wrapper>
@@ -41,8 +41,16 @@ const Wrapper = styled.div`
     margin-right: 40px;
   };
   border-radius: 6px;
-  margin-bottom: 6px;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+  animation-duration: 300ms;
+  animation-name: Bounce;
+  animation-delay: ${({ n }) => n / 10 + 's'};
+  animation-timing-function: cubic-bezier(0.445, 0.05, 0.55, 0.95);
+  @keyframes Bounce {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+  }
 `
 
 export default withRouter(TopicPreview)

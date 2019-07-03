@@ -23,7 +23,7 @@ const Wrapper = styled.div`
   font-size: 12px;
   animation-duration: 300ms;
   animation-name: Bounce;
-  animation-timing-function: cubic-bezier(1, 0, 0, 1);
+  animation-timing-function: cubic-bezier(0.445, 0.05, 0.55, 0.95);
   @keyframes Bounce {
     0% { transform: translateY(0); opacity: 0; }
     50% { transform: translateY(-6px); opacity: 50%; }

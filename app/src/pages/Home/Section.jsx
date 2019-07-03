@@ -8,7 +8,7 @@ const Section = ({ title, topics }) => (
     <Title>{title}</Title>
     <TopicsContainer><Belt>{
       topics.map((topic, index) => (
-        <TopicPreview key={index} {...topic} />
+        <TopicPreview key={index} n={index} {...topic} />
       ))
     }</Belt></TopicsContainer>
   </Wrapper>
@@ -16,7 +16,8 @@ const Section = ({ title, topics }) => (
 
 const Belt = styled.div`
   position: absolute;
-  height: 100%;
+  top: 6px;
+  bottom: 6px;
   display: flex;
 `
 
@@ -31,7 +32,7 @@ const TopicsContainer = styled.div`
 const Title = styled.div`
   color: #C5CAE9;
   font-size: 12px;
-  margin-bottom: 10px;
+  margin-bottom: 4px;
 `
 
 const Wrapper = styled.div`
