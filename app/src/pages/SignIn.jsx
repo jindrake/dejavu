@@ -181,7 +181,7 @@ const Wrapper = styled.div`
 
 const Form = styled.form`
   position: relative;
-  opacity: ${({ isSubmitting }) => isSubmitting ? 0.5 : 1};
+  opacity: ${({ isSubmitting }) => isSubmitting ? 0.25 : 1};
   transition: 300ms;
 `
 

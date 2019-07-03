@@ -71,8 +71,10 @@ const Paper = styled.div`
     margin-right: 40px;  
   }
   position: relative;
-  margin-bottom: 10px;
+  margin-top: 6px;
+  margin-bottom: 6px;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
 `
 
 const Belt = styled.div`

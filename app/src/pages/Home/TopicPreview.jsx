@@ -42,15 +42,8 @@ const Wrapper = styled.div`
   };
   border-radius: 6px;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
-  animation-duration: 300ms;
-  animation-name: Bounce;
-  animation-delay: ${({ n }) => n / 10 + 's'};
-  animation-timing-function: cubic-bezier(0.445, 0.05, 0.55, 0.95);
-  @keyframes Bounce {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
-    100% { transform: translateY(0); }
-  }
+  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
+  animation-delay: ${({ n }) => (n) * 100 + 'ms'};
 `
 
 export default withRouter(TopicPreview)

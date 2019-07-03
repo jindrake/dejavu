@@ -1,0 +1,7 @@
+@keyframes Bounce {
+  0% { transform: translateY(0); opacity: 0; }
+  25% { transform: translateY(-6px); }
+  50% { transform: translateY(0px); }
+  75% { transform: translateY(-2px); }
+  100% { transform: translateY(0); opacity: 1; }
+}

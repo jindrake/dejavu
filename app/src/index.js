@@ -4,6 +4,7 @@ import App from './App'
 import Firebase, { FirebaseContext } from './libs/firebase'
 import { BrowserRouter } from 'react-router-dom'
 import { StateProvider } from './libs/state'
+import './index.css'
 
 const initialState = {
   user: null,
