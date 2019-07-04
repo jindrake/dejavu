@@ -76,7 +76,7 @@ const CreateTopicScreen = ({ user, createTopic }) => {
         console.log(values)
       }}
     >
-      {({ values, status, errors, setValues, touched, handleChange, handleSubmit, isSubmitting }) => {
+      {({ values, status, errors, setFieldValue, setValues, touched, handleChange, handleSubmit, isSubmitting }) => {
         return (
           <Form>
             <Header>Create Topic Screen</Header>
@@ -89,7 +89,12 @@ const CreateTopicScreen = ({ user, createTopic }) => {
                 name='name'
                 placeholder='Enter title here ..'
                 value={values.name}
-                onChange={handleChange}
+                onChange={(e) => {
+                  setFieldValue('name', e.target.value)
+                  const uri = `${e.target.value.toLowerCase().replace(/[\W\s^-]/g, '-')}`
+                  const validateUri = uri.replace(/(-+|_+)/g, '')
+                  setFieldValue('uri', `${validateUri}-${uuid().substr(0, 4)}`)
+                }}
                 invalid={errors.name && touched.name}
               />
               <ErrorText text={touched.name && errors.name} />
@@ -127,7 +132,7 @@ const CreateTopicScreen = ({ user, createTopic }) => {
             <FormGroup>
               <Label for='uri'>
                 <SubHeader>URI</SubHeader>
-                <Button
+                {/* <Button
                   color='primary'
                   onClick={() => {
                     console.log('hellow')
@@ -136,7 +141,7 @@ const CreateTopicScreen = ({ user, createTopic }) => {
                   }}
                 >
               Generate URI
-                </Button>
+                </Button> */}
               </Label>
               <Input
                 disabled
