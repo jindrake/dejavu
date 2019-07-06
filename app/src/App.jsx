@@ -78,18 +78,19 @@ const App = ({ firebase }) => {
           const user = getObjectValue(data, 'user[0]')
           return (
             <div>
-              <Switch>
-                <Route
-                  exact path='/topic/create'
-                  render={(routeProps) => (user ? <Redirect to='/' /> : <CreateTopic {...routeProps} />)}
-                />
-                <Route
-                  exact path='/topic/:topic_id/add-questions'
-                  render={(routeProps) => (user ? <Redirect to='/' /> : <AddQuestions {...routeProps} />)}
-                  rende
-                />
-                <Route exact path='/topic/:id' component={Topic} />
-              </Switch>
+              {/* /topic/create
+              /topic/:uri/edit
+              /topic/:uri <-- tackle */}
+              <Route
+                exact
+                path='/create-topic'
+                render={(routeProps) => (user ? <Redirect to='/' /> : <CreateTopic {...routeProps} />)}
+              />
+              <Route
+                exact path='/topic/:uri/add-questions'
+                render={(routeProps) => (user ? <Redirect to='/' /> : <AddQuestions {...routeProps} />)}
+              />
+              <Route exact path='/topic/:id' component={Topic} />
               <Route
                 exact path={['/', '/search', '/settings', '/profile']}
                 render={() => <Navigation user={user} />}
