@@ -76,45 +76,60 @@ const App = ({ firebase }) => {
           }
           if (loading) return <div>Loading Symbol...</div>
           const user = getObjectValue(data, 'user[0]')
+          console.log('>>> User is:', user)
           return (
             <div>
-              {/* /topic/create
-              /topic/:uri/edit
-              /topic/:uri <-- tackle */}
               <Route
                 exact
-                path='/create-topic'
-                render={(routeProps) => (user ? <Redirect to='/' /> : <CreateTopic {...routeProps} />)}
-              />
-              <Route
-                exact path='/topic/:uri/add-questions'
-                render={(routeProps) => (user ? <Redirect to='/' /> : <AddQuestions {...routeProps} />)}
-              />
-              <Route exact path='/topic/:id' component={Topic} />
-              <Route
-                exact path={['/', '/search', '/settings', '/profile']}
+                path={['/', '/search', '/settings', '/profile']}
                 render={() => <Navigation user={user} />}
               />
-              <Route exact path='/' render={() => <Home user={user} />} />
-              <Route
-                exact
-                path='/sign-up'
-                render={() => (user ? <Redirect to='/' /> : <SignUp />)}
-              />
-              <Route exact path='/profile'
-                render={() => user ? <div>{`${user.first_name}'s profile`}</div> : <Redirect to='/sign-in' />}
-              />
-              <Route
-                exact
-                path='/sign-in'
-                render={() => (user ? <Redirect to='/' /> : <SignIn />)}
-              />
-              <Route exact path='/exit' render={() => {
-                if (user) {
-                  firebase.doSignOut()
-                }
-                return <Redirect to='/' />
-              }} />
+              <Switch>
+                <Route
+                  exact
+                  path='/topic/create'
+                  render={(routeProps) =>
+                    user ? <Redirect to='/sign-in' /> : <CreateTopic {...routeProps} />
+                  }
+                />
+                <Route
+                  exact
+                  path='/topic/:uri/add-questions'
+                  render={(routeProps) =>
+                    user ? <Redirect to='/' /> : <AddQuestions {...routeProps} />
+                  }
+                />
+                <Route exact path='/topic/:id' component={Topic} />
+
+                <Route exact path='/' render={() => <Home user={user} />} />
+                <Route
+                  exact
+                  path='/sign-up'
+                  render={() => (user ? <Redirect to='/' /> : <SignUp />)}
+                />
+                <Route
+                  exact
+                  path='/profile'
+                  render={() =>
+                    user ? <div>{`${user.first_name}'s profile`}</div> : <Redirect to='/sign-in' />
+                  }
+                />
+                <Route
+                  exact
+                  path='/sign-in'
+                  render={() => (user ? <Redirect to='/' /> : <SignIn />)}
+                />
+                <Route
+                  exact
+                  path='/exit'
+                  render={() => {
+                    if (user) {
+                      firebase.doSignOut()
+                    }
+                    return <Redirect to='/' />
+                  }}
+                />
+              </Switch>
             </div>
           )
         }}

@@ -1,7 +1,7 @@
 /// <reference types="cypress" />
 import faker from 'faker'
 
-describe('sign page', () => {
+describe('sign-up page', () => {
   beforeEach(() => {
     indexedDB.deleteDatabase('firebaseLocalStorageDb')
     cy.visit(`http://localhost:3000/sign-up`)

@@ -5,16 +5,7 @@ import withFirebase from '../../hocs/withFirebase'
 import Greeting from './Greeting'
 import Section from './Section'
 
-import { compose, Query } from 'react-apollo'
-import gql from 'graphql-tag'
-
-const test = gql`
-  {
-    enum_topic_tag {
-      topic_tag
-    }
-  }
-`
+import { compose } from 'react-apollo'
 
 // TODO replace with query
 const dummyHotTopics = [
@@ -34,13 +25,6 @@ const Home = ({ extraPropsFromHOC, user }) => {
       <Greeting user={user} />
       <Section title='Recent Topics' topics={dummyRecentTopics} />
       <Section title='Hot Topics' topics={dummyHotTopics} />
-      <Query query={test}>
-        {(data, error, loading) => {
-          if (error) console.error(error)
-          if (loading) console.log('loading')
-          return <div />
-        }}
-      </Query>
     </Wrapper>
   )
 }
