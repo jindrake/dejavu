@@ -47,6 +47,7 @@ const App = ({ firebase }) => {
             const token = await user.getIdToken(true)
             const idTokenResult = await user.getIdTokenResult(true)
             const hasuraClaim = await idTokenResult.claims['https://hasura.io/jwt/claims']
+            console.log('<><><><> Appp hasura claim:', hasuraClaim)
             // if there's no hasuraClaim but token exists, maintain authState({loading: true}) state
             if (hasuraClaim) {
               setAuthState({ user, token })
@@ -89,7 +90,7 @@ const App = ({ firebase }) => {
                   exact
                   path='/topic/create'
                   render={(routeProps) =>
-                    user ? <Redirect to='/sign-in' /> : <CreateTopic {...routeProps} />
+                    !user ? <Redirect to='/sign-in' /> : <CreateTopic {...routeProps} user={user} />
                   }
                 />
                 <Route

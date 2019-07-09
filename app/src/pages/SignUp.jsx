@@ -6,7 +6,6 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
-import uuid from 'uuid/v4'
 
 import Button from '../components/Button'
 import Icon from '../components/Icon'
@@ -54,21 +53,55 @@ const SignUp = ({ firebase, history, createUser }) => {
       })}
       onSubmit={(values, { setSubmitting, setStatus }) => {
         setSubmitting(true)
+        let firebaseUser = null
         firebase
           .doCreateUserWithEmailAndPassword(values.email, values.password)
-          .then(() => {
-            return createUser({
-              variables: {
-                user: [
-                  {
-                    email: values.email,
-                    first_name: values.firstName,
-                    last_name: values.lastName,
-                    id: uuid()
-                  }
-                ]
-              }
-            })
+          .then((result) => {
+            firebaseUser = result.user
+            return result.user.getIdTokenResult()
+          })
+          .then((idTokenResult) => {
+            const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
+            if (hasuraClaim) {
+              createUser({
+                variables: {
+                  user: [
+                    {
+                      email: values.email,
+                      first_name: values.firstName,
+                      last_name: values.lastName,
+                      id: hasuraClaim['x-hasura-user-id']
+                    }
+                  ]
+                }
+              })
+            } else {
+              const metadataRef = firebase
+                .database()
+                .ref('metadata/' + firebaseUser.uid + '/refreshTime')
+
+              metadataRef.on('value', async () => {
+                // Force refresh to pick up the latest custom claims changes.
+                // const token = await result.user.getIdToken(true)
+                const idTokenResult = await firebaseUser.getIdTokenResult(true)
+                const hasuraClaim = await idTokenResult.claims['https://hasura.io/jwt/claims']
+                // if there's no hasuraClaim but token exists, maintain authState({loading: true}) state
+                if (hasuraClaim) {
+                  createUser({
+                    variables: {
+                      user: [
+                        {
+                          email: values.email,
+                          first_name: values.firstName,
+                          last_name: values.lastName,
+                          id: hasuraClaim['x-hasura-user-id']
+                        }
+                      ]
+                    }
+                  })
+                }
+              })
+            }
           })
           .catch((error) => {
             setSubmitting(false)
@@ -107,7 +140,8 @@ const SignUp = ({ firebase, history, createUser }) => {
                 </FormItem>
                 <FormItem>
                   <Label>
-                    Last name {touched.lastName && errors.lastName && <Hint>{errors.lastName}</Hint>}
+                    Last name{' '}
+                    {touched.lastName && errors.lastName && <Hint>{errors.lastName}</Hint>}
                   </Label>
                   <Input
                     type='text'
@@ -272,7 +306,7 @@ const Wrapper = styled.div`
 
 const Form = styled.form`
   position: relative;
-  opacity: ${({ isSubmitting }) => isSubmitting ? 0.5 : 1};
+  opacity: ${({ isSubmitting }) => (isSubmitting ? 0.5 : 1)};
   transition: 300ms;
 `
 

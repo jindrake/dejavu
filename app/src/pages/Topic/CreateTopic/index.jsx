@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { Button, Form, FormGroup, Label, Input } from 'reactstrap'
+import { Button, Form, FormGroup, Label, Input, FormText } from 'reactstrap'
 import { compose, graphql } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
@@ -12,7 +12,7 @@ import Alert from '../../../components/Alert'
 import ErrorText from '../../../components/ErrorText'
 
 const CREATE_TOPIC = gql`
-  mutation createTopic($topic: topic_insert_input!){
+  mutation createTopic($topic: topic_insert_input!) {
     insert_topic(objects: [$topic]) {
       returning {
         id
@@ -32,24 +32,17 @@ const CreateTopicScreen = ({ user, createTopic }) => {
       initialValues={{
         name: '',
         description: '',
-        isPrivate: '',
+        isPrivate: false,
         uri: ''
       }}
       validationSchema={yup.object().shape({
         name: yup
           .string()
-          .min(2, 'Enter Title at least 2 characters')
+          .min(3, 'Enter Title at least 3 characters')
           .required('Required'),
-        description: yup
-          .string()
-          .min(4, 'Description at least 4 characters')
-          .required('Required'),
-        isPrivate: yup
-          .boolean()
-          .required('Required'),
-        uri: yup
-          .string()
-          .required('Required Please Click Generate')
+        description: yup.string().required('Required'),
+        isPrivate: yup.boolean().required('Required'),
+        uri: yup.string().required('Required')
       })}
       onSubmit={(values, { setSubmitting, setStatus }) => {
         setSubmitting(true)
@@ -76,7 +69,17 @@ const CreateTopicScreen = ({ user, createTopic }) => {
         console.log(values)
       }}
     >
-      {({ values, status, errors, setFieldValue, setValues, touched, handleChange, handleSubmit, isSubmitting }) => {
+      {({
+        values,
+        status,
+        errors,
+        setFieldValue,
+        setValues,
+        touched,
+        handleChange,
+        handleSubmit,
+        isSubmitting
+      }) => {
         return (
           <Form>
             <Header>Create Topic Screen</Header>
@@ -113,47 +116,17 @@ const CreateTopicScreen = ({ user, createTopic }) => {
               />
               <ErrorText text={touched.description && errors.description} />
             </FormGroup>
-            <FormGroup tag='fieldset'>
-              <SubHeader>Private Topic?</SubHeader>
-              <FormGroup check>
-                <Label check>
-                  <Input type='radio' name='isPrivate' value onChange={handleChange} />
-                  <Header>True</Header>
-                </Label>
-              </FormGroup>
-              <FormGroup check>
-                <Label check>
-                  <Input type='radio' name='isPrivate' value={false} onChange={handleChange} />
-                  <Header>False</Header>
-                </Label>
-              </FormGroup>
-              <ErrorText text={touched.isPrivate && errors.isPrivate} />
-            </FormGroup>
-            <FormGroup>
-              <Label for='uri'>
-                <SubHeader>URI</SubHeader>
-                {/* <Button
-                  color='primary'
-                  onClick={() => {
-                    console.log('hellow')
-                    values.uri = `dejavu.io/topic/${uuid()}`
-                    setValues(values)
-                  }}
-                >
-              Generate URI
-                </Button> */}
+            <FormGroup check>
+              <Label check>
+                <Input type='checkbox' /> <SubHeader>make topic private</SubHeader>
               </Label>
-              <Input
-                disabled
-                type='text'
-                name='uri'
-                value={values.uri}
-              />
-              <ErrorText text={touched.uri && errors.uri} />
+              <FormText color='white'>
+                Private topics are exclusive only to users with a special link to the topic
+              </FormText>
             </FormGroup>
             {status && <Alert {...status} />}
             <Button data-cy='submit' onClick={handleSubmit}>
-              {isSubmitting ? 'Submitting...' : 'TOPIC'}
+              {isSubmitting ? 'Submitting...' : 'Proceed'}
             </Button>
           </Form>
         )
@@ -163,8 +136,7 @@ const CreateTopicScreen = ({ user, createTopic }) => {
 }
 
 const Header = styled.div`
-  color: #E8EAF6;
-  #1A237E
+  color: #e8eaf6;
   font-size: 12;
 `
 const SubHeader = styled.div`

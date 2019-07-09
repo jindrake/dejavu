@@ -84,6 +84,8 @@ CREATE TABLE public.enum_user_status (
 );
 
 INSERT INTO public.enum_question_type (question_type) VALUES ('multiple_choice');
+INSERT INTO public.enum_question_type (question_type) VALUES ('identification');
+INSERT INTO public.enum_question_type (question_type) VALUES ('essay');
 
 INSERT INTO public.enum_rating_type (type) VALUES ('upvote');
 INSERT INTO public.enum_rating_type (type) VALUES ('downvote');
@@ -104,13 +106,15 @@ INSERT INTO public.enum_user_activity (user_activity) VALUES ('tag');
 INSERT INTO public.enum_user_activity (user_activity) VALUES ('login');
 INSERT INTO public.enum_user_activity (user_activity) VALUES ('logout');
 
-INSERT INTO public.enum_user_course (user_course) VALUES ('Bachelor of Science in Pharmacy (BS Pharmacy)');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Bachelor of Science in Business Administration Major in Business Economics (BSBA)');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Bachelor of Science in Medical Technology (BS Med Tech)');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Bachelor of Science in Nursing (BSN)');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Bachelor of Science in Accountancy (BSA)');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Bachelor of Science in Physical Therapy (BSPT)');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Bachelor in Secondary Education (BSED)');
+INSERT INTO public.enum_user_course (user_course) VALUES ('Pharmacy');
+INSERT INTO public.enum_user_course (user_course) VALUES ('Business Administration');
+INSERT INTO public.enum_user_course (user_course) VALUES ('Medical Technology');
+INSERT INTO public.enum_user_course (user_course) VALUES ('Nursing');
+INSERT INTO public.enum_user_course (user_course) VALUES ('Accountancy');
+INSERT INTO public.enum_user_course (user_course) VALUES ('Physical Therapy');
+INSERT INTO public.enum_user_course (user_course) VALUES ('Education');
+INSERT INTO public.enum_user_course (user_course) VALUES ('Engineering');
+
 
 INSERT INTO public.enum_user_status (user_status) VALUES ('accepted');
 INSERT INTO public.enum_user_status (user_status) VALUES ('pending');

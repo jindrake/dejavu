@@ -1,0 +1,4 @@
+- args:
+    sql: ALTER TABLE "public"."user_course" ADD COLUMN "created_at" timestamptz NOT
+      NULL DEFAULT now()
+  type: run_sql
