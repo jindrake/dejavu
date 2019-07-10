@@ -8,8 +8,8 @@ import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import uuid from 'uuid/v4'
 
-import Alert from '../../../components/Alert'
-import ErrorText from '../../../components/ErrorText'
+import Alert from '../../components/Alert'
+import ErrorText from '../../components/ErrorText'
 
 const CREATE_TOPIC = gql`
   mutation createTopic($topic: topic_insert_input!) {
@@ -24,7 +24,7 @@ const CREATE_TOPIC = gql`
   }
 `
 
-const CreateTopicScreen = ({ user, createTopic }) => {
+const CreateTopicScreen = ({ user, createTopic, history }) => {
   console.log(user)
   console.log('Hello topic screen')
   return (
@@ -60,6 +60,7 @@ const CreateTopicScreen = ({ user, createTopic }) => {
           .then((res) => {
             console.log(res)
             setSubmitting(false)
+            history.push(`/topic/${values.uri}/questions`)
           })
           .catch((error) => {
             setSubmitting(false)

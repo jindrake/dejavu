@@ -10,9 +10,10 @@ import Home from './pages/Home'
 import SignUp from './pages/SignUp'
 import SignIn from './pages/SignIn'
 import Topic from './pages/Topic'
-import CreateTopic from './pages/Topic/CreateTopic'
+import Create from './pages/Topic/Create'
 import Navigation from './components/Navigation'
-import AddQuestions from './pages/Topic/AddQuestions'
+import Questions from './pages/Topic/Questions'
+import Profile from './pages/Profile'
 import Search from './pages/Search'
 
 const FETCH_USER = gql`
@@ -48,7 +49,6 @@ const App = ({ firebase }) => {
             const token = await user.getIdToken(true)
             const idTokenResult = await user.getIdTokenResult(true)
             const hasuraClaim = await idTokenResult.claims['https://hasura.io/jwt/claims']
-            console.log('<><><><> Appp hasura claim:', hasuraClaim)
             // if there's no hasuraClaim but token exists, maintain authState({loading: true}) state
             if (hasuraClaim) {
               setAuthState({ user, token })
@@ -80,7 +80,7 @@ const App = ({ firebase }) => {
           const user = getObjectValue(data, 'user[0]')
           console.log('>>> User is:', user)
           return (
-            <div>
+            <>
               <Route
                 exact
                 path={['/', '/search', '/settings', '/profile']}
@@ -98,14 +98,14 @@ const App = ({ firebase }) => {
                   exact
                   path='/topic/create'
                   render={(routeProps) =>
-                    !user ? <Redirect to='/sign-in' /> : <CreateTopic {...routeProps} user={user} />
+                    !user ? <Redirect to='/sign-in' /> : <Create {...routeProps} user={user} />
                   }
                 />
                 <Route
                   exact
-                  path='/topic/:uri/add-questions'
+                  path='/topic/:uri/questions'
                   render={(routeProps) =>
-                    user ? <Redirect to='/' /> : <AddQuestions {...routeProps} />
+                    !user ? <Redirect to='/' /> : <Questions {...routeProps} user={user} />
                   }
                 />
                 <Route exact path='/topic/:id' component={Topic} />
@@ -119,9 +119,7 @@ const App = ({ firebase }) => {
                 <Route
                   exact
                   path='/profile'
-                  render={() =>
-                    user ? <div>{`${user.first_name}'s profile`}</div> : <Redirect to='/sign-in' />
-                  }
+                  render={() => (user ? <Profile user={user} /> : <Redirect to='/sign-in' />)}
                 />
                 <Route
                   exact
@@ -139,7 +137,7 @@ const App = ({ firebase }) => {
                   }}
                 />
               </Switch>
-            </div>
+            </>
           )
         }}
       </Query>
