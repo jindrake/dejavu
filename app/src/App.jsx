@@ -15,6 +15,7 @@ import Navigation from './components/Navigation'
 import Questions from './pages/Topic/Questions'
 import Profile from './pages/Profile'
 import Search from './pages/Search'
+import Feedback from './pages/Feedback'
 
 const FETCH_USER = gql`
   query fetchUser($email: String) {
@@ -135,6 +136,12 @@ const App = ({ firebase }) => {
                     }
                     return <Redirect to='/' />
                   }}
+                />
+
+                <Route
+                  exact
+                  path='/feedback'
+                  render={(routeProps) => (user ? <Feedback {...routeProps} user={user} /> : <Redirect to='/' />)}
                 />
               </Switch>
             </>
