@@ -13,6 +13,7 @@ import Topic from './pages/Topic'
 import CreateTopic from './pages/Topic/CreateTopic'
 import Navigation from './components/Navigation'
 import AddQuestions from './pages/Topic/AddQuestions'
+import Search from './pages/Search'
 
 const FETCH_USER = gql`
   query fetchUser($email: String) {
@@ -86,6 +87,13 @@ const App = ({ firebase }) => {
                 render={() => <Navigation user={user} />}
               />
               <Switch>
+                <Route
+                  exact
+                  path='/search'
+                  render={(routeProps) =>
+                    !user ? <Redirect to='/sign-in' /> : <Search {...routeProps} user={user} />
+                  }
+                />
                 <Route
                   exact
                   path='/topic/create'
