@@ -21,8 +21,7 @@
   },
   "husky": {
     "hooks": {
-      "pre-commit": "yarn workspace app lint && yarn workspace services lint && yarn workspace services test",
-      "pre-push": "yarn cypress run"
+      "pre-commit": "yarn workspace app lint && yarn workspace services lint && yarn workspace services test"
     }
   },
   "devDependencies": {
