@@ -1,0 +1,25 @@
+- args:
+    permission:
+      check:
+        _and:
+        - topics:
+            _or:
+            - admins:
+                id:
+                  _eq: X-Hasura-User-Id
+            - creator:
+                id:
+                  _eq: X-Hasura-User-Id
+      columns:
+      - id
+      - topic_id
+      - question_id
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: question_topic
+      schema: public
+  type: create_insert_permission

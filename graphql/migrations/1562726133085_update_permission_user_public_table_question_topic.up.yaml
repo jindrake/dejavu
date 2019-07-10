@@ -1,0 +1,15 @@
+- args:
+    permission:
+      filter:
+        _or:
+        - topic:
+            creator_id:
+              _eq: X-Hasura-User-Id
+        - question:
+            creator_id:
+              _eq: X-Hasura-User-Id
+    role: user
+    table:
+      name: question_topic
+      schema: public
+  type: create_delete_permission
