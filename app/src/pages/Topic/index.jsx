@@ -27,27 +27,25 @@ const Topic = ({ history }) => (
   <Wrapper>
     <TopSection><Button text='Back' onClick={() => history.push('/')} /></TopSection>
     <MainSection>
-      <Belt>
-        <Paper>
-          <TitleSection
-            upvotes={dummyTopic.upvotes}
-            downvotes={dummyTopic.downvotes}
-            author={dummyTopic.author}
-            title={dummyTopic.title}
-            tags={dummyTopic.tags}
-            timeLimit={dummyTopic.timeLimit}
-            tacklersNumber={dummyTopic.tacklersNumber}
-            dateAdded={dummyTopic.dateAdded}
-          />
-        </Paper>
-        <Paper>Item</Paper>
-        <Paper>Item</Paper>
-        <Paper>Item</Paper>
-        <Paper>Item</Paper>
-        <Paper>Item</Paper>
-        <Paper>Item</Paper>
-        <Paper>Results</Paper>
-      </Belt>
+      <Paper>
+        <TitleSection
+          upvotes={dummyTopic.upvotes}
+          downvotes={dummyTopic.downvotes}
+          author={dummyTopic.author}
+          title={dummyTopic.title}
+          tags={dummyTopic.tags}
+          timeLimit={dummyTopic.timeLimit}
+          tacklersNumber={dummyTopic.tacklersNumber}
+          dateAdded={dummyTopic.dateAdded}
+        />
+      </Paper>
+      <Paper>Item</Paper>
+      <Paper>Item</Paper>
+      <Paper>Item</Paper>
+      <Paper>Item</Paper>
+      <Paper>Item</Paper>
+      <Paper>Item</Paper>
+      <Paper>Results</Paper>
     </MainSection>
     <BottomSection>
       {/* TODO add actual next function */}
@@ -59,7 +57,10 @@ const Topic = ({ history }) => (
 const Paper = styled.div`
   background: linear-gradient(#e8eaf6, #c5cae9);
   padding: 40px;
-  width: 280px;
+  min-width: 280px;
+  position: relative;
+  margin-bottom: 10px;
+  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   &:first-child {
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
@@ -70,17 +71,6 @@ const Paper = styled.div`
     border-bottom-right-radius: 6px;
     margin-right: 40px;  
   }
-  position: relative;
-  margin-top: 6px;
-  margin-bottom: 6px;
-  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
-  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-`
-
-const Belt = styled.div`
-  position: absolute;
-  height: 100%;
-  display: flex;
 `
 
 const MainSection = styled.div`

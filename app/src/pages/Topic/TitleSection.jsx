@@ -15,17 +15,17 @@ const TitleSection = ({
 }) => (
   <Wrapper>
     <TopWrap>
-      <Stat><Icon name='arrow_upward' />&nbsp;&nbsp;{upvotes - downvotes} upvotes</Stat>
+      <Stat><Icon name='arrow_upward' />{upvotes - downvotes} upvotes</Stat>
     </TopWrap>
     <Title>{title}</Title>
     <StatsWrap>
-      <Stat><Icon name='calendar_today' />&nbsp;&nbsp;{dateAdded}</Stat>
-      <Stat><Icon name='account_circle' />&nbsp;&nbsp;{author}</Stat>
-      <Stat><Icon name='timer' />&nbsp;&nbsp;{timeLimit}</Stat>
-      <Stat><Icon name='people' />&nbsp;&nbsp;{tacklersNumber} people tackled this</Stat>
+      <Stat><Icon name='calendar_today' />{dateAdded}</Stat>
+      <Stat><Icon name='account_circle' />{author}</Stat>
+      <Stat><Icon name='timer' />{timeLimit}</Stat>
+      <Stat><Icon name='people' />{tacklersNumber} people tackled this</Stat>
     </StatsWrap>
     <TagsWrap>{
-      tags.map((tag, index) => <Tag key={index}>{tag}</Tag>)
+      tags.map((tag, index) => <Tag key={index}>#{tag}</Tag>)
     }</TagsWrap>
   </Wrapper>
 )
@@ -38,10 +38,13 @@ const Stat = styled.div`
   overflow: hidden;
   margin-bottom: 2px;
   text-overflow: ellipsis;
+  i {
+    margin-right: 6px;
+  }
 `
 
 const Tag = styled.div`
-  background: #5C6BC0;
+  background: linear-gradient(#7986CB, #5C6BC0);
   color: #E8EAF6;
   padding-left: 10px;
   padding-right: 10px;

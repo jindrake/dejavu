@@ -16,6 +16,7 @@ import Questions from './pages/Topic/Questions'
 import Profile from './pages/Profile'
 import Search from './pages/Search'
 import Feedback from './pages/Feedback'
+import Welcome from './pages/Welcome'
 
 const FETCH_USER = gql`
   query fetchUser($email: String) {
@@ -90,6 +91,11 @@ const App = ({ firebase }) => {
               <Switch>
                 <Route
                   exact
+                  path='/welcome'
+                  render={() => <Welcome user={user} />}
+                />
+                <Route
+                  exact
                   path='/search'
                   render={(routeProps) =>
                     !user ? <Redirect to='/sign-in' /> : <Search {...routeProps} user={user} />
@@ -110,7 +116,6 @@ const App = ({ firebase }) => {
                   }
                 />
                 <Route exact path='/topic/:id' component={Topic} />
-
                 <Route exact path='/' render={() => <Home user={user} />} />
                 <Route
                   exact
