@@ -1,13 +1,36 @@
 import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
-// import uuid from 'uuid/v4'
+import uuid from 'uuid/v4'
 import { compose, graphql } from 'react-apollo'
 
-const TopicPreview = ({ n, topic }) => (
-  <Wrapper n={n}>
-    <Title>{topic.name}</Title>
-    <Description>{topic.description}</Description>
+import { INSERT_USER_ACTIVITY } from './queries'
+
+const TopicPreview = ({ n, creator, id, name, history, insertUserActivity }) => (
+  <Wrapper
+    n={n}
+    onClick={() => {
+      insertUserActivity({
+        variables: {
+          userActivity: {
+            id: uuid(),
+            activity_type: 'view',
+            user_id: creator.id,
+            topic_id: id
+          }
+        }
+      })
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err.message)
+        })
+      history.push(`topic/${id}`)
+    }}
+  >
+    <Author>{`${creator.first_name} ${creator.last_name}`}</Author>
+    <Title>{name}</Title>
   </Wrapper>
 )
 
