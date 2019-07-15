@@ -21,6 +21,7 @@
     "react-dom": "^16.8.6",
     "react-router-dom": "^5.0.1",
     "react-scripts": "3.0.1",
+    "react-touch": "^0.4.4",
     "reactstrap": "^8.0.0",
     "styled-components": "^4.3.0",
     "subscriptions-transport-ws": "^0.9.16",
