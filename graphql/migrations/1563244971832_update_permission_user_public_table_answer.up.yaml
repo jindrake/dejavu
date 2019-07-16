@@ -1,0 +1,25 @@
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - question_id
+      - answer
+      - is_correct
+      - id
+      - created_at
+      filter:
+        _or:
+        - question:
+            creator_id:
+              _eq: X-Hasura-User-Id
+        - question:
+            topics:
+              topic:
+                creator_id:
+                  _eq: X-Hasura-User-Id
+      limit: null
+    role: user
+    table:
+      name: answer
+      schema: public
+  type: create_select_permission

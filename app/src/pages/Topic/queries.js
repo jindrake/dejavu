@@ -27,13 +27,15 @@ export const INSERT_QUESTION = gql`
     insert_question(objects: $questionObject) {
       affected_rows
       returning {
-        answer
+        answers {
+          answer
+          id
+        }
         creator {
           first_name
           last_name
           id
         }
-        answer
       }
     }
     insert_question_topic(objects: $questionTopic) {
@@ -54,7 +56,11 @@ export const FETCH_TOPIC_QUESTIONS = gql`
   subscription fetchTopicQuestions($topicUri: String!) {
     question_topic(where: { topic: { uri: { _eq: $topicUri } } }) {
       question {
-        answer
+        answers {
+          answer
+          is_correct
+          id
+        }
         question
         id
       }

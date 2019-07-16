@@ -25,7 +25,7 @@ const TitleSection = ({
       <Stat><Icon name='people' />&nbsp;&nbsp;{tacklersNumber} people tackled this</Stat>
     </StatsWrap>
     <TagsWrap>{
-      tags.map(tag => <Tag>{tag}</Tag>)
+      tags.map((tag, index) => <Tag key={index}>{tag}</Tag>)
     }</TagsWrap>
   </Wrapper>
 )

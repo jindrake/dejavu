@@ -1,0 +1,10 @@
+- args:
+    sql: CREATE TABLE "public"."choices"("question_id" uuid NOT NULL, "answer" text
+      NOT NULL, "is_correct" boolean NOT NULL DEFAULT false, "id" uuid NOT NULL, PRIMARY
+      KEY ("id") , FOREIGN KEY ("question_id") REFERENCES "public"."question"("id")
+      ON UPDATE restrict ON DELETE restrict);
+  type: run_sql
+- args:
+    name: choices
+    schema: public
+  type: add_existing_table_or_view

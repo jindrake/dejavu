@@ -116,7 +116,6 @@ const AddQuestions = ({
                     onSubmit={(values, { setSubmitting, setStatus }) => {
                       setSubmitting(true)
                       const questionId = uuid()
-                      let answer = ''
                       let correctAnswers = values.choices.filter(
                         (_, index) => !!values.correctAnswers[index]
                       )
@@ -125,7 +124,6 @@ const AddQuestions = ({
                       )
                       // changed the format of correct answers from '[]' to this '[<>[]<>]'
                       // to make the possibility of user input causing problems with our format even more edgy
-                      answer = `[<>[${correctAnswers.join(',')}]<>],${dummyAnswers.join(',')}`
                       insertQuestion({
                         variables: {
                           questionObject: {
@@ -133,7 +131,19 @@ const AddQuestions = ({
                             creator_id: user.id,
                             type: 'multiple_choice',
                             id: questionId,
-                            answer: answer
+                            answers: {
+                              data: [
+                                ...correctAnswers.map((answer) => ({
+                                  answer,
+                                  id: uuid(),
+                                  is_correct: true
+                                })),
+                                ...dummyAnswers.map((answer) => ({
+                                  answer,
+                                  id: uuid()
+                                }))
+                              ]
+                            }
                           },
                           questionTopic: {
                             id: uuid(),
@@ -280,8 +290,8 @@ const AddQuestions = ({
                   return (
                     <>
                       {topicQuestions.map(({ question, index }) => {
-                        const dummyAnswers = question.answer.split(']<>],')[1]
-                        const correctAnswers = question.answer.split(']<>],')[0].split('[<>[')[1]
+                        const dummyAnswers = question.answers.filter(answer => !answer.is_correct).map(answer => answer.answer).join(', ')
+                        const correctAnswers = question.answers.filter(answer => answer.is_correct).map(answer => answer.answer).join(', ')
                         return (
                           <QuestionCard key={`questions:${index}`}>
                             <RightText>

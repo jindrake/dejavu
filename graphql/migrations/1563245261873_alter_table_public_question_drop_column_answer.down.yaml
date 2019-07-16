@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."question" ADD COLUMN "answer" text
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."question" ALTER COLUMN "answer" DROP NOT NULL
+  type: run_sql

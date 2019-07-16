@@ -1,0 +1,28 @@
+- args:
+    role: user
+    table:
+      name: answer
+      schema: public
+  type: drop_insert_permission
+- args:
+    permission:
+      check:
+        _or:
+        - question:
+            creator_id:
+              _eq: X-Hasura-User-Id
+        - question:
+            topics:
+              topic:
+                creator_id:
+                  _eq: X-Hasura-User-Id
+      columns: []
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: answer
+      schema: public
+  type: create_insert_permission
