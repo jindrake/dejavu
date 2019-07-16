@@ -102,6 +102,9 @@ const Paper = styled.div`
     border-bottom-right-radius: 6px;
     margin-right: 40px;  
   }
+  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
+  margin-top: 6px;
+  padding-top: -6px;
 `
 const Belt = styled.div`
   position: absolute;
