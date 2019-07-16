@@ -8,7 +8,7 @@ import uuid from 'uuid/v4'
 
 import Icon from '../../components/Icon'
 import Alert from '../../components/Alert'
-import ErrorText from '../../components/ErrorText'
+// import ErrorText from '../../components/ErrorText'
 
 const CREATE_FEEDBACK = gql`
   mutation createFeedback($feedback: [feedback_insert_input!]!) {
@@ -93,7 +93,7 @@ const Feedback = ({ createFeedback, user }) => {
                 No! It needs improvement.
               </Button>
             </FormGroup>
-            <ErrorText text={errors.rating && touched.rating} />
+            {/* <ErrorText text={errors.rating && touched.rating} /> */}
             <FormGroup>
               <Label>
                 Tell us more how can we improve the app :)
@@ -107,7 +107,7 @@ const Feedback = ({ createFeedback, user }) => {
                 value={values.message}
                 invalid={errors.message && touched.message}
               />
-              <ErrorText text={errors.message && touched.message} />
+              {/* <ErrorText text={errors.message && touched.message} /> */}
             </FormGroup>
             {status && <Alert {...status} />}
             <FormGroup>

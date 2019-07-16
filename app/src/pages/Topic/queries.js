@@ -67,3 +67,26 @@ export const FETCH_TOPIC_QUESTIONS = gql`
     }
   }
 `
+export const FETCH_FULL_TOPIC = gql`
+  subscription fetchFullTopic($topicId: uuid!) {
+    topic(where: { id: { _eq: $topicId } }) {
+      id
+      name
+      description
+      is_private
+      ratings {
+        id
+        type
+      }
+      creator {
+        id
+        first_name
+        last_name
+        email
+      }
+      questions {
+        id
+      }
+    }
+  }
+`

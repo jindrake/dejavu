@@ -1,58 +1,68 @@
 import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
+import { Subscription, compose } from 'react-apollo'
+// import { FormGroup, Label, Input } from 'reactstrap'
 
 import TitleSection from './TitleSection'
 import Button from '../../components/Button'
 
-const dummyTopic = {
-  title: 'Nursing Reviewer for Compre',
-  dateAdded: 'Jun 11, 2019',
-  author: 'Lucille Tumambo',
-  items: {
-    id: 1,
-    question: 'What',
-    correct: 'A',
-    options: ['B', 'C', 'D'],
-    answer: null
-  },
-  timeLimit: 'No time limit',
-  tacklersNumber: 10,
-  upvotes: 1,
-  downvotes: 2,
-  tags: [ 'nursing', 'college', 'microbiology', 'lorem', 'ipsum', 'dolor' ]
-}
+import { FETCH_FULL_TOPIC } from './queries'
+import { getObjectValue } from '../../libs'
 
-const Topic = ({ history }) => (
-  <Wrapper>
-    <TopSection><Button text='Back' onClick={() => history.push('/')} /></TopSection>
-    <MainSection>
-      <Paper>
-        <TitleSection
-          upvotes={dummyTopic.upvotes}
-          downvotes={dummyTopic.downvotes}
-          author={dummyTopic.author}
-          title={dummyTopic.title}
-          tags={dummyTopic.tags}
-          timeLimit={dummyTopic.timeLimit}
-          tacklersNumber={dummyTopic.tacklersNumber}
-          dateAdded={dummyTopic.dateAdded}
+const Topic = ({
+  history,
+  match: { params: { id } },
+  user
+}) => {
+  console.log('hello')
+  console.log(id)
+  let questionIds
+  return (
+    <Wrapper>
+      <TopSection><Button text='Back' onClick={() => history.push('/')} /></TopSection>
+      <Subscription subscription={FETCH_FULL_TOPIC} variables={{ topicId: id }}>
+        {({ data, error, loading }) => {
+          if (error) return <div>Error fetching topic: {error.message}</div>
+          if (loading) return <div>loading topic...</div>
+          const topic = getObjectValue(data, 'topic[0]')
+          console.log(topic)
+          console.log('Questions:', topic.questions)
+          questionIds = topic.questions
+          return (
+            <MainSection>
+              <Belt>
+                <Paper>
+                  <TitleSection
+                    upvotes={topic.ratings.filter(rating => rating.type === 'upvote').length}
+                    downvotes={topic.ratings.filter(rating => rating.type === 'downvote').length}
+                    author={topic.creator}
+                    title={topic.name}
+                    description={topic.description}
+                    items={topic.questions.length}
+                    // tags={dummyTopic.tags}
+                    // timeLimit={dummyTopic.timeLimit}
+                    // tacklersNumber={dummyTopic.tacklersNumber}
+                    // dateAdded={dummyTopic.dateAdded}
+                  />
+                </Paper>
+              </Belt>
+            </MainSection>
+
+          )
+        }}
+      </Subscription>
+      <BottomSection>
+        {/* TODO add actual next function */}
+        <Button
+          text='Tackle'
+          type='primary'
+          onClick={() => history.push({ pathname: `/topic/${id}/questions/${questionIds[0].id}`, state: { questionIds } })}
         />
-      </Paper>
-      <Paper>Item</Paper>
-      <Paper>Item</Paper>
-      <Paper>Item</Paper>
-      <Paper>Item</Paper>
-      <Paper>Item</Paper>
-      <Paper>Item</Paper>
-      <Paper>Results</Paper>
-    </MainSection>
-    <BottomSection>
-      {/* TODO add actual next function */}
-      <Button text='Tackle' type='primary' onClick={() => history.push('/')} />
-    </BottomSection>
-  </Wrapper>
-)
+      </BottomSection>
+    </Wrapper>
+  )
+}
 
 const Paper = styled.div`
   background: linear-gradient(#e8eaf6, #c5cae9);
@@ -104,4 +114,4 @@ const Wrapper = styled.div`
   right: 40px;
 `
 
-export default withRouter(Topic)
+export default compose(withRouter)(Topic)

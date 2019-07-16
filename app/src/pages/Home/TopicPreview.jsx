@@ -1,17 +1,42 @@
 import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
+import uuid from 'uuid/v4'
+import { compose, graphql } from 'react-apollo'
 
-const TopicPreview = ({ n, author, title, history }) => (
-  <Wrapper n={n} onClick={() => history.push('topic/1')}>
-    <Author>{author}</Author>
-    <Title>{title}</Title>
+import { INSERT_USER_ACTIVITY } from './queries'
+
+const TopicPreview = ({ n, creator, id, name, history, insertUserActivity }) => (
+  <Wrapper
+    n={n}
+    onClick={() => {
+      insertUserActivity({
+        variables: {
+          userAcivity: {
+            id: uuid(),
+            activity_type: 'view',
+            user_id: creator.id,
+            topic_id: id
+          }
+        }
+      })
+        .then((res) => {
+          console.log(res)
+        })
+        .catch((err) => {
+          console.log(err.message)
+        })
+      history.push(`topic/${id}`)
+    }}
+  >
+    <Author>{`${creator.first_name} ${creator.last_name}`}</Author>
+    <Title>{name}</Title>
   </Wrapper>
 )
 
 const Title = styled.div`
   color: #1A237E;
-  font-size: 20px;
+  font-size: 20px;d A
   line-height: 20px;
   font-weight: 700;
   max-height: 60%;
@@ -46,4 +71,7 @@ const Wrapper = styled.div`
   animation-delay: ${({ n }) => (n) * 100 + 'ms'};
 `
 
-export default withRouter(TopicPreview)
+export default compose(
+  withRouter,
+  graphql(INSERT_USER_ACTIVITY, { name: 'insertUserActivity' })
+)(TopicPreview)

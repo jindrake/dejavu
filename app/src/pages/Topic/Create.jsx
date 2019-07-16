@@ -9,7 +9,7 @@ import gql from 'graphql-tag'
 import uuid from 'uuid/v4'
 
 import Alert from '../../components/Alert'
-import ErrorText from '../../components/ErrorText'
+// import ErrorText from '../../components/ErrorText'
 
 const CREATE_TOPIC = gql`
   mutation createTopic($topic: topic_insert_input!) {
@@ -101,7 +101,7 @@ const CreateTopicScreen = ({ user, createTopic, history }) => {
                 }}
                 invalid={errors.name && touched.name}
               />
-              <ErrorText text={touched.name && errors.name} />
+              {/* <ErrorText text={touched.name && errors.name} /> */}
             </FormGroup>
             <FormGroup>
               <Label for='description'>
@@ -115,7 +115,7 @@ const CreateTopicScreen = ({ user, createTopic, history }) => {
                 onChange={handleChange}
                 invalid={errors.description && touched.description}
               />
-              <ErrorText text={touched.description && errors.description} />
+              {/* <ErrorText text={touched.description && errors.description} /> */}
             </FormGroup>
             <FormGroup check>
               <Label check>
