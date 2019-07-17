@@ -12,7 +12,7 @@ const TopicPreview = ({ n, creator, id, name, history, insertUserActivity }) => 
     onClick={() => {
       insertUserActivity({
         variables: {
-          userAcivity: {
+          userActivity: {
             id: uuid(),
             activity_type: 'view',
             user_id: creator.id,

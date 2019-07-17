@@ -16,8 +16,8 @@ export const FETCH_ALL_TOPIC = gql`
 `
 
 export const INSERT_USER_ACTIVITY = gql`
-  mutation insertUserActivity ($userAcivity: [user_activity_insert_input!]!) {
-    insert_user_activity(objects: $userAcivity) {
+  mutation insertUserActivity ($userActivity: [user_activity_insert_input!]!) {
+    insert_user_activity(objects: $userActivity) {
       affected_rows
     }
   }
