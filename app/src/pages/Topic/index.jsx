@@ -82,7 +82,11 @@ const Paper = styled.div`
     margin-right: 40px;  
   }
 `
-
+const Belt = styled.div`
+  position: absolute;
+  height: 100%;
+  display: flex;
+`
 const MainSection = styled.div`
   height: 100%;
   margin-right: -40px;

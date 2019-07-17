@@ -2,8 +2,10 @@ import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
-import { Query, compose } from 'react-apollo'
-// import { FormGroup, Label, Input } from 'reactstrap'
+import { Query, compose, graphql } from 'react-apollo'
+import { Form, FormGroup, Label, Input } from 'reactstrap'
+import { Formik } from 'formik'
+import uuid from 'uuid/v4'
 
 import { getObjectValue } from '../../libs'
 import Button from '../../components/Button'
@@ -13,9 +15,18 @@ query fetchQuestion($questionTopicId: uuid!){
   question_topic(where: { id: { _eq: $questionTopicId } }){
       id
       question {
-        answer
-        question  
+        question
+        answers {
+          answer
+        }
       }
+    }
+  }
+`
+const INSERT_USER_ACTIVITY = gql`
+  mutation insertUserActivity ($userActivity: [user_activity_insert_input!]!) {
+    insert_user_activity(objects: $userActivity) {
+      affected_rows
     }
   }
 `
@@ -23,12 +34,15 @@ query fetchQuestion($questionTopicId: uuid!){
 const AnswerQuestion = ({
   location: { state: { questionIds } },
   match: { params },
-  history
+  history,
+  user,
+  insertUserActivity
 }) => {
   console.log('params:', params)
   const remainingIds = questionIds.slice(1)
-  const id = params.questionId
-
+  const questionId = params.questionId
+  const topicId = params.id
+  const topicSessionId = uuid()
   const [ timer, setTimer ] = useState(10)
 
   const tick = () => {
@@ -51,40 +65,124 @@ const AnswerQuestion = ({
   })
 
   return (
-    <Wrapper>
-      <TopSection><Button text='Back' onClick={() => history.goBack()} /></TopSection>
-      <Query query={FETCH_QUESTION} variables={{ questionTopicId: id }}>
-        {({ data, error, loading }) => {
-          if (error) return <div>Error fetching question</div>
-          if (loading) return <div>loading question...</div>
-          const result = getObjectValue(data, 'question_topic[0]')
-          console.log(result.question)
-
-          return (
-            <MainSection>
-              <Belt>
-                <Paper>
-                  <div>Timer: {timer}</div>
-                  Q: {result.question.question}
-                </Paper>
-              </Belt>
-            </MainSection>
-          )
-        }}
-      </Query>
-      <BottomSection>
-        {/* TODO add actual next function */}
-        <Button
-          text={remainingIds.length > 0 ? 'Skip' : 'Result'}
-          type='primary'
-          onClick={() => {
-            reset()
-            remainingIds.length > 0 && history.push({ pathname: `/topic/${id}/questions/${remainingIds[0].id}`, state: { questionIds: remainingIds } })
-          }
-          }
-        />
-      </BottomSection>
-    </Wrapper>
+    <Query query={FETCH_QUESTION} variables={{ questionTopicId: questionId }}>
+      {({ data, error, loading }) => {
+        if (error) return <div>Error fetching question</div>
+        if (loading) return <div>loading question...</div>
+        const result = getObjectValue(data, 'question_topic[0]')
+        const choices = result.question.answers
+        console.log('choices:', choices)
+        return (
+          <Formik
+            initialValues={{
+              userAnswer: ''
+            }}
+            onSubmit={(values, { setSubmitting, setStatus }) => {
+              setSubmitting(true)
+              console.log('USERS SUBMITTING VALUEs:', values.userAnswer)
+              // console.log('USER:', user)
+              insertUserActivity({
+                variables: {
+                  userActivity: {
+                    id: uuid(),
+                    activity_type: 'answer',
+                    user_id: user.id,
+                    topic_id: topicId,
+                    question_id: questionId,
+                    topic_session_id: topicSessionId,
+                    answer: values.userAnswer
+                  }
+                }
+              })
+                .then((res) => {
+                  console.log('ressssssss:', res)
+                  setSubmitting(false)
+                  reset()
+                  remainingIds.length > 0
+                    ? history.push({ pathname: `/topic/${topicId}/questions/${remainingIds[0].id}`,
+                      state: { questionIds: remainingIds } })
+                    : history.push({ pathname: `/result/${topicId}/topicSession/${topicSessionId}` })
+                })
+                .catch((error) => {
+                  setSubmitting(false)
+                  console.log(error.message)
+                  setStatus({ type: 'error', text: error.message })
+                })
+            }}
+          >
+            {({
+              values,
+              status,
+              errors,
+              touched,
+              handleChange,
+              handleSubmit
+            }) => {
+              return (
+                <Form>
+                  <Wrapper>
+                    <TopSection><Button text='Back' onClick={() => history.goBack()} /></TopSection>
+                    <MainSection>
+                      <Belt>
+                        <Paper>
+                          <div>Timer: {timer}</div>
+                          Q: {result.question.question}
+                          Choices:
+                          {
+                            choices && choices.map((choice, index) => (
+                              <FormGroup key={index.toString()} check>
+                                <Label check>
+                                  <Input
+                                    type='radio'
+                                    name='userAnswer'
+                                    values={values.userAnswer}
+                                    onChange={handleChange}
+                                    value={choice.answer}
+                                    invalid={errors.name && touched.name}
+                                    disabled={timer < 1}
+                                  />{' '}
+                                  {choice.answer}
+                                </Label>
+                              </FormGroup>
+                            ))
+                          }
+                        </Paper>
+                      </Belt>
+                    </MainSection>
+                    <BottomSection>
+                      {
+                        timer < 1
+                          ? <Button
+                            text='Skip'
+                            type='primary'
+                            onClick={() => {
+                              reset()
+                              handleSubmit()
+                              // remainingIds.length > 0
+                              //   ? history.push({ pathname: `/topic/${id}/questions/${remainingIds[0].id}`,
+                              //   state: { questionIds: remainingIds } })
+                              //   : console.log('GO TO RESULT PAGE')
+                            }
+                            }
+                          />
+                          : <Button
+                            text='Submit'
+                            type='primary'
+                            onClick={() => {
+                              handleSubmit()
+                            }
+                            }
+                          />
+                      }
+                    </BottomSection>
+                  </Wrapper>
+                </Form>
+              )
+            }}
+          </Formik>
+        )
+      }}
+    </Query>
   )
 }
 
@@ -145,4 +243,7 @@ const Wrapper = styled.div`
   left: 40px;
   right: 40px;
 `
-export default compose(withRouter)(AnswerQuestion)
+export default compose(
+  withRouter,
+  graphql(INSERT_USER_ACTIVITY, { name: 'insertUserActivity' })
+)(AnswerQuestion)

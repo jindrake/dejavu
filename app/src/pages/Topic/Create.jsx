@@ -75,7 +75,6 @@ const CreateTopicScreen = ({ user, createTopic, history }) => {
         status,
         errors,
         setFieldValue,
-        setValues,
         touched,
         handleChange,
         handleSubmit,
