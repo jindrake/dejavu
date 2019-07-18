@@ -154,7 +154,7 @@ const App = ({ firebase }) => {
 
                 <Route
                   exact
-                  path='/topic/:id/questions/:questionId'
+                  path='/topic/:id/questions/:questionId/topicSession/:topicSessionId'
                   render={(routeProps) => (user ? <AnswerQuestion {...routeProps} user={user} /> : <Redirect to='/' />)}
                 />
 

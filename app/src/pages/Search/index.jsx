@@ -9,9 +9,11 @@ import styled from 'styled-components'
 const FETCH_TOPIC = gql`
   query fetchTopic($name: String) {
     topic(where: { name: { _ilike: $name } }){
+      id
       name
       description
       creator {
+        id
         first_name
         last_name
       }
@@ -19,7 +21,7 @@ const FETCH_TOPIC = gql`
   }
 `
 
-const Search = ({ user }) => {
+const Search = ({ user, history }) => {
   const [searchValue, setSearchValue] = useState('')
 
   let debounceEvent = (...args) => {
@@ -56,7 +58,12 @@ const Search = ({ user }) => {
               <h1>Topics</h1>
               {
                 data.topic && data.topic.map(topic => (
-                  <Wrapper>
+                  <Wrapper
+                    key={topic.id}
+                    onClick={() => {
+                      history.push(`topic/${topic.id}`)
+                    }}
+                  >
                     <b>{topic.name}</b>
                     <p>{topic.description}</p>
                     <h3>{`by: ${topic.creator.first_name}  ${topic.creator.last_name}`}</h3>

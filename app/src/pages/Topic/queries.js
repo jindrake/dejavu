@@ -86,7 +86,17 @@ export const FETCH_FULL_TOPIC = gql`
       }
       questions {
         id
+        question {
+          id
+        }
       }
+    }
+  }
+`
+export const INSERT_USER_ACTIVITY = gql`
+  mutation insertUserActivity ($userActivity: [user_activity_insert_input!]!) {
+    insert_user_activity(objects: $userActivity) {
+      affected_rows
     }
   }
 `

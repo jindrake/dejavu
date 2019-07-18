@@ -11,14 +11,12 @@ import { getObjectValue } from '../../libs'
 import Button from '../../components/Button'
 
 const FETCH_QUESTION = gql`
-query fetchQuestion($questionTopicId: uuid!){
-  question_topic(where: { id: { _eq: $questionTopicId } }){
+query fetchQuestion($questionId: uuid!){
+  question(where: { id: { _eq: $questionId } }){
       id
-      question {
-        question
-        answers {
-          answer
-        }
+      question
+      answers {
+        answer
       }
     }
   }
@@ -40,9 +38,10 @@ const AnswerQuestion = ({
 }) => {
   console.log('params:', params)
   const remainingIds = questionIds.slice(1)
-  const questionId = params.questionId
+  const { questionId } = params
   const topicId = params.id
-  const topicSessionId = uuid()
+  const { topicSessionId } = params
+  // const topicSessionId = uuid()
   const [ timer, setTimer ] = useState(10)
 
   const tick = () => {
@@ -65,12 +64,13 @@ const AnswerQuestion = ({
   })
 
   return (
-    <Query query={FETCH_QUESTION} variables={{ questionTopicId: questionId }}>
+    <Query query={FETCH_QUESTION} variables={{ questionId: questionId }}>
       {({ data, error, loading }) => {
         if (error) return <div>Error fetching question</div>
         if (loading) return <div>loading question...</div>
-        const result = getObjectValue(data, 'question_topic[0]')
-        const choices = result.question.answers
+        const result = getObjectValue(data, 'question[0]')
+        console.log(result)
+        const choices = result.answers
         console.log('choices:', choices)
         return (
           <Formik
@@ -99,7 +99,7 @@ const AnswerQuestion = ({
                   setSubmitting(false)
                   reset()
                   remainingIds.length > 0
-                    ? history.push({ pathname: `/topic/${topicId}/questions/${remainingIds[0].id}`,
+                    ? history.push({ pathname: `/topic/${topicId}/questions/${remainingIds[0].id}/topicSession/${topicSessionId}`,
                       state: { questionIds: remainingIds } })
                     : history.push({ pathname: `/result/${topicId}/topicSession/${topicSessionId}` })
                 })
@@ -121,12 +121,20 @@ const AnswerQuestion = ({
               return (
                 <Form>
                   <Wrapper>
-                    <TopSection><Button text='Back' onClick={() => history.goBack()} /></TopSection>
+                    <TopSection>
+                      {/* <Button
+                        text='Back'
+                        onClick={() => {
+                          reset()
+                          history.goBack()
+                        }}
+                      /> */}
+                    </TopSection>
                     <MainSection>
                       <Belt>
                         <Paper>
                           <div>Timer: {timer}</div>
-                          Q: {result.question.question}
+                          Q: {result.question}
                           Choices:
                           {
                             choices && choices.map((choice, index) => (
@@ -150,30 +158,18 @@ const AnswerQuestion = ({
                       </Belt>
                     </MainSection>
                     <BottomSection>
-                      {
-                        timer < 1
-                          ? <Button
-                            text='Skip'
-                            type='primary'
-                            onClick={() => {
-                              reset()
-                              handleSubmit()
-                              // remainingIds.length > 0
-                              //   ? history.push({ pathname: `/topic/${id}/questions/${remainingIds[0].id}`,
-                              //   state: { questionIds: remainingIds } })
-                              //   : console.log('GO TO RESULT PAGE')
-                            }
-                            }
-                          />
-                          : <Button
-                            text='Submit'
-                            type='primary'
-                            onClick={() => {
-                              handleSubmit()
-                            }
-                            }
-                          />
-                      }
+                      <Button
+                        text={timer < 1 ? 'Skip' : 'Submit'}
+                        type='primary'
+                        onClick={() => {
+                          reset()
+                          handleSubmit()
+                          // remainingIds.length > 0
+                          //   ? history.push({ pathname: `/topic/${id}/questions/${remainingIds[0].id}`,
+                          //   state: { questionIds: remainingIds } })
+                          //   : console.log('GO TO RESULT PAGE')
+                        }}
+                      />
                     </BottomSection>
                   </Wrapper>
                 </Form>

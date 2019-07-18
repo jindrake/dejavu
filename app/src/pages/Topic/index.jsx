@@ -1,34 +1,38 @@
 import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
-import { Subscription, compose } from 'react-apollo'
+import { Subscription, compose, graphql } from 'react-apollo'
+import uuid from 'uuid/v4'
 // import { FormGroup, Label, Input } from 'reactstrap'
 
 import TitleSection from './TitleSection'
 import Button from '../../components/Button'
 
-import { FETCH_FULL_TOPIC } from './queries'
+import { shuffleArray } from './shuffleArray'
+import { FETCH_FULL_TOPIC, INSERT_USER_ACTIVITY } from './queries'
 import { getObjectValue } from '../../libs'
 
 const Topic = ({
   history,
   match: { params: { id } },
-  user
+  user,
+  insertUserActivity
 }) => {
   console.log('hello')
   console.log(id)
   let questionIds
+  const topicSessionId = uuid()
   return (
     <Wrapper>
-      <TopSection><Button text='Back' onClick={() => history.push('/')} /></TopSection>
+      <TopSection><Button text='Back' onClick={() => history.goBack()} /></TopSection>
       <Subscription subscription={FETCH_FULL_TOPIC} variables={{ topicId: id }}>
         {({ data, error, loading }) => {
           if (error) return <div>Error fetching topic: {error.message}</div>
           if (loading) return <div>loading topic...</div>
           const topic = getObjectValue(data, 'topic[0]')
-          console.log(topic)
-          console.log('Questions:', topic.questions)
-          questionIds = topic.questions
+          const unshufflequestionIds = topic.questions.map(q => q.question)
+          questionIds = shuffleArray(unshufflequestionIds)
+          console.log(questionIds)
           return (
             <MainSection>
               <Belt>
@@ -53,11 +57,28 @@ const Topic = ({
         }}
       </Subscription>
       <BottomSection>
-        {/* TODO add actual next function */}
         <Button
           text='Tackle'
           type='primary'
-          onClick={() => history.push({ pathname: `/topic/${id}/questions/${questionIds[0].id}`, state: { questionIds } })}
+          onClick={() => {
+            insertUserActivity({
+              variables: {
+                userActivity: {
+                  id: uuid(),
+                  activity_type: 'take',
+                  user_id: user.id,
+                  topic_id: id
+                }
+              }
+            })
+              .then((res) => {
+                console.log(res)
+              })
+              .catch((err) => {
+                console.log(err.message)
+              })
+            history.push({ pathname: `/topic/${id}/questions/${questionIds[0].id}/topicSession/${topicSessionId}`, state: { questionIds } })
+          }}
         />
       </BottomSection>
     </Wrapper>
@@ -118,4 +139,7 @@ const Wrapper = styled.div`
   right: 40px;
 `
 
-export default compose(withRouter)(Topic)
+export default compose(
+  withRouter,
+  graphql(INSERT_USER_ACTIVITY, { name: 'insertUserActivity' })
+)(Topic)
