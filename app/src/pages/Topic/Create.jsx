@@ -41,7 +41,7 @@ const CreateTopicScreen = ({ user, createTopic, history }) => {
           .min(3, 'Enter Title at least 3 characters')
           .required('Required'),
         description: yup.string().required('Required'),
-        isPrivate: yup.boolean().required('Required'),
+        isPrivate: yup.boolean(),
         uri: yup.string().required('Required')
       })}
       onSubmit={(values, { setSubmitting, setStatus }) => {
@@ -53,7 +53,8 @@ const CreateTopicScreen = ({ user, createTopic, history }) => {
               creator_id: user.id,
               description: values.description,
               id: uuid(),
-              uri: values.uri
+              uri: values.uri,
+              is_private: values.isPrivate
             }
           }
         })
@@ -118,7 +119,10 @@ const CreateTopicScreen = ({ user, createTopic, history }) => {
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input type='checkbox' /> <SubHeader>make topic private</SubHeader>
+                <Input type='checkbox' handleChange={(event) => {
+                  setFieldValue('isPrivate', event.target.checked)
+                }} />{' '}
+                <SubHeader>make topic private</SubHeader>
               </Label>
               <FormText color='white'>
                 Private topics are exclusive only to users with a special link to the topic
