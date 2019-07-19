@@ -2,10 +2,10 @@ import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 
-const TopicPreview = ({ n, author, title, history }) => (
-  <Wrapper n={n} onClick={() => history.push('topic/1')}>
-    <Author>{author}</Author>
-    <Title>{title}</Title>
+const TopicPreview = ({ n, topic }) => (
+  <Wrapper n={n}>
+    <Title>{topic.name}</Title>
+    <Description>{topic.description}</Description>
   </Wrapper>
 )
 
@@ -18,7 +18,7 @@ const Title = styled.div`
   overflow-y: scroll;
 `
 
-const Author = styled.div`
+const Description = styled.div`
   color: #1A237E;
   font-size: 12px;
   opacity: 0.8;
