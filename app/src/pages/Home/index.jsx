@@ -7,26 +7,53 @@ import withFirebase from '../../hocs/withFirebase'
 import Greeting from './Greeting'
 import Section from './Section'
 
-import { FETCH_ALL_TOPIC } from './queries'
+import { compose, Query } from 'react-apollo'
+import gql from 'graphql-tag'
 
 // TODO replace with query
+const RETRIEVE_TOPICS = gql`
+  query {
+    topic {
+      name
+      description
+    }
+  }
+`
+// const dummyHotTopics = [
+//   { author: 'Jess Lanchi', title: 'Dating a Med Student' },
+//   { author: 'Joanna Lucero Verrry Long Name Laaassst Name', title: 'How to be Human' },
+//   { author: 'Marlon Ynion', title: 'China 101' }
+// ]
+// const dummyRecentTopics = [
+//   { author: 'Samson Review Center', title: 'Microbiology for Freshmen' },
+//   {
+//     author: 'Pymy Cainglet',
+//     title:
+//       'Proving Trigonometric Lorem ipsum dolor sit amet, consectetur adipiscing elit nunc massa, suscipit sit amet metus sed, tempor fermentum erat'
+//   },
+//   { author: 'Marlon Ynion', title: 'Nursing Foundation' }
+// ]
 
-const Home = ({ extraPropsFromHOC, user }) => {
+const Home = ({ user }) => {
   return (
     <Wrapper>
       <Greeting user={user} />
+      <Query query={RETRIEVE_TOPICS}>
+        {({ data, loading, error }) => {
+          if (loading) return <p>LOADING</p>
+          if (error) return <p>ERROR</p>
 
-      <Subscription subscription={FETCH_ALL_TOPIC}>
-        {({ data, error, loading }) => {
-          if (error) return <div>Error fetching topics: {error.message}</div>
-          if (loading) return <div>lodaing topics...</div>
-          const allTopics = data.topic
-          console.log(allTopics)
-          return (
-            <Section title='All Topics' topics={allTopics} />
-          )
+          return <Section title='Recent Topics' data={data} />
         }}
-      </Subscription>
+      </Query>
+      <Query query={RETRIEVE_TOPICS}>
+        {({ data, loading, error }) => {
+          if (loading) return <p>LOADING</p>
+          if (error) return <p>ERROR</p>
+
+          return <Section title='Hot Topics' data={data} />
+        }}
+      </Query>
     </Wrapper>
   )
 }
@@ -42,6 +69,4 @@ const Wrapper = styled.div`
   padding-bottom: 0;
 `
 
-export default compose(
-  withFirebase()
-)(Home)
+export default compose(withFirebase())(Home)
