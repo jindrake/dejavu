@@ -29,9 +29,11 @@ const Welcome = ({ history }) => {
   const [step, setStep] = useState(0)
 
   useEffect(() => {
-    refs[step] && refs[step].current.scrollIntoView({
-      behavior: 'smooth', inline: 'start'
-    })
+    refs[step] &&
+      refs[step].current.scrollIntoView({
+        behavior: 'smooth',
+        inline: 'start'
+      })
   })
 
   return (
@@ -43,28 +45,26 @@ const Welcome = ({ history }) => {
     >
       <Wrapper>
         <Belt>
-          {
-            steps.map(({ title, content }) => {
-              const ref = createRef()
-              refs.push(ref)
-              return (
-                <Section ref={ref} key={title}>
-                  <Title>{title}</Title>
-                  <Content>{content}</Content>
-                </Section>
-              )
-            })
-          }
+          {steps.map(({ title, content }) => {
+            const ref = createRef()
+            refs.push(ref)
+            return (
+              <Section ref={ref} key={title}>
+                <Title>{title}</Title>
+                <Content>{content}</Content>
+              </Section>
+            )
+          })}
         </Belt>
         <Icons>
-          {
-            steps.map((item, index) => {
-              return <Icon
+          {steps.map((item, index) => {
+            return (
+              <Icon
                 key={index}
                 name={step + '' === index + '' ? 'radio_button_checked' : 'radio_button_unchecked'}
               />
-            })
-          }
+            )
+          })}
         </Icons>
       </Wrapper>
     </Swipeable>

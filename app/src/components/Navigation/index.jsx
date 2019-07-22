@@ -13,8 +13,8 @@ const Navigation = ({ user, location, history }) => {
     { icon: 'close', route: '/exit' }
   ]
   return (
-    <Wrapper>{
-      routes.map(({ icon, route }) => (
+    <Wrapper>
+      {routes.map(({ icon, route }) => (
         <NavigationItem
           key={route}
           icon={icon}
@@ -22,8 +22,8 @@ const Navigation = ({ user, location, history }) => {
           active={location.pathname === route}
           onClick={() => history.push(route)}
         />
-      ))
-    }</Wrapper>
+      ))}
+    </Wrapper>
   )
 }
 

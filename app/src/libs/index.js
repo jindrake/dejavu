@@ -1,7 +1,5 @@
-export const capitalizeFirstLetter = string => {
-  return string
-    ? string[0].toUpperCase().concat(string.slice(1, string.length))
-    : ''
+export const capitalizeFirstLetter = (string) => {
+  return string ? string[0].toUpperCase().concat(string.slice(1, string.length)) : ''
 }
 
 export const getObjectValue = (object, attribs) => {

@@ -1,0 +1,4 @@
+- args:
+    sql: ALTER TABLE "public"."topic" ADD COLUMN "is_published" boolean NULL DEFAULT
+      false
+  type: run_sql

@@ -1,5 +1,7 @@
 export const shuffleArray = (array) => {
-  let currentIndex = array.length; let temporaryValue; let randomIndex
+  let currentIndex = array.length
+  let temporaryValue
+  let randomIndex
 
   while (currentIndex !== 0) {
     // Pick a remaining element...

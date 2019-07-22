@@ -1,7 +1,7 @@
 import gql from 'graphql-tag'
 
 export const FETCH_ALL_TOPIC = gql`
-  subscription {
+  query {
     topic {
       id
       name
@@ -16,7 +16,7 @@ export const FETCH_ALL_TOPIC = gql`
 `
 
 export const INSERT_USER_ACTIVITY = gql`
-  mutation insertUserActivity ($userActivity: [user_activity_insert_input!]!) {
+  mutation insertUserActivity($userActivity: [user_activity_insert_input!]!) {
     insert_user_activity(objects: $userActivity) {
       affected_rows
     }

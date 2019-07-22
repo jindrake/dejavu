@@ -26,7 +26,7 @@ export default (token) => {
     }
 
     if (networkError) {
-      console.error(`[Network error]: ${networkError}`)
+      console.error(`[Network error]: ${JSON.stringify(networkError)}`)
     }
   })
 

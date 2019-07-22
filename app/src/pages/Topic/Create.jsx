@@ -119,9 +119,12 @@ const CreateTopicScreen = ({ user, createTopic, history }) => {
             </FormGroup>
             <FormGroup check>
               <Label check>
-                <Input type='checkbox' handleChange={(event) => {
-                  setFieldValue('isPrivate', event.target.checked)
-                }} />{' '}
+                <Input
+                  type='checkbox'
+                  onChange={(event) => {
+                    setFieldValue('isPrivate', event.target.checked)
+                  }}
+                />{' '}
                 <SubHeader>make topic private</SubHeader>
               </Label>
               <FormText color='white'>

@@ -106,6 +106,7 @@ INSERT INTO public.enum_user_activity (user_activity) VALUES ('tag');
 INSERT INTO public.enum_user_activity (user_activity) VALUES ('login');
 INSERT INTO public.enum_user_activity (user_activity) VALUES ('logout');
 INSERT INTO public.enum_user_activity (user_activity) VALUES ('answer');
+INSERT INTO public.enum_user_activity (user_activity) VALUES ('click');
 
 INSERT INTO public.enum_user_course (user_course) VALUES ('Pharmacy');
 INSERT INTO public.enum_user_course (user_course) VALUES ('Business Administration');

@@ -35,33 +35,28 @@ const Profile = ({ user, history }) => {
   return (
     <Container>
       <ProfileInfo>
-        <AvatarContainer>
-          {' '}
-        </AvatarContainer>
+        <AvatarContainer />
       </ProfileInfo>
       <CenteredText>
         {user.first_name} {user.last_name}
       </CenteredText>
       <hr />
-      <CenteredText>
-        Your created topics
-      </CenteredText>
+      <CenteredText>Your created topics</CenteredText>
       <br />
       <CenteredText>
-        <Button color='link' onClick={() => {
-          history.push('/topic/create')
-        }}>
+        <Button
+          color='link'
+          onClick={() => {
+            history.push('/topic/create')
+          }}
+        >
           + create new topic
         </Button>
       </CenteredText>
       <hr />
-      <CenteredText>
-        Recent topics
-      </CenteredText>
+      <CenteredText>Recent topics</CenteredText>
     </Container>
   )
 }
 
-export default compose(
-  withRouter
-)(Profile)
+export default compose(withRouter)(Profile)

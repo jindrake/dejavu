@@ -11,8 +11,8 @@ import { getObjectValue } from '../../libs'
 import Button from '../../components/Button'
 
 const FETCH_QUESTION = gql`
-query fetchQuestion($questionId: uuid!){
-  question(where: { id: { _eq: $questionId } }){
+  query fetchQuestion($questionId: uuid!) {
+    question(where: { id: { _eq: $questionId } }) {
       id
       question
       answers {
@@ -22,7 +22,7 @@ query fetchQuestion($questionId: uuid!){
   }
 `
 const INSERT_USER_ACTIVITY = gql`
-  mutation insertUserActivity ($userActivity: [user_activity_insert_input!]!) {
+  mutation insertUserActivity($userActivity: [user_activity_insert_input!]!) {
     insert_user_activity(objects: $userActivity) {
       affected_rows
     }
@@ -30,7 +30,9 @@ const INSERT_USER_ACTIVITY = gql`
 `
 
 const AnswerQuestion = ({
-  location: { state: { questionIds } },
+  location: {
+    state: { questionIds }
+  },
   match: { params },
   history,
   user,
@@ -42,7 +44,7 @@ const AnswerQuestion = ({
   const topicId = params.id
   const { topicSessionId } = params
   // const topicSessionId = uuid()
-  const [ timer, setTimer ] = useState(10)
+  const [timer, setTimer] = useState(10)
 
   const tick = () => {
     setTimer(timer - 1)
@@ -99,9 +101,13 @@ const AnswerQuestion = ({
                   setSubmitting(false)
                   reset()
                   remainingIds.length > 0
-                    ? history.push({ pathname: `/topic/${topicId}/questions/${remainingIds[0].id}/topicSession/${topicSessionId}`,
-                      state: { questionIds: remainingIds } })
-                    : history.push({ pathname: `/result/${topicId}/topicSession/${topicSessionId}` })
+                    ? history.push({
+                      pathname: `/topic/${topicId}/questions/${remainingIds[0].id}/topicSession/${topicSessionId}`,
+                      state: { questionIds: remainingIds }
+                    })
+                    : history.push({
+                      pathname: `/result/${topicId}/topicSession/${topicSessionId}`
+                    })
                 })
                 .catch((error) => {
                   setSubmitting(false)
@@ -110,14 +116,7 @@ const AnswerQuestion = ({
                 })
             }}
           >
-            {({
-              values,
-              status,
-              errors,
-              touched,
-              handleChange,
-              handleSubmit
-            }) => {
+            {({ values, status, errors, touched, handleChange, handleSubmit }) => {
               return (
                 <Form>
                   <Wrapper>
@@ -136,8 +135,8 @@ const AnswerQuestion = ({
                           <div>Timer: {timer}</div>
                           Q: {result.question}
                           Choices:
-                          {
-                            choices && choices.map((choice, index) => (
+                          {choices &&
+                            choices.map((choice, index) => (
                               <FormGroup key={index.toString()} check>
                                 <Label check>
                                   <Input
@@ -152,8 +151,7 @@ const AnswerQuestion = ({
                                   {choice.answer}
                                 </Label>
                               </FormGroup>
-                            ))
-                          }
+                            ))}
                         </Paper>
                       </Belt>
                     </MainSection>
@@ -194,7 +192,7 @@ const Paper = styled.div`
   &:last-child {
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
-    margin-right: 40px;  
+    margin-right: 40px;
   }
   position: relative;
   margin-top: 6px;

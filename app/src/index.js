@@ -19,10 +19,7 @@ const reducer = (state, payload) => {
 ReactDOM.render(
   <BrowserRouter>
     <FirebaseContext.Provider value={new Firebase()}>
-      <StateProvider
-        initialState={initialState}
-        reducer={reducer}
-      >
+      <StateProvider initialState={initialState} reducer={reducer}>
         <App />
       </StateProvider>
     </FirebaseContext.Provider>

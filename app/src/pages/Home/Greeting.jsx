@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const Greeting = ({ user }) => (
   <Wrapper>
-    <div>Hello, {user ? user.first_name : 'Study Buddy' }!</div>
+    <div>Hello, {user ? user.first_name : 'Study Buddy'}!</div>
     <Notifications>This is where your notifications go.</Notifications>
   </Wrapper>
 )
@@ -17,7 +17,7 @@ const Wrapper = styled.div`
   height: 30%;
   font-size: 18px;
   font-weight: 00;
-  color: #E8EAF6;
+  color: #e8eaf6;
   height: 20%;
 `
 

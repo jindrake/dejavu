@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
-import { Subscription, compose, graphql } from 'react-apollo'
+import { compose, graphql, Query } from 'react-apollo'
 import uuid from 'uuid/v4'
 // import { FormGroup, Label, Input } from 'reactstrap'
 
@@ -14,7 +14,9 @@ import { getObjectValue } from '../../libs'
 
 const Topic = ({
   history,
-  match: { params: { id } },
+  match: {
+    params: { id }
+  },
   user,
   insertUserActivity
 }) => {
@@ -24,13 +26,15 @@ const Topic = ({
   const topicSessionId = uuid()
   return (
     <Wrapper>
-      <TopSection><Button text='Back' onClick={() => history.goBack()} /></TopSection>
-      <Subscription subscription={FETCH_FULL_TOPIC} variables={{ topicId: id }}>
+      <TopSection>
+        <Button text='Back' onClick={() => history.goBack()} />
+      </TopSection>
+      <Query query={FETCH_FULL_TOPIC} variables={{ topicId: id }}>
         {({ data, error, loading }) => {
           if (error) return <div>Error fetching topic: {error.message}</div>
           if (loading) return <div>loading topic...</div>
           const topic = getObjectValue(data, 'topic[0]')
-          const unshufflequestionIds = topic.questions.map(q => q.question)
+          const unshufflequestionIds = topic.questions.map((q) => q.question)
           questionIds = shuffleArray(unshufflequestionIds)
           console.log(questionIds)
           return (
@@ -38,8 +42,8 @@ const Topic = ({
               <Belt>
                 <Paper>
                   <TitleSection
-                    upvotes={topic.ratings.filter(rating => rating.type === 'upvote').length}
-                    downvotes={topic.ratings.filter(rating => rating.type === 'downvote').length}
+                    upvotes={topic.ratings.filter((rating) => rating.type === 'upvote').length}
+                    downvotes={topic.ratings.filter((rating) => rating.type === 'downvote').length}
                     author={topic.creator}
                     title={topic.name}
                     description={topic.description}
@@ -52,10 +56,9 @@ const Topic = ({
                 </Paper>
               </Belt>
             </MainSection>
-
           )
         }}
-      </Subscription>
+      </Query>
       <BottomSection>
         <Button
           text='Tackle'
@@ -77,7 +80,10 @@ const Topic = ({
               .catch((err) => {
                 console.log(err.message)
               })
-            history.push({ pathname: `/topic/${id}/questions/${questionIds[0].id}/topicSession/${topicSessionId}`, state: { questionIds } })
+            history.push({
+              pathname: `/topic/${id}/questions/${questionIds[0].id}/topicSession/${topicSessionId}`,
+              state: { questionIds }
+            })
           }}
         />
       </BottomSection>
@@ -100,7 +106,7 @@ const Paper = styled.div`
   &:last-child {
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
-    margin-right: 40px;  
+    margin-right: 40px;
   }
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   margin-top: 6px;

@@ -91,11 +91,7 @@ const App = ({ firebase }) => {
                 render={() => <Navigation user={user} />}
               />
               <Switch>
-                <Route
-                  exact
-                  path='/welcome'
-                  render={() => <Welcome user={user} />}
-                />
+                <Route exact path='/welcome' render={() => <Welcome user={user} />} />
                 <Route
                   exact
                   path='/search'
@@ -117,7 +113,11 @@ const App = ({ firebase }) => {
                     !user ? <Redirect to='/' /> : <Questions {...routeProps} user={user} />
                   }
                 />
-                <Route exact path='/topic/:id' render={(routeProps) => <Topic {...routeProps} user={user} />} />
+                <Route
+                  exact
+                  path='/topic/:id'
+                  render={(routeProps) => <Topic {...routeProps} user={user} />}
+                />
 
                 <Route exact path='/' render={() => <Home user={user} />} />
                 <Route
@@ -149,19 +149,25 @@ const App = ({ firebase }) => {
                 <Route
                   exact
                   path='/feedback'
-                  render={(routeProps) => (user ? <Feedback {...routeProps} user={user} /> : <Redirect to='/' />)}
+                  render={(routeProps) =>
+                    user ? <Feedback {...routeProps} user={user} /> : <Redirect to='/' />
+                  }
                 />
 
                 <Route
                   exact
                   path='/topic/:id/questions/:questionId/topicSession/:topicSessionId'
-                  render={(routeProps) => (user ? <AnswerQuestion {...routeProps} user={user} /> : <Redirect to='/' />)}
+                  render={(routeProps) =>
+                    user ? <AnswerQuestion {...routeProps} user={user} /> : <Redirect to='/' />
+                  }
                 />
 
                 <Route
                   exact
                   path='/result/:id/topicSession/:topicSessionId'
-                  render={(routeProps) => (user ? <Result {...routeProps} user={user} /> : <Redirect to='/' />)}
+                  render={(routeProps) =>
+                    user ? <Result {...routeProps} user={user} /> : <Redirect to='/' />
+                  }
                 />
               </Switch>
             </>

@@ -3,14 +3,16 @@ import styled from 'styled-components'
 
 import TopicPreview from './TopicPreview'
 
-const Section = ({ title, data }) => (
+const Section = ({ title, topics = [] }) => (
   <Wrapper>
     <Title>{title}</Title>
-    <TopicsContainer><Belt>{
-      data.topic.map((topic, index) => (
-        <TopicPreview key={index} n={index} topic={topic} />
-      ))
-    }</Belt></TopicsContainer>
+    <TopicsContainer>
+      <Belt>
+        {topics.map((topic, index) => (
+          <TopicPreview key={index} n={index} topic={topic} />
+        ))}
+      </Belt>
+    </TopicsContainer>
   </Wrapper>
 )
 
@@ -30,7 +32,7 @@ const TopicsContainer = styled.div`
 `
 
 const Title = styled.div`
-  color: #C5CAE9;
+  color: #c5cae9;
   font-size: 12px;
   margin-bottom: 4px;
 `

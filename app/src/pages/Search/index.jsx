@@ -8,7 +8,7 @@ import styled from 'styled-components'
 
 const FETCH_TOPIC = gql`
   query fetchTopic($name: String) {
-    topic(where: { name: { _ilike: $name } }){
+    topic(where: { name: { _ilike: $name } }) {
       id
       name
       description
@@ -26,7 +26,7 @@ const Search = ({ user, history }) => {
 
   let debounceEvent = (...args) => {
     debounceEvent = debounce(...args)
-    return e => {
+    return (e) => {
       e.persist()
       return debounceEvent(e)
     }
@@ -56,8 +56,8 @@ const Search = ({ user, history }) => {
           return (
             <div>
               <h1>Topics</h1>
-              {
-                data.topic && data.topic.map(topic => (
+              {data.topic &&
+                data.topic.map((topic) => (
                   <Wrapper
                     key={topic.id}
                     onClick={() => {
@@ -68,8 +68,7 @@ const Search = ({ user, history }) => {
                     <p>{topic.description}</p>
                     <h3>{`by: ${topic.creator.first_name}  ${topic.creator.last_name}`}</h3>
                   </Wrapper>
-                ))
-              }
+                ))}
               {/* {console.log(data)} */}
             </div>
           )
@@ -80,9 +79,7 @@ const Search = ({ user, history }) => {
 }
 
 const Wrapper = styled.div`
-  border: 2px solid red
+  border: 2px solid red;
 `
 
-export default compose(
-  withRouter
-)(Search)
+export default compose(withRouter)(Search)

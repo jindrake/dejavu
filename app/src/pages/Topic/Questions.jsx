@@ -290,8 +290,14 @@ const AddQuestions = ({
                   return (
                     <>
                       {topicQuestions.map(({ question, index }) => {
-                        const dummyAnswers = question.answers.filter(answer => !answer.is_correct).map(answer => answer.answer).join(', ')
-                        const correctAnswers = question.answers.filter(answer => answer.is_correct).map(answer => answer.answer).join(', ')
+                        const dummyAnswers = question.answers
+                          .filter((answer) => !answer.is_correct)
+                          .map((answer) => answer.answer)
+                          .join(', ')
+                        const correctAnswers = question.answers
+                          .filter((answer) => answer.is_correct)
+                          .map((answer) => answer.answer)
+                          .join(', ')
                         return (
                           <QuestionCard key={`questions:${index}`}>
                             <RightText>

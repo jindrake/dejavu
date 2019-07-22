@@ -17,7 +17,8 @@
     "cy:run": "cypress run",
     "cy:verify": "cypress verify",
     "cy:browser": "cypress run --browser chrome",
-    "lint:fix": "yarn workspace app lint:fix && yarn workspace services lint:fix"
+    "lint:fix": "yarn workspace app lint:fix && yarn workspace services lint:fix",
+    "prettify:all": "npx prettier --config .prettierrc.yaml --write \"**/*.{js,jsx}\""
   },
   "husky": {
     "hooks": {

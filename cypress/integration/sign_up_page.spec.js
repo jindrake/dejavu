@@ -19,7 +19,7 @@ describe('sign-up page', () => {
     cy.get('[data-cy=password]').type(password)
     cy.get('[data-cy=password-confirmation]').type(password)
     cy.get('[data-cy=submit-button]').click()
-    cy.location('pathname', {timeout: 10000}).should('eq', '/')
+    cy.location('pathname', { timeout: 10000 }).should('eq', '/')
   })
 
   it('fail on confirm password validation', () => {
@@ -48,7 +48,7 @@ describe('sign-up page', () => {
     cy.get('[data-cy=password]').type(password)
     cy.get('[data-cy=password-confirmation]').type(password)
     cy.get('[data-cy=submit-button]').click()
-    cy.location('pathname', {timeout: 10000}).should('eq', '/')
+    cy.location('pathname', { timeout: 10000 }).should('eq', '/')
     indexedDB.deleteDatabase('firebaseLocalStorageDb')
     cy.clearCookies()
     cy.clearLocalStorage()
@@ -56,6 +56,6 @@ describe('sign-up page', () => {
     cy.get('[data-cy=email]').type(email.toLowerCase())
     cy.get('[data-cy=password]').type(password)
     cy.get('[data-cy=submit]').click()
-    cy.location('pathname', {timeout: 10000}).should('eq', '/')
+    cy.location('pathname', { timeout: 10000 }).should('eq', '/')
   })
 })

@@ -30,8 +30,14 @@ const TitleSection = ({
     <TagsWrap>{
       tags.map((tag, index) => <Tag key={index}>#{tag}</Tag>)
     }</TagsWrap> */}
-      <Stat><Icon name='account_circle' />&nbsp;&nbsp;{`${author.first_name} ${author.last_name}`}</Stat>
-      <Stat><Icon name='account_circle' />&nbsp;&nbsp;{`${author.email}`}</Stat>
+      <Stat>
+        <Icon name='account_circle' />
+        &nbsp;&nbsp;{`${author.first_name} ${author.last_name}`}
+      </Stat>
+      <Stat>
+        <Icon name='account_circle' />
+        &nbsp;&nbsp;{`${author.email}`}
+      </Stat>
       <Stat>{`${items} items`}</Stat>
     </StatsWrap>
   </Wrapper>
@@ -85,7 +91,7 @@ const Wrapper = styled.div`
 `
 
 const Title = styled.div`
-  color: #1A237E;
+  color: #1a237e;
   font-size: 24px;
   line-height: 24px;
   font-weight: 700;
@@ -96,7 +102,7 @@ const Title = styled.div`
 `
 
 const Description = styled.div`
-  color: #1A237E;
+  color: #1a237e;
   font-size: 18px;
   line-height: 18px;
   font-weight: 500;

@@ -49,12 +49,21 @@ const SignIn = ({ firebase, history }) => {
           <Wrapper>
             {isSubmitting && <Loader>Loading...</Loader>}
             <Form isSubmitting={isSubmitting}>
-              <Close onClick={() => history.push('/')}><Icon name='close' /></Close>
-              <Title>Welcome back,<br />study buddy!</Title>
+              <Close onClick={() => history.push('/')}>
+                <Icon name='close' />
+              </Close>
+              <Title>
+                Welcome back,
+                <br />
+                study buddy!
+              </Title>
               {status && <Alert {...status} data-cy='alert' />}
               <FormItem>
                 <Label>
-                  Email {touched.signInEmail && errors.signInEmail && <Hint data-cy='sign-in-email-error'>{errors.signInEmail}</Hint>}
+                  Email{' '}
+                  {touched.signInEmail && errors.signInEmail && (
+                    <Hint data-cy='sign-in-email-error'>{errors.signInEmail}</Hint>
+                  )}
                 </Label>
                 <Input
                   type='email'
@@ -67,7 +76,10 @@ const SignIn = ({ firebase, history }) => {
               </FormItem>
               <FormItem>
                 <Label>
-                  Password {touched.signInPassword && errors.signInPassword && <Hint data-cy='sign-in-password-error'>{errors.signInPassword}</Hint>}
+                  Password{' '}
+                  {touched.signInPassword && errors.signInPassword && (
+                    <Hint data-cy='sign-in-password-error'>{errors.signInPassword}</Hint>
+                  )}
                 </Label>
                 <Input
                   type='password'
@@ -79,16 +91,8 @@ const SignIn = ({ firebase, history }) => {
                 />
               </FormItem>
               <ButtonGroup>
-                <Button
-                  onClick={() => history.push('/sign-up')}
-                  text='No account? Sign up!'
-                />
-                <Button
-                  data-cy='submit'
-                  onClick={handleSubmit}
-                  text='Sign in'
-                  type='primary'
-                />
+                <Button onClick={() => history.push('/sign-up')} text='No account? Sign up!' />
+                <Button data-cy='submit' onClick={handleSubmit} text='Sign in' type='primary' />
               </ButtonGroup>
             </Form>
           </Wrapper>
@@ -103,7 +107,7 @@ const Loader = styled.div`
   position: absolute;
   justify-content: center;
   align-items: center;
-  color: #E8EAF6;
+  color: #e8eaf6;
   font-size: 12px;
   height: 100%;
   width: 100%;
@@ -112,7 +116,7 @@ const Loader = styled.div`
 const Close = styled.div`
   position: absolute;
   font-size: 20px;
-  color: #E8EAF6;
+  color: #e8eaf6;
   opacity: 0.5;
   right: 0;
   top: 0;
@@ -123,7 +127,7 @@ const Title = styled.div`
   margin-bottom: 20px;
   line-height: 24px;
   font-weight: 700;
-  color: #E8EAF6;
+  color: #e8eaf6;
 `
 
 const Input = styled.input`
@@ -131,7 +135,7 @@ const Input = styled.input`
   font-size: 12px;
   height: 36px;
   width: 100%;
-  color: #1A237E;
+  color: #1a237e;
   padding-left: 12px;
   padding-right: 12px;
   background: linear-gradient(#e8eaf6, #c5cae9);
@@ -140,16 +144,16 @@ const Input = styled.input`
   outline: none;
   :focus {
     background: #e8eaf6;
-  };
+  }
 `
 
 const Label = styled.div`
-  color: #E8EAF6;
+  color: #e8eaf6;
   font-size: 12px;
 `
 
 const Hint = styled.span`
-  color: #EF5350;
+  color: #ef5350;
   margin-left: 6px;
 `
 
@@ -181,7 +185,7 @@ const Wrapper = styled.div`
 
 const Form = styled.form`
   position: relative;
-  opacity: ${({ isSubmitting }) => isSubmitting ? 0.25 : 1};
+  opacity: ${({ isSubmitting }) => (isSubmitting ? 0.25 : 1)};
   transition: 300ms;
 `
 

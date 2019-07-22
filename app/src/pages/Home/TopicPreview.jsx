@@ -6,7 +6,7 @@ import { compose, graphql } from 'react-apollo'
 
 import { INSERT_USER_ACTIVITY } from './queries'
 
-const TopicPreview = ({ n, creator, id, name, history, insertUserActivity }) => (
+const TopicPreview = ({ n, topic: { creator, id, name }, history, insertUserActivity }) => (
   <Wrapper
     n={n}
     onClick={() => {
@@ -43,7 +43,7 @@ const Title = styled.div`
   overflow-y: scroll;
 `
 
-const Description = styled.div`
+const Author = styled.div`
   color: #1a237e;
   font-size: 12px;
   opacity: 0.8;

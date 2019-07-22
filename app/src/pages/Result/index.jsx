@@ -9,12 +9,12 @@ import Button from '../../components/Button'
 
 const FETCH_USER_ACTIVITY = gql`
   query fetchUserActivity($topicSessionId: uuid!) {
-    user_activity(where: {topic_session_id: {_eq: $topicSessionId}}) {
+    user_activity(where: { topic_session_id: { _eq: $topicSessionId } }) {
       id
       answer
       question {
         question
-        answers(where: {is_correct: {_eq: true}}) {
+        answers(where: { is_correct: { _eq: true } }) {
           answer
           is_correct
         }
@@ -24,19 +24,14 @@ const FETCH_USER_ACTIVITY = gql`
 `
 
 const INSERT_TOPIC_RATING = gql`
-  mutation insertTopicRating ($topicRating: [topic_rating_insert_input!]!)  {
+  mutation insertTopicRating($topicRating: [topic_rating_insert_input!]!) {
     insert_topic_rating(objects: $topicRating) {
       affected_rows
     }
   }
 `
 
-const Result = ({
-  match: { params },
-  history,
-  user,
-  insertTopicRating
-}) => {
+const Result = ({ match: { params }, history, user, insertTopicRating }) => {
   console.log('USER RESULT PAGE:', user)
   console.log('Params result page', params)
   const topicSessionId = params.topicSessionId
@@ -50,12 +45,14 @@ const Result = ({
         const results = data.user_activity
         return (
           <Wrapper>
-            <TopSection><h1>Results</h1></TopSection>
+            <TopSection>
+              <h1>Results</h1>
+            </TopSection>
             <MainSection>
               <Belt>
                 <Paper>
-                  {
-                    results && results.map((res, index) => {
+                  {results &&
+                    results.map((res, index) => {
                       const correctAnswer = res.question.answers[0].answer
                       const userAnswer = res.answer
                       if (correctAnswer === userAnswer) {
@@ -69,8 +66,7 @@ const Result = ({
                           <p>Correct Answer: {correctAnswer}</p>
                         </div>
                       )
-                    })
-                  }
+                    })}
                   <b>Total score: {`${score.toString()}/${results.length}`}</b>
                 </Paper>
               </Belt>
@@ -142,14 +138,14 @@ const Paper = styled.div`
   &:last-child {
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
-    margin-right: 40px;  
+    margin-right: 40px;
   }
   position: relative;
   margin-top: 6px;
   margin-bottom: 6px;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-  overflow-y: scroll
+  overflow-y: scroll;
 `
 
 const MainSection = styled.div`

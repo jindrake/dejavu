@@ -68,7 +68,7 @@ export const FETCH_TOPIC_QUESTIONS = gql`
   }
 `
 export const FETCH_FULL_TOPIC = gql`
-  subscription fetchFullTopic($topicId: uuid!) {
+  query fetchFullTopic($topicId: uuid!) {
     topic(where: { id: { _eq: $topicId } }) {
       id
       name
@@ -94,7 +94,7 @@ export const FETCH_FULL_TOPIC = gql`
   }
 `
 export const INSERT_USER_ACTIVITY = gql`
-  mutation insertUserActivity ($userActivity: [user_activity_insert_input!]!) {
+  mutation insertUserActivity($userActivity: [user_activity_insert_input!]!) {
     insert_user_activity(objects: $userActivity) {
       affected_rows
     }
