@@ -13,7 +13,7 @@ import { FETCH_ALL_TOPIC } from './queries'
 
 const Home = ({ fetchAllTopic, user }) => {
   const [topics, setTopics] = useState([])
-  
+
   useEffect(() => {
     console.log('component mounted!')
     const result = fetchAllTopic.topic
@@ -46,5 +46,5 @@ const Wrapper = styled.div`
 
 export default compose(
   withFirebase(),
-  graphql(FETCH_ALL_TOPIC, { name: 'fetchAllTopic',  options: { fetchPolicy: 'no' } }),
+  graphql(FETCH_ALL_TOPIC, { name: 'fetchAllTopic', options: { fetchPolicy: 'no' } })
 )(Home)
