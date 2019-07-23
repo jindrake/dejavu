@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Query, compose } from 'react-apollo'
+import { compose, graphql } from 'react-apollo'
 
 import withFirebase from '../../hocs/withFirebase'
 
@@ -11,20 +11,24 @@ import { FETCH_ALL_TOPIC } from './queries'
 
 // TODO replace with query
 
-const Home = ({ extraPropsFromHOC, user }) => {
+const Home = ({ fetchAllTopic, user }) => {
+  const [topics, setTopics] = useState([])
+  
+  useEffect(() => {
+    console.log('component mounted!')
+    const result = fetchAllTopic.topic
+    if (result) {
+      setTopics(result)
+    }
+    if (fetchAllTopic.error) {
+      console.log(fetchAllTopic.error)
+    }
+  }, [fetchAllTopic.error, fetchAllTopic.topic, fetchAllTopic.loading])
+
   return (
     <Wrapper>
       <Greeting user={user} />
-
-      <Query query={FETCH_ALL_TOPIC}>
-        {({ data, error, loading }) => {
-          if (error) return <div>Error fetching topics: {error.message}</div>
-          if (loading) return <div>lodaing topics...</div>
-          const allTopics = data.topic
-          console.log(allTopics)
-          return <Section title='All Topics' topics={allTopics} />
-        }}
-      </Query>
+      <Section title='All Topics' topics={topics} />
     </Wrapper>
   )
 }
@@ -40,4 +44,7 @@ const Wrapper = styled.div`
   padding-bottom: 0;
 `
 
-export default compose(withFirebase())(Home)
+export default compose(
+  withFirebase(),
+  graphql(FETCH_ALL_TOPIC, { name: 'fetchAllTopic',  options: { fetchPolicy: 'no' } }),
+)(Home)
