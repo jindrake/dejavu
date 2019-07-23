@@ -3,13 +3,13 @@ import styled from 'styled-components'
 
 import TopicPreview from './TopicPreview'
 
-const Section = ({ title, topics = [] }) => (
+const Section = ({ user, title, topics = [] }) => (
   <Wrapper>
     <Title>{title}</Title>
     <TopicsContainer>
       <Belt>
         {topics.map((topic, index) => (
-          <TopicPreview key={index} n={index} topic={topic} />
+          <TopicPreview key={index} n={index} topic={topic} user={user} />
         ))}
       </Belt>
     </TopicsContainer>

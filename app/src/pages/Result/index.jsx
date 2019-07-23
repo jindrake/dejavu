@@ -88,11 +88,11 @@ const Result = ({ match: { params }, history, user, insertTopicRating }) => {
                   })
                     .then((res) => {
                       console.log(res)
+                      history.push(`/`)
                     })
                     .catch((err) => {
                       console.log(err.message)
                     })
-                  history.push(`/`)
                 }}
               />
               <Button
@@ -111,11 +111,11 @@ const Result = ({ match: { params }, history, user, insertTopicRating }) => {
                   })
                     .then((res) => {
                       console.log(res)
+                      history.push(`/`)
                     })
                     .catch((err) => {
                       console.log(err.message)
                     })
-                  history.push(`/`)
                 }}
               />
             </BottomSection>

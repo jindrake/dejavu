@@ -6,33 +6,47 @@ import { compose, graphql } from 'react-apollo'
 
 import { INSERT_USER_ACTIVITY } from './queries'
 
-const TopicPreview = ({ n, topic: { creator, id, name }, history, insertUserActivity }) => (
-  <Wrapper
-    n={n}
-    onClick={() => {
-      insertUserActivity({
-        variables: {
-          userActivity: {
-            id: uuid(),
-            activity_type: 'view',
-            user_id: creator.id,
-            topic_id: id
+const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
+  const {
+    /* eslint-disable camelcase */
+    created_at,
+    id,
+    name,
+    ratings
+  } = topic
+
+  const date = new Date(created_at)
+
+  return (
+    <Wrapper
+      n={n}
+      onClick={() => {
+        insertUserActivity({
+          variables: {
+            userActivity: {
+              id: uuid(),
+              activity_type: 'view',
+              user_id: user.id,
+              topic_id: id
+            }
           }
-        }
-      })
-        .then((res) => {
-          console.log(res)
         })
-        .catch((err) => {
-          console.log(err.message)
-        })
-      history.push(`topic/${id}`)
-    }}
-  >
-    <Author>{`${creator.first_name} ${creator.last_name}`}</Author>
-    <Title>{name}</Title>
-  </Wrapper>
-)
+          .then((res) => {
+            console.log(res)
+          })
+          .catch((err) => {
+            console.log(err.message)
+          })
+        history.push(`topic/${id}`)
+      }}
+    >
+      <Title>{name}</Title>
+      <Author>{date.toDateString()}</Author>
+      <Author>upvote: {ratings.length > 0 ? ratings.filter(r => r.type === 'upvote').length : 0}</Author>
+      <Author>downvote: {ratings.length > 0 ? ratings.filter(r => r.type === 'downvote').length : 0}</Author>
+    </Wrapper>
+  )
+}
 
 const Title = styled.div`
   color: #1a237e;

@@ -7,28 +7,36 @@ import withFirebase from '../../hocs/withFirebase'
 import Greeting from './Greeting'
 import Section from './Section'
 
-import { FETCH_ALL_TOPIC } from './queries'
+import { FETCH_HOT_TOPIC, FETCH_RECENT_TOPIC } from './queries'
 
 // TODO replace with query
 
-const Home = ({ fetchAllTopic, user }) => {
-  const [topics, setTopics] = useState([])
-
+const Home = ({ fetchHotTopic, fetchRecentTopic, user }) => {
+  const [hotTopics, setHotTopics] = useState([])
+  const [recentTopics, setRecentTopics] = useState([])
   useEffect(() => {
-    console.log('component mounted!')
-    const result = fetchAllTopic.topic
-    if (result) {
-      setTopics(result)
+    const allHotTopics = fetchHotTopic.topic
+    const allRecentTopics = fetchRecentTopic.topic
+
+    if (allHotTopics || allRecentTopics) {
+      setHotTopics(allHotTopics)
+      setRecentTopics(allRecentTopics)
     }
-    if (fetchAllTopic.error) {
-      console.log(fetchAllTopic.error)
+    if (fetchHotTopic.error || fetchRecentTopic.error) {
+      console.log(fetchHotTopic.error)
+      console.log(fetchRecentTopic.error)
     }
-  }, [fetchAllTopic.error, fetchAllTopic.topic, fetchAllTopic.loading])
+  }, [
+    fetchHotTopic, fetchRecentTopic,
+    fetchHotTopic.error, fetchHotTopic.topic, fetchHotTopic.loading,
+    fetchRecentTopic.error, fetchRecentTopic.topic, fetchRecentTopic.loading
+  ])
 
   return (
     <Wrapper>
       <Greeting user={user} />
-      <Section title='All Topics' topics={topics} />
+      <Section title='Hot Topics' topics={hotTopics} user={user} />
+      <Section title='Recent Topics' topics={recentTopics} user={user} />
     </Wrapper>
   )
 }
@@ -46,5 +54,6 @@ const Wrapper = styled.div`
 
 export default compose(
   withFirebase(),
-  graphql(FETCH_ALL_TOPIC, { name: 'fetchAllTopic', options: { fetchPolicy: 'no' } })
+  graphql(FETCH_HOT_TOPIC, { name: 'fetchHotTopic', options: { fetchPolicy: 'no-cache' } }),
+  graphql(FETCH_RECENT_TOPIC, { name: 'fetchRecentTopic', options: { fetchPolicy: 'no-cache' } })
 )(Home)
