@@ -1,20 +1,5 @@
 import gql from 'graphql-tag'
 
-export const FETCH_ALL_TOPIC = gql`
-  query {
-    topic {
-      id
-      name
-      description
-      creator {
-        id
-        first_name
-        last_name
-      }
-    }
-  }
-`
-
 export const FETCH_HOT_TOPIC = gql`
   query {
     topic(order_by: {ratings_aggregate: {count: desc}}, limit: 10, where: {is_private: {_eq: false}}) {
@@ -22,11 +7,6 @@ export const FETCH_HOT_TOPIC = gql`
       name
       description
       created_at
-      creator {
-        id
-        first_name
-        last_name
-      }
       ratings {
         id
         type
@@ -42,11 +22,6 @@ export const FETCH_RECENT_TOPIC = gql`
       name
       description
       created_at
-      creator {
-        id
-        first_name
-        last_name
-      }
       ratings {
         id
         type
