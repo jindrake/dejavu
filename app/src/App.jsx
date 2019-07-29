@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Route, Redirect, Switch } from 'react-router-dom'
 import { withFirebase, withLayout } from './hocs'
 import gql from 'graphql-tag'
-import { getObjectValue } from './libs'
+import { getObjectValue, useStateValue } from './libs'
 import { ApolloProvider, Query, compose } from 'react-apollo'
 import getInitializedApolloClient from './libs/getInitializedApolloClient'
 
@@ -19,6 +19,8 @@ import Feedback from './pages/Feedback'
 import Welcome from './pages/Welcome'
 import AnswerQuestion from './pages/AnswerQuestion'
 import Result from './pages/Result'
+import { FullPageLoader, OverlayLoader, Notification } from '../src/components'
+import { Alert } from 'reactstrap'
 
 const FETCH_USER = gql`
   query fetchUser($email: String) {
@@ -27,13 +29,16 @@ const FETCH_USER = gql`
       first_name
       last_name
       id
+      fields {
+        field
+      }
     }
   }
 `
 
 const App = ({ firebase }) => {
   const [authState, setAuthState] = useState({ loading: true })
-
+  const [{ loading, networkError }, globalDispatch] = useStateValue()
   useEffect(() => {
     const listener = firebase.auth.onAuthStateChanged(async (user) => {
       console.log('<< AuthStateChange user >>:', user)
@@ -69,25 +74,53 @@ const App = ({ firebase }) => {
   }, [firebase])
 
   if (authState.loading) {
-    return <div>Loading symbol ...</div>
+    return <FullPageLoader />
+  }
+
+  if (networkError) {
+    setTimeout(() => {
+      globalDispatch({
+        networkError: null
+      })
+    }, 4000)
   }
 
   return (
     <ApolloProvider client={getInitializedApolloClient(authState.token)}>
+      {loading && <OverlayLoader className='bg-transparent' />}
+      {networkError && (
+        <Notification>
+          <Alert color='danger'>{networkError}</Alert>
+        </Notification>
+      )}
       <Query query={FETCH_USER} variables={{ email: getObjectValue(authState, 'user.email') }}>
         {({ data, error, loading }) => {
-          if (error) {
+          if (error && authState.user) {
             console.error(error)
             return <div>Error: {JSON.stringify(error)}</div>
           }
-          if (loading) return <div>Loading Symbol...</div>
-          const user = getObjectValue(data, 'user[0]')
+          if (loading) return <OverlayLoader />
+          const user = getObjectValue(data, 'user[0]') || null
           console.log('>>> User is:', user)
+          if (!user && authState.user) {
+            firebase.doSignOut()
+            setAuthState({
+              user: null,
+              token: null
+            })
+          }
           return (
             <>
               <Route
                 exact
-                path={['/', '/search', '/settings', '/profile']}
+                path={[
+                  '/',
+                  '/search',
+                  '/settings',
+                  '/profile',
+                  '/topic/create',
+                  '/topic/:uri/questions'
+                ]}
                 render={() => <Navigation user={user} />}
               />
               <Switch>

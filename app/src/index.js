@@ -8,11 +8,12 @@ import './index.css'
 
 const initialState = {
   user: null,
-  redirectUrl: null
+  redirectUrl: null,
+  loading: false,
+  networkError: null
 }
 
 const reducer = (state, payload) => {
-  console.log('>>>>>>>> REDUCER:', payload)
   return { ...state, ...payload }
 }
 

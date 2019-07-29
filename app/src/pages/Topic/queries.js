@@ -45,9 +45,11 @@ export const INSERT_QUESTION = gql`
 `
 
 export const FETCH_TOPIC = gql`
-  query fetchTopic($uri: String!) {
+  subscription fetchTopic($uri: String!) {
     topic(where: { uri: { _eq: $uri } }) {
-      id
+      id,
+      is_published,
+      name
     }
   }
 `

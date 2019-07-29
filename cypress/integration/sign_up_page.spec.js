@@ -13,9 +13,11 @@ describe('sign-up page', () => {
     const email = faker.internet.email()
     const password = faker.internet.password()
 
-    cy.get('[data-cy=email]').type(email.toLowerCase())
     cy.get('[data-cy=first-name]').type(firstName)
     cy.get('[data-cy=last-name]').type(lastName)
+    cy.get('[data-cy=email]').type(email.toLowerCase())
+    cy.get('[data-cy=field-of-study]').select('Other')
+    cy.get('[data-cy=is-student]').click({ force: true })
     cy.get('[data-cy=password]').type(password)
     cy.get('[data-cy=password-confirmation]').type(password)
     cy.get('[data-cy=submit-button]').click()
@@ -32,11 +34,12 @@ describe('sign-up page', () => {
     cy.get('[data-cy=first-name]').type(firstName)
     cy.get('[data-cy=last-name]').type(lastName)
     cy.get('[data-cy=password]').type(password)
+    cy.get('[data-cy=field-of-study]').select('Information Technology')
     cy.get('[data-cy=submit-button]').click()
     cy.get('[data-cy=confirm-password-error]').should('be.visible')
   })
 
-  it.only('signup a user, then log user out, then logs in again', () => {
+  it('signup a user, then log user out, then logs in again', () => {
     const firstName = faker.name.firstName()
     const lastName = faker.name.lastName()
     const email = faker.internet.email()
@@ -45,6 +48,7 @@ describe('sign-up page', () => {
     cy.get('[data-cy=email]').type(email.toLowerCase())
     cy.get('[data-cy=first-name]').type(firstName)
     cy.get('[data-cy=last-name]').type(lastName)
+    cy.get('[data-cy=field-of-study]').select('Other')
     cy.get('[data-cy=password]').type(password)
     cy.get('[data-cy=password-confirmation]').type(password)
     cy.get('[data-cy=submit-button]').click()

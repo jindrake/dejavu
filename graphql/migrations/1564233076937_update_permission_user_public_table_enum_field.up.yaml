@@ -1,16 +1,12 @@
 - args:
-    role: user
-    table:
-      name: field
-      schema: public
-  type: drop_select_permission
-- args:
     permission:
       allow_aggregations: false
-      columns: []
+      columns:
+      - field
       filter: {}
+      limit: null
     role: user
     table:
-      name: field
+      name: enum_field
       schema: public
   type: create_select_permission

@@ -1,15 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 import withFirebase from '../hocs/withFirebase'
-import { compose, graphql } from 'react-apollo'
+import { compose, graphql, Query } from 'react-apollo'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
-
 import Button from '../components/Button'
 import Icon from '../components/Icon'
 import Alert from '../components/Alert'
+import { StyledInput, FormWrapper, Title, StyledCheckbox, OverlayLoader } from '../components'
+import uuid from 'uuid/v4'
 
 const CREATE_USER = gql`
   mutation createUser($user: [user_insert_input!]!) {
@@ -25,6 +26,14 @@ const CREATE_USER = gql`
   }
 `
 
+const FETCH_FIELDS = gql`
+  query fetchFields {
+    enum_field (order_by: { field: asc }) {
+      field
+    }
+  }
+`
+
 const SignUp = ({ firebase, history, createUser }) => {
   return (
     <Formik
@@ -33,7 +42,9 @@ const SignUp = ({ firebase, history, createUser }) => {
         password: '',
         passwordConfirmation: '',
         firstName: '',
-        lastName: ''
+        lastName: '',
+        fieldOfStudy: '',
+        isStudent: true
       }}
       validationSchema={yup.object().shape({
         email: yup
@@ -49,7 +60,8 @@ const SignUp = ({ firebase, history, createUser }) => {
           .oneOf([yup.ref('password'), null], 'Passwords must match')
           .required('Required'),
         firstName: yup.string().required('Required'),
-        lastName: yup.string().required('Required')
+        lastName: yup.string().required('Required'),
+        fieldOfStudy: yup.string().required('Required')
       })}
       onSubmit={(values, { setSubmitting, setStatus }) => {
         setSubmitting(true)
@@ -70,7 +82,14 @@ const SignUp = ({ firebase, history, createUser }) => {
                       email: values.email,
                       first_name: values.firstName,
                       last_name: values.lastName,
-                      id: hasuraClaim['x-hasura-user-id']
+                      id: hasuraClaim['x-hasura-user-id'],
+                      fields: {
+                        data: [{
+                          field: values.fieldOfStudy,
+                          has_finished: values.isStudent,
+                          id: uuid()
+                        }]
+                      }
                     }
                   ]
                 }
@@ -94,7 +113,14 @@ const SignUp = ({ firebase, history, createUser }) => {
                           email: values.email,
                           first_name: values.firstName,
                           last_name: values.lastName,
-                          id: hasuraClaim['x-hasura-user-id']
+                          id: hasuraClaim['x-hasura-user-id'],
+                          fields: {
+                            data: [{
+                              field: values.fieldOfStudy,
+                              has_finished: values.isStudent,
+                              id: uuid()
+                            }]
+                          }
                         }
                       ]
                     }
@@ -109,117 +135,170 @@ const SignUp = ({ firebase, history, createUser }) => {
           })
       }}
     >
-      {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, status }) => {
+      {({
+        values,
+        errors,
+        touched,
+        handleChange,
+        handleSubmit,
+        isSubmitting,
+        status,
+        setStatus,
+        setFieldValue
+      }) => {
         return (
-          <Wrapper>
-            {isSubmitting && <Loader>Loading...</Loader>}
-            <Form isSubmitting={isSubmitting}>
-              <Close onClick={() => history.push('/')}>
-                <Icon name='close' />
-              </Close>
-              <Title>
-                Let's be
-                <br />
-                study buddies!
-              </Title>
-              {status && <Alert {...status} />}
-              <TwinItems>
-                <FormItem>
-                  <Label>
-                    First name{' '}
-                    {touched.firstName && errors.firstName && <Hint>{errors.firstName}</Hint>}
-                  </Label>
-                  <Input
-                    type='text'
-                    name='firstName'
-                    data-cy='first-name'
-                    onChange={handleChange}
-                    invalid={errors.firstName && touched.firstName}
-                    value={values.firstName}
-                  />
-                </FormItem>
-                <FormItem>
-                  <Label>
-                    Last name{' '}
-                    {touched.lastName && errors.lastName && <Hint>{errors.lastName}</Hint>}
-                  </Label>
-                  <Input
-                    type='text'
-                    name='lastName'
-                    data-cy='last-name'
-                    onChange={handleChange}
-                    invalid={errors.lastName && touched.lastName}
-                    value={values.lastName}
-                  />
-                </FormItem>
-              </TwinItems>
-              <FormItem>
-                <Label>Email {touched.email && errors.email && <Hint>{errors.email}</Hint>}</Label>
-                <Input
-                  type='email'
-                  name='email'
-                  data-cy='email'
-                  onChange={handleChange}
-                  invalid={errors.email && touched.email}
-                  value={values.email}
-                />
-              </FormItem>
-              <FormItem>
-                <Label>
-                  Password {touched.password && errors.password && <Hint>{errors.password}</Hint>}
-                </Label>
-                <Input
-                  type='password'
-                  name='password'
-                  data-cy='password'
-                  onChange={handleChange}
-                  invalid={errors.password && touched.password}
-                  value={values.password}
-                />
-              </FormItem>
-              <FormItem>
-                <Label>
-                  Confirm password{' '}
-                  {touched.passwordConfirmation && errors.passwordConfirmation && (
-                    <Hint data-cy='confirm-password-error'>{errors.passwordConfirmation}</Hint>
-                  )}
-                </Label>
-                <Input
-                  type='password'
-                  name='passwordConfirmation'
-                  data-cy='password-confirmation'
-                  onChange={handleChange}
-                  invalid={errors.passwordConfirmation && touched.passwordConfirmation}
-                  value={values.passwordConfirmation}
-                />
-              </FormItem>
-              <ButtonGroup>
-                <Button onClick={() => history.push('/sign-in')} text='Have an account? Sign in.' />
-                <Button
-                  data-cy='submit-button'
-                  onClick={handleSubmit}
-                  text='Sign up'
-                  type='primary'
-                />
-              </ButtonGroup>
-            </Form>
-          </Wrapper>
+          <Query query={FETCH_FIELDS}>
+            {({ data, loading, error }) => {
+              if (error) {
+                setStatus({ type: 'error', text: error })
+              }
+              return (
+                <FormWrapper>
+                  {(isSubmitting || loading) && <OverlayLoader />}
+                  <Form isSubmitting={isSubmitting}>
+                    <Close onClick={() => history.push('/')}>
+                      <Icon name='close' />
+                    </Close>
+                    <Title>
+                      Let's be
+                      <br />
+                      study buddies!
+                    </Title>
+                    {status && <Alert {...status} />}
+                    <TwinItems>
+                      <FormItem>
+                        <Label>
+                          First name{' '}
+                          {touched.firstName && errors.firstName && <Hint>{errors.firstName}</Hint>}
+                        </Label>
+                        <StyledInput
+                          type='text'
+                          name='firstName'
+                          data-cy='first-name'
+                          onChange={handleChange}
+                          invalid={errors.firstName && touched.firstName}
+                          value={values.firstName}
+                        />
+                      </FormItem>
+                      <FormItem>
+                        <Label>
+                          Last name{' '}
+                          {touched.lastName && errors.lastName && <Hint>{errors.lastName}</Hint>}
+                        </Label>
+                        <StyledInput
+                          type='text'
+                          name='lastName'
+                          data-cy='last-name'
+                          onChange={handleChange}
+                          invalid={errors.lastName && touched.lastName}
+                          value={values.lastName}
+                        />
+                      </FormItem>
+                    </TwinItems>
+                    <FormItem>
+                      <Label>
+                        Email {touched.email && errors.email && <Hint>{errors.email}</Hint>}
+                      </Label>
+                      <StyledInput
+                        type='email'
+                        name='email'
+                        data-cy='email'
+                        onChange={handleChange}
+                        invalid={errors.email && touched.email}
+                        value={values.email}
+                      />
+                    </FormItem>
+                    <FormItem>
+                      <Label>
+                        Field of study{' '}
+                        {touched.fieldOfStudy && errors.fieldOfStudy && (
+                          <Hint data-cy='confirm-password-error'>{errors.fieldOfStudy}</Hint>
+                        )}
+                      </Label>
+                      <StyledInput
+                        type='select'
+                        name='fieldOfStudy'
+                        data-cy='field-of-study'
+                        onChange={handleChange}
+                        invalid={errors.fieldOfStudy && touched.fieldOfStudy}
+                        value={values.fieldOfStudy}
+                      >
+                        <option value='' />
+                        {data.enum_field &&
+                          data.enum_field.map(({ field }) => (
+                            <option value={field} key={field}>
+                              {field}
+                            </option>
+                          ))}
+                      </StyledInput>
+                      {values.fieldOfStudy && (
+                        <StyledCheckbox
+                          type='checkbox'
+                          id={`isStudent`}
+                          name={`isStudent`}
+                          data-cy='is-student'
+                          checked={!!values.isStudent}
+                          onChange={(event) => {
+                            setFieldValue('isStudent', event.target.checked)
+                          }}
+                          label='are you currently a student?'
+                        />
+                      )}
+                    </FormItem>
+                    <FormItem>
+                      <Label>
+                        Password{' '}
+                        {touched.password && errors.password && <Hint>{errors.password}</Hint>}
+                      </Label>
+                      <StyledInput
+                        type='password'
+                        name='password'
+                        data-cy='password'
+                        onChange={handleChange}
+                        invalid={errors.password && touched.password}
+                        value={values.password}
+                      />
+                    </FormItem>
+                    <FormItem>
+                      <Label>
+                        Confirm password{' '}
+                        {touched.passwordConfirmation && errors.passwordConfirmation && (
+                          <Hint data-cy='confirm-password-error'>
+                            {errors.passwordConfirmation}
+                          </Hint>
+                        )}
+                      </Label>
+                      <StyledInput
+                        type='password'
+                        name='passwordConfirmation'
+                        data-cy='password-confirmation'
+                        onChange={handleChange}
+                        invalid={errors.passwordConfirmation && touched.passwordConfirmation}
+                        value={values.passwordConfirmation}
+                      />
+                    </FormItem>
+                    <ButtonGroup>
+                      <Button
+                        onClick={() => history.push('/sign-in')}
+                        text='Have an account? Sign in.'
+                      />
+                      <Button
+                        data-cy='submit-button'
+                        onClick={handleSubmit}
+                        text='Sign up'
+                        type='primary'
+                      />
+                    </ButtonGroup>
+                  </Form>
+                </FormWrapper>
+              )
+            }}
+          </Query>
         )
       }}
     </Formik>
   )
 }
-
-const Loader = styled.div`
-  display: flex;
-  position: absolute;
-  justify-content: center;
-  align-items: center;
-  color: #e8eaf6;
-  font-size: 12px;
-  height: 100%;
-  width: 100%;
-`
 
 const Close = styled.div`
   position: absolute;
@@ -228,31 +307,6 @@ const Close = styled.div`
   opacity: 0.5;
   right: 0;
   top: 0;
-`
-
-const Title = styled.div`
-  font-size: 24px;
-  margin-bottom: 20px;
-  line-height: 24px;
-  font-weight: 700;
-  color: #e8eaf6;
-`
-
-const Input = styled.input`
-  margin-top: 6px;
-  font-size: 12px;
-  height: 36px;
-  width: 100%;
-  color: #1a237e;
-  padding-left: 12px;
-  padding-right: 12px;
-  background: linear-gradient(#e8eaf6, #c5cae9);
-  border-radius: 6px;
-  border: none;
-  outline: none;
-  :focus {
-    background: #e8eaf6;
-  }
 `
 
 const Label = styled.div`
@@ -292,16 +346,6 @@ const ButtonGroup = styled.div`
   div:first-child {
     margin-right: 10px;
   }
-`
-
-const Wrapper = styled.div`
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 100%;
-  left: 40px;
-  right: 40px;
 `
 
 const Form = styled.form`

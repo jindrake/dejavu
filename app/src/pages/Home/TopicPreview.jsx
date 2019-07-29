@@ -9,13 +9,13 @@ import { INSERT_USER_ACTIVITY } from './queries'
 const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const {
     /* eslint-disable camelcase */
-    created_at,
+    created_at: createdAt,
     id,
     name,
     ratings
   } = topic
 
-  const date = new Date(created_at)
+  const date = new Date(createdAt)
 
   return (
     <Wrapper

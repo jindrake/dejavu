@@ -58,10 +58,10 @@ CREATE TABLE public.user_activity (
     topic_id uuid NOT NULL,
     question_id uuid NOT NULL
 );
-CREATE TABLE public.user_course (
+CREATE TABLE public.field (
     id uuid NOT NULL,
     user_id uuid NOT NULL,
-    user_course text NOT NULL,
+    field text NOT NULL,
     has_finished boolean DEFAULT false
 );
 CREATE TABLE public.enum_question_type (
@@ -76,8 +76,8 @@ CREATE TABLE public.enum_topic_tag (
 CREATE TABLE public.enum_user_activity (
     user_activity text NOT NULL
 );
-CREATE TABLE public.enum_user_course (
-    user_course text NOT NULL
+CREATE TABLE public.enum_field (
+    field text NOT NULL
 );
 CREATE TABLE public.enum_user_status (
     user_status text NOT NULL
@@ -108,51 +108,51 @@ INSERT INTO public.enum_user_activity (user_activity) VALUES ('logout');
 INSERT INTO public.enum_user_activity (user_activity) VALUES ('answer');
 INSERT INTO public.enum_user_activity (user_activity) VALUES ('click');
 
-INSERT INTO public.enum_user_course (user_course) VALUES ('Business and Management');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Nursing');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Psychology');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Biology');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Engineering');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Education');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Communications');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Finance and Accounting');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Criminal Justice');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Anthropology and Sociology');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Computer Science');
-INSERT INTO public.enum_user_course (user_course) VALUES ('English');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Economics');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Political Science');
-INSERT INTO public.enum_user_course (user_course) VALUES ('History');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Kinesiology and Physical Therapy');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Health Professions');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Art');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Math');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Environmental Science');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Foreign Languages');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Design');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Trades and Personal Services');
-INSERT INTO public.enum_user_course (user_course) VALUES ('International Relations');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Chemistry');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Agricultural Sciences');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Information Technology');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Performing Arts');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Engineering Technicians');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Food and Nutrition');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Religious Studies');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Film and Photography');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Music');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Physics');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Philosophy');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Architecture');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Protective Services');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Legal Studies');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Culinary Arts');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Pharmacy');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Dental Studies');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Arts Management');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Veterinary Studies');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Building and Construction');
-INSERT INTO public.enum_user_course (user_course) VALUES ('Other');
+INSERT INTO public.enum_field (field) VALUES ('Business and Management');
+INSERT INTO public.enum_field (field) VALUES ('Nursing');
+INSERT INTO public.enum_field (field) VALUES ('Psychology');
+INSERT INTO public.enum_field (field) VALUES ('Biology');
+INSERT INTO public.enum_field (field) VALUES ('Engineering');
+INSERT INTO public.enum_field (field) VALUES ('Education');
+INSERT INTO public.enum_field (field) VALUES ('Communications');
+INSERT INTO public.enum_field (field) VALUES ('Finance and Accounting');
+INSERT INTO public.enum_field (field) VALUES ('Criminal Justice');
+INSERT INTO public.enum_field (field) VALUES ('Anthropology and Sociology');
+INSERT INTO public.enum_field (field) VALUES ('Computer Science');
+INSERT INTO public.enum_field (field) VALUES ('English');
+INSERT INTO public.enum_field (field) VALUES ('Economics');
+INSERT INTO public.enum_field (field) VALUES ('Political Science');
+INSERT INTO public.enum_field (field) VALUES ('History');
+INSERT INTO public.enum_field (field) VALUES ('Kinesiology and Physical Therapy');
+INSERT INTO public.enum_field (field) VALUES ('Health Professions');
+INSERT INTO public.enum_field (field) VALUES ('Art');
+INSERT INTO public.enum_field (field) VALUES ('Math');
+INSERT INTO public.enum_field (field) VALUES ('Environmental Science');
+INSERT INTO public.enum_field (field) VALUES ('Foreign Languages');
+INSERT INTO public.enum_field (field) VALUES ('Design');
+INSERT INTO public.enum_field (field) VALUES ('Trades and Personal Services');
+INSERT INTO public.enum_field (field) VALUES ('International Relations');
+INSERT INTO public.enum_field (field) VALUES ('Chemistry');
+INSERT INTO public.enum_field (field) VALUES ('Agricultural Sciences');
+INSERT INTO public.enum_field (field) VALUES ('Information Technology');
+INSERT INTO public.enum_field (field) VALUES ('Performing Arts');
+INSERT INTO public.enum_field (field) VALUES ('Engineering Technicians');
+INSERT INTO public.enum_field (field) VALUES ('Food and Nutrition');
+INSERT INTO public.enum_field (field) VALUES ('Religious Studies');
+INSERT INTO public.enum_field (field) VALUES ('Film and Photography');
+INSERT INTO public.enum_field (field) VALUES ('Music');
+INSERT INTO public.enum_field (field) VALUES ('Physics');
+INSERT INTO public.enum_field (field) VALUES ('Philosophy');
+INSERT INTO public.enum_field (field) VALUES ('Architecture');
+INSERT INTO public.enum_field (field) VALUES ('Protective Services');
+INSERT INTO public.enum_field (field) VALUES ('Legal Studies');
+INSERT INTO public.enum_field (field) VALUES ('Culinary Arts');
+INSERT INTO public.enum_field (field) VALUES ('Pharmacy');
+INSERT INTO public.enum_field (field) VALUES ('Dental Studies');
+INSERT INTO public.enum_field (field) VALUES ('Arts Management');
+INSERT INTO public.enum_field (field) VALUES ('Veterinary Studies');
+INSERT INTO public.enum_field (field) VALUES ('Building and Construction');
+INSERT INTO public.enum_field (field) VALUES ('Other');
 
 INSERT INTO public.enum_user_status (user_status) VALUES ('accepted');
 INSERT INTO public.enum_user_status (user_status) VALUES ('pending');
@@ -171,8 +171,8 @@ ALTER TABLE ONLY public.enum_topic_tag
     ADD CONSTRAINT enum_topic_tag_pkey PRIMARY KEY (topic_tag);
 ALTER TABLE ONLY public.enum_user_activity
     ADD CONSTRAINT enum_user_activity_pkey PRIMARY KEY (user_activity);
-ALTER TABLE ONLY public.enum_user_course
-    ADD CONSTRAINT enum_user_course_pkey PRIMARY KEY (user_course);
+ALTER TABLE ONLY public.enum_field
+    ADD CONSTRAINT enum_field_pkey PRIMARY KEY (field);
 ALTER TABLE ONLY public.enum_user_status
     ADD CONSTRAINT enum_user_status_pkey PRIMARY KEY (user_status);
 ALTER TABLE ONLY public.question
@@ -191,8 +191,8 @@ ALTER TABLE ONLY public.topic
     ADD CONSTRAINT topic_uri_key UNIQUE (uri);
 ALTER TABLE ONLY public.user_activity
     ADD CONSTRAINT user_activity_pkey PRIMARY KEY (id);
-ALTER TABLE ONLY public.user_course
-    ADD CONSTRAINT user_course_pkey PRIMARY KEY (id);
+ALTER TABLE ONLY public.field
+    ADD CONSTRAINT field_pkey PRIMARY KEY (id);
 ALTER TABLE ONLY public."user"
     ADD CONSTRAINT user_email_key UNIQUE (email);
 ALTER TABLE ONLY public."user"
@@ -231,9 +231,9 @@ ALTER TABLE ONLY public.user_activity
     ADD CONSTRAINT user_activity_topic_id_fkey FOREIGN KEY (topic_id) REFERENCES public.topic(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
 ALTER TABLE ONLY public.user_activity
     ADD CONSTRAINT user_activity_user_id_fkey FOREIGN KEY (user_id) REFERENCES public."user"(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
-ALTER TABLE ONLY public.user_course
-    ADD CONSTRAINT user_course_user_course_fkey FOREIGN KEY (user_course) REFERENCES public.enum_user_course(user_course) ON UPDATE RESTRICT ON DELETE RESTRICT;
-ALTER TABLE ONLY public.user_course
-    ADD CONSTRAINT user_course_user_id_fkey FOREIGN KEY (user_id) REFERENCES public."user"(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE ONLY public.field
+    ADD CONSTRAINT field_field_fkey FOREIGN KEY (field) REFERENCES public.enum_field(field) ON UPDATE RESTRICT ON DELETE RESTRICT;
+ALTER TABLE ONLY public.field
+    ADD CONSTRAINT field_user_id_fkey FOREIGN KEY (user_id) REFERENCES public."user"(id) ON UPDATE RESTRICT ON DELETE RESTRICT;
 ALTER TABLE ONLY public."user"
     ADD CONSTRAINT user_status_fkey FOREIGN KEY (status) REFERENCES public.enum_user_status(user_status) ON UPDATE RESTRICT ON DELETE RESTRICT;

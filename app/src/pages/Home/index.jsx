@@ -6,31 +6,45 @@ import withFirebase from '../../hocs/withFirebase'
 
 import Greeting from './Greeting'
 import Section from './Section'
+import { useStateValue } from '../../libs'
 
-import { FETCH_HOT_TOPIC, FETCH_RECENT_TOPIC } from './queries'
+import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS } from './queries'
+import { OverlayLoader } from '../../components'
 
 // TODO replace with query
 
-const Home = ({ fetchHotTopic, fetchRecentTopic, user }) => {
+const Home = ({ fetchHotTopics, fetchRecentTopics, user }) => {
   const [hotTopics, setHotTopics] = useState([])
   const [recentTopics, setRecentTopics] = useState([])
-  useEffect(() => {
-    const allHotTopics = fetchHotTopic.topic
-    const allRecentTopics = fetchRecentTopic.topic
+  const [, globalDispatch] = useStateValue()
 
-    if (allHotTopics || allRecentTopics) {
-      setHotTopics(allHotTopics)
-      setRecentTopics(allRecentTopics)
+  useEffect(() => {
+    handleFetchedTopics()
+  }, [fetchHotTopics.loading, fetchRecentTopics.loading])
+
+  const handleFetchedTopics = () => {
+    console.log(fetchHotTopics, fetchRecentTopics)
+    if (fetchHotTopics.topic) {
+      setHotTopics(fetchHotTopics.topic)
     }
-    if (fetchHotTopic.error || fetchRecentTopic.error) {
-      console.log(fetchHotTopic.error)
-      console.log(fetchRecentTopic.error)
+    if (fetchRecentTopics.topic) {
+      setRecentTopics(fetchHotTopics.topic)
     }
-  }, [
-    fetchHotTopic, fetchRecentTopic,
-    fetchHotTopic.error, fetchHotTopic.topic, fetchHotTopic.loading,
-    fetchRecentTopic.error, fetchRecentTopic.topic, fetchRecentTopic.loading
-  ])
+    if (fetchHotTopics.error) {
+      globalDispatch({
+        networkError: fetchHotTopics.error.message
+      })
+    }
+    if (fetchRecentTopics.error) {
+      globalDispatch({
+        networkError: fetchRecentTopics.error.message
+      })
+    }
+  }
+
+  if (fetchHotTopics.loading || fetchRecentTopics.loading) {
+    return <OverlayLoader />
+  }
 
   return (
     <Wrapper>
@@ -54,6 +68,6 @@ const Wrapper = styled.div`
 
 export default compose(
   withFirebase(),
-  graphql(FETCH_HOT_TOPIC, { name: 'fetchHotTopic', options: { fetchPolicy: 'no-cache' } }),
-  graphql(FETCH_RECENT_TOPIC, { name: 'fetchRecentTopic', options: { fetchPolicy: 'no-cache' } })
+  graphql(FETCH_HOT_TOPICS, { name: 'fetchHotTopics', options: { fetchPolicy: 'no-cache' } }),
+  graphql(FETCH_RECENT_TOPICS, { name: 'fetchRecentTopics', options: { fetchPolicy: 'no-cache' } })
 )(Home)

@@ -1,0 +1,6 @@
+- args:
+    sql: "\n           alter table \"public\".\"topic_field\"\n           add constraint
+      \"topic_field_field_fkey\" \n           foreign key (\"field\") \n           references
+      \"public\".\"enum_field\"\n           (\"field\") on update restrict on delete
+      restrict;\n      "
+  type: run_sql

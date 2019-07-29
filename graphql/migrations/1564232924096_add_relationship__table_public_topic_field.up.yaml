@@ -1,8 +1,8 @@
 - args:
-    name: user
+    name: topic
     table:
-      name: field
+      name: topic_field
       schema: public
     using:
-      foreign_key_constraint_on: user_id
+      foreign_key_constraint_on: topic_id
   type: create_object_relationship

@@ -2,7 +2,7 @@ import React, { createRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Swipeable } from 'react-touch'
 import { withRouter } from 'react-router-dom'
-
+import { Title } from '../../components'
 import Icon from '../../components/Icon'
 
 const steps = [
@@ -106,14 +106,6 @@ const Section = styled.div`
   justify-items: center;
   position: relative;
   overflow: auto;
-`
-
-const Title = styled.div`
-  font-size: 24px;
-  line-height: 24px;
-  font-weight: 700;
-  margin-bottom: 20px;
-  color: #e8eaf6;
 `
 
 const Belt = styled.div`
