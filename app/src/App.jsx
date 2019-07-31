@@ -47,11 +47,11 @@ const App = ({ firebase, history, location: { search } }) => {
         const idTokenResult = await user.getIdTokenResult()
         const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
         // TODO: remove after dev
-        if (!hasuraClaim['x-hasura-user-id'].includes('-')) {
-          window.alert('OLD ACCOUNT, change dummy email until we change firebase console')
-          firebase.doSignOut()
-        }
         if (hasuraClaim) {
+          if (!hasuraClaim['x-hasura-user-id'].includes('-')) {
+            window.alert('OLD ACCOUNT, change dummy email until we change firebase console')
+            firebase.doSignOut()
+          }
           setAuthState({ user, token })
           if (search.startsWith('?redirectUrl=')) {
             history.push(decodeURI(search.substr(13)))
