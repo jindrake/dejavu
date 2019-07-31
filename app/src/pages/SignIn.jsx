@@ -11,7 +11,8 @@ import Icon from '../components/Icon'
 import Alert from '../components/Alert'
 import { StyledInput, FormWrapper, Title, OverlayLoader } from '../components'
 
-const SignIn = ({ firebase, history }) => {
+const SignIn = ({ firebase, history, ...rest }) => {
+  console.log(rest)
   return (
     <Formik
       initialValues={{

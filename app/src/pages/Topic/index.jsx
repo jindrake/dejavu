@@ -5,12 +5,12 @@ import { compose, graphql, Query } from 'react-apollo'
 import uuid from 'uuid/v4'
 // import { FormGroup, Label, Input } from 'reactstrap'
 
-import TitleSection from './TitleSection'
+import TitleSection from '../../components/Topic/TitleSection'
 import Button from '../../components/Button'
 
-import { shuffleArray } from './shuffleArray'
 import { FETCH_FULL_TOPIC, INSERT_USER_ACTIVITY } from './queries'
-import { getObjectValue } from '../../libs'
+import { getObjectValue, useStateValue, shuffleArray } from '../../libs'
+import { OverlayLoader } from '../../components'
 
 const Topic = ({
   history,
@@ -18,12 +18,37 @@ const Topic = ({
     params: { id }
   },
   user,
-  insertUserActivity
+  insertUserActivity,
+  ...rest
 }) => {
-  console.log('hello')
-  console.log(id)
   let questionIds
   const topicSessionId = uuid()
+  const [, globalDispatch] = useStateValue()
+  console.log(rest)
+  const tackleAlone = () => {
+    insertUserActivity({
+      variables: {
+        userActivity: {
+          id: uuid(),
+          activity_type: 'take',
+          user_id: user.id,
+          topic_id: id
+        }
+      }
+    })
+      .then((res) => {
+        history.push({
+          pathname: `/topic/${id}/questions/${questionIds[0].id}/topicSession/${topicSessionId}`,
+          state: { questionIds }
+        })
+      })
+      .catch((error) => {
+        globalDispatch({
+          networkError: error.message
+        })
+      })
+  }
+
   return (
     <Wrapper>
       <TopSection>
@@ -31,11 +56,16 @@ const Topic = ({
       </TopSection>
       <Query query={FETCH_FULL_TOPIC} variables={{ topicId: id }}>
         {({ data, error, loading }) => {
-          if (error) return <div>Error fetching topic: {error.message}</div>
-          if (loading) return <div>loading topic...</div>
+          if (error) {
+            globalDispatch({
+              networkError: error.message
+            })
+            return null
+          }
+          if (loading) return <OverlayLoader />
           const topic = getObjectValue(data, 'topic[0]')
-          const unshufflequestionIds = topic.questions.map((q) => q.question)
-          questionIds = shuffleArray(unshufflequestionIds)
+          const unshuffledQuestions = topic.questions.map((q) => q.question)
+          questionIds = shuffleArray(unshuffledQuestions)
           console.log(questionIds)
           return (
             <MainSection>
@@ -60,32 +90,8 @@ const Topic = ({
         }}
       </Query>
       <BottomSection>
-        <Button
-          text='Tackle'
-          type='primary'
-          onClick={() => {
-            insertUserActivity({
-              variables: {
-                userActivity: {
-                  id: uuid(),
-                  activity_type: 'take',
-                  user_id: user.id,
-                  topic_id: id
-                }
-              }
-            })
-              .then((res) => {
-                console.log(res)
-              })
-              .catch((err) => {
-                console.log(err.message)
-              })
-            history.push({
-              pathname: `/topic/${id}/questions/${questionIds[0].id}/topicSession/${topicSessionId}`,
-              state: { questionIds }
-            })
-          }}
-        />
+        {/* <Button text='Tackle with a friend' type='secondary' onClick={tackleAlone} /> */}
+        <Button text='Tackle' type='primary' onClick={tackleAlone} />
       </BottomSection>
     </Wrapper>
   )
@@ -119,8 +125,8 @@ const Belt = styled.div`
 `
 const MainSection = styled.div`
   height: 100%;
-  margin-right: -40px;
-  margin-left: -40px;
+  margin-right: -30px;
+  margin-left: -30px;
   display: flex;
   overflow-x: scroll;
   position: relative;
@@ -136,6 +142,7 @@ const BottomSection = styled.div`
   display: flex;
   align-items: center;
   height: 100px;
+  /* justify-content: space-between; */
   justify-content: flex-end;
 `
 

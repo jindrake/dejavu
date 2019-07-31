@@ -47,11 +47,9 @@ const Feedback = ({ createFeedback, user }) => {
           }
         })
           .then((res) => {
-            console.log('Successfully Added', res)
             setSubmitting(false)
           })
           .catch((error) => {
-            console.log('the error', error)
             setSubmitting(false)
             setStatus({ type: 'error', text: error.message })
           })

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Route, Redirect, Switch } from 'react-router-dom'
+import { Route, Redirect, Switch, withRouter } from 'react-router-dom'
 import { withFirebase, withLayout } from './hocs'
 import gql from 'graphql-tag'
 import { getObjectValue, useStateValue } from './libs'
@@ -36,7 +36,7 @@ const FETCH_USER = gql`
   }
 `
 
-const App = ({ firebase }) => {
+const App = ({ firebase, history, location: { search } }) => {
   const [authState, setAuthState] = useState({ loading: true })
   const [{ loading, networkError }, globalDispatch] = useStateValue()
   useEffect(() => {
@@ -46,9 +46,16 @@ const App = ({ firebase }) => {
         const token = await user.getIdToken()
         const idTokenResult = await user.getIdTokenResult()
         const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
-
+        // TODO: remove after dev
+        if (!hasuraClaim['x-hasura-user-id'].includes('-')) {
+          window.alert('OLD ACCOUNT, change dummy email until we change firebase console')
+          firebase.doSignOut()
+        }
         if (hasuraClaim) {
           setAuthState({ user, token })
+          if (search.startsWith('?redirectUrl=')) {
+            history.push(decodeURI(search.substr(13)))
+          }
         } else {
           // Check if refresh is required.
           const metadataRef = firebase.database().ref('metadata/' + user.uid + '/refreshTime')
@@ -61,6 +68,9 @@ const App = ({ firebase }) => {
             // if there's no hasuraClaim but token exists, maintain authState({loading: true}) state
             if (hasuraClaim) {
               setAuthState({ user, token })
+              if (search.startsWith('?redirectUrl=')) {
+                history.push(decodeURI(search.substr(13)))
+              }
             }
           })
         }
@@ -96,8 +106,12 @@ const App = ({ firebase }) => {
       <Query query={FETCH_USER} variables={{ email: getObjectValue(authState, 'user.email') }}>
         {({ data, error, loading }) => {
           if (error && authState.user) {
-            console.error(error)
-            return <div>Error: {JSON.stringify(error)}</div>
+            if (JSON.stringify(error) === 'GraphQL error: Could not verify JWT: JWTExpired') {
+              globalDispatch({
+                networkError: 'Session expired. Please login again'
+              })
+            }
+            return null
           }
           if (loading) return <OverlayLoader />
           const user = getObjectValue(data, 'user[0]') || null
@@ -143,20 +157,34 @@ const App = ({ firebase }) => {
                   exact
                   path='/topic/:uri/questions'
                   render={(routeProps) =>
-                    !user ? <Redirect to='/' /> : <Questions {...routeProps} user={user} />
+                    !user ? (
+                      <Redirect
+                        to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`}
+                      />
+                    ) : (
+                      <Questions {...routeProps} user={user} />
+                    )
                   }
                 />
                 <Route
                   exact
                   path='/topic/:id'
-                  render={(routeProps) => <Topic {...routeProps} user={user} />}
+                  render={(routeProps) =>
+                    user ? (
+                      <Topic {...routeProps} user={user} />
+                    ) : (
+                      <Redirect
+                        to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`}
+                      />
+                    )
+                  }
                 />
 
                 <Route exact path='/' render={() => <Home user={user} />} />
                 <Route
                   exact
                   path='/sign-up'
-                  render={() => (user ? <Redirect to='/' /> : <SignUp />)}
+                  render={(routeProps) => (user ? <Redirect to='/' /> : <SignUp {...routeProps} />)}
                 />
                 <Route
                   exact
@@ -166,7 +194,7 @@ const App = ({ firebase }) => {
                 <Route
                   exact
                   path='/sign-in'
-                  render={() => (user ? <Redirect to='/' /> : <SignIn />)}
+                  render={(routeProps) => (user ? <Redirect to='/' /> : <SignIn {...routeProps} />)}
                 />
                 <Route
                   exact
@@ -191,7 +219,13 @@ const App = ({ firebase }) => {
                   exact
                   path='/topic/:id/questions/:questionId/topicSession/:topicSessionId'
                   render={(routeProps) =>
-                    user ? <AnswerQuestion {...routeProps} user={user} /> : <Redirect to='/' />
+                    user ? (
+                      <AnswerQuestion {...routeProps} user={user} />
+                    ) : (
+                      <Redirect
+                        to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`}
+                      />
+                    )
                   }
                 />
 
@@ -199,7 +233,13 @@ const App = ({ firebase }) => {
                   exact
                   path='/result/:id/topicSession/:topicSessionId'
                   render={(routeProps) =>
-                    user ? <Result {...routeProps} user={user} /> : <Redirect to='/' />
+                    user ? (
+                      <Result {...routeProps} user={user} />
+                    ) : (
+                      <Redirect
+                        to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`}
+                      />
+                    )
                   }
                 />
               </Switch>
@@ -212,6 +252,7 @@ const App = ({ firebase }) => {
 }
 
 export default compose(
+  withRouter,
   withLayout(),
   withFirebase()
 )(App)

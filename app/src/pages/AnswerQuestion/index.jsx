@@ -38,7 +38,6 @@ const AnswerQuestion = ({
   user,
   insertUserActivity
 }) => {
-  console.log('params:', params)
   const remainingIds = questionIds.slice(1)
   const { questionId } = params
   const topicId = params.id
@@ -71,9 +70,7 @@ const AnswerQuestion = ({
         if (error) return <div>Error fetching question</div>
         if (loading) return <div>loading question...</div>
         const result = getObjectValue(data, 'question[0]')
-        console.log(result)
         const choices = result.answers
-        console.log('choices:', choices)
         return (
           <Formik
             initialValues={{
@@ -81,8 +78,6 @@ const AnswerQuestion = ({
             }}
             onSubmit={(values, { setSubmitting, setStatus }) => {
               setSubmitting(true)
-              console.log('USERS SUBMITTING VALUEs:', values.userAnswer)
-              // console.log('USER:', user)
               insertUserActivity({
                 variables: {
                   userActivity: {
@@ -97,7 +92,6 @@ const AnswerQuestion = ({
                 }
               })
                 .then((res) => {
-                  console.log('ressssssss:', res)
                   setSubmitting(false)
                   reset()
                   remainingIds.length > 0
@@ -111,7 +105,6 @@ const AnswerQuestion = ({
                 })
                 .catch((error) => {
                   setSubmitting(false)
-                  console.log(error.message)
                   setStatus({ type: 'error', text: error.message })
                 })
             }}
@@ -162,10 +155,6 @@ const AnswerQuestion = ({
                         onClick={() => {
                           reset()
                           handleSubmit()
-                          // remainingIds.length > 0
-                          //   ? history.push({ pathname: `/topic/${id}/questions/${remainingIds[0].id}`,
-                          //   state: { questionIds: remainingIds } })
-                          //   : console.log('GO TO RESULT PAGE')
                         }}
                       />
                     </BottomSection>

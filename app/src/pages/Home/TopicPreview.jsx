@@ -21,29 +21,35 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
     <Wrapper
       n={n}
       onClick={() => {
-        insertUserActivity({
-          variables: {
-            userActivity: {
-              id: uuid(),
-              activity_type: 'view',
-              user_id: user.id,
-              topic_id: id
+        if (user) {
+          insertUserActivity({
+            variables: {
+              userActivity: {
+                id: uuid(),
+                activity_type: 'view',
+                user_id: user.id,
+                topic_id: id
+              }
             }
-          }
-        })
-          .then((res) => {
-            console.log(res)
           })
-          .catch((err) => {
-            console.log(err.message)
-          })
+            .then((res) => {
+              console.log(res)
+            })
+            .catch((err) => {
+              console.log(err.message)
+            })
+        }
         history.push(`topic/${id}`)
       }}
     >
       <Title>{name}</Title>
       <Author>{date.toDateString()}</Author>
-      <Author>upvote: {ratings.length > 0 ? ratings.filter(r => r.type === 'upvote').length : 0}</Author>
-      <Author>downvote: {ratings.length > 0 ? ratings.filter(r => r.type === 'downvote').length : 0}</Author>
+      <Author>
+        upvote: {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
+      </Author>
+      <Author>
+        downvote: {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
+      </Author>
     </Wrapper>
   )
 }
