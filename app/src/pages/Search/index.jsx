@@ -8,10 +8,12 @@ import styled from 'styled-components'
 
 const FETCH_TOPIC = gql`
   query fetchTopic($name: String) {
-    topic(where: { name: { _ilike: $name } }){
+    topic(where: { name: { _ilike: $name } }) {
+      id
       name
       description
       creator {
+        id
         first_name
         last_name
       }
@@ -19,12 +21,12 @@ const FETCH_TOPIC = gql`
   }
 `
 
-const Search = ({ user }) => {
+const Search = ({ user, history }) => {
   const [searchValue, setSearchValue] = useState('')
 
   let debounceEvent = (...args) => {
     debounceEvent = debounce(...args)
-    return e => {
+    return (e) => {
       e.persist()
       return debounceEvent(e)
     }
@@ -54,15 +56,19 @@ const Search = ({ user }) => {
           return (
             <div>
               <h1>Topics</h1>
-              {
-                data.topic && data.topic.map(topic => (
-                  <Wrapper>
+              {data.topic &&
+                data.topic.map((topic) => (
+                  <Wrapper
+                    key={topic.id}
+                    onClick={() => {
+                      history.push(`topic/${topic.id}`)
+                    }}
+                  >
                     <b>{topic.name}</b>
                     <p>{topic.description}</p>
                     <h3>{`by: ${topic.creator.first_name}  ${topic.creator.last_name}`}</h3>
                   </Wrapper>
-                ))
-              }
+                ))}
               {/* {console.log(data)} */}
             </div>
           )
@@ -73,9 +79,7 @@ const Search = ({ user }) => {
 }
 
 const Wrapper = styled.div`
-  border: 2px solid red
+  border: 2px solid red;
 `
 
-export default compose(
-  withRouter
-)(Search)
+export default compose(withRouter)(Search)

@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."user_activity" ALTER COLUMN "question_id" SET NOT NULL;
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."user_activity"."question_id" IS 'null'
+  type: run_sql

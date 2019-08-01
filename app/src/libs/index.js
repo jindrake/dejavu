@@ -1,7 +1,5 @@
-export const capitalizeFirstLetter = string => {
-  return string
-    ? string[0].toUpperCase().concat(string.slice(1, string.length))
-    : ''
+export const capitalizeFirstLetter = (string) => {
+  return string ? string[0].toUpperCase().concat(string.slice(1, string.length)) : ''
 }
 
 export const getObjectValue = (object, attribs) => {
@@ -24,4 +22,25 @@ export const getObjectValue = (object, attribs) => {
     }
   }
   return object
+}
+
+export * from './state'
+
+export const shuffleArray = (array) => {
+  let currentIndex = array.length
+  let temporaryValue
+  let randomIndex
+
+  while (currentIndex !== 0) {
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex)
+    currentIndex -= 1
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex]
+    array[currentIndex] = array[randomIndex]
+    array[randomIndex] = temporaryValue
+  }
+
+  return array
 }

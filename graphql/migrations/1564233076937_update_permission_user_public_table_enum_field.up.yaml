@@ -1,0 +1,12 @@
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - field
+      filter: {}
+      limit: null
+    role: user
+    table:
+      name: enum_field
+      schema: public
+  type: create_select_permission

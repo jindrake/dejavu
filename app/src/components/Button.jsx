@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   background: linear-gradient(45deg, #212121, #424242);
   box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
   align-items: center;
-  color: #E8EAF6;
+  color: #e8eaf6;
   padding-left: 12px;
   padding-right: 12px;
   border-radius: 6px;

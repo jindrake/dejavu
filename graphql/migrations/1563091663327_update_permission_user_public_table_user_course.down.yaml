@@ -1,7 +1,7 @@
 - args:
     role: user
     table:
-      name: user_course
+      name: field
       schema: public
   type: drop_select_permission
 - args:
@@ -11,6 +11,6 @@
       filter: {}
     role: user
     table:
-      name: user_course
+      name: field
       schema: public
   type: create_select_permission

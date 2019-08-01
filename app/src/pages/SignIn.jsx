@@ -9,8 +9,10 @@ import { withRouter } from 'react-router-dom'
 import Button from '../components/Button'
 import Icon from '../components/Icon'
 import Alert from '../components/Alert'
+import { StyledInput, FormWrapper, Title, OverlayLoader } from '../components'
 
-const SignIn = ({ firebase, history }) => {
+const SignIn = ({ firebase, history, ...rest }) => {
+  console.log(rest)
   return (
     <Formik
       initialValues={{
@@ -46,17 +48,26 @@ const SignIn = ({ firebase, history }) => {
     >
       {({ values, errors, touched, handleChange, handleSubmit, isSubmitting, status }) => {
         return (
-          <Wrapper>
-            {isSubmitting && <Loader>Loading...</Loader>}
+          <FormWrapper>
+            {isSubmitting && <OverlayLoader />}
             <Form isSubmitting={isSubmitting}>
-              <Close onClick={() => history.push('/')}><Icon name='close' /></Close>
-              <Title>Welcome back,<br />study buddy!</Title>
+              <Close onClick={() => history.push('/')}>
+                <Icon name='close' />
+              </Close>
+              <Title>
+                Welcome back,
+                <br />
+                study buddy!
+              </Title>
               {status && <Alert {...status} data-cy='alert' />}
               <FormItem>
                 <Label>
-                  Email {touched.signInEmail && errors.signInEmail && <Hint data-cy='sign-in-email-error'>{errors.signInEmail}</Hint>}
+                  Email{' '}
+                  {touched.signInEmail && errors.signInEmail && (
+                    <Hint data-cy='sign-in-email-error'>{errors.signInEmail}</Hint>
+                  )}
                 </Label>
-                <Input
+                <StyledInput
                   type='email'
                   name='signInEmail'
                   data-cy='email'
@@ -67,9 +78,12 @@ const SignIn = ({ firebase, history }) => {
               </FormItem>
               <FormItem>
                 <Label>
-                  Password {touched.signInPassword && errors.signInPassword && <Hint data-cy='sign-in-password-error'>{errors.signInPassword}</Hint>}
+                  Password{' '}
+                  {touched.signInPassword && errors.signInPassword && (
+                    <Hint data-cy='sign-in-password-error'>{errors.signInPassword}</Hint>
+                  )}
                 </Label>
-                <Input
+                <StyledInput
                   type='password'
                   name='signInPassword'
                   data-cy='password'
@@ -79,77 +93,33 @@ const SignIn = ({ firebase, history }) => {
                 />
               </FormItem>
               <ButtonGroup>
-                <Button
-                  onClick={() => history.push('/sign-up')}
-                  text='No account? Sign up!'
-                />
-                <Button
-                  data-cy='submit'
-                  onClick={handleSubmit}
-                  text='Sign in'
-                  type='primary'
-                />
+                <Button onClick={() => history.push('/sign-up')} text='No account? Sign up!' />
+                <Button data-cy='submit' onClick={handleSubmit} text='Sign in' type='primary' />
               </ButtonGroup>
             </Form>
-          </Wrapper>
+          </FormWrapper>
         )
       }}
     </Formik>
   )
 }
 
-const Loader = styled.div`
-  display: flex;
-  position: absolute;
-  justify-content: center;
-  align-items: center;
-  color: #E8EAF6;
-  font-size: 12px;
-  height: 100%;
-  width: 100%;
-`
-
 const Close = styled.div`
   position: absolute;
   font-size: 20px;
-  color: #E8EAF6;
+  color: #e8eaf6;
   opacity: 0.5;
   right: 0;
   top: 0;
 `
 
-const Title = styled.div`
-  font-size: 24px;
-  margin-bottom: 20px;
-  line-height: 24px;
-  font-weight: 700;
-  color: #E8EAF6;
-`
-
-const Input = styled.input`
-  margin-top: 6px;
-  font-size: 12px;
-  height: 36px;
-  width: 100%;
-  color: #1A237E;
-  padding-left: 12px;
-  padding-right: 12px;
-  background: linear-gradient(#e8eaf6, #c5cae9);
-  border-radius: 6px;
-  border: none;
-  outline: none;
-  :focus {
-    background: #e8eaf6;
-  };
-`
-
 const Label = styled.div`
-  color: #E8EAF6;
+  color: #e8eaf6;
   font-size: 12px;
 `
 
 const Hint = styled.span`
-  color: #EF5350;
+  color: #ef5350;
   margin-left: 6px;
 `
 
@@ -169,19 +139,9 @@ const ButtonGroup = styled.div`
   }
 `
 
-const Wrapper = styled.div`
-  position: absolute;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  height: 100%;
-  left: 40px;
-  right: 40px;
-`
-
 const Form = styled.form`
   position: relative;
-  opacity: ${({ isSubmitting }) => isSubmitting ? 0.25 : 1};
+  opacity: ${({ isSubmitting }) => (isSubmitting ? 0.25 : 1)};
   transition: 300ms;
 `
 

@@ -1,7 +1,7 @@
 - args:
     name: users
     table:
-      name: user_course
+      name: field
       schema: public
     using:
       foreign_key_constraint_on:

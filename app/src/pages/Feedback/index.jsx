@@ -8,14 +8,14 @@ import uuid from 'uuid/v4'
 
 import Icon from '../../components/Icon'
 import Alert from '../../components/Alert'
-import ErrorText from '../../components/ErrorText'
+// import ErrorText from '../../components/ErrorText'
 
 const CREATE_FEEDBACK = gql`
   mutation createFeedback($feedback: [feedback_insert_input!]!) {
-  insert_feedback (objects: $feedback) {
-    affected_rows
+    insert_feedback(objects: $feedback) {
+      affected_rows
+    }
   }
-}
 `
 
 const Feedback = ({ createFeedback, user }) => {
@@ -25,7 +25,7 @@ const Feedback = ({ createFeedback, user }) => {
         rating: '',
         message: ''
       }}
-      validate={values => {
+      validate={(values) => {
         let errors = {}
         if (!values.rating) {
           errors.rating = 'Field required!'
@@ -34,8 +34,7 @@ const Feedback = ({ createFeedback, user }) => {
           errors.message = 'Field required'
         }
         return errors
-      }
-      }
+      }}
       onSubmit={(values, { setSubmitting, setStatus }) => {
         setSubmitting(true)
         createFeedback({
@@ -48,34 +47,19 @@ const Feedback = ({ createFeedback, user }) => {
           }
         })
           .then((res) => {
-            console.log('Successfully Added', res)
             setSubmitting(false)
           })
           .catch((error) => {
-            console.log('the error', error)
             setSubmitting(false)
             setStatus({ type: 'error', text: error.message })
           })
-      }
-      }
-      render={({
-        values,
-        errors,
-        status,
-        touched,
-        handleChange,
-        handleSubmit,
-        isSubmitting
-      }) => {
+      }}
+      render={({ values, errors, status, touched, handleChange, handleSubmit, isSubmitting }) => {
         return (
           <Form>
-            <Label>
-              Help us make this application better!
-            </Label>
+            <Label>Help us make this application better!</Label>
             <FormGroup>
-              <Label>
-                Did you have a great experience?
-              </Label>
+              <Label>Did you have a great experience?</Label>
               <Button
                 onClick={() => {
                   values.rating = 'Good'
@@ -93,11 +77,9 @@ const Feedback = ({ createFeedback, user }) => {
                 No! It needs improvement.
               </Button>
             </FormGroup>
-            <ErrorText text={errors.rating && touched.rating} />
+            {/* <ErrorText text={errors.rating && touched.rating} /> */}
             <FormGroup>
-              <Label>
-                Tell us more how can we improve the app :)
-              </Label>
+              <Label>Tell us more how can we improve the app :)</Label>
               <Input
                 name='message'
                 id='message'
@@ -107,14 +89,11 @@ const Feedback = ({ createFeedback, user }) => {
                 value={values.message}
                 invalid={errors.message && touched.message}
               />
-              <ErrorText text={errors.message && touched.message} />
+              {/* <ErrorText text={errors.message && touched.message} /> */}
             </FormGroup>
             {status && <Alert {...status} />}
             <FormGroup>
-              <Button
-                data-cy='submit'
-                onClick={handleSubmit}
-              >
+              <Button data-cy='submit' onClick={handleSubmit}>
                 {isSubmitting ? 'Submitting...' : 'Submit'}
               </Button>
             </FormGroup>

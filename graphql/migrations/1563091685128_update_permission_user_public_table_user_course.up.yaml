@@ -1,7 +1,7 @@
 - args:
     role: user
     table:
-      name: user_course
+      name: field
       schema: public
   type: drop_select_permission
 - args:
@@ -10,7 +10,7 @@
       columns:
       - id
       - user_id
-      - user_course
+      - field
       - has_finished
       - created_at
       filter:
@@ -18,6 +18,6 @@
           _eq: X-Hasura-User-Id
     role: user
     table:
-      name: user_course
+      name: field
       schema: public
   type: create_select_permission

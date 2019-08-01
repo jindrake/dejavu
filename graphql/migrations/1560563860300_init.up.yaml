@@ -274,7 +274,7 @@
       insert_permissions: []
       object_relationships: []
       select_permissions: []
-      table: enum_user_course
+      table: enum_field
       update_permissions: []
     - array_relationships: []
       delete_permissions: []
@@ -383,7 +383,7 @@
           columns:
           - id
           - user_id
-          - user_course
+          - field
           - has_finished
           set: {}
         role: user
@@ -395,7 +395,7 @@
           columns: []
           filter: {}
         role: user
-      table: user_course
+      table: field
       update_permissions:
       - comment: null
         permission:
@@ -528,7 +528,7 @@
         using:
           foreign_key_constraint_on:
             column: user_id
-            table: user_course
+            table: field
       - comment: null
         name: created_questions
         using:

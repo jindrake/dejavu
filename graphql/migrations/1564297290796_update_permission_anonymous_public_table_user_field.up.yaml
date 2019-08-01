@@ -1,0 +1,25 @@
+- args:
+    role: anonymous
+    table:
+      name: user_field
+      schema: public
+  type: drop_insert_permission
+- args:
+    permission:
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id
+      columns:
+      - field
+      - has_finished
+      - id
+      - user_id
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: anonymous
+    table:
+      name: user_field
+      schema: public
+  type: create_insert_permission

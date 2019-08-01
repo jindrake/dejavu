@@ -45,9 +45,11 @@ export const INSERT_QUESTION = gql`
 `
 
 export const FETCH_TOPIC = gql`
-  query fetchTopic($uri: String!) {
+  subscription fetchTopic($uri: String!) {
     topic(where: { uri: { _eq: $uri } }) {
-      id
+      id,
+      is_published,
+      name
     }
   }
 `
@@ -64,6 +66,39 @@ export const FETCH_TOPIC_QUESTIONS = gql`
         question
         id
       }
+    }
+  }
+`
+export const FETCH_FULL_TOPIC = gql`
+  query fetchFullTopic($topicId: uuid!) {
+    topic(where: { id: { _eq: $topicId } }) {
+      id
+      name
+      description
+      is_private
+      ratings {
+        id
+        type
+      }
+      creator {
+        id
+        first_name
+        last_name
+        email
+      }
+      questions {
+        id
+        question {
+          id
+        }
+      }
+    }
+  }
+`
+export const INSERT_USER_ACTIVITY = gql`
+  mutation insertUserActivity($userActivity: [user_activity_insert_input!]!) {
+    insert_user_activity(objects: $userActivity) {
+      affected_rows
     }
   }
 `

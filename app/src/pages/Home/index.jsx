@@ -1,57 +1,56 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
+import { compose, graphql } from 'react-apollo'
+
 import withFirebase from '../../hocs/withFirebase'
 
 import Greeting from './Greeting'
 import Section from './Section'
+import { useStateValue } from '../../libs'
 
-import { compose, Query } from 'react-apollo'
-import gql from 'graphql-tag'
+import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS } from './queries'
+import { OverlayLoader } from '../../components'
 
 // TODO replace with query
-const RETRIEVE_TOPICS = gql`
-  query {
-    topic {
-      name
-      description
+
+const Home = ({ fetchHotTopics, fetchRecentTopics, user }) => {
+  const [hotTopics, setHotTopics] = useState([])
+  const [recentTopics, setRecentTopics] = useState([])
+  const [, globalDispatch] = useStateValue()
+
+  useEffect(() => {
+    handleFetchedTopics()
+  }, [fetchHotTopics.loading, fetchRecentTopics.loading])
+
+  const handleFetchedTopics = () => {
+    console.log(fetchHotTopics, fetchRecentTopics)
+    if (fetchHotTopics.topic) {
+      setHotTopics(fetchHotTopics.topic)
+    }
+    if (fetchRecentTopics.topic) {
+      setRecentTopics(fetchHotTopics.topic)
+    }
+    if (fetchHotTopics.error) {
+      globalDispatch({
+        networkError: fetchHotTopics.error.message
+      })
+    }
+    if (fetchRecentTopics.error) {
+      globalDispatch({
+        networkError: fetchRecentTopics.error.message
+      })
     }
   }
-`
-// const dummyHotTopics = [
-//   { author: 'Jess Lanchi', title: 'Dating a Med Student' },
-//   { author: 'Joanna Lucero Verrry Long Name Laaassst Name', title: 'How to be Human' },
-//   { author: 'Marlon Ynion', title: 'China 101' }
-// ]
-// const dummyRecentTopics = [
-//   { author: 'Samson Review Center', title: 'Microbiology for Freshmen' },
-//   {
-//     author: 'Pymy Cainglet',
-//     title:
-//       'Proving Trigonometric Lorem ipsum dolor sit amet, consectetur adipiscing elit nunc massa, suscipit sit amet metus sed, tempor fermentum erat'
-//   },
-//   { author: 'Marlon Ynion', title: 'Nursing Foundation' }
-// ]
 
-const Home = ({ extraPropsFromHOC, user }) => {
+  if (fetchHotTopics.loading || fetchRecentTopics.loading) {
+    return <OverlayLoader />
+  }
+
   return (
     <Wrapper>
       <Greeting user={user} />
-      <Query query={RETRIEVE_TOPICS}>
-        {({ data, loading, error }) => {
-          if (loading) return <p>LOADING</p>
-          if (error) return <p>ERROR</p>
-
-          return <Section title='Recent Topics' data={data} />
-        }}
-      </Query>
-      <Query query={RETRIEVE_TOPICS}>
-        {({ data, loading, error }) => {
-          if (loading) return <p>LOADING</p>
-          if (error) return <p>ERROR</p>
-
-          return <Section title='Hot Topics' data={data} />
-        }}
-      </Query>
+      <Section title='Hot Topics' topics={hotTopics} user={user} />
+      <Section title='Recent Topics' topics={recentTopics} user={user} />
     </Wrapper>
   )
 }
@@ -67,4 +66,8 @@ const Wrapper = styled.div`
   padding-bottom: 0;
 `
 
-export default compose(withFirebase())(Home)
+export default compose(
+  withFirebase(),
+  graphql(FETCH_HOT_TOPICS, { name: 'fetchHotTopics', options: { fetchPolicy: 'no-cache' } }),
+  graphql(FETCH_RECENT_TOPICS, { name: 'fetchRecentTopics', options: { fetchPolicy: 'no-cache' } })
+)(Home)
