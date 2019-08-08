@@ -81,7 +81,7 @@ const App = ({ firebase, history, location: { search } }) => {
     return () => {
       listener()
     }
-  }, [firebase])
+  }, [firebase, history, search])
 
   if (authState.loading) {
     return <FullPageLoader />

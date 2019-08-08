@@ -19,10 +19,7 @@ const Home = ({ fetchHotTopics, fetchRecentTopics, user }) => {
   const [, globalDispatch] = useStateValue()
 
   useEffect(() => {
-    handleFetchedTopics()
-  }, [fetchHotTopics.loading, fetchRecentTopics.loading])
-
-  const handleFetchedTopics = () => {
+    console.log(fetchHotTopics, fetchRecentTopics)
     if (fetchHotTopics.topic) {
       setHotTopics(fetchHotTopics.topic)
     }
@@ -39,7 +36,7 @@ const Home = ({ fetchHotTopics, fetchRecentTopics, user }) => {
         networkError: fetchRecentTopics.error.message
       })
     }
-  }
+  }, [fetchHotTopics.loading, fetchRecentTopics.loading, fetchHotTopics, fetchRecentTopics, globalDispatch])
 
   if (fetchHotTopics.loading || fetchRecentTopics.loading) {
     return <OverlayLoader />
