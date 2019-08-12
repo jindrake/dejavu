@@ -5,14 +5,11 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import { withFirebase } from '../hocs'
 import { withRouter } from 'react-router-dom'
-
-import Button from '../components/Button'
 import Icon from '../components/Icon'
 import Alert from '../components/Alert'
-import { StyledInput, FormWrapper, Title, OverlayLoader } from '../components'
+import { StyledInput, FormWrapper, Title, OverlayLoader, Button } from '../components'
 
-const SignIn = ({ firebase, history, ...rest }) => {
-  console.log(rest)
+const SignIn = ({ firebase, history }) => {
   return (
     <Formik
       initialValues={{

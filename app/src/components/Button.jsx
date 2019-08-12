@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Button = ({ text, ...props }) => <Wrapper {...props}>{text}</Wrapper>
+export const Button = ({ text, ...props }) => <Wrapper {...props}>{text}</Wrapper>
 
 const TYPE_STYLE = {
   primary: `
@@ -15,13 +15,14 @@ const Wrapper = styled.div`
   box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
   align-items: center;
   color: #e8eaf6;
-  padding-left: 12px;
-  padding-right: 12px;
-  border-radius: 6px;
+  padding: 2vh;
+  padding-left: 3vh;
+  padding-right: 3vh;
+  /* padding: 3vh; */
+  border-radius: 1vh;
   height: 36px;
-  font-size: 12px;
+  /* font-size: 12px; */
+  font-size: 2vh;
   white-space: nowrap;
   ${({ type }) => TYPE_STYLE[type]}
 `
-
-export default Button

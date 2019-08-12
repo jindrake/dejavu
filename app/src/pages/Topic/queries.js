@@ -69,13 +69,14 @@ export const FETCH_TOPIC_QUESTIONS = gql`
     }
   }
 `
-export const FETCH_FULL_TOPIC = gql`
+export const FETCH_TOPIC_PREVIEW = gql`
   query fetchFullTopic($topicId: uuid!) {
     topic(where: { id: { _eq: $topicId } }) {
       id
       name
       description
       is_private
+      created_at
       ratings {
         id
         type
@@ -88,9 +89,11 @@ export const FETCH_FULL_TOPIC = gql`
       }
       questions {
         id
-        question {
-          id
-        }
+        question_id
+      }
+      target_fields {
+        id
+        field
       }
     }
   }

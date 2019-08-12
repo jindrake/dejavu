@@ -1,6 +1,9 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Input, CustomInput } from 'reactstrap'
+// import { Button } from './Button'
+
+export * from './Button'
 
 export const StyledInput = styled(Input)`
   margin-top: 6px;
@@ -120,6 +123,10 @@ export const FullPageLoader = () => (
   </LoaderContainer>
 )
 
+export const HeaderText = styled.div`
+  font-size: 5vh;
+`
+
 export const OverlayLoader = () => (
   <OverlayLoaderContainer>
     <ContentCenter>
@@ -129,3 +136,17 @@ export const OverlayLoader = () => (
     </ContentCenter>
   </OverlayLoaderContainer>
 )
+
+export const Stat = styled.div`
+  opacity: 0.8;
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  margin-bottom: 2px;
+  text-overflow: ellipsis;
+  font-size: ${props => props.size ? props.size : null}
+  i {
+    margin-right: 6px;
+  }
+`

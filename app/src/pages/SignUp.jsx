@@ -6,10 +6,9 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
-import Button from '../components/Button'
 import Icon from '../components/Icon'
 import Alert from '../components/Alert'
-import { StyledInput, FormWrapper, Title, StyledCheckbox, OverlayLoader } from '../components'
+import { StyledInput, FormWrapper, Title, StyledCheckbox, OverlayLoader, Button } from '../components'
 import uuid from 'uuid/v4'
 
 const CREATE_USER = gql`

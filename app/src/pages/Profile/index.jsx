@@ -6,7 +6,7 @@ import { withRouter } from 'react-router-dom'
 import uuid from 'uuid'
 
 import { FETCH_MY_TOPIC, FETCH_TAKEN_TOPIC, INSERT_USER_ACTIVITY } from './queries'
-import Button from '../../components/Button'
+import { Button } from '../../components'
 import Icon from '../../components/Icon'
 
 // const AvatarContainer = styled.div`

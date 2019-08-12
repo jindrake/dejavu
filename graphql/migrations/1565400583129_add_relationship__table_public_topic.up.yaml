@@ -1,0 +1,12 @@
+- args:
+    name: target_fields
+    table:
+      name: topic
+      schema: public
+    using:
+      foreign_key_constraint_on:
+        column: topic_id
+        table:
+          name: topic_field
+          schema: public
+  type: create_array_relationship

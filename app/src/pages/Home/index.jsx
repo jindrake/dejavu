@@ -23,7 +23,6 @@ const Home = ({ fetchHotTopics, fetchRecentTopics, user }) => {
   }, [fetchHotTopics.loading, fetchRecentTopics.loading])
 
   const handleFetchedTopics = () => {
-    console.log(fetchHotTopics, fetchRecentTopics)
     if (fetchHotTopics.topic) {
       setHotTopics(fetchHotTopics.topic)
     }

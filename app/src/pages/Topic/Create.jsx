@@ -71,7 +71,13 @@ const CreateTopicScreen = ({ user, createTopic, history }) => {
               description: values.description,
               id: uuid(),
               uri: values.uri,
-              is_private: values.isPrivate
+              is_private: values.isPrivate,
+              target_fields: {
+                data: {
+                  field: values.fieldOfStudy,
+                  id: uuid()
+                }
+              }
             }
           }
         })

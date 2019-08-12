@@ -15,13 +15,24 @@ const Body = styled.div`
   height: 100%;
   display: flex;
   animation: BorealisEffect 30s ease infinite;
+  font-size: 3vh;
+`
+
+const Content = styled.div`
+  width: 100%;
+  /* margin-left: 2vh; */
+  /* margin-right: 2vh; */
+  margin: 2vh;
 `
 
 export default () => (WrappedComponent) => (props) => {
   return (
     <Body>
       {/* <div>Layout: Header</div> */}
-      <WrappedComponent {...props} />
+      <Content>
+        <WrappedComponent {...props} />
+
+      </Content>
       {/* <div>Layout: Footer</div> */}
     </Body>
   )

@@ -3,14 +3,12 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { compose, graphql, Query } from 'react-apollo'
 import uuid from 'uuid/v4'
-// import { FormGroup, Label, Input } from 'reactstrap'
-
-import TitleSection from '../../components/Topic/TitleSection'
-import Button from '../../components/Button'
-
-import { FETCH_FULL_TOPIC, INSERT_USER_ACTIVITY } from './queries'
+import { FETCH_TOPIC_PREVIEW, INSERT_USER_ACTIVITY } from './queries'
 import { getObjectValue, useStateValue, shuffleArray } from '../../libs'
-import { OverlayLoader } from '../../components'
+import { OverlayLoader, HeaderText, Stat, Button } from '../../components'
+import { Paper } from '../../components/Topic'
+import Icon from '../../components/Icon'
+import { Badge } from 'reactstrap'
 
 const Topic = ({
   history,
@@ -18,27 +16,25 @@ const Topic = ({
     params: { id }
   },
   user,
-  insertUserActivity,
-  ...rest
+  insertUserActivity
 }) => {
-  let questionIds
-  const topicSessionId = uuid()
   const [, globalDispatch] = useStateValue()
-  console.log(rest)
-  const tackleAlone = () => {
+  const tackleAlone = (questionIds) => {
+    const topicSessionId = uuid()
     insertUserActivity({
       variables: {
         userActivity: {
           id: uuid(),
           activity_type: 'take',
           user_id: user.id,
-          topic_id: id
+          topic_id: id,
+          topic_session_id: topicSessionId
         }
       }
     })
       .then((res) => {
         history.push({
-          pathname: `/topic/${id}/questions/${questionIds[0].id}/topicSession/${topicSessionId}`,
+          pathname: `/topic/${id}/questions/${questionIds[0]}/topicSession/${topicSessionId}`,
           state: { questionIds }
         })
       })
@@ -54,7 +50,7 @@ const Topic = ({
       <TopSection>
         <Button text='Back' onClick={() => history.goBack()} />
       </TopSection>
-      <Query query={FETCH_FULL_TOPIC} variables={{ topicId: id }}>
+      <Query query={FETCH_TOPIC_PREVIEW} variables={{ topicId: id }}>
         {({ data, error, loading }) => {
           if (error) {
             globalDispatch({
@@ -64,72 +60,77 @@ const Topic = ({
           }
           if (loading) return <OverlayLoader />
           const topic = getObjectValue(data, 'topic[0]')
-          const unshuffledQuestions = topic.questions.map((q) => q.question)
-          questionIds = shuffleArray(unshuffledQuestions)
-          console.log(questionIds)
+          console.log('topic:', topic)
+          const unshuffledQuestionIds = topic.questions.map((q) => q.question_id)
+          const halfSubset = shuffleArray(unshuffledQuestionIds).splice(
+            0,
+            Math.ceil(unshuffledQuestionIds.length / 2)
+          )
           return (
-            <MainSection>
-              <Belt>
-                <Paper>
-                  <TitleSection
-                    upvotes={topic.ratings.filter((rating) => rating.type === 'upvote').length}
-                    downvotes={topic.ratings.filter((rating) => rating.type === 'downvote').length}
-                    author={topic.creator}
-                    title={topic.name}
-                    description={topic.description}
-                    items={topic.questions.length}
-                    // tags={dummyTopic.tags}
-                    // timeLimit={dummyTopic.timeLimit}
-                    // tacklersNumber={dummyTopic.tacklersNumber}
-                    // dateAdded={dummyTopic.dateAdded}
-                  />
-                </Paper>
-              </Belt>
-            </MainSection>
+            <>
+              <Paper>
+                <div>
+                  <div>
+                    {topic.target_fields && topic.target_fields.length
+                      ? topic.target_fields.map((field, index) => {
+                        return (
+                          <Badge color='secondary' key={index}>
+                            {field.field}
+                          </Badge>
+                        )
+                      })
+                      : null}
+                  </div>
+                  <HeaderText className='flex-grow-1'>{topic.name}</HeaderText>
+                  <Stat>{topic.description}</Stat>
+                  <Stat>{`${halfSubset.length} items`}</Stat>
+                </div>
+                <PaperBottom>
+                  <div>
+                    <Stat>
+                      <Icon name='account_circle' />
+                      &nbsp;{`${topic.creator.first_name} ${topic.creator.last_name}`}
+                    </Stat>
+                    <Stat>
+                      <Icon name='account_circle' />
+                      &nbsp;&nbsp;{`${topic.creator.email}`}
+                    </Stat>
+                    <Stat size='4vmin'>
+                      created on: &nbsp;{new Date(topic.created_at).toISOString().split('T')[0]}
+                    </Stat>
+                  </div>
+                </PaperBottom>
+              </Paper>
+              <BottomSection>
+                {/* <Button text='Tackle with a friend' type='secondary' onClick={tackleAlone} /> */}
+                <Button
+                  text='Tackle'
+                  type='primary'
+                  onClick={() => {
+                    tackleAlone(halfSubset)
+                  }}
+                />
+              </BottomSection>
+            </>
           )
         }}
       </Query>
-      <BottomSection>
-        {/* <Button text='Tackle with a friend' type='secondary' onClick={tackleAlone} /> */}
-        <Button text='Tackle' type='primary' onClick={tackleAlone} />
-      </BottomSection>
     </Wrapper>
   )
 }
 
-const Paper = styled.div`
-  background: linear-gradient(#e8eaf6, #c5cae9);
-  padding: 40px;
-  min-width: 280px;
-  position: relative;
-  margin-bottom: 10px;
-  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
-  &:first-child {
-    border-top-left-radius: 6px;
-    border-bottom-left-radius: 6px;
-    margin-left: 40px;
-  }
-  &:last-child {
-    border-top-right-radius: 6px;
-    border-bottom-right-radius: 6px;
-    margin-right: 40px;
-  }
-  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-  margin-top: 6px;
-  padding-top: -6px;
-`
-const Belt = styled.div`
-  position: absolute;
-  height: 100%;
+const PaperBottom = styled.div`
+  flex-grow: 2;
+  justify-content: flex-end;
   display: flex;
+  flex-direction: column;
 `
-const MainSection = styled.div`
-  height: 100%;
-  margin-right: -30px;
-  margin-left: -30px;
+
+const Wrapper = styled.div`
   display: flex;
-  overflow-x: scroll;
-  position: relative;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
 `
 
 const TopSection = styled.div`
@@ -142,17 +143,7 @@ const BottomSection = styled.div`
   display: flex;
   align-items: center;
   height: 100px;
-  /* justify-content: space-between; */
   justify-content: flex-end;
-`
-
-const Wrapper = styled.div`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  left: 40px;
-  right: 40px;
 `
 
 export default compose(
