@@ -1,0 +1,21 @@
+- args:
+    permission:
+      allow_upsert: true
+      check:
+        _and:
+        - topic:
+            creator_id:
+              _eq: X-Hasura-User-Id
+      columns:
+      - id
+      - topic_id
+      - field
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: topic_field
+      schema: public
+  type: create_insert_permission
