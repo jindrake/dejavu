@@ -6,6 +6,7 @@ import { Query, compose, graphql } from 'react-apollo'
 import styled from 'styled-components'
 import uuid from 'uuid/v4'
 
+import { StyledInput } from '../../components/'
 import Icon from '../../components/Icon'
 
 const FETCH_TOPIC = gql`
@@ -32,6 +33,9 @@ export const INSERT_USER_ACTIVITY = gql`
 
 const Search = ({ user, history, insertUserActivity }) => {
   const [searchValue, setSearchValue] = useState('')
+  const [reliabilityButton, setReliabilityButton] = useState(false)
+  const [consistencyButton, setConsistencyButton] = useState(false)
+  const [dateButton, setDateButton] = useState(false)
 
   let debounceEvent = (...args) => {
     debounceEvent = debounce(...args)
@@ -76,11 +80,33 @@ const Search = ({ user, history, insertUserActivity }) => {
                     : (
                       <div>
                         <SortingDiv>
-                          <InnerSortingDiv>Consistency</InnerSortingDiv>
-                          <InnerSortingDiv>Reliability</InnerSortingDiv>
-                          <InnerSortingDiv>
-                          Date
-                            <StyledIcon className={`material-icons`}>{'unfold_more'}</StyledIcon>
+                          <InnerSortingDiv
+                            onClick={() => {
+                              console.log('consistency')
+                              setConsistencyButton(!consistencyButton)
+                            }}
+                            clicked={consistencyButton}
+                          >
+                            Consistency
+                          </InnerSortingDiv>
+                          <InnerSortingDiv
+                            onClick={() => {
+                              console.log('reliability')
+                              setReliabilityButton(!reliabilityButton)
+                            }}
+                            clicked={reliabilityButton}
+                          >
+                            Reliability
+                          </InnerSortingDiv>
+                          <InnerSortingDiv
+                            onClick={() => {
+                              console.log('date')
+                              setDateButton(!dateButton)
+                            }}
+                            clicked={dateButton}
+                          >
+                            Date
+                            <StyledIcon clicked={dateButton} className={`material-icons`}>{'unfold_more'}</StyledIcon>
                           </InnerSortingDiv>
                         </SortingDiv>
                         {data.topic &&
@@ -153,10 +179,8 @@ const Search = ({ user, history, insertUserActivity }) => {
 }
 
 const MainDiv = styled.div`
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  height: 90vh;
+  overflow-y: auto;
 `
 
 const StyledNoResultDiv = styled.div`
@@ -164,11 +188,12 @@ const StyledNoResultDiv = styled.div`
   font-weight: bold;
   color: #1a237e;
   font-size: 3vh;
+  margin-top: 10px;
 `
 
 const StyledIcon = styled.i`
   font-size: 2.5vh;
-  color: white;
+  color: ${props => props.clicked ? '#a5a4a4' : '#FFF'};
 `
 
 const SortingDiv = styled.div`
@@ -176,14 +201,14 @@ const SortingDiv = styled.div`
   flex-direction: row;
   width: 100%;
   justify-content: space-evenly;
+  margin-top: 10px;
 `
 const InnerSortingDiv = styled.div`
   font-size: 2vh;
-  color: white;
   font-family: Helvetica;
   font-weight: bold;
-  align-items: center;
   display: flex;
+  color: ${props => props.clicked ? '#a5a4a4' : '#FFF'};
 `
 
 const RatingsDiv = styled.div`
@@ -214,8 +239,6 @@ const Description = styled.div`
 `
 
 const StyledDiv = styled.div`
-  height: 79%;
-  width: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -227,8 +250,9 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   margin: 10px;
-  height: 25vh;
-  width: 80vw;
+  padding: 1rem;
+  height: 24vh;
+  width: 70vw;
   border-radius: 6px;
   overflow-y: auto;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
@@ -237,19 +261,19 @@ const Wrapper = styled.div`
   z-index: -1;
 `
 
-const StyledInput = styled.input`
-  background-color: white;
-  width: 95%;
-  height: 8%;
-  font-size: 22px;
-  font-family: Helvetica;
-  font-weight: bold;
-  opacity: 1;
-  padding-left: 20px;
-  border-radius: 10px;
-  border:1px solid white;
-  margin: 10px;
-`
+// const StyledInput = styled.input`
+//   background-color: white;
+//   width: 90vw;
+//   height: 3vw;
+//   font-size: 22px;
+//   font-family: Helvetica;
+//   font-weight: bold;
+//   opacity: 1;
+//   padding-left: 20px;
+//   border-radius: 10px;
+//   border:1px solid white;
+//   margin: 10px;
+// `
 
 export default compose(
   withRouter,
