@@ -8,12 +8,14 @@ import { FETCH_MY_TOPIC, FETCH_TAKEN_TOPIC, INSERT_USER_ACTIVITY } from './queri
 import { Button } from '../../components'
 import Icon from '../../components/Icon'
 
-// const AvatarContainer = styled.div`
-//   border-radius: 50%;
-//   width: 40%;
-//   background-color: white;
-//   height: 120px;
-// `
+const AvatarContainer = styled.div`
+  border-radius: 50%;
+  vertical-align: middle;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background-color: white;
+`
 
 const ProfileInfo = styled.div`
   width: 100%;
@@ -42,8 +44,8 @@ const TopicWrapper = styled.div`
   flex-direction: column;
   bottom: 80px;
   width: 100%;
-  height: 105%;
-  top: 19%;
+  height: 100%;
+  top: 22%;
   padding: 30px;
   padding-bottom: 0;
 `
@@ -118,8 +120,8 @@ const Profile = ({ user, history, insertUserActivity }) => {
   return (
     <Container>
       <ProfileInfo>
-        {/* <AvatarContainer /> */}
-        <Icon name='perm_identity' />
+        <AvatarContainer />
+        {/* <Icon name='perm_identity' /> */}
       </ProfileInfo>
       <CenteredText>
         {user.first_name} {user.last_name}
