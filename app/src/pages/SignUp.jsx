@@ -74,6 +74,7 @@ const SignUp = ({ firebase, history, createUser }) => {
           .then((idTokenResult) => {
             const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
             if (hasuraClaim) {
+              console.warn('CREATING USER')
               createUser({
                 variables: {
                   user: [
@@ -105,6 +106,7 @@ const SignUp = ({ firebase, history, createUser }) => {
                 const hasuraClaim = await idTokenResult.claims['https://hasura.io/jwt/claims']
                 // if there's no hasuraClaim but token exists, maintain authState({loading: true}) state
                 if (hasuraClaim) {
+                  console.warn('CREATING USER')
                   createUser({
                     variables: {
                       user: [

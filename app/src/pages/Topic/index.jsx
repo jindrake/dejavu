@@ -20,6 +20,7 @@ const Topic = ({
 }) => {
   const [, globalDispatch] = useStateValue()
   const tackleAlone = (questionIds) => {
+    console.log(questionIds)
     const topicSessionId = uuid()
     insertUserActivity({
       variables: {

@@ -7,19 +7,14 @@ import { compose, graphql, Query } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import uuid from 'uuid/v4'
-import {
-  StyledInput,
-  Title,
-  StyledCheckbox,
-  OverlayLoader,
-  FormWrapper
-} from '../../components'
+import { StyledInput, Title, StyledCheckbox, OverlayLoader, FormWrapper } from '../../components'
 import Alert from '../../components/Alert'
+import { getObjectValue } from '../../libs'
 // import ErrorText from '../../components/ErrorText'
 
 const FETCH_FIELDS = gql`
   query fetchFields {
-    enum_field (order_by: { field: asc }) {
+    enum_field(order_by: { field: asc }) {
       field
     }
   }
@@ -38,10 +33,16 @@ const CREATE_TOPIC = gql`
   }
 `
 
-const CreateTopicScreen = ({ user, createTopic, history }) => {
+const CREATE_TOPIC_FIELD_RELATIONSHIP = gql`
+  mutation createTopicFieldRelationship($topicField: [topic_field_insert_input!]!) {
+    insert_topic_field(objects: $topicField) {
+      affected_rows
+    }
+  }
+`
+
+const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelationship }) => {
   // const [globalState, globalDispatch] = useStateValue()
-  console.log(user)
-  console.log('Hello topic screen')
   return (
     <Formik
       initialValues={{
@@ -71,16 +72,28 @@ const CreateTopicScreen = ({ user, createTopic, history }) => {
               description: values.description,
               id: uuid(),
               uri: values.uri,
-              is_private: values.isPrivate,
-              target_fields: {
-                data: {
-                  field: values.fieldOfStudy,
-                  id: uuid()
-                }
-              }
+              is_private: values.isPrivate
+              // target_fields: {
+              //   data: {
+              //     field: values.fieldOfStudy,
+              //     id: uuid()
+              //   }
+              // }
             }
           }
         })
+          .then((res) => {
+            console.log(res)
+            return createTopicFieldRelationship({
+              variables: {
+                topicField: {
+                  id: uuid(),
+                  field: values.fieldOfStudy,
+                  topic_id: getObjectValue(res, 'data.insert_topic.returning[0].id')
+                }
+              }
+            })
+          })
           .then((res) => {
             console.log(res)
             setSubmitting(false)
@@ -202,5 +215,6 @@ const SubHeader = styled.div`
 
 export default compose(
   withRouter,
-  graphql(CREATE_TOPIC, { name: 'createTopic' })
+  graphql(CREATE_TOPIC, { name: 'createTopic' }),
+  graphql(CREATE_TOPIC_FIELD_RELATIONSHIP, { name: 'createTopicFieldRelationship' })
 )(CreateTopicScreen)
