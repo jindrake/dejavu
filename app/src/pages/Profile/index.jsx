@@ -1,7 +1,6 @@
 import React from 'react'
 import { compose, Query, graphql } from 'react-apollo'
 import styled from 'styled-components'
-import { CardText } from 'reactstrap'
 import { withRouter } from 'react-router-dom'
 import uuid from 'uuid'
 
@@ -9,19 +8,21 @@ import { FETCH_MY_TOPIC, FETCH_TAKEN_TOPIC, INSERT_USER_ACTIVITY } from './queri
 import { Button } from '../../components'
 import Icon from '../../components/Icon'
 
-// const AvatarContainer = styled.div`
-//   border-radius: 50%;
-//   width: 40%;
-//   background-color: white;
-//   height: 120px;
-// `
+const AvatarContainer = styled.div`
+  border-radius: 50%;
+  vertical-align: middle;
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background-color: white;
+`
 
 const ProfileInfo = styled.div`
   width: 100%;
   display: flex;
   justify-content: center;
   text-align: center;
-  font-size: 7em;
+  font-size: 4em;
 `
 
 const CenteredText = styled.div`
@@ -43,15 +44,16 @@ const TopicWrapper = styled.div`
   flex-direction: column;
   bottom: 80px;
   width: 100%;
-  top: 20%;
-  padding: 40px;
+  height: 100%;
+  top: 22%;
+  padding: 30px;
   padding-bottom: 0;
 `
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 45%;
+  height: 30%;
 `
 
 const SectionTitle = styled.div`
@@ -97,8 +99,8 @@ const PreviewWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding-left: 0.5em;
-  width: 200px;
+  padding: 20px;
+  width: 210px;
   margin-left: 20px;
   &:first-child {
     margin-left: 40px;
@@ -118,8 +120,8 @@ const Profile = ({ user, history, insertUserActivity }) => {
   return (
     <Container>
       <ProfileInfo>
-        {/* <AvatarContainer /> */}
-        <Icon name='perm_identity' />
+        <AvatarContainer />
+        {/* <Icon name='perm_identity' /> */}
       </ProfileInfo>
       <CenteredText>
         {user.first_name} {user.last_name}
@@ -168,16 +170,16 @@ const Profile = ({ user, history, insertUserActivity }) => {
                             }}
                           >
                             <Title>{topic.name}</Title>
-                            <small className='text-muted'>Date: {date.toDateString()}</small>
-                            <CardText>{topic.description}</CardText>
+                            <Author>Date: {date.toDateString()}</Author>
+                            <Author>{topic.description}</Author>
                             <Author>
-                              <Icon name='arrow_upward' />{' '}
+                              <Icon name='thumb_up_alt' />{' '}
                               {topic.ratings.length > 0
                                 ? topic.ratings.filter((r) => r.type === 'upvote').length
                                 : 0}
                             </Author>
                             <Author>
-                              <Icon name='arrow_downward' />{' '}
+                              <Icon name='thumb_down_alt' />{' '}
                               {topic.ratings.length > 0
                                 ? topic.ratings.filter((r) => r.type === 'downvote').length
                                 : 0}
@@ -202,7 +204,6 @@ const Profile = ({ user, history, insertUserActivity }) => {
             }}
           />
         </CenteredText>
-        <hr />
         <Query query={FETCH_TAKEN_TOPIC} variables={{ userId: user.id }}>
           {({ data, error, loading }) => {
             if (error) return <div>Error fetching topic: {error.message}</div>
@@ -244,15 +245,15 @@ const Profile = ({ user, history, insertUserActivity }) => {
                             }}
                           >
                             <Title>{topic.topic.name}</Title>
-                            <CardText>{topic.topic.description}</CardText>
+                            <Author>{topic.topic.description}</Author>
                             <Author>
-                              <Icon name='arrow_upward' />{' '}
+                              <Icon name='thumb_up_alt' />{' '}
                               {topic.topic.ratings.length > 0
                                 ? topic.topic.ratings.filter((r) => r.type === 'upvote').length
                                 : 0}
                             </Author>
                             <Author>
-                              <Icon name='arrow_downward' />{' '}
+                              <Icon name='thumb_down_alt' />{' '}
                               {topic.topic.ratings.length > 0
                                 ? topic.topic.ratings.filter((r) => r.type === 'downvote').length
                                 : 0}
