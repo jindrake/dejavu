@@ -40,8 +40,8 @@ const Title = styled.div`
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
-  height: 35%;
+  margin-top: 5px;
+  height: 80%;
 `
 
 export default Section

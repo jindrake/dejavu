@@ -1,17 +1,18 @@
 import React from 'react'
 import styled from 'styled-components'
 
+import Icon from '../../components/Icon'
+
 const Greeting = ({ user }) => (
   <Wrapper>
-    <div>Hello, {user ? user.first_name : 'Study Buddy'}!</div>
-    <Notifications>This is where your notifications go.</Notifications>
+    <LeftWrapper>
+      Hello, {user ? user.first_name : 'Study Buddy'}!
+    </LeftWrapper>
+    <RightWrapper>
+      <Icon name='add_circle_outline' />
+    </RightWrapper>
   </Wrapper>
 )
-
-const Notifications = styled.div`
-  font-size: 12px;
-  opacity: 0.8;
-`
 
 const Wrapper = styled.div`
   height: 30%;
@@ -21,4 +22,11 @@ const Wrapper = styled.div`
   height: 20%;
 `
 
+const LeftWrapper = styled.div`
+  float: left;
+`
+
+const RightWrapper = styled.div`
+  float: right;
+`
 export default Greeting
