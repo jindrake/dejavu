@@ -1,83 +1,32 @@
 import React, { useState } from 'react'
 import { Formik, FieldArray } from 'formik'
 import { withRouter } from 'react-router-dom'
-import { Button, Form, Input, FormGroup, FormText, CustomInput, Alert } from 'reactstrap'
-import styled from 'styled-components'
-import { Mutation, Subscription, compose } from 'react-apollo'
+import { Button, Input, FormText, CustomInput, Alert } from 'reactstrap'
+import { Mutation, Subscription, compose, Query } from 'react-apollo'
 import uuid from 'uuid/v4'
 import { getObjectValue, useStateValue } from '../../libs'
-import { REMOVE_QUESTION, INSERT_QUESTION, FETCH_TOPIC, FETCH_TOPIC_QUESTIONS } from './queries'
-
 import {
-  Title,
-  OverlayLoaderContainer,
-  SubText
-} from '../../components'
-import gql from 'graphql-tag'
-// left the styled components here for now for easy restyling
-const CurrentQuestionsSection = styled.div`
-  padding: 5px;
-  margin-bottom: 60px;
-`
+  REMOVE_QUESTION,
+  INSERT_QUESTION,
+  FETCH_TOPIC,
+  FETCH_TOPIC_QUESTIONS,
+  FETCH_USER_PREVIOUS_QUESTIONS,
+  INSERT_QUESTION_TOPIC_RELATIONSHIP,
+  PUBLISH_TOPIC
+} from './queries'
 
-const QuestionCard = styled.div`
-  background-color: white;
-  padding: 5px;
-  margin: 5px;
-  border-radius: 5px;
-`
-
-const CenterText = styled.div`
-  display: flex;
-  justify-content: center;
-  width: 100%;
-`
-
-const StyledForm = styled(Form)`
-  width: 100%;
-  padding-left: 40px;
-  padding-right: 40px;
-  padding-top: 30px;
-  overflow-y: auto;
-`
-
-const RightText = styled.div`
-  display: flex;
-  justify-content: flex-end;
-  width: 100%;
-`
-
-const UnderlineInput = styled(Input)`
-  background-color: transparent;
-  border: none;
-  border-bottom: 1px solid #ffffff;
-  -webkit-box-shadow: none;
-  box-shadow: none;
-  border-radius: 0;
-  color: white;
-  &:focus {
-    background-color: transparent;
-    border: none;
-    border-bottom: 1px solid #ffffff;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    border-radius: 0;
-    color: white;
-  }
-`
-
-const RemoveButton = styled(Button)`
-  color: red;
-`
-
-const ChoiceItem = styled(FormGroup)`
-  display: flex;
-`
-
-const Hint = styled.span`
-  color: #ef5350;
-  margin-left: 6px;
-`
+import { Title, OverlayLoader, SubText } from '../../components'
+import {
+  CurrentQuestionsSection,
+  QuestionCard,
+  CenterText,
+  StyledForm,
+  RightText,
+  UnderlineInput,
+  RemoveButton,
+  ChoiceItem,
+  Hint
+} from '../../components/Topic'
 
 const AddQuestions = ({
   match: {
@@ -87,6 +36,10 @@ const AddQuestions = ({
 }) => {
   const [, globalDispatch] = useStateValue()
   const [numberOfQuestions, setNumberOfQuestions] = useState(0)
+  const [field, setField] = useState(null)
+  const [topicId, setTopicId] = useState(null)
+  const [previousQuestions, setPreviousQuestions] = useState([])
+
   return (
     <StyledForm>
       <Subscription subscription={FETCH_TOPIC} variables={{ uri: uri }}>
@@ -98,10 +51,15 @@ const AddQuestions = ({
             return null
           }
           if (loading) {
-            return <OverlayLoaderContainer />
+            return <OverlayLoader />
           }
           const topic = getObjectValue(data, 'topic[0]')
-          console.log('TOPIC is:', topic)
+          if (!field && getObjectValue(topic, 'target_fields[0].field')) {
+            setField(getObjectValue(topic, 'target_fields[0].field'))
+          }
+          if (!topicId && topic.id) {
+            setTopicId(topic.id)
+          }
           return (
             <>
               <Mutation mutation={INSERT_QUESTION}>
@@ -113,7 +71,7 @@ const AddQuestions = ({
                     return null
                   }
                   if (loading) {
-                    return <OverlayLoaderContainer />
+                    return <OverlayLoader />
                   }
                   return (
                     <Formik
@@ -177,9 +135,7 @@ const AddQuestions = ({
                             }
                           }
                         })
-                          .then((result) => {
-                            // TODO: set success status
-                            console.log('mutation result:', result)
+                          .then(() => {
                             setSubmitting(false)
                           })
                           .catch((error) => {
@@ -310,7 +266,7 @@ const AddQuestions = ({
                       return null
                     }
                     if (loading) {
-                      return <OverlayLoaderContainer />
+                      return <OverlayLoader />
                     }
                     return (
                       <>
@@ -336,7 +292,8 @@ const AddQuestions = ({
               ) : (
                 <Alert color='warning'>
                   <SubText>
-                    In order to publish a topic, it must at least have <strong>10 questions</strong> first
+                    In order to publish a topic, it must at least have <strong>10 questions</strong>{' '}
+                    first
                   </SubText>
                 </Alert>
               )}
@@ -355,7 +312,7 @@ const AddQuestions = ({
               return null
             }
             if (loading) {
-              return <OverlayLoaderContainer />
+              return <OverlayLoader />
             }
             const topicQuestions = data.question_topic
             if (topicQuestions.length !== numberOfQuestions) {
@@ -370,10 +327,10 @@ const AddQuestions = ({
                     })
                     return null
                   }
-                  if (loading) return <OverlayLoaderContainer />
+                  if (loading) return <OverlayLoader />
                   return (
                     <>
-                      {topicQuestions.map(({ question }, index) => {
+                      {topicQuestions.map(({ question, id }, index) => {
                         const dummyAnswers = question.answers
                           .filter((answer) => !answer.is_correct)
                           .map((answer) => answer.answer)
@@ -390,8 +347,7 @@ const AddQuestions = ({
                                 onClick={() => {
                                   removeQuestion({
                                     variables: {
-                                      topicUri: uri,
-                                      questionId: question.id
+                                      id
                                     }
                                   })
                                 }}
@@ -415,16 +371,88 @@ const AddQuestions = ({
           }}
         </Subscription>
       </CurrentQuestionsSection>
+      {field && (
+        <CurrentQuestionsSection>
+          <Title>Select from your previous questions</Title>
+          <Query
+            query={FETCH_USER_PREVIOUS_QUESTIONS}
+            variables={{ creatorId: user.id, field, topicId: topicId }}
+          >
+            {({ data, loading, error }) => {
+              if (error) {
+                globalDispatch({
+                  networkError: error.message
+                })
+                return null
+              }
+              if (loading) {
+                return <OverlayLoader />
+              }
+              if (getObjectValue(data, 'question[0]') && !previousQuestions.length) {
+                setPreviousQuestions(data.question)
+              }
+              return (
+                <Mutation mutation={INSERT_QUESTION_TOPIC_RELATIONSHIP}>
+                  {(addQuestion, { loading, error }) => {
+                    if (error) {
+                      globalDispatch({
+                        networkError: error.message
+                      })
+                      return null
+                    }
+                    if (loading) {
+                      return <OverlayLoader />
+                    }
+                    return (
+                      <>
+                        {previousQuestions.map((question, index) => {
+                          const dummyAnswers = question.answers
+                            .filter((answer) => !answer.is_correct)
+                            .map((answer) => answer.answer)
+                            .join(', ')
+                          const correctAnswers = question.answers
+                            .filter((answer) => answer.is_correct)
+                            .map((answer) => answer.answer)
+                            .join(', ')
+                          return (
+                            <QuestionCard
+                              key={`questions:${index}`}
+                              onClick={() => {
+                                addQuestion({
+                                  variables: {
+                                    questionTopic: {
+                                      id: uuid(),
+                                      topic_id: topicId,
+                                      question_id: question.id
+                                    }
+                                  }
+                                })
+                                const questions = Object.assign([], previousQuestions)
+                                questions.splice(index, 1)
+                                setPreviousQuestions(questions)
+                              }}
+                            >
+                              <CenterText>{question.question}</CenterText>
+                              <div>
+                                answers: <span className='text-success'>{correctAnswers}</span>
+                              </div>
+                              <div>
+                                dummy answers: <span className='text-warning'> {dummyAnswers}</span>
+                              </div>
+                            </QuestionCard>
+                          )
+                        })}
+                      </>
+                    )
+                  }}
+                </Mutation>
+              )
+            }}
+          </Query>
+        </CurrentQuestionsSection>
+      )}
     </StyledForm>
   )
 }
-
-const PUBLISH_TOPIC = gql`
-  mutation publishTopic($topicId: uuid!, $isPublished: Boolean!) {
-    update_topic(_set: { is_published: $isPublished }, where: { id: { _eq: $topicId } }) {
-      affected_rows
-    }
-  }
-`
 
 export default compose(withRouter)(AddQuestions)

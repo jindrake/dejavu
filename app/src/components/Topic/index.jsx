@@ -1,7 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Button, Form, Input, FormGroup } from 'reactstrap'
 
-const PaperBody = styled.div`
+export const PaperBody = styled.div`
   background: linear-gradient(#e8eaf6, #c5cae9);
   padding: 1vh;
   display: flex;
@@ -14,7 +15,7 @@ const PaperBody = styled.div`
   overflow-y: scroll;
 `
 
-const PaperWrapper = styled.div`
+export const PaperWrapper = styled.div`
   height: 100%;
   margin-bottom: 1vh;
   overflow-y: scroll;
@@ -25,7 +26,7 @@ const PaperWrapper = styled.div`
   /* background: linear-gradient(#e8eaf6, #c5cae9); */
 `
 
-const Loader = styled.div`
+export const Loader = styled.div`
   /* background-color: red; */
   width: ${(props) => (props.percent ? `${props.percent}%` : null)};
   /* width: 100%; */
@@ -56,3 +57,68 @@ export const Paper = ({ children, loadingPercentage }) => (
     </PaperBody>
   </PaperWrapper>
 )
+
+export const CurrentQuestionsSection = styled.div`
+  padding: 5px;
+  margin-bottom: 60px;
+`
+
+export const QuestionCard = styled.div`
+  background-color: white;
+  padding: 5px;
+  margin: 5px;
+  border-radius: 5px;
+`
+
+export const CenterText = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
+`
+
+export const StyledForm = styled(Form)`
+  width: 100%;
+  padding-left: 40px;
+  padding-right: 40px;
+  padding-top: 30px;
+  overflow-y: auto;
+  height: 100%;
+`
+
+export const RightText = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+`
+
+export const UnderlineInput = styled(Input)`
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid #ffffff;
+  -webkit-box-shadow: none;
+  box-shadow: none;
+  border-radius: 0;
+  color: white;
+  &:focus {
+    background-color: transparent;
+    border: none;
+    border-bottom: 1px solid #ffffff;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+    border-radius: 0;
+    color: white;
+  }
+`
+
+export const RemoveButton = styled(Button)`
+  color: red;
+`
+
+export const ChoiceItem = styled(FormGroup)`
+  display: flex;
+`
+
+export const Hint = styled.span`
+  color: #ef5350;
+  margin-left: 6px;
+`

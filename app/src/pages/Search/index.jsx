@@ -10,8 +10,8 @@ import { StyledInput } from '../../components/'
 import Icon from '../../components/Icon'
 
 const FETCH_TOPIC = gql`
-  query fetchTopic($name: String) {
-    topic(limit: 15, where: { name: { _ilike: $name } }) {
+  query fetchTopic($query: topic_bool_exp, $orderBy: [topic_order_by!]) {
+    topic(limit: 15, where: $query) {
       id
       name
       description
@@ -33,9 +33,9 @@ export const INSERT_USER_ACTIVITY = gql`
 
 const Search = ({ user, history, insertUserActivity }) => {
   const [searchValue, setSearchValue] = useState('')
-  const [reliabilityButton, setReliabilityButton] = useState(false)
-  const [consistencyButton, setConsistencyButton] = useState(false)
-  const [dateButton, setDateButton] = useState(false)
+  const [searchByReliability, setSearchByReliability] = useState(false)
+  const [searchByConsistency, setSearchByConsistency] = useState(false)
+  const [sortByDate, setToSortByDate] = useState(false)
 
   let debounceEvent = (...args) => {
     debounceEvent = debounce(...args)
@@ -45,11 +45,6 @@ const Search = ({ user, history, insertUserActivity }) => {
     }
   }
 
-  const handleChange = (e) => {
-    const searchValue = e.target.value
-    setSearchValue(searchValue)
-  }
-
   return (
     <MainDiv>
       <StyledInput
@@ -57,10 +52,21 @@ const Search = ({ user, history, insertUserActivity }) => {
         name='search'
         id='search'
         placeholder='Search topic...'
-        onChange={debounceEvent(handleChange, 500)}
+        onChange={debounceEvent((event) => {
+          setSearchValue(event.target.value)
+        }, 500)}
       />
       <StyledDiv>
-        <Query query={FETCH_TOPIC} variables={{ name: `%${searchValue}%` }}>
+        <Query
+          query={FETCH_TOPIC}
+          variables={{
+            query: {
+              name: {
+                _ilike: searchValue + '%'
+              }
+            }
+          }}
+        >
           {({ data, error, loading }) => {
             if (error) {
               console.log(error)
@@ -70,105 +76,100 @@ const Search = ({ user, history, insertUserActivity }) => {
             console.log('DATA:', data)
             return (
               <div>
-                {
-                  data.topic.length === 0
-                    ? (
-                      <StyledNoResultDiv>
-                        No results found.
-                      </StyledNoResultDiv>
-                    )
-                    : (
-                      <div>
-                        <SortingDiv>
-                          <InnerSortingDiv
+                {data.topic.length === 0 ? (
+                  <StyledNoResultDiv>No results found.</StyledNoResultDiv>
+                ) : (
+                  <div>
+                    <SortingDiv>
+                      <InnerSortingDiv
+                        onClick={() => {
+                          console.log('consistency')
+                          setSearchByConsistency(!searchByConsistency)
+                        }}
+                        clicked={searchByConsistency}
+                      >
+                        Consistency
+                      </InnerSortingDiv>
+                      <InnerSortingDiv
+                        onClick={() => {
+                          console.log('reliability')
+                          setSearchByReliability(!searchByReliability)
+                        }}
+                        clicked={searchByReliability}
+                      >
+                        Reliability
+                      </InnerSortingDiv>
+                      <InnerSortingDiv
+                        onClick={() => {
+                          console.log('date')
+                          setToSortByDate(!sortByDate)
+                        }}
+                        clicked={sortByDate}
+                      >
+                        Date
+                        <StyledIcon clicked={sortByDate} className={`material-icons`}>
+                          {'unfold_more'}
+                        </StyledIcon>
+                      </InnerSortingDiv>
+                    </SortingDiv>
+                    {data.topic &&
+                      data.topic.map((topic) => {
+                        const date = new Date(topic.created_at)
+                        console.log(topic.ratings)
+                        return (
+                          <Wrapper
+                            key={topic.id}
                             onClick={() => {
-                              console.log('consistency')
-                              setConsistencyButton(!consistencyButton)
-                            }}
-                            clicked={consistencyButton}
-                          >
-                            Consistency
-                          </InnerSortingDiv>
-                          <InnerSortingDiv
-                            onClick={() => {
-                              console.log('reliability')
-                              setReliabilityButton(!reliabilityButton)
-                            }}
-                            clicked={reliabilityButton}
-                          >
-                            Reliability
-                          </InnerSortingDiv>
-                          <InnerSortingDiv
-                            onClick={() => {
-                              console.log('date')
-                              setDateButton(!dateButton)
-                            }}
-                            clicked={dateButton}
-                          >
-                            Date
-                            <StyledIcon clicked={dateButton} className={`material-icons`}>{'unfold_more'}</StyledIcon>
-                          </InnerSortingDiv>
-                        </SortingDiv>
-                        {data.topic &&
-                          data.topic.map((topic) => {
-                            const date = new Date(topic.created_at)
-                            console.log(topic.ratings)
-                            return (
-                              <Wrapper
-                                key={topic.id}
-                                onClick={() => {
-                                  if (user) {
-                                    insertUserActivity({
-                                      variables: {
-                                        userActivity: {
-                                          id: uuid(),
-                                          activity_type: 'search',
-                                          user_id: user.id,
-                                          topic_id: topic.id
-                                        }
-                                      }
-                                    })
-                                      .then((res) => {
-                                        console.log(res)
-                                      })
-                                      .catch((err) => {
-                                        console.log(err.message)
-                                      })
+                              if (user) {
+                                insertUserActivity({
+                                  variables: {
+                                    userActivity: {
+                                      id: uuid(),
+                                      activity_type: 'search',
+                                      user_id: user.id,
+                                      topic_id: topic.id
+                                    }
                                   }
-                                  history.push({
-                                    pathname: `topic/${topic.id}`
+                                })
+                                  .then((res) => {
+                                    console.log(res)
                                   })
-                                }}
-                              >
-                                <Title>
-                                  {topic.name}
-                                </Title>
-                                <Description>
-                                  {
-                                    topic.description
-                                  }
-                                </Description>
-                                <Description>
-                                  <Icon name='date_range' />
-                                  &nbsp;&nbsp;{`${date.toDateString()}`}
-                                </Description>
-                                <RatingsDiv>
-                                  <Description>
-                                    <Icon name='thumb_up' />
-                                    &nbsp;&nbsp;{topic.ratings.length > 0 ? topic.ratings.filter((r) => r.type === 'upvote').length : 0}
-
-                                  </Description>
-                                  <Description>
-                                    <Icon name='thumb_down' />
-                                    &nbsp;&nbsp;{topic.ratings.length > 0 ? topic.ratings.filter((r) => r.type === 'downvote').length : 0}
-                                  </Description>
-                                </RatingsDiv>
-                              </Wrapper>
-                            )
-                          })}
-                      </div>
-                    )
-                }
+                                  .catch((err) => {
+                                    console.log(err.message)
+                                  })
+                              }
+                              history.push({
+                                pathname: `topic/${topic.id}`
+                              })
+                            }}
+                          >
+                            <Title>{topic.name}</Title>
+                            <Description>{topic.description}</Description>
+                            <Description>
+                              <Icon name='date_range' />
+                              &nbsp;&nbsp;{`${date.toDateString()}`}
+                            </Description>
+                            <RatingsDiv>
+                              <Description>
+                                <Icon name='thumb_up' />
+                                &nbsp;&nbsp;
+                                {topic.ratings.length > 0
+                                  ? topic.ratings.filter((r) => r.type === 'upvote').length
+                                  : 0}
+                              </Description>
+                              <Description>
+                                <Icon name='thumb_down' />
+                                &nbsp;&nbsp;
+                                {topic.ratings.length > 0
+                                  ? topic.ratings.filter((r) => r.type === 'downvote').length
+                                  : 0}
+                              </Description>
+                            </RatingsDiv>
+                          </Wrapper>
+                        )
+                      })}
+                  </div>
+                )}
               </div>
             )
           }}
@@ -193,7 +194,7 @@ const StyledNoResultDiv = styled.div`
 
 const StyledIcon = styled.i`
   font-size: 2.5vh;
-  color: ${props => props.clicked ? '#a5a4a4' : '#FFF'};
+  color: ${(props) => (props.clicked ? '#a5a4a4' : '#FFF')};
 `
 
 const SortingDiv = styled.div`
@@ -208,7 +209,7 @@ const InnerSortingDiv = styled.div`
   font-family: Helvetica;
   font-weight: bold;
   display: flex;
-  color: ${props => props.clicked ? '#a5a4a4' : '#FFF'};
+  color: ${(props) => (props.clicked ? '#a5a4a4' : '#FFF')};
 `
 
 const RatingsDiv = styled.div`
