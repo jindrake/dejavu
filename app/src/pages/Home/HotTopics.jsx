@@ -40,6 +40,7 @@ const Title = styled.div`
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
+  margin-top: 4vh;
   height: 80%;
 `
 

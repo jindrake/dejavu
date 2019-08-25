@@ -19,7 +19,7 @@ const RecentTopics = ({ user, title, topics = [] }) => (
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 10px;
+  margin-top: 4vh;
   height: 50%;
 `
 const Title = styled.div`
@@ -41,5 +41,6 @@ const TopicsContainer = styled.div`
   margin-right: -40px;
   margin-bottom: 2vh;
 `
+// border-bottom: 2px solid #4B4B4B;
 
 export default RecentTopics

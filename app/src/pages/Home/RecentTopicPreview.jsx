@@ -48,6 +48,7 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
 }
 
 const Title = styled.div`
+  font-size: 17px;
   color: #DDDCDC
 `
 

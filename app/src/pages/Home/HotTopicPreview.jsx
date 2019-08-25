@@ -5,6 +5,7 @@ import uuid from 'uuid/v4'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { INSERT_USER_ACTIVITY } from './queries'
+import Icon from '../../components/Icon'
 
 const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const {
@@ -36,14 +37,19 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
         history.push(`topic/${id}`)
       }}
     >
-      <Title>{name}</Title>
-      <Author>{date.toDateString()}</Author>
-      <Author>
-        upvote: {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
-      </Author>
-      <Author>
-        downvote: {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
-      </Author>
+      <Avatar name='account_circle' />
+      <Content>
+        <Title>{name}</Title>
+        <Author>{date.toDateString()}</Author>
+        <Ratings>
+          <StyledIcon name='thumb_up' />
+          {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
+        </Ratings>
+        <Ratings>
+          <StyledIcon name='thumb_down' />
+          {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
+        </Ratings>
+      </Content>
     </Wrapper>
   )
 }
@@ -55,6 +61,7 @@ const Title = styled.div`
   font-weight: 700;
   max-height: 60%;
   overflow-y: scroll;
+  margin-bottom: 6px;
 `
 
 const Author = styled.div`
@@ -63,6 +70,19 @@ const Author = styled.div`
   opacity: 0.8;
   line-height: 12px;
   margin-bottom: 6px;
+`
+
+const StyledIcon = styled(Icon)`
+  width: 20%;
+`
+
+const Ratings = styled.div`
+  color: #1a237e;
+  font-size: 14px;
+  opacity: 0.8;
+  line-height: 12px;
+  margin-bottom: 6px;
+  margin-right: 7px;
 `
 
 const Wrapper = styled.div`
@@ -83,6 +103,14 @@ const Wrapper = styled.div`
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   animation-delay: ${({ n }) => n * 100 + 'ms'};
+`
+const Avatar = styled(Icon)`
+  float: right;
+  width: 30%;
+`
+
+const Content = styled.div`
+  margin-top: 8vh;
 `
 
 export default compose(
