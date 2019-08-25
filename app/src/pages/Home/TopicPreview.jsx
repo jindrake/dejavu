@@ -37,19 +37,16 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
         history.push(`topic/${id}`)
       }}
     >
-      <Avatar name='account_circle' />
-      <Content>
-        <Title>{name}</Title>
-        <Author>{date.toDateString()}</Author>
-        <Ratings>
-          <StyledIcon name='thumb_up' />
-          {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
-        </Ratings>
-        <Ratings>
-          <StyledIcon name='thumb_down' />
-          {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
-        </Ratings>
-      </Content>
+      <Title>{name}</Title>
+      <Author>{date.toDateString()}</Author>
+      <Ratings>
+        <StyledIcon name='thumb_up' />
+        {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
+      </Ratings>
+      <Ratings>
+        <StyledIcon name='thumb_down' />
+        {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
+      </Ratings>
     </Wrapper>
   )
 }
@@ -62,6 +59,7 @@ const Title = styled.div`
   max-height: 60%;
   overflow-y: scroll;
   margin-bottom: 6px;
+  justify-content: left;
 `
 
 const Author = styled.div`
@@ -73,7 +71,8 @@ const Author = styled.div`
 `
 
 const StyledIcon = styled(Icon)`
-  width: 20%;
+  width: 100%;
+  justify-content: right;
 `
 
 const Ratings = styled.div`
@@ -103,14 +102,6 @@ const Wrapper = styled.div`
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   animation-delay: ${({ n }) => n * 100 + 'ms'};
-`
-const Avatar = styled(Icon)`
-  float: right;
-  width: 30%;
-`
-
-const Content = styled.div`
-  margin-top: 8vh;
 `
 
 export default compose(

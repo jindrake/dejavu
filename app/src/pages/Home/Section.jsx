@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import HotTopicPreview from './HotTopicPreview'
+import TopicPreview from './TopicPreview'
 
 const Section = ({ user, title, topics = [] }) => (
   <Wrapper>
@@ -9,7 +9,7 @@ const Section = ({ user, title, topics = [] }) => (
     <TopicsContainer>
       <Belt>
         {topics.map((topic, index) => (
-          <HotTopicPreview key={index} n={index} topic={topic} user={user} />
+          <TopicPreview key={index} n={index} topic={topic} user={user} />
         ))}
       </Belt>
     </TopicsContainer>
