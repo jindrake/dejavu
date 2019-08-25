@@ -1,35 +1,41 @@
 import React from 'react'
 import styled from 'styled-components'
 
-import TopicPreview from './TopicPreview'
+import RecentTopicPreview from './RecentTopicPreview'
 
 const RecentTopics = ({ user, title, topics = [] }) => (
   <Wrapper>
     <Title>{title}</Title>
-    {topics.map((topic, index) => (
-      <TopicsContainer>
-        <TopicPreview key={index} n={index} topic={topic} user={user} />
-      </TopicsContainer>
-    ))}
+    <ContentWrapper>
+      {topics.map((topic, index) => (
+        <TopicsContainer>
+          <RecentTopicPreview key={index} n={index} topic={topic} user={user} />
+        </TopicsContainer>
+      ))}
+    </ContentWrapper>
   </Wrapper>
 )
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  margin-top: 20px;
-  height: 20%;
+  margin-top: 10px;
+  height: 50%;
 `
-
 const Title = styled.div`
   color: #c5cae9;
   font-size: 12px;
-  margin-bottom: 4px;
+  margin-bottom: 5px;
+`
+
+const ContentWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  overflow-x: scroll;
 `
 
 const TopicsContainer = styled.div`
   width: 100%;
-  overflow-x: scroll;
   height: 100%;
   margin-left: -40px;
   margin-right: -40px;

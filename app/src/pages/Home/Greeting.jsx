@@ -9,13 +9,12 @@ const Greeting = ({ user }) => (
       Hello, {user ? user.first_name : 'Study Buddy'}!
     </LeftWrapper>
     <RightWrapper>
-      <Icon name='add_circle_outline' />
+      <StyledIcon name='add' />
     </RightWrapper>
   </Wrapper>
 )
 
 const Wrapper = styled.div`
-  height: 30%;
   font-size: 18px;
   font-weight: 00;
   color: #e8eaf6;
@@ -29,4 +28,9 @@ const LeftWrapper = styled.div`
 const RightWrapper = styled.div`
   float: right;
 `
+
+const StyledIcon = styled(Icon)`
+  width: 30%
+`
+
 export default Greeting

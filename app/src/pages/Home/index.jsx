@@ -5,7 +5,7 @@ import compose from 'recompose/compose'
 import withFirebase from '../../hocs/withFirebase'
 
 import Greeting from './Greeting'
-import Section from './Section'
+import HotTopics from './HotTopics'
 import RecentTopics from './RecentTopics'
 import { useStateValue } from '../../libs'
 
@@ -49,7 +49,7 @@ const Home = ({ fetchHotTopics, fetchRecentTopics }) => {
   return (
     <Wrapper>
       <Greeting user={user} />
-      <Section title='Hot Topics' topics={hotTopics} user={user} />
+      <HotTopics title='Hot Topics' topics={hotTopics} user={user} />
       <RecentTopics title='Recent Topics' topics={recentTopics} user={user} />
     </Wrapper>
   )
