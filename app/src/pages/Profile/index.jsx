@@ -11,10 +11,12 @@ import Icon from '../../components/Icon'
 const AvatarContainer = styled.div`
   border-radius: 50%;
   vertical-align: middle;
-  width: 110px;
-  height: 110px;
+  width: 100px;
+  height: 100px;
   border-radius: 50%;
-  background-color: white;
+  background-color: #c5cae9;
+  font-size: .75em;
+  color: #1a237e;
 `
 
 const ProfileInfo = styled.div`
@@ -114,14 +116,23 @@ const PreviewWrapper = styled.div`
   animation-delay: ${({ n }) => n * 100 + 'ms'};
 `
 
+const NoTopicsHolder = styled.div`
+  color: white;
+  font-size: 20px;
+  text-align: center;
+`
+
 const Profile = ({ user, history, insertUserActivity }) => {
   console.log(user.id)
+
+  const initials = user.first_name.charAt(0) + user.last_name.charAt(0)
 
   return (
     <Container>
       <ProfileInfo>
-        <AvatarContainer />
-        {/* <Icon name='perm_identity' /> */}
+        {
+          user.avatar === undefined ? <AvatarContainer>{initials.toUpperCase()}</AvatarContainer> : <AvatarContainer style={{ backgroundImage: `${user.avatar}` }} />
+        }
       </ProfileInfo>
       <CenteredText>
         {user.first_name} {user.last_name}
@@ -138,11 +149,11 @@ const Profile = ({ user, history, insertUserActivity }) => {
               <Wrapper>
                 <SectionTitle>Your created topics</SectionTitle>
                 <TopicsContainer>
-                  <Belt>
-                    {topics.length === 0 ? (
-                      <CenteredText>No Created Topics</CenteredText>
-                    ) : (
-                      topics.map((topic, index) => {
+                  {topics.length === 0 ? (
+                    <NoTopicsHolder>No Created Topics</NoTopicsHolder>
+                  ) : (
+                    <Belt>
+                      {topics.map((topic, index) => {
                         const date = new Date(topic.created_at)
                         return (
                           <PreviewWrapper
@@ -170,7 +181,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
                             }}
                           >
                             <Title>{topic.name}</Title>
-                            <Author>Date: {date.toDateString()}</Author>
+                            <Author>{date.toDateString()}</Author>
                             <Author>{topic.description}</Author>
                             <Author>
                               <Icon name='thumb_up_alt' />{' '}
@@ -186,9 +197,9 @@ const Profile = ({ user, history, insertUserActivity }) => {
                             </Author>
                           </PreviewWrapper>
                         )
-                      })
-                    )}
-                  </Belt>
+                      })}
+                    </Belt>
+                  )}
                 </TopicsContainer>
               </Wrapper>
             )
@@ -214,55 +225,53 @@ const Profile = ({ user, history, insertUserActivity }) => {
               <Wrapper>
                 <SectionTitle>Recent Topics</SectionTitle>
                 <TopicsContainer>
-                  <Belt>
-                    {topics.length === 0 ? (
-                      <CenteredText>No Recent Topics</CenteredText>
-                    ) : (
-                      topics.map((topic, index) => {
-                        return (
-                          <PreviewWrapper
-                            key={index}
-                            onClick={() => {
-                              if (user) {
-                                insertUserActivity({
-                                  variables: {
-                                    userActivity: {
-                                      id: uuid(),
-                                      activity_type: 'view',
-                                      user_id: user.id,
-                                      topic_id: topic.topic.id
-                                    }
+                  {topics.length === 0 ? (
+                    <NoTopicsHolder>No Recent Topics</NoTopicsHolder>
+                  ) : (
+                    <Belt>
+                      {topics.map((topic, index) => (
+                        <PreviewWrapper
+                          key={index}
+                          onClick={() => {
+                            if (user) {
+                              insertUserActivity({
+                                variables: {
+                                  userActivity: {
+                                    id: uuid(),
+                                    activity_type: 'view',
+                                    user_id: user.id,
+                                    topic_id: topic.topic.id
                                   }
+                                }
+                              })
+                                .then((res) => {
+                                  console.log(res)
                                 })
-                                  .then((res) => {
-                                    console.log(res)
-                                  })
-                                  .catch((err) => {
-                                    console.log(err.message)
-                                  })
-                              }
-                              history.push(`topic/${topic.topic.id}`)
-                            }}
-                          >
-                            <Title>{topic.topic.name}</Title>
-                            <Author>{topic.topic.description}</Author>
-                            <Author>
-                              <Icon name='thumb_up_alt' />{' '}
-                              {topic.topic.ratings.length > 0
-                                ? topic.topic.ratings.filter((r) => r.type === 'upvote').length
-                                : 0}
-                            </Author>
-                            <Author>
-                              <Icon name='thumb_down_alt' />{' '}
-                              {topic.topic.ratings.length > 0
-                                ? topic.topic.ratings.filter((r) => r.type === 'downvote').length
-                                : 0}
-                            </Author>
-                          </PreviewWrapper>
-                        )
-                      })
-                    )}
-                  </Belt>
+                                .catch((err) => {
+                                  console.log(err.message)
+                                })
+                            }
+                            history.push(`topic/${topic.topic.id}`)
+                          }}
+                        >
+                          <Title>{topic.topic.name}</Title>
+                          <Author>{topic.topic.description}</Author>
+                          <Author>
+                            <Icon name='thumb_up_alt' />{' '}
+                            {topic.topic.ratings.length > 0
+                              ? topic.topic.ratings.filter((r) => r.type === 'upvote').length
+                              : 0}
+                          </Author>
+                          <Author>
+                            <Icon name='thumb_down_alt' />{' '}
+                            {topic.topic.ratings.length > 0
+                              ? topic.topic.ratings.filter((r) => r.type === 'downvote').length
+                              : 0}
+                          </Author>
+                        </PreviewWrapper>
+                      ))}
+                    </Belt>
+                  )}
                 </TopicsContainer>
               </Wrapper>
             )
