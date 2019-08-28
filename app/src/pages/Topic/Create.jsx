@@ -3,14 +3,16 @@ import styled from 'styled-components'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { Button, FormGroup, Label } from 'reactstrap'
-import { compose, graphql, Query } from 'react-apollo'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import uuid from 'uuid/v4'
 import { StyledInput, Title, StyledCheckbox, OverlayLoader, FormWrapper } from '../../components'
 import Alert from '../../components/Alert'
-import { getObjectValue } from '../../libs'
+import { getObjectValue, useStateValue } from '../../libs'
 // import ErrorText from '../../components/ErrorText'
+import compose from 'recompose/compose'
+import { graphql } from '@apollo/react-hoc'
+import { useQuery } from '@apollo/react-hooks'
 
 const FETCH_FIELDS = gql`
   query fetchFields {
@@ -42,7 +44,13 @@ const CREATE_TOPIC_FIELD_RELATIONSHIP = gql`
 `
 
 const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelationship }) => {
-  // const [globalState, globalDispatch] = useStateValue()
+  const [, globalDispatch] = useStateValue()
+  const { data, loading, error } = useQuery(FETCH_FIELDS)
+  if (error) {
+    globalDispatch({
+      networkError: error.message
+    })
+  }
   return (
     <Formik
       initialValues={{
@@ -119,89 +127,80 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
         setStatus
       }) => {
         return (
-          <Query query={FETCH_FIELDS}>
-            {({ data, loading, error }) => {
-              if (error) {
-                setStatus({ type: 'error', text: error })
-              }
-              return (
-                <FormWrapper>
-                  {(isSubmitting || loading) && <OverlayLoader />}
-                  <Title>Create a topic</Title>
-                  <FormGroup>
-                    <Label for='name'>
-                      <SubHeader>Title</SubHeader>
-                    </Label>
-                    <StyledInput
-                      type='text'
-                      name='name'
-                      placeholder='Enter title here ..'
-                      value={values.name}
-                      onChange={(e) => {
-                        setFieldValue('name', e.target.value)
-                        const uri = `${e.target.value.toLowerCase().replace(/[\W\s^-]/g, '-')}`
-                        const validateUri = uri.replace(/(-+|_+)/g, '')
-                        setFieldValue('uri', `${validateUri}-${uuid().substr(0, 4)}`)
-                      }}
-                      invalid={errors.name && touched.name}
-                    />
-                    {/* <ErrorText text={touched.name && errors.name} /> */}
-                  </FormGroup>
-                  <FormGroup>
-                    <Label for='description'>
-                      <SubHeader>Description</SubHeader>
-                    </Label>
-                    <StyledInput
-                      type='textarea'
-                      name='description'
-                      placeholder='Enter description here ..'
-                      values={values.description}
-                      onChange={handleChange}
-                      invalid={errors.description && touched.description}
-                    />
-                    {/* <ErrorText text={touched.description && errors.description} /> */}
-                  </FormGroup>
-                  <FormGroup>
-                    <Label for='fieldOfStudy'>
-                      <SubHeader>Target field</SubHeader>
-                    </Label>
-                    <StyledInput
-                      type='select'
-                      name='fieldOfStudy'
-                      data-cy='field-of-study'
-                      onChange={handleChange}
-                      invalid={errors.fieldOfStudy && touched.fieldOfStudy}
-                      value={values.fieldOfStudy}
-                    >
-                      <option value='' />
-                      {data.enum_field &&
-                        data.enum_field.map(({ field }) => (
-                          <option value={field} key={field}>
-                            {field}
-                          </option>
-                        ))}
-                    </StyledInput>
-                  </FormGroup>
-                  <FormGroup>
-                    <StyledCheckbox
-                      label='make topic private'
-                      type='checkbox'
-                      id='isPrivate'
-                      name='isPrivate'
-                      onChange={(event) => {
-                        setFieldValue('isPrivate', event.target.checked)
-                      }}
-                      value={!!values.isPrivate}
-                    />
-                  </FormGroup>
-                  {status && <Alert {...status} />}
-                  <Button data-cy='submit' onClick={handleSubmit}>
-                    {'Proceed'}
-                  </Button>
-                </FormWrapper>
-              )
-            }}
-          </Query>
+          <FormWrapper>
+            {(isSubmitting || loading) && <OverlayLoader />}
+            <Title>Create a topic</Title>
+            <FormGroup>
+              <Label for='name'>
+                <SubHeader>Title</SubHeader>
+              </Label>
+              <StyledInput
+                type='text'
+                name='name'
+                placeholder='Enter title here ..'
+                value={values.name}
+                onChange={(e) => {
+                  setFieldValue('name', e.target.value)
+                  const uri = `${e.target.value.toLowerCase().replace(/[\W\s^-]/g, '-')}`
+                  const validateUri = uri.replace(/(-+|_+)/g, '')
+                  setFieldValue('uri', `${validateUri}-${uuid().substr(0, 4)}`)
+                }}
+                invalid={errors.name && touched.name}
+              />
+              {/* <ErrorText text={touched.name && errors.name} /> */}
+            </FormGroup>
+            <FormGroup>
+              <Label for='description'>
+                <SubHeader>Description</SubHeader>
+              </Label>
+              <StyledInput
+                type='textarea'
+                name='description'
+                placeholder='Enter description here ..'
+                values={values.description}
+                onChange={handleChange}
+                invalid={errors.description && touched.description}
+              />
+              {/* <ErrorText text={touched.description && errors.description} /> */}
+            </FormGroup>
+            <FormGroup>
+              <Label for='fieldOfStudy'>
+                <SubHeader>Target field</SubHeader>
+              </Label>
+              <StyledInput
+                type='select'
+                name='fieldOfStudy'
+                data-cy='field-of-study'
+                onChange={handleChange}
+                invalid={errors.fieldOfStudy && touched.fieldOfStudy}
+                value={values.fieldOfStudy}
+              >
+                <option value='' />
+                {data.enum_field &&
+                  data.enum_field.map(({ field }) => (
+                    <option value={field} key={field}>
+                      {field}
+                    </option>
+                  ))}
+              </StyledInput>
+            </FormGroup>
+            <FormGroup>
+              <StyledCheckbox
+                label='make topic private'
+                type='checkbox'
+                id='isPrivate'
+                name='isPrivate'
+                onChange={(event) => {
+                  setFieldValue('isPrivate', event.target.checked)
+                }}
+                value={!!values.isPrivate}
+              />
+            </FormGroup>
+            {status && <Alert {...status} />}
+            <Button data-cy='submit' onClick={handleSubmit}>
+              {'Proceed'}
+            </Button>
+          </FormWrapper>
         )
       }}
     </Formik>

@@ -1,17 +1,19 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { debounce } from 'lodash'
 import gql from 'graphql-tag'
-import { Query, compose, graphql } from 'react-apollo'
+import compose from 'recompose/compose'
+import { graphql } from '@apollo/react-hoc'
+import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import uuid from 'uuid/v4'
-
-import { StyledInput } from '../../components/'
+import { useStateValue } from '../../libs'
+import { StyledInput, FullPageLoader } from '../../components/'
 import Icon from '../../components/Icon'
 
 const FETCH_TOPIC = gql`
   query fetchTopic($query: topic_bool_exp, $orderBy: [topic_order_by!]) {
-    topic(limit: 15, where: $query) {
+    topic(limit: 15, where: $query, order_by: $orderBy) {
       id
       name
       description
@@ -32,10 +34,71 @@ export const INSERT_USER_ACTIVITY = gql`
 `
 
 const Search = ({ user, history, insertUserActivity }) => {
+  const [, globalDispatch] = useStateValue()
   const [searchValue, setSearchValue] = useState('')
   const [searchByReliability, setSearchByReliability] = useState(false)
   const [searchByConsistency, setSearchByConsistency] = useState(false)
-  const [sortByDate, setToSortByDate] = useState(false)
+  const [sortByDateAsc, setToSortByDateAsc] = useState(false)
+  const { loading, error, data, refetch } = useQuery(FETCH_TOPIC, {
+    variables: {
+      query: {
+        name: {
+          _ilike: '%'
+        }
+      },
+      orderBy: {
+        created_at: 'asc'
+      }
+    },
+    fetchPolicy: 'no-cache'
+  })
+  // const { loading, error, data, refetch } = useQuery(FETCH_TOPIC, {
+  //   variables: {
+  //     query: {
+  //       name: {
+  //         _ilike: searchValue + '%'
+  //       }
+  //     },
+  //     orderBy: {
+  //       created_at: sortByDateAsc ? 'asc' : 'desc'
+  //     }
+  //   }
+  // })
+  useEffect(() => {
+    refetch({
+      query: {
+        name: {
+          _ilike: searchValue + '%'
+        }
+      },
+      orderBy: {
+        created_at: sortByDateAsc ? 'asc' : 'desc'
+      }
+    })
+  }, [searchValue, searchByReliability, searchByConsistency, sortByDateAsc])
+
+  if (loading) return <FullPageLoader />
+  if (error) {
+    globalDispatch({
+      networkError: error.message
+    })
+    return null
+  }
+
+  // useEffect(() => {
+  //   refetch({
+  //     variables: {
+  //       query: {
+  //         name: {
+  //           _ilike: searchValue + '%'
+  //         }
+  //       },
+  //       orderBy: {
+  //         created_at: sortByDateAsc ? 'asc' : 'desc'
+  //       }
+  //     }
+  //   })
+  // }, [searchValue, searchByReliability, searchByConsistency, sortByDateAsc])
 
   let debounceEvent = (...args) => {
     debounceEvent = debounce(...args)
@@ -52,128 +115,111 @@ const Search = ({ user, history, insertUserActivity }) => {
         name='search'
         id='search'
         placeholder='Search topic...'
-        onChange={debounceEvent((event) => {
+        // onChange={debounceEvent((event) => {
+        //   setSearchValue(event.target.value)
+        // }, 500)}
+        onChange={(event) => {
           setSearchValue(event.target.value)
-        }, 500)}
+        }}
       />
       <StyledDiv>
-        <Query
-          query={FETCH_TOPIC}
-          variables={{
-            query: {
-              name: {
-                _ilike: searchValue + '%'
-              }
-            }
-          }}
-        >
-          {({ data, error, loading }) => {
-            if (error) {
-              console.log(error)
-              return <div>Error: {JSON.stringify(error)}</div>
-            }
-            if (loading) return <div>Loading Symbol...</div>
-            console.log('DATA:', data)
-            return (
-              <div>
-                {data.topic.length === 0 ? (
-                  <StyledNoResultDiv>No results found.</StyledNoResultDiv>
-                ) : (
-                  <div>
-                    <SortingDiv>
-                      <InnerSortingDiv
-                        onClick={() => {
-                          console.log('consistency')
-                          setSearchByConsistency(!searchByConsistency)
-                        }}
-                        clicked={searchByConsistency}
-                      >
-                        Consistency
-                      </InnerSortingDiv>
-                      <InnerSortingDiv
-                        onClick={() => {
-                          console.log('reliability')
-                          setSearchByReliability(!searchByReliability)
-                        }}
-                        clicked={searchByReliability}
-                      >
-                        Reliability
-                      </InnerSortingDiv>
-                      <InnerSortingDiv
-                        onClick={() => {
-                          console.log('date')
-                          setToSortByDate(!sortByDate)
-                        }}
-                        clicked={sortByDate}
-                      >
-                        Date
-                        <StyledIcon clicked={sortByDate} className={`material-icons`}>
-                          {'unfold_more'}
-                        </StyledIcon>
-                      </InnerSortingDiv>
-                    </SortingDiv>
-                    {data.topic &&
-                      data.topic.map((topic) => {
-                        const date = new Date(topic.created_at)
-                        console.log(topic.ratings)
-                        return (
-                          <Wrapper
-                            key={topic.id}
-                            onClick={() => {
-                              if (user) {
-                                insertUserActivity({
-                                  variables: {
-                                    userActivity: {
-                                      id: uuid(),
-                                      activity_type: 'search',
-                                      user_id: user.id,
-                                      topic_id: topic.id
-                                    }
-                                  }
-                                })
-                                  .then((res) => {
-                                    console.log(res)
-                                  })
-                                  .catch((err) => {
-                                    console.log(err.message)
-                                  })
+        <div>
+          {data.topic.length === 0 ? (
+            <StyledNoResultDiv>No results found.</StyledNoResultDiv>
+          ) : (
+            <div>
+              <SortingDiv>
+                <InnerSortingDiv
+                  onClick={() => {
+                    console.log('consistency')
+                    setSearchByConsistency(!searchByConsistency)
+                  }}
+                  clicked={searchByConsistency}
+                >
+                  Consistency
+                </InnerSortingDiv>
+                <InnerSortingDiv
+                  onClick={() => {
+                    console.log('reliability')
+                    setSearchByReliability(!searchByReliability)
+                  }}
+                  clicked={searchByReliability}
+                >
+                  Reliability
+                </InnerSortingDiv>
+                <InnerSortingDiv
+                  onClick={() => {
+                    console.log('date')
+                    setToSortByDateAsc(!sortByDateAsc)
+                    refetch()
+                  }}
+                  clicked={sortByDateAsc}
+                >
+                  Date
+                  <StyledIcon clicked={sortByDateAsc} className={`material-icons`}>
+                    {'unfold_more'}
+                  </StyledIcon>
+                </InnerSortingDiv>
+              </SortingDiv>
+              {data.topic &&
+                data.topic.map((topic) => {
+                  const date = new Date(topic.created_at)
+                  console.log(topic.ratings)
+                  return (
+                    <Wrapper
+                      key={topic.id}
+                      onClick={() => {
+                        if (user) {
+                          insertUserActivity({
+                            variables: {
+                              userActivity: {
+                                id: uuid(),
+                                activity_type: 'search',
+                                user_id: user.id,
+                                topic_id: topic.id
                               }
-                              history.push({
-                                pathname: `topic/${topic.id}`
-                              })
-                            }}
-                          >
-                            <Title>{topic.name}</Title>
-                            <Description>{topic.description}</Description>
-                            <Description>
-                              <Icon name='date_range' />
-                              &nbsp;&nbsp;{`${date.toDateString()}`}
-                            </Description>
-                            <RatingsDiv>
-                              <Description>
-                                <Icon name='thumb_up' />
-                                &nbsp;&nbsp;
-                                {topic.ratings.length > 0
-                                  ? topic.ratings.filter((r) => r.type === 'upvote').length
-                                  : 0}
-                              </Description>
-                              <Description>
-                                <Icon name='thumb_down' />
-                                &nbsp;&nbsp;
-                                {topic.ratings.length > 0
-                                  ? topic.ratings.filter((r) => r.type === 'downvote').length
-                                  : 0}
-                              </Description>
-                            </RatingsDiv>
-                          </Wrapper>
-                        )
-                      })}
-                  </div>
-                )}
-              </div>
-            )
-          }}
-        </Query>
+                            }
+                          })
+                            .then((res) => {
+                              console.log(res)
+                            })
+                            .catch((err) => {
+                              console.log(err.message)
+                            })
+                        }
+                        history.push({
+                          pathname: `topic/${topic.id}`
+                        })
+                      }}
+                    >
+                      <Title>{topic.name}</Title>
+                      <Description>{topic.description}</Description>
+                      <Description>
+                        <Icon name='date_range' />
+                        &nbsp;&nbsp;{`${date.toDateString()}`}
+                      </Description>
+                      <RatingsDiv>
+                        <Description>
+                          <Icon name='thumb_up' />
+                          &nbsp;&nbsp;
+                          {topic.ratings.length > 0
+                            ? topic.ratings.filter((r) => r.type === 'upvote').length
+                            : 0}
+                        </Description>
+                        <Description>
+                          <Icon name='thumb_down' />
+                          &nbsp;&nbsp;
+                          {topic.ratings.length > 0
+                            ? topic.ratings.filter((r) => r.type === 'downvote').length
+                            : 0}
+                        </Description>
+                      </RatingsDiv>
+                    </Wrapper>
+                  )
+                })}
+            </div>
+          )}
+        </div>
       </StyledDiv>
     </MainDiv>
   )

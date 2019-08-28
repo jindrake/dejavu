@@ -1,12 +1,15 @@
 import React from 'react'
-import { compose, Query, graphql } from 'react-apollo'
+import compose from 'recompose/compose'
+import { graphql } from '@apollo/react-hoc'
+import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import uuid from 'uuid'
 
 import { FETCH_MY_TOPIC, FETCH_TAKEN_TOPIC, INSERT_USER_ACTIVITY } from './queries'
-import { Button } from '../../components'
+import { Button, FullPageLoader } from '../../components'
 import Icon from '../../components/Icon'
+import { useStateValue } from '../../libs'
 
 const AvatarContainer = styled.div`
   border-radius: 50%;
@@ -115,8 +118,40 @@ const PreviewWrapper = styled.div`
 `
 
 const Profile = ({ user, history, insertUserActivity }) => {
-  console.log(user.id)
+  const [, globalDispatch] = useStateValue()
+  const { data: userTopicsData, error: userTopicsError, loading: userTopicsLoading } = useQuery(
+    FETCH_MY_TOPIC,
+    {
+      variables: {
+        userId: user.id
+      }
+    }
+  )
+  const { data: takenTopicsData, error: takenTopicsError, loading: takenTopicsLoading } = useQuery(
+    FETCH_TAKEN_TOPIC,
+    {
+      variables: {
+        userId: user.id
+      }
+    }
+  )
+  if (userTopicsLoading || takenTopicsLoading) {
+    return <FullPageLoader />
+  }
 
+  if (userTopicsError) {
+    globalDispatch({
+      networkError: userTopicsError.message
+    })
+  }
+  if (takenTopicsError) {
+    globalDispatch({
+      networkError: takenTopicsError.message
+    })
+  }
+  const userTopics = userTopicsData.topic
+  const takenTopics = takenTopicsData.user_activity
+  console.log('MY TOPICS: ', userTopics, takenTopics)
   return (
     <Container>
       <ProfileInfo>
@@ -128,72 +163,62 @@ const Profile = ({ user, history, insertUserActivity }) => {
       </CenteredText>
       <hr />
       <TopicWrapper>
-        <Query query={FETCH_MY_TOPIC} variables={{ userId: user.id }}>
-          {({ data, error, loading }) => {
-            if (error) return <div>Error fetching topic: {error.message}</div>
-            if (loading) return <div>loading topic...</div>
-            const topics = data.topic
-            console.log('MY TOPICS: ', topics)
-            return (
-              <Wrapper>
-                <SectionTitle>Your created topics</SectionTitle>
-                <TopicsContainer>
-                  <Belt>
-                    {topics.length === 0 ? (
-                      <CenteredText>No Created Topics</CenteredText>
-                    ) : (
-                      topics.map((topic, index) => {
-                        const date = new Date(topic.created_at)
-                        return (
-                          <PreviewWrapper
-                            key={index}
-                            onClick={() => {
-                              if (user) {
-                                insertUserActivity({
-                                  variables: {
-                                    userActivity: {
-                                      id: uuid(),
-                                      activity_type: 'view',
-                                      user_id: user.id,
-                                      topic_id: topic.id
-                                    }
-                                  }
-                                })
-                                  .then((res) => {
-                                    console.log(res)
-                                  })
-                                  .catch((err) => {
-                                    console.log(err.message)
-                                  })
+        <Wrapper>
+          <SectionTitle>Your created topics</SectionTitle>
+          <TopicsContainer>
+            <Belt>
+              {userTopics.length === 0 ? (
+                <CenteredText>No Created Topics</CenteredText>
+              ) : (
+                userTopics.map((topic, index) => {
+                  const date = new Date(topic.created_at)
+                  return (
+                    <PreviewWrapper
+                      key={index}
+                      onClick={() => {
+                        if (user) {
+                          insertUserActivity({
+                            variables: {
+                              userActivity: {
+                                id: uuid(),
+                                activity_type: 'view',
+                                user_id: user.id,
+                                topic_id: topic.id
                               }
-                              history.push(`topic/${topic.id}`)
-                            }}
-                          >
-                            <Title>{topic.name}</Title>
-                            <Author>Date: {date.toDateString()}</Author>
-                            <Author>{topic.description}</Author>
-                            <Author>
-                              <Icon name='thumb_up_alt' />{' '}
-                              {topic.ratings.length > 0
-                                ? topic.ratings.filter((r) => r.type === 'upvote').length
-                                : 0}
-                            </Author>
-                            <Author>
-                              <Icon name='thumb_down_alt' />{' '}
-                              {topic.ratings.length > 0
-                                ? topic.ratings.filter((r) => r.type === 'downvote').length
-                                : 0}
-                            </Author>
-                          </PreviewWrapper>
-                        )
-                      })
-                    )}
-                  </Belt>
-                </TopicsContainer>
-              </Wrapper>
-            )
-          }}
-        </Query>
+                            }
+                          })
+                            .then((res) => {
+                              console.log(res)
+                            })
+                            .catch((err) => {
+                              console.log(err.message)
+                            })
+                        }
+                        history.push(`topic/${topic.id}`)
+                      }}
+                    >
+                      <Title>{topic.name}</Title>
+                      <Author>Date: {date.toDateString()}</Author>
+                      <Author>{topic.description}</Author>
+                      <Author>
+                        <Icon name='thumb_up_alt' />{' '}
+                        {topic.ratings.length > 0
+                          ? topic.ratings.filter((r) => r.type === 'upvote').length
+                          : 0}
+                      </Author>
+                      <Author>
+                        <Icon name='thumb_down_alt' />{' '}
+                        {topic.ratings.length > 0
+                          ? topic.ratings.filter((r) => r.type === 'downvote').length
+                          : 0}
+                      </Author>
+                    </PreviewWrapper>
+                  )
+                })
+              )}
+            </Belt>
+          </TopicsContainer>
+        </Wrapper>
         <br />
         <CenteredText>
           <Button
@@ -204,70 +229,60 @@ const Profile = ({ user, history, insertUserActivity }) => {
             }}
           />
         </CenteredText>
-        <Query query={FETCH_TAKEN_TOPIC} variables={{ userId: user.id }}>
-          {({ data, error, loading }) => {
-            if (error) return <div>Error fetching topic: {error.message}</div>
-            if (loading) return <div>loading topic...</div>
-            const topics = data.user_activity
-            console.log('TAKEN TOPICS:', topics)
-            return (
-              <Wrapper>
-                <SectionTitle>Recent Topics</SectionTitle>
-                <TopicsContainer>
-                  <Belt>
-                    {topics.length === 0 ? (
-                      <CenteredText>No Recent Topics</CenteredText>
-                    ) : (
-                      topics.map((topic, index) => {
-                        return (
-                          <PreviewWrapper
-                            key={index}
-                            onClick={() => {
-                              if (user) {
-                                insertUserActivity({
-                                  variables: {
-                                    userActivity: {
-                                      id: uuid(),
-                                      activity_type: 'view',
-                                      user_id: user.id,
-                                      topic_id: topic.topic.id
-                                    }
-                                  }
-                                })
-                                  .then((res) => {
-                                    console.log(res)
-                                  })
-                                  .catch((err) => {
-                                    console.log(err.message)
-                                  })
+        <Wrapper>
+          <SectionTitle>Recent Topics</SectionTitle>
+          <TopicsContainer>
+            <Belt>
+              {takenTopics.length === 0 ? (
+                <CenteredText>No Recent Topics</CenteredText>
+              ) : (
+                takenTopics.map((topic, index) => {
+                  return (
+                    <PreviewWrapper
+                      key={index}
+                      onClick={() => {
+                        if (user) {
+                          insertUserActivity({
+                            variables: {
+                              userActivity: {
+                                id: uuid(),
+                                activity_type: 'view',
+                                user_id: user.id,
+                                topic_id: topic.topic.id
                               }
-                              history.push(`topic/${topic.topic.id}`)
-                            }}
-                          >
-                            <Title>{topic.topic.name}</Title>
-                            <Author>{topic.topic.description}</Author>
-                            <Author>
-                              <Icon name='thumb_up_alt' />{' '}
-                              {topic.topic.ratings.length > 0
-                                ? topic.topic.ratings.filter((r) => r.type === 'upvote').length
-                                : 0}
-                            </Author>
-                            <Author>
-                              <Icon name='thumb_down_alt' />{' '}
-                              {topic.topic.ratings.length > 0
-                                ? topic.topic.ratings.filter((r) => r.type === 'downvote').length
-                                : 0}
-                            </Author>
-                          </PreviewWrapper>
-                        )
-                      })
-                    )}
-                  </Belt>
-                </TopicsContainer>
-              </Wrapper>
-            )
-          }}
-        </Query>
+                            }
+                          })
+                            .then((res) => {
+                              console.log(res)
+                            })
+                            .catch((err) => {
+                              console.log(err.message)
+                            })
+                        }
+                        history.push(`topic/${topic.topic.id}`)
+                      }}
+                    >
+                      <Title>{topic.topic.name}</Title>
+                      <Author>{topic.topic.description}</Author>
+                      <Author>
+                        <Icon name='thumb_up_alt' />{' '}
+                        {topic.topic.ratings.length > 0
+                          ? topic.topic.ratings.filter((r) => r.type === 'upvote').length
+                          : 0}
+                      </Author>
+                      <Author>
+                        <Icon name='thumb_down_alt' />{' '}
+                        {topic.topic.ratings.length > 0
+                          ? topic.topic.ratings.filter((r) => r.type === 'downvote').length
+                          : 0}
+                      </Author>
+                    </PreviewWrapper>
+                  )
+                })
+              )}
+            </Belt>
+          </TopicsContainer>
+        </Wrapper>
       </TopicWrapper>
     </Container>
   )

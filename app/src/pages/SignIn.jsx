@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { compose } from 'react-apollo'
+import compose from 'recompose/compose'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { withFirebase } from '../hocs'
@@ -56,7 +56,7 @@ const SignIn = ({ firebase, history }) => {
                 <br />
                 study buddy!
               </Title>
-              {status && <Alert {...status} data-cy='alert' />}
+              {status ? <Alert {...status} data-cy='alert' /> : null}
               <FormItem>
                 <Label>
                   Email{' '}

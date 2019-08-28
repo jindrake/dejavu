@@ -2,8 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import uuid from 'uuid/v4'
-import { compose, graphql } from 'react-apollo'
-
+import compose from 'recompose/compose'
+import { graphql } from '@apollo/react-hoc'
 import { INSERT_USER_ACTIVITY } from './queries'
 
 const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {

@@ -1,14 +1,14 @@
 import React from 'react'
 import { Input, Form, FormGroup, Label, Button } from 'reactstrap'
 import { Formik } from 'formik'
-import { compose, graphql } from 'react-apollo'
+import compose from 'recompose/compose'
+import { graphql } from '@apollo/react-hoc'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import uuid from 'uuid/v4'
 
 import Icon from '../../components/Icon'
 import Alert from '../../components/Alert'
-// import ErrorText from '../../components/ErrorText'
 
 const CREATE_FEEDBACK = gql`
   mutation createFeedback($feedback: [feedback_insert_input!]!) {
