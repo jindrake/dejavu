@@ -1,11 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
-import { compose, graphql, Query } from 'react-apollo'
+import compose from 'recompose/compose'
+import { graphql } from '@apollo/react-hoc'
+import { useQuery } from '@apollo/react-hooks'
 import uuid from 'uuid/v4'
 import { FETCH_TOPIC_PREVIEW, INSERT_USER_ACTIVITY } from './queries'
 import { getObjectValue, useStateValue, shuffleArray } from '../../libs'
-import { OverlayLoader, HeaderText, Stat, Button } from '../../components'
+import { HeaderText, Stat, Button, FullPageLoader } from '../../components'
 import { Paper } from '../../components/Topic'
 import Icon from '../../components/Icon'
 import { Badge } from 'reactstrap'
@@ -19,8 +21,13 @@ const Topic = ({
   insertUserActivity
 }) => {
   const [, globalDispatch] = useStateValue()
+  const { data, loading, error } = useQuery(FETCH_TOPIC_PREVIEW, {
+    variables: {
+      topicId: id
+    }
+  })
+
   const tackleAlone = (questionIds) => {
-    console.log(questionIds)
     const topicSessionId = uuid()
     insertUserActivity({
       variables: {
@@ -46,76 +53,68 @@ const Topic = ({
       })
   }
 
+  if (error) {
+    globalDispatch({
+      networkError: error.message
+    })
+    return null
+  }
+  if (loading) return <FullPageLoader />
+  const topic = getObjectValue(data, 'topic[0]')
+  const unshuffledQuestionIds = topic.questions.map((q) => q.question_id)
+  const halfSubset = shuffleArray(unshuffledQuestionIds).splice(
+    0,
+    Math.ceil(unshuffledQuestionIds.length / 2)
+  )
+  console.log(unshuffledQuestionIds, halfSubset)
   return (
     <Wrapper>
       <TopSection>
         <Button text='Back' onClick={() => history.goBack()} />
       </TopSection>
-      <Query query={FETCH_TOPIC_PREVIEW} variables={{ topicId: id }}>
-        {({ data, error, loading }) => {
-          if (error) {
-            globalDispatch({
-              networkError: error.message
-            })
-            return null
-          }
-          if (loading) return <OverlayLoader />
-          const topic = getObjectValue(data, 'topic[0]')
-          console.log('topic:', topic)
-          const unshuffledQuestionIds = topic.questions.map((q) => q.question_id)
-          const halfSubset = shuffleArray(unshuffledQuestionIds).splice(
-            0,
-            Math.ceil(unshuffledQuestionIds.length / 2)
-          )
-          return (
-            <>
-              <Paper>
-                <div>
-                  <div>
-                    {topic.target_fields && topic.target_fields.length
-                      ? topic.target_fields.map((field, index) => {
-                        return (
-                          <Badge color='secondary' key={index}>
-                            {field.field}
-                          </Badge>
-                        )
-                      })
-                      : null}
-                  </div>
-                  <HeaderText className='flex-grow-1'>{topic.name}</HeaderText>
-                  <Stat>{topic.description}</Stat>
-                  <Stat>{`${halfSubset.length} items`}</Stat>
-                </div>
-                <PaperBottom>
-                  <div>
-                    <Stat>
-                      <Icon name='account_circle' />
-                      &nbsp;{`${topic.creator.first_name} ${topic.creator.last_name}`}
-                    </Stat>
-                    <Stat>
-                      <Icon name='account_circle' />
-                      &nbsp;&nbsp;{`${topic.creator.email}`}
-                    </Stat>
-                    <Stat size='4vmin'>
-                      created on: &nbsp;{new Date(topic.created_at).toISOString().split('T')[0]}
-                    </Stat>
-                  </div>
-                </PaperBottom>
-              </Paper>
-              <BottomSection>
-                {/* <Button text='Tackle with a friend' type='secondary' onClick={tackleAlone} /> */}
-                <Button
-                  text='Tackle'
-                  type='primary'
-                  onClick={() => {
-                    tackleAlone(halfSubset)
-                  }}
-                />
-              </BottomSection>
-            </>
-          )
-        }}
-      </Query>
+      <Paper>
+        <div>
+          <div>
+            {topic.target_fields && topic.target_fields.length
+              ? topic.target_fields.map((field, index) => {
+                return (
+                  <Badge color='secondary' key={index}>
+                    {field.field}
+                  </Badge>
+                )
+              })
+              : null}
+          </div>
+          <HeaderText className='flex-grow-1'>{topic.name}</HeaderText>
+          <Stat>{topic.description}</Stat>
+          <Stat>{`${halfSubset.length} items`}</Stat>
+        </div>
+        <PaperBottom>
+          <div>
+            <Stat>
+              <Icon name='account_circle' />
+              &nbsp;{`${topic.creator.first_name} ${topic.creator.last_name}`}
+            </Stat>
+            <Stat>
+              <Icon name='account_circle' />
+              &nbsp;&nbsp;{`${topic.creator.email}`}
+            </Stat>
+            <Stat size='4vmin'>
+              created on: &nbsp;{new Date(topic.created_at).toISOString().split('T')[0]}
+            </Stat>
+          </div>
+        </PaperBottom>
+      </Paper>
+      <BottomSection>
+        {/* <Button text='Tackle with a friend' type='secondary' onClick={tackleAlone} /> */}
+        <Button
+          text='Tackle'
+          type='primary'
+          onClick={() => {
+            tackleAlone(halfSubset)
+          }}
+        />
+      </BottomSection>
     </Wrapper>
   )
 }

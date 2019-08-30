@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { compose, graphql } from 'react-apollo'
-
+import { graphql } from '@apollo/react-hoc'
+import compose from 'recompose/compose'
 import withFirebase from '../../hocs/withFirebase'
 
 import Greeting from './Greeting'
@@ -9,17 +9,14 @@ import Section from './Section'
 import { useStateValue } from '../../libs'
 
 import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS } from './queries'
-import { OverlayLoader } from '../../components'
+import { FullPageLoader } from '../../components'
 
-// TODO replace with query
-
-const Home = ({ fetchHotTopics, fetchRecentTopics, user }) => {
+const Home = ({ fetchHotTopics, fetchRecentTopics }) => {
   const [hotTopics, setHotTopics] = useState([])
   const [recentTopics, setRecentTopics] = useState([])
-  const [, globalDispatch] = useStateValue()
+  const [{ user }, globalDispatch] = useStateValue()
 
   useEffect(() => {
-    console.log(fetchHotTopics, fetchRecentTopics)
     if (fetchHotTopics.topic) {
       setHotTopics(fetchHotTopics.topic)
     }
@@ -36,10 +33,16 @@ const Home = ({ fetchHotTopics, fetchRecentTopics, user }) => {
         networkError: fetchRecentTopics.error.message
       })
     }
-  }, [fetchHotTopics.loading, fetchRecentTopics.loading, fetchHotTopics, fetchRecentTopics, globalDispatch])
+  }, [
+    fetchHotTopics.loading,
+    fetchRecentTopics.loading,
+    fetchHotTopics,
+    fetchRecentTopics,
+    globalDispatch
+  ])
 
   if (fetchHotTopics.loading || fetchRecentTopics.loading) {
-    return <OverlayLoader />
+    return <FullPageLoader />
   }
 
   return (

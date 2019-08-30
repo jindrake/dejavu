@@ -1,14 +1,12 @@
-import React from 'react'
+import React, { Fragment } from 'react'
 import gql from 'graphql-tag'
-import { Query, compose, graphql } from 'react-apollo'
+import compose from 'recompose/compose'
+import { graphql } from '@apollo/react-hoc'
+import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { useStateValue } from '../../libs'
-import {
-  Button,
-  ContentRight,
-  OverlayLoader
-} from '../../components'
+import { Button, ContentRight, FullPageLoader } from '../../components'
 import { Card, CardHeader, CardBody } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
@@ -44,95 +42,97 @@ const INSERT_TOPIC_RATING = gql`
   }
 `
 
-const Result = ({ match: { params }, history }) => {
+const Result = ({
+  match: {
+    params: { topicSessionId }
+  },
+  history
+}) => {
   const [, globalDispatch] = useStateValue()
-  const topicSessionId = params.topicSessionId
+  const { data, error, loading } = useQuery(FETCH_USER_ACTIVITY, {
+    variables: {
+      topicSessionId
+    }
+  })
+  if (error) {
+    globalDispatch({
+      networkError: error.message
+    })
+    return
+  }
+  if (loading) {
+    return <FullPageLoader />
+  }
+  const answerActivities = data.user_activity
+  console.log('answerActivities:', answerActivities)
   return (
-    <Query query={FETCH_USER_ACTIVITY} variables={{ topicSessionId: topicSessionId }}>
-      {({ data, error, loading }) => {
-        if (error) {
-          globalDispatch({
-            networkError: error.message
-          })
-          return
-        }
-        if (loading) {
-          return <OverlayLoader />
-        }
-
-        const answerActivities = data.user_activity
-        console.log('Results:', answerActivities)
-        return (
-          <Wrapper>
-            {/* <Paper className='bg-transparent'> */}
-            <div className='text-white'>Results</div>
-            <div>
-              {answerActivities &&
-                answerActivities.map((res, index) => {
-                  const userAnswers = res.answer ? JSON.parse(res.answer) : null
-                  const isCorrect = userAnswers
-                    ? userAnswers.sort().join(',') ===
-                      res.question.answers
-                        .map((answerObject) => answerObject.answer)
-                        .sort()
-                        .join(',')
-                    : false
-                  return (
+    <Wrapper>
+      {/* <Paper className='bg-transparent'> */}
+      <div className='text-white'>Results</div>
+      <div>
+        {answerActivities &&
+          answerActivities.map((res, index) => {
+            const userAnswers = res.answer ? JSON.parse(res.answer) : null
+            const isCorrect = userAnswers
+              ? userAnswers.sort().join(',') ===
+                res.question.answers
+                  .map((answerObject) => answerObject.answer)
+                  .sort()
+                  .join(',')
+              : false
+            return (
+              <Fragment key={index}>
+                <StyledCard>
+                  <CardHeader className='text-center'>{res.question.question}</CardHeader>
+                  {isCorrect ? (
+                    <CardBody className='text-success d-flex justify-content-between'>
+                      <FontAwesomeIcon icon={faCheck} />
+                      <div />
+                      <div>
+                        {res.question.answers.map((answerObject, index) => (
+                          <div key={index}>{answerObject.answer}</div>
+                        ))}
+                      </div>
+                    </CardBody>
+                  ) : (
                     <>
-                      <StyledCard>
-                        <CardHeader className='text-center'>{res.question.question}</CardHeader>
-                        {isCorrect ? (
-                          <CardBody className='text-success d-flex justify-content-between'>
-                            <FontAwesomeIcon icon={faCheck} />
-                            <div />
-                            <div>
-                              {res.question.answers.map((answerObject, index) => (
-                                <div key={index}>{answerObject.answer}</div>
-                              ))}
-                            </div>
-                          </CardBody>
-                        ) : (
-                          <>
-                            {userAnswers && (
-                              <CardBody className='text-danger d-flex justify-content-between'>
-                                <FontAwesomeIcon icon={faTimes} />
-                                <div />
-                                <div>
-                                  {userAnswers.map((answer, index) => (
-                                    <div key={index}>{answer}</div>
-                                  ))}
-                                </div>
-                              </CardBody>
-                            )}
-                            <CardBody className='text-warning d-flex justify-content-between'>
-                              <FontAwesomeIcon icon={faCheck} />
-                              <div />
-                              <div>
-                                {res.question.answers.map((answerObject, index) => (
-                                  <div key={index}>{answerObject.answer}</div>
-                                ))}
-                              </div>
-                            </CardBody>
-                          </>
-                        )}
-                      </StyledCard>
-                      <br />
+                      {userAnswers && (
+                        <CardBody className='text-danger d-flex justify-content-between'>
+                          <FontAwesomeIcon icon={faTimes} />
+                          <div />
+                          <div>
+                            {userAnswers.map((answer, index) => (
+                              <div key={index}>{answer}</div>
+                            ))}
+                          </div>
+                        </CardBody>
+                      )}
+                      <CardBody className='text-warning d-flex justify-content-between'>
+                        <FontAwesomeIcon icon={faCheck} />
+                        <div />
+                        <div>
+                          {res.question.answers.map((answerObject, index) => (
+                            <div key={index}>{answerObject.answer}</div>
+                          ))}
+                        </div>
+                      </CardBody>
                     </>
-                  )
-                })}
-            </div>
-            <ContentRight>
-              <Button
-                text='exit'
-                onClick={() => {
-                  history.push('/')
-                }}
-              />
-            </ContentRight>
-          </Wrapper>
-        )
-      }}
-    </Query>
+                  )}
+                </StyledCard>
+                <br />
+              </Fragment>
+            )
+          })}
+      </div>
+      <ContentRight>
+        <Button
+          text='exit'
+          onClick={() => {
+            history.push('/')
+          }}
+        />
+      </ContentRight>
+    </Wrapper>
   )
 }
 
