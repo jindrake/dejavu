@@ -10,7 +10,8 @@ const Body = styled.div`
   background: linear-gradient(45deg, #9c27b0, #1a237e, #9c27b0, #ff7043);
   background-size: 200% 200%;
   position: absolute;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: scroll;
   width: 100%;
   height: 100%;
   display: flex;

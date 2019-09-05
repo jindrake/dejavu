@@ -6,7 +6,12 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import uuid from 'uuid'
 
-import { FETCH_MY_TOPIC, FETCH_TAKEN_TOPIC, INSERT_USER_ACTIVITY } from './queries'
+import {
+  FETCH_MY_TOPIC,
+  FETCH_TAKEN_TOPIC,
+  INSERT_USER_ACTIVITY,
+  FETCH_ACTIVITY_LOGS
+} from './queries'
 import { Button, FullPageLoader } from '../../components'
 import Icon from '../../components/Icon'
 import { useStateValue } from '../../libs'
@@ -18,7 +23,7 @@ const AvatarContainer = styled.div`
   height: 100px;
   border-radius: 50%;
   background-color: #c5cae9;
-  font-size: .75em;
+  font-size: 0.75em;
   color: #1a237e;
 `
 
@@ -28,6 +33,7 @@ const ProfileInfo = styled.div`
   justify-content: center;
   text-align: center;
   font-size: 4em;
+  cursor: pointer;
 `
 
 const CenteredText = styled.div`
@@ -119,6 +125,33 @@ const PreviewWrapper = styled.div`
   animation-delay: ${({ n }) => n * 100 + 'ms'};
 `
 
+const NoTopicsHolder = styled.div`
+  color: white;
+  font-size: 20px;
+  text-align: center;
+`
+const ActivityWrapper = styled.div`
+  background: linear-gradient(#e8eaf6, #c5cae9);
+  justify-content: center;
+  padding: 20px;
+  width: 92%;
+  margin-bottom: 10px;
+  &:last-child {
+    margin-bottom: 80px;
+  }
+  border-radius: 6px;
+  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
+  animation-delay: ${({ n }) => n * 100 + 'ms'};
+`
+
+const ActivityIcon = styled.div`
+  float: left;
+  padding-left: 0;
+  font-size: 1.25em;
+  color: #1a237e;
+`
+
 const Profile = ({ user, history, insertUserActivity }) => {
   const [, globalDispatch] = useStateValue()
   const { data: userTopicsData, error: userTopicsError, loading: userTopicsLoading } = useQuery(
@@ -137,7 +170,16 @@ const Profile = ({ user, history, insertUserActivity }) => {
       }
     }
   )
-  if (userTopicsLoading || takenTopicsLoading) {
+  const {
+    data: activityLogsData,
+    error: activityLogsError,
+    loading: activityLogsLoading
+  } = useQuery(FETCH_ACTIVITY_LOGS, {
+    variables: {
+      userId: user.id
+    }
+  })
+  if (userTopicsLoading || takenTopicsLoading || activityLogsLoading) {
     return <FullPageLoader />
   }
 
@@ -153,15 +195,23 @@ const Profile = ({ user, history, insertUserActivity }) => {
       networkError: takenTopicsError.message
     })
   }
+  if (activityLogsError) {
+    globalDispatch({
+      networkError: activityLogsError.message
+    })
+  }
   const userTopics = userTopicsData.topic
   const takenTopics = takenTopicsData.user_activity
+  const activityLogs = activityLogsData.user_activity
   console.log('MY TOPICS: ', userTopics, takenTopics)
   return (
     <Container>
-      <ProfileInfo>
-        {
-          user.avatar === undefined ? <AvatarContainer>{initials.toUpperCase()}</AvatarContainer> : <AvatarContainer style={{ backgroundImage: `${user.avatar}` }} />
-        }
+      <ProfileInfo onClick={() => console.log('edit profile')}>
+        {user.avatar === undefined ? (
+          <AvatarContainer>{initials.toUpperCase()}</AvatarContainer>
+        ) : (
+          <AvatarContainer style={{ backgroundImage: `${user.avatar}` }} />
+        )}
       </ProfileInfo>
       <CenteredText>
         {user.first_name} {user.last_name}
@@ -171,11 +221,11 @@ const Profile = ({ user, history, insertUserActivity }) => {
         <Wrapper>
           <SectionTitle>Your created topics</SectionTitle>
           <TopicsContainer>
-            <Belt>
-              {userTopics.length === 0 ? (
-                <CenteredText>No Created Topics</CenteredText>
-              ) : (
-                userTopics.map((topic, index) => {
+            {userTopics.length === 0 ? (
+              <NoTopicsHolder>No Created Topics</NoTopicsHolder>
+            ) : (
+              <Belt>
+                {userTopics.map((topic, index) => {
                   const date = new Date(topic.created_at)
                   return (
                     <PreviewWrapper
@@ -203,7 +253,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
                       }}
                     >
                       <Title>{topic.name}</Title>
-                      <Author>Date: {date.toDateString()}</Author>
+                      <Author>{date.toDateString()}</Author>
                       <Author>{topic.description}</Author>
                       <Author>
                         <Icon name='thumb_up_alt' />{' '}
@@ -219,9 +269,9 @@ const Profile = ({ user, history, insertUserActivity }) => {
                       </Author>
                     </PreviewWrapper>
                   )
-                })
-              )}
-            </Belt>
+                })}
+              </Belt>
+            )}
           </TopicsContainer>
         </Wrapper>
         <br />
@@ -237,56 +287,126 @@ const Profile = ({ user, history, insertUserActivity }) => {
         <Wrapper>
           <SectionTitle>Recent Topics</SectionTitle>
           <TopicsContainer>
-            <Belt>
-              {takenTopics.length === 0 ? (
-                <CenteredText>No Recent Topics</CenteredText>
-              ) : (
-                takenTopics.map((topic, index) => {
-                  return (
-                    <PreviewWrapper
-                      key={index}
-                      onClick={() => {
-                        if (user) {
-                          insertUserActivity({
-                            variables: {
-                              userActivity: {
-                                id: uuid(),
-                                activity_type: 'view',
-                                user_id: user.id,
-                                topic_id: topic.topic.id
-                              }
+            {takenTopics.length === 0 ? (
+              <NoTopicsHolder>No Recent Topics</NoTopicsHolder>
+            ) : (
+              <Belt>
+                {takenTopics.map((topic, index) => (
+                  <PreviewWrapper
+                    key={index}
+                    onClick={() => {
+                      if (user) {
+                        insertUserActivity({
+                          variables: {
+                            userActivity: {
+                              id: uuid(),
+                              activity_type: 'view',
+                              user_id: user.id,
+                              topic_id: topic.topic.id
                             }
+                          }
+                        })
+                          .then((res) => {
+                            console.log(res)
                           })
-                            .then((res) => {
-                              console.log(res)
-                            })
-                            .catch((err) => {
-                              console.log(err.message)
-                            })
-                        }
-                        history.push(`topic/${topic.topic.id}`)
-                      }}
-                    >
-                      <Title>{topic.topic.name}</Title>
-                      <Author>{topic.topic.description}</Author>
-                      <Author>
-                        <Icon name='thumb_up_alt' />{' '}
-                        {topic.topic.ratings.length > 0
-                          ? topic.topic.ratings.filter((r) => r.type === 'upvote').length
-                          : 0}
-                      </Author>
-                      <Author>
-                        <Icon name='thumb_down_alt' />{' '}
-                        {topic.topic.ratings.length > 0
-                          ? topic.topic.ratings.filter((r) => r.type === 'downvote').length
-                          : 0}
-                      </Author>
-                    </PreviewWrapper>
-                  )
-                })
-              )}
-            </Belt>
+                          .catch((err) => {
+                            console.log(err.message)
+                          })
+                      }
+                      history.push(`topic/${topic.topic.id}`)
+                    }}
+                  >
+                    <Title>{topic.topic.name}</Title>
+                    <Author>{topic.topic.description}</Author>
+                    <Author>
+                      <Icon name='thumb_up_alt' />{' '}
+                      {topic.topic.ratings.length > 0
+                        ? topic.topic.ratings.filter((r) => r.type === 'upvote').length
+                        : 0}
+                    </Author>
+                    <Author>
+                      <Icon name='thumb_down_alt' />{' '}
+                      {topic.topic.ratings.length > 0
+                        ? topic.topic.ratings.filter((r) => r.type === 'downvote').length
+                        : 0}
+                    </Author>
+                  </PreviewWrapper>
+                ))}
+              </Belt>
+            )}
           </TopicsContainer>
+        </Wrapper>
+        <Wrapper>
+          <SectionTitle>Activity Logs</SectionTitle>
+          <div>
+            {activityLogs.map((log, index) => {
+              const date = new Date(log.created_at)
+              switch (log.activity_type) {
+                case 'take':
+                  return (
+                    <ActivityWrapper key={index}>
+                      <ActivityIcon>
+                        <Icon name='check_circle' />
+                      </ActivityIcon>
+                      <div style={{ paddingLeft: '40px' }}>
+                        <Author>
+                          <strong>
+                            {user.first_name} {user.last_name}
+                          </strong>
+                        </Author>
+                        <Author>
+                          {log.activity_type}n the topic <strong>{log.topic.name}</strong>
+                        </Author>
+                        <Author>{date.toISOString().split('T')[0]}</Author>
+                      </div>
+                    </ActivityWrapper>
+                  )
+
+                case 'answer':
+                  return (
+                    <ActivityWrapper key={index}>
+                      <ActivityIcon>
+                        <Icon name='assignment_turned_in' />
+                      </ActivityIcon>
+                      <div style={{ paddingLeft: '40px' }}>
+                        <Author>
+                          <strong>
+                            {user.first_name} {user.last_name}
+                          </strong>
+                        </Author>
+                        <Author>
+                          {log.activity_type}ed the topic <strong>{log.topic.name}</strong>
+                        </Author>
+                        <Author>{date.toISOString().split('T')[0]}</Author>
+                      </div>
+                    </ActivityWrapper>
+                  )
+
+                case 'view':
+                  return (
+                    <ActivityWrapper key={index}>
+                      <ActivityIcon>
+                        <Icon name='visibility' />
+                      </ActivityIcon>
+                      <div style={{ paddingLeft: '40px' }}>
+                        <Author>
+                          <strong>
+                            {user.first_name} {user.last_name}
+                          </strong>
+                        </Author>
+                        <Author>
+                          {log.activity_type}ed the topic <strong>{log.topic.name}</strong>
+                        </Author>
+                        <Author>{date.toISOString().split('T')[0]}</Author>
+                      </div>
+                    </ActivityWrapper>
+                  )
+
+                default:
+                  break
+              }
+            })}
+          </div>
         </Wrapper>
       </TopicWrapper>
     </Container>

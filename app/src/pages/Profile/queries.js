@@ -50,3 +50,22 @@ export const INSERT_USER_ACTIVITY = gql`
     }
   }
 `
+
+export const FETCH_ACTIVITY_LOGS = gql`
+  query fetchUserActivity($userId: uuid!) {
+    user_activity(
+      order_by: { created_at: desc }
+      where: { user_id: { _eq: $userId } }
+      limit: 10
+    ) {
+      id
+      activity_type
+      created_at
+      topic {
+        id
+        name
+        description
+      }
+    }
+  }
+`
