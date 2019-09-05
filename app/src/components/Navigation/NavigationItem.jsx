@@ -18,6 +18,7 @@ const Wrapper = styled.div`
   opacity: ${({ active }) => (active ? 1 : 0.5)};
   justify-content: center;
   align-self: center;
+  margin: 20px;
   border-radius: 20px;
   transition: 200ms;
 `

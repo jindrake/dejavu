@@ -18,22 +18,17 @@ const Body = styled.div`
   font-size: 3vh;
 `
 
-const Content = styled.div`
+const Wrapper = styled.div`
   width: 100%;
-  /* margin-left: 2vh; */
-  /* margin-right: 2vh; */
   margin: 2vh;
 `
 
 export default () => (WrappedComponent) => (props) => {
   return (
     <Body>
-      {/* <div>Layout: Header</div> */}
-      <Content>
+      <Wrapper>
         <WrappedComponent {...props} />
-
-      </Content>
-      {/* <div>Layout: Footer</div> */}
+      </Wrapper>
     </Body>
   )
 }
