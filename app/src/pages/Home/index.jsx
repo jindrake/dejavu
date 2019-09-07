@@ -47,7 +47,7 @@ const Home = ({ fetchHotTopics, fetchRecentTopics }) => {
 
   return (
     <Wrapper>
-      <Greeting user={user} />
+      <Greeting topics={recentTopics} user={user} />
       <Section title='Hot Topics' topics={hotTopics} user={user} />
       <Section title='Recent Topics' topics={recentTopics} user={user} />
     </Wrapper>

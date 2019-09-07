@@ -4,11 +4,12 @@ import { Button } from 'reactstrap'
 
 import Icon from '../../components/Icon'
 
-const Greeting = ({ user, history }) => (
+const Greeting = ({ user, history, topics }) => (
   <Wrapper>
-      Hello, {user ? user.first_name : 'Study Buddy'}!
+    Hello, {user ? user.first_name : 'Study Buddy'}!
     <ButtonContainer>
       <CreateTopicButton
+        id='button'
         onClick={
           () => history.push('/topic/create')
         }
