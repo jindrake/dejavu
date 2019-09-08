@@ -1,0 +1,22 @@
+- args:
+    permission:
+      allow_upsert: true
+      check:
+        user_id:
+          _eq: X-Hasura-User-Id
+      columns:
+      - activity_type
+      - id
+      - question_id
+      - topic_id
+      - topic_session_id
+      - user_id
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: user_activity
+      schema: public
+  type: create_insert_permission

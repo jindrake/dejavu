@@ -31,7 +31,7 @@ import {
 
 const AddQuestions = ({
   match: {
-    params: { uri }
+    params: { id }
   },
   user
 }) => {
@@ -53,7 +53,7 @@ const AddQuestions = ({
     loading: topicQuestionsLoading
   } = useSubscription(FETCH_TOPIC_QUESTIONS, {
     variables: {
-      topicUri: uri
+      topicId: id
     }
   })
   const [
@@ -76,7 +76,7 @@ const AddQuestions = ({
     loading: fetchTopicLoading
   } = useSubscription(FETCH_TOPIC, {
     variables: {
-      uri
+      id: id
     }
   })
 

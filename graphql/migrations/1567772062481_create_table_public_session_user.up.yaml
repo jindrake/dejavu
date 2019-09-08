@@ -1,0 +1,11 @@
+- args:
+    sql: CREATE TABLE "public"."session_user"("user_id" uuid NOT NULL, "session_id"
+      uuid NOT NULL, PRIMARY KEY ("user_id","session_id") , FOREIGN KEY ("user_id")
+      REFERENCES "public"."user"("id") ON UPDATE restrict ON DELETE restrict, FOREIGN
+      KEY ("session_id") REFERENCES "public"."session"("id") ON UPDATE restrict ON
+      DELETE restrict);
+  type: run_sql
+- args:
+    name: session_user
+    schema: public
+  type: add_existing_table_or_view

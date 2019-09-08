@@ -5,53 +5,58 @@ import gql from 'graphql-tag'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
-import uuid from 'uuid/v4'
 
-import { getObjectValue, useStateValue } from '../../libs'
+import { useStateValue } from '../../libs'
 import { ContentRight, Button, HeaderText, FullPageLoader } from '../../components'
 import { Paper } from '../../components/Topic'
 
-const FETCH_QUESTION = gql`
-  query fetchQuestion($questionId: uuid!) {
-    question(where: { id: { _eq: $questionId } }) {
-      id
-      question
-      answers {
-        answer
-      }
-    }
+const ANSWER_QUESTION = gql`
+  mutation answerQuestion ($answers: [String!]!, $questionId: ID!, $userId: ID!, $sessionId: ID!) {
+    answer_question(answers: $answers, questionId: $questionId, userId: $userId, sessionId: $sessionId) 
   }
 `
 
-const INSERT_USER_ACTIVITY = gql`
-  mutation insertUserActivity($userActivity: [user_activity_insert_input!]!) {
-    insert_user_activity(objects: $userActivity) {
-      affected_rows
-    }
+const FETCH_NEXT_SESSION_QUESTION = gql`
+  query fetchNextSessionQuestion ($userId: ID!, $sessionId: ID!) {
+    next_session_question(userId: $userId, sessionId: $sessionId)
   }
 `
 
 const AnswerQuestion = ({
-  location: {
-    state: { questionIds }
-  },
+  // location: {
+  //   state: { questionIds }
+  // },
+  // match: {
+  //   params: { questionId, topicSessionId, id: topicId }
+  // },
   match: {
-    params: { questionId, topicSessionId, id: topicId }
+    params: { sessionId }
   },
   user,
   history,
-  insertUserActivity
+  answerQuestion
 }) => {
-  const remainingIds = questionIds.slice(1)
+  // const remainingIds = questionIds.slice(1)
   const [answers, setAnswers] = useState([])
   const [timer, setTimer] = useState(10)
   const [, globalDispatch] = useStateValue()
-  const { data, loading, error } = useQuery(FETCH_QUESTION, {
+  // const { data, loading, error } = useQuery(FETCH_QUESTION, {
+  //   variables: {
+  //     questionId
+  //   }
+  // })
+  const { data, loading, error } = useQuery(FETCH_NEXT_SESSION_QUESTION, {
     variables: {
-      questionId
+      userId: user.id,
+      sessionId
     }
   })
 
+  console.log('NExtsession result:', data, data.next_session_question && JSON.parse(data.next_session_question))
+  const question = data.next_session_question ? JSON.parse(data.next_session_question) : null
+  if (!loading && !error && !question) {
+    history.push(`/result/${sessionId}`)
+  }
   useEffect(() => {
     const tick = () => {
       setTimer(timer - 1)
@@ -71,30 +76,24 @@ const AnswerQuestion = ({
       loading: true
     })
     try {
-      await insertUserActivity({
+      await answerQuestion({
         variables: {
-          userActivity: {
-            id: uuid(),
-            activity_type: 'answer',
-            user_id: user.id,
-            topic_id: topicId,
-            question_id: questionId,
-            topic_session_id: topicSessionId,
-            answer: JSON.stringify(answers)
-          }
+          userId: user.id,
+          questionId: question.id,
+          sessionId,
+          answers
         }
       })
-      console.log('RemainingIds:', remainingIds)
-      if (remainingIds.length > 0) {
-        history.push({
-          pathname: `/topic/${topicId}/questions/${remainingIds[0]}/topicSession/${topicSessionId}`,
-          state: { questionIds: remainingIds }
-        })
-      } else {
-        history.push({
-          pathname: `/result/${topicId}/topicSession/${topicSessionId}`
-        })
-      }
+      // if (remainingIds.length > 0) {
+      //   history.push({
+      //     pathname: `/topic/${topicId}/questions/${remainingIds[0]}/topicSession/${topicSessionId}`,
+      //     state: { questionIds: remainingIds }
+      //   })
+      // } else {
+      //   history.push({
+      //     pathname: `/result/${topicId}/topicSession/${topicSessionId}`
+      //   })
+      // }
     } catch (error) {
       setTimer(0)
       console.error(error)
@@ -113,16 +112,15 @@ const AnswerQuestion = ({
     })
     return null
   }
-  if (loading) {
+  if (loading || !question) {
     return <FullPageLoader />
   }
-  const result = getObjectValue(data, 'question[0]')
-  const choices = result.answers
+  const choices = question.answers
   return (
     <Wrapper>
       <Paper loadingPercentage={timer * 10}>
         <QuestionContainer>
-          <HeaderText>{result.question}</HeaderText>
+          <HeaderText>{question.question}</HeaderText>
         </QuestionContainer>
         <ChoicesContainer>
           {choices &&
@@ -132,10 +130,12 @@ const AnswerQuestion = ({
                   key={index}
                   selected={answers.includes(choice.answer)}
                   onClick={() => {
-                    if (!answers.includes(choice.answer)) {
-                      setAnswers(answers.concat(choice.answer))
-                    } else {
-                      setAnswers(answers.filter((answer) => answer !== choice.answer))
+                    if (timer) {
+                      if (!answers.includes(choice.answer)) {
+                        setAnswers(answers.concat(choice.answer))
+                      } else {
+                        setAnswers(answers.filter((answer) => answer !== choice.answer))
+                      }
                     }
                   }}
                 >
@@ -201,5 +201,5 @@ const Wrapper = styled.div`
 
 export default compose(
   withRouter,
-  graphql(INSERT_USER_ACTIVITY, { name: 'insertUserActivity' })
+  graphql(ANSWER_QUESTION, { name: 'answerQuestion' })
 )(AnswerQuestion)

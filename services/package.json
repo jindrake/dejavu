@@ -11,6 +11,20 @@
   "scripts": {
     "lint": "standard",
     "lint:fix": "standard --fix",
-    "test": "jest"
+    "test": "jest",
+    "start": "node server.js",
+    "start:dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "apollo-boost": "^0.4.4",
+    "apollo-server-express": "^2.9.3",
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "dotenv": "^8.1.0",
+    "express": "^4.17.1",
+    "graphql": "^14.5.4",
+    "graphql-tools": "^4.0.5",
+    "node-fetch": "^2.6.0",
+    "uuid": "^3.3.3"
   }
 }

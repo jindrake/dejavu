@@ -4,8 +4,7 @@ import { withRouter } from 'react-router-dom'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
-import uuid from 'uuid/v4'
-import { FETCH_TOPIC_PREVIEW, INSERT_USER_ACTIVITY } from './queries'
+import { FETCH_TOPIC_PREVIEW, CREATE_SESSION } from './queries'
 import { getObjectValue, useStateValue, shuffleArray } from '../../libs'
 import { HeaderText, Stat, Button, FullPageLoader } from '../../components'
 import { Paper } from '../../components/Topic'
@@ -18,7 +17,7 @@ const Topic = ({
     params: { id }
   },
   user,
-  insertUserActivity
+  createSession
 }) => {
   const [, globalDispatch] = useStateValue()
   const { data, loading, error } = useQuery(FETCH_TOPIC_PREVIEW, {
@@ -27,30 +26,21 @@ const Topic = ({
     }
   })
 
-  const tackleAlone = (questionIds) => {
-    const topicSessionId = uuid()
-    insertUserActivity({
-      variables: {
-        userActivity: {
-          id: uuid(),
-          activity_type: 'take',
-          user_id: user.id,
-          topic_id: id,
-          topic_session_id: topicSessionId
+  const tackleAlone = async () => {
+    try {
+      const { data } = await createSession({
+        variables: {
+          userIds: [user.id],
+          topicId: id
         }
-      }
-    })
-      .then((res) => {
-        history.push({
-          pathname: `/topic/${id}/questions/${questionIds[0]}/topicSession/${topicSessionId}`,
-          state: { questionIds }
-        })
       })
-      .catch((error) => {
-        globalDispatch({
-          networkError: error.message
-        })
+      console.log('Session id:', data.create_session)
+      history.push('/session/' + data.create_session)
+    } catch (error) {
+      globalDispatch({
+        networkError: error.message
       })
+    }
   }
 
   if (error) {
@@ -148,5 +138,5 @@ const BottomSection = styled.div`
 
 export default compose(
   withRouter,
-  graphql(INSERT_USER_ACTIVITY, { name: 'insertUserActivity' })
+  graphql(CREATE_SESSION, { name: 'createSession' })
 )(Topic)

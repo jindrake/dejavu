@@ -67,7 +67,6 @@ const App = ({ firebase, history, location: { search } }) => {
       })
     }, 4000)
   }
-  console.log(authState)
 
   return (
     <ApolloProvider client={getInitializedApolloClient(authState.token)}>

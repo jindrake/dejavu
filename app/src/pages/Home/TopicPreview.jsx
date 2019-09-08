@@ -32,12 +32,6 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
               }
             }
           })
-            .then((res) => {
-              console.log(res)
-            })
-            .catch((err) => {
-              console.log(err.message)
-            })
         }
         history.push(`topic/${id}`)
       }}

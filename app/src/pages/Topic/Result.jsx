@@ -12,10 +12,10 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 
 const FETCH_USER_ACTIVITY = gql`
-  query fetchUserActivity($topicSessionId: uuid!) {
+  query fetchUserActivity($sessionId: uuid!) {
     user_activity(
       where: {
-        _and: [{ topic_session_id: { _eq: $topicSessionId } }, { activity_type: { _eq: "answer" } }]
+        _and: [{ topic_session_id: { _eq: $sessionId } }, { activity_type: { _eq: "answer" } }]
       }
     ) {
       id
@@ -44,14 +44,14 @@ const INSERT_TOPIC_RATING = gql`
 
 const Result = ({
   match: {
-    params: { topicSessionId }
+    params: { sessionId }
   },
   history
 }) => {
   const [, globalDispatch] = useStateValue()
   const { data, error, loading } = useQuery(FETCH_USER_ACTIVITY, {
     variables: {
-      topicSessionId
+      sessionId
     }
   })
   if (error) {
