@@ -46,7 +46,7 @@ export const INSERT_QUESTION_TOPIC_RELATIONSHIP = gql`
 
 export const FETCH_TOPIC = gql`
   subscription fetchTopic($id: uuid!) {
-    topic(where: { uri: { _eq: $id } }) {
+    topic(where: { id: { _eq: $id } }) {
       id
       is_published
       name
@@ -76,7 +76,7 @@ export const FETCH_TOPIC_QUESTIONS = gql`
 `
 
 export const FETCH_USER_PREVIOUS_QUESTIONS = gql`
-  query getUserOldQuestions($creatorId: uuid!, $field: String!, $topicId: uuid!) {
+  query getUserOldQuestions($creatorId: uuid!, $field: String, $topicId: uuid!) {
     question(
       where: {
         _and: [

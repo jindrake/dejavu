@@ -72,13 +72,14 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
       })}
       onSubmit={(values, { setSubmitting, setStatus }) => {
         setSubmitting(true)
+        const topicId = uuid()
         createTopic({
           variables: {
             topic: {
               name: values.name,
               creator_id: user.id,
               description: values.description,
-              id: uuid(),
+              id: topicId,
               uri: values.uri,
               is_private: values.isPrivate
               // target_fields: {
@@ -105,7 +106,7 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
           .then((res) => {
             console.log(res)
             setSubmitting(false)
-            history.push(`/topic/${values.uri}/questions`)
+            history.push(`/topic/${topicId}/questions`)
           })
           .catch((error) => {
             setSubmitting(false)

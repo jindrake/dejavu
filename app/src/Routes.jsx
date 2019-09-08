@@ -110,7 +110,7 @@ const Routes = ({ userEmail, firebase }) => {
           }
         />
 
-        <Route exact path='/' render={() => <Home />} />
+        <Route exact path='/' render={(routeProps) => <Home {...routeProps} />} />
         <Route
           exact
           path='/sign-up'
