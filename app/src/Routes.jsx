@@ -66,9 +66,6 @@ const Routes = ({ userEmail, firebase }) => {
 
   return (
     <>
-      {/* <div>
-        Hey
-      </div> */}
       <Route
         exact
         path={['/', '/search', '/settings', '/profile', '/topic/create', '/topic/:uri/questions']}
@@ -92,7 +89,7 @@ const Routes = ({ userEmail, firebase }) => {
         />
         <Route
           exact
-          path='/topic/:uri/questions'
+          path='/topic/:id/questions'
           render={(routeProps) =>
             !user ? (
               <Redirect to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`} />
@@ -113,7 +110,7 @@ const Routes = ({ userEmail, firebase }) => {
           }
         />
 
-        <Route exact path='/' render={() => <Home />} />
+        <Route exact path='/' render={(routeProps) => <Home {...routeProps} />} />
         <Route
           exact
           path='/sign-up'
@@ -150,10 +147,9 @@ const Routes = ({ userEmail, firebase }) => {
             user ? <Feedback {...routeProps} user={user} /> : <Redirect to='/' />
           }
         />
-
         <Route
           exact
-          path='/topic/:id/questions/:questionId/topicSession/:topicSessionId'
+          path='/session/:sessionId'
           render={(routeProps) =>
             user ? (
               <AnswerQuestion {...routeProps} user={user} />
@@ -162,10 +158,9 @@ const Routes = ({ userEmail, firebase }) => {
             )
           }
         />
-
         <Route
           exact
-          path='/result/:id/topicSession/:topicSessionId'
+          path='/result/:sessionId'
           render={(routeProps) =>
             user ? (
               <Result {...routeProps} user={user} />

@@ -1,24 +1,44 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Button } from 'reactstrap'
 
-const Greeting = ({ user }) => (
+import Icon from '../../components/Icon'
+
+const Greeting = ({ user, history, topics }) => (
   <Wrapper>
-    <div>Hello, {user ? user.first_name : 'Study Buddy'}!</div>
-    <Notifications>This is where your notifications go.</Notifications>
+    Hello, {user ? user.first_name : 'Study Buddy'}!
+    <ButtonContainer>
+      <CreateTopicButton
+        id='button'
+        onClick={
+          () => history.push('/topic/create')
+        }
+      >
+        <StyledIcon name='add' />Create  a Topic
+      </CreateTopicButton>
+    </ButtonContainer>
   </Wrapper>
 )
 
-const Notifications = styled.div`
-  font-size: 12px;
-  opacity: 0.8;
+const Wrapper = styled.div`
+  font-size: 20px;
+  font-weight: 700;
+  color: #e8eaf6;
+  text-align: left;
 `
 
-const Wrapper = styled.div`
-  height: 30%;
-  font-size: 18px;
-  font-weight: 00;
-  color: #e8eaf6;
-  height: 20%;
+const ButtonContainer = styled.div`
+  justify-content: left;
+`
+
+const CreateTopicButton = styled(Button)`
+  background-color: rgb(119, 81, 175);
+  font-size: 12px;
+  border: none;
+`
+
+const StyledIcon = styled(Icon)`
+  width: 30%
 `
 
 export default Greeting

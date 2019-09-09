@@ -5,6 +5,7 @@ import uuid from 'uuid/v4'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { INSERT_USER_ACTIVITY } from './queries'
+import Icon from '../../components/Icon'
 
 const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const {
@@ -32,24 +33,20 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
               }
             }
           })
-            .then((res) => {
-              console.log(res)
-            })
-            .catch((err) => {
-              console.log(err.message)
-            })
         }
         history.push(`topic/${id}`)
       }}
     >
       <Title>{name}</Title>
       <Author>{date.toDateString()}</Author>
-      <Author>
-        upvote: {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
-      </Author>
-      <Author>
-        downvote: {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
-      </Author>
+      <Ratings>
+        <StyledIcon name='thumb_up' />
+        {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
+      </Ratings>
+      <Ratings>
+        <StyledIcon name='thumb_down' />
+        {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
+      </Ratings>
     </Wrapper>
   )
 }
@@ -61,6 +58,8 @@ const Title = styled.div`
   font-weight: 700;
   max-height: 60%;
   overflow-y: scroll;
+  margin-bottom: 6px;
+  justify-content: left;
 `
 
 const Author = styled.div`
@@ -69,6 +68,20 @@ const Author = styled.div`
   opacity: 0.8;
   line-height: 12px;
   margin-bottom: 6px;
+`
+
+const StyledIcon = styled(Icon)`
+  width: 100%;
+  justify-content: right;
+`
+
+const Ratings = styled.div`
+  color: #1a237e;
+  font-size: 14px;
+  opacity: 0.8;
+  line-height: 12px;
+  margin-bottom: 6px;
+  margin-right: 7px;
 `
 
 const Wrapper = styled.div`

@@ -1,0 +1,8 @@
+- args:
+    name: question
+    table:
+      name: session_question
+      schema: public
+    using:
+      foreign_key_constraint_on: question_id
+  type: create_object_relationship

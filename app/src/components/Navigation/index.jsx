@@ -28,14 +28,12 @@ const Navigation = ({ user, location, history }) => {
 }
 
 const Wrapper = styled.div`
-  height: 80px;
-  width: 100%;
+  right: 0;
+  left: 0;
   bottom: 0;
   position: fixed;
   display: flex;
-  padding-left: 40px;
-  padding-right: 40px;
-  justify-content: space-between;
+  justify-content: center;
   z-index: 1000;
 `
 

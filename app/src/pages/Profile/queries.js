@@ -18,7 +18,7 @@ export const FETCH_TAKEN_TOPIC = gql`
   query fetchTakenTopic($userId: uuid!) {
     user_activity(
       order_by: { created_at: desc }
-      where: { user_id: { _eq: $userId }, activity_type: { _eq: "answer" } }
+      where: { user_id: { _eq: $userId }, activity_type: { _eq: "take" } }
       limit: 10
     ) {
       id

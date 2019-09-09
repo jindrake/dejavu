@@ -45,8 +45,8 @@ export const INSERT_QUESTION_TOPIC_RELATIONSHIP = gql`
 `
 
 export const FETCH_TOPIC = gql`
-  subscription fetchTopic($uri: String!) {
-    topic(where: { uri: { _eq: $uri } }) {
+  subscription fetchTopic($id: uuid!) {
+    topic(where: { id: { _eq: $id } }) {
       id
       is_published
       name
@@ -59,8 +59,8 @@ export const FETCH_TOPIC = gql`
 `
 
 export const FETCH_TOPIC_QUESTIONS = gql`
-  subscription fetchTopicQuestions($topicUri: String!) {
-    question_topic(where: { topic: { uri: { _eq: $topicUri } } }) {
+  subscription fetchTopicQuestions($topicId: uuid!) {
+    question_topic(where: { topic: { id: { _eq: $topicId } } }) {
       id
       question {
         answers {
@@ -76,7 +76,7 @@ export const FETCH_TOPIC_QUESTIONS = gql`
 `
 
 export const FETCH_USER_PREVIOUS_QUESTIONS = gql`
-  query getUserOldQuestions($creatorId: uuid!, $field: String!, $topicId: uuid!) {
+  query getUserOldQuestions($creatorId: uuid!, $field: String, $topicId: uuid!) {
     question(
       where: {
         _and: [
@@ -141,5 +141,11 @@ export const PUBLISH_TOPIC = gql`
     update_topic(_set: { is_published: $isPublished }, where: { id: { _eq: $topicId } }) {
       affected_rows
     }
+  }
+`
+
+export const CREATE_SESSION = gql`
+  mutation createSession ($userIds: [ID!]!, $topicId: ID!) {
+    create_session(userIds: $userIds, topicId: $topicId)
   }
 `

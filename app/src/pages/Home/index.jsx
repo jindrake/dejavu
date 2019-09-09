@@ -11,7 +11,7 @@ import { useStateValue } from '../../libs'
 import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS } from './queries'
 import { FullPageLoader } from '../../components'
 
-const Home = ({ fetchHotTopics, fetchRecentTopics }) => {
+const Home = ({ fetchHotTopics, fetchRecentTopics, history }) => {
   const [hotTopics, setHotTopics] = useState([])
   const [recentTopics, setRecentTopics] = useState([])
   const [{ user }, globalDispatch] = useStateValue()
@@ -47,7 +47,7 @@ const Home = ({ fetchHotTopics, fetchRecentTopics }) => {
 
   return (
     <Wrapper>
-      <Greeting user={user} />
+      <Greeting topics={recentTopics} user={user} history={history} />
       <Section title='Hot Topics' topics={hotTopics} user={user} />
       <Section title='Recent Topics' topics={recentTopics} user={user} />
     </Wrapper>
