@@ -16,6 +16,7 @@ import Feedback from './pages/Feedback'
 import Welcome from './pages/Welcome'
 import AnswerQuestion from './pages/Topic/AnswerQuestion'
 import Result from './pages/Topic/Result'
+import EditProfile from './pages/Profile/EditProfile'
 import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
 import compose from 'recompose/compose'
@@ -120,6 +121,11 @@ const Routes = ({ userEmail, firebase }) => {
           exact
           path='/profile'
           render={() => (user ? <Profile user={user} /> : <Redirect to='/sign-in' />)}
+        />
+        <Route
+          exact
+          path='/edit-profile'
+          render={() => (user ? <EditProfile user={user} /> : <Redirect to='/sign-in' />)}
         />
         <Route
           exact

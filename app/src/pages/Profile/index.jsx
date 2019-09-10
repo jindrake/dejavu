@@ -15,6 +15,7 @@ import {
 import { Button, FullPageLoader } from '../../components'
 import Icon from '../../components/Icon'
 import { useStateValue } from '../../libs'
+import PlaceholderImage from '../../assets/placeholder.png'
 
 const AvatarContainer = styled.div`
   border-radius: 50%;
@@ -56,7 +57,7 @@ const TopicWrapper = styled.div`
   bottom: 80px;
   width: 100%;
   height: 100%;
-  top: 22%;
+  top: 20%;
   padding: 30px;
   padding-bottom: 0;
 `
@@ -137,7 +138,7 @@ const ActivityWrapper = styled.div`
   width: 92%;
   margin-bottom: 10px;
   &:last-child {
-    margin-bottom: 80px;
+    margin-bottom: 60px;
   }
   border-radius: 6px;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
@@ -150,6 +151,10 @@ const ActivityIcon = styled.div`
   padding-left: 0;
   font-size: 1.25em;
   color: #1a237e;
+`
+
+const Image = styled.img`
+  width: 30px;
 `
 
 const Profile = ({ user, history, insertUserActivity }) => {
@@ -206,7 +211,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
   console.log('MY TOPICS: ', userTopics, takenTopics)
   return (
     <Container>
-      <ProfileInfo onClick={() => console.log('edit profile')}>
+      <ProfileInfo onClick={() => history.push('/edit-profile')}>
         {user.avatar === undefined ? (
           <AvatarContainer>{initials.toUpperCase()}</AvatarContainer>
         ) : (
@@ -222,7 +227,9 @@ const Profile = ({ user, history, insertUserActivity }) => {
           <SectionTitle>Your created topics</SectionTitle>
           <TopicsContainer>
             {userTopics.length === 0 ? (
-              <NoTopicsHolder>No Created Topics</NoTopicsHolder>
+              <NoTopicsHolder>
+                <Image src={PlaceholderImage} /> No Created Topics
+              </NoTopicsHolder>
             ) : (
               <Belt>
                 {userTopics.map((topic, index) => {
@@ -288,7 +295,9 @@ const Profile = ({ user, history, insertUserActivity }) => {
           <SectionTitle>Recent Topics</SectionTitle>
           <TopicsContainer>
             {takenTopics.length === 0 ? (
-              <NoTopicsHolder>No Recent Topics</NoTopicsHolder>
+              <NoTopicsHolder>
+                <Image src={PlaceholderImage} /> No Recent Topics
+              </NoTopicsHolder>
             ) : (
               <Belt>
                 {takenTopics.map((topic, index) => (
@@ -339,73 +348,81 @@ const Profile = ({ user, history, insertUserActivity }) => {
         <Wrapper>
           <SectionTitle>Activity Logs</SectionTitle>
           <div>
-            {activityLogs.map((log, index) => {
-              const date = new Date(log.created_at)
-              switch (log.activity_type) {
-                case 'take':
-                  return (
-                    <ActivityWrapper key={index}>
-                      <ActivityIcon>
-                        <Icon name='check_circle' />
-                      </ActivityIcon>
-                      <div style={{ paddingLeft: '40px' }}>
-                        <Author>
-                          <strong>
-                            {user.first_name} {user.last_name}
-                          </strong>
-                        </Author>
-                        <Author>
-                          {log.activity_type}n the topic <strong>{log.topic.name}</strong>
-                        </Author>
-                        <Author>{date.toISOString().split('T')[0]}</Author>
-                      </div>
-                    </ActivityWrapper>
-                  )
+            {activityLogs.length === 0 ? (
+              <NoTopicsHolder>
+                <Image src={PlaceholderImage} /> No Activity Logs Yet
+              </NoTopicsHolder>
+            ) : (
+              <div>
+                {activityLogs.map((log, index) => {
+                  const date = new Date(log.created_at)
+                  switch (log.activity_type) {
+                    case 'take':
+                      return (
+                        <ActivityWrapper key={index}>
+                          <ActivityIcon>
+                            <Icon name='check_circle' />
+                          </ActivityIcon>
+                          <div style={{ paddingLeft: '40px' }}>
+                            <Author>
+                              <strong>
+                                {user.first_name} {user.last_name}
+                              </strong>
+                            </Author>
+                            <Author>
+                              {log.activity_type}n the topic <strong>{log.topic.name}</strong>
+                            </Author>
+                            <Author>{date.toISOString().split('T')[0]}</Author>
+                          </div>
+                        </ActivityWrapper>
+                      )
 
-                case 'answer':
-                  return (
-                    <ActivityWrapper key={index}>
-                      <ActivityIcon>
-                        <Icon name='assignment_turned_in' />
-                      </ActivityIcon>
-                      <div style={{ paddingLeft: '40px' }}>
-                        <Author>
-                          <strong>
-                            {user.first_name} {user.last_name}
-                          </strong>
-                        </Author>
-                        <Author>
-                          {log.activity_type}ed the topic <strong>{log.topic.name}</strong>
-                        </Author>
-                        <Author>{date.toISOString().split('T')[0]}</Author>
-                      </div>
-                    </ActivityWrapper>
-                  )
+                    case 'answer':
+                      return (
+                        <ActivityWrapper key={index}>
+                          <ActivityIcon>
+                            <Icon name='assignment_turned_in' />
+                          </ActivityIcon>
+                          <div style={{ paddingLeft: '40px' }}>
+                            <Author>
+                              <strong>
+                                {user.first_name} {user.last_name}
+                              </strong>
+                            </Author>
+                            <Author>
+                              {log.activity_type}ed the topic <strong>{log.topic.name}</strong>
+                            </Author>
+                            <Author>{date.toISOString().split('T')[0]}</Author>
+                          </div>
+                        </ActivityWrapper>
+                      )
 
-                case 'view':
-                  return (
-                    <ActivityWrapper key={index}>
-                      <ActivityIcon>
-                        <Icon name='visibility' />
-                      </ActivityIcon>
-                      <div style={{ paddingLeft: '40px' }}>
-                        <Author>
-                          <strong>
-                            {user.first_name} {user.last_name}
-                          </strong>
-                        </Author>
-                        <Author>
-                          {log.activity_type}ed the topic <strong>{log.topic.name}</strong>
-                        </Author>
-                        <Author>{date.toISOString().split('T')[0]}</Author>
-                      </div>
-                    </ActivityWrapper>
-                  )
+                    case 'view':
+                      return (
+                        <ActivityWrapper key={index}>
+                          <ActivityIcon>
+                            <Icon name='visibility' />
+                          </ActivityIcon>
+                          <div style={{ paddingLeft: '40px' }}>
+                            <Author>
+                              <strong>
+                                {user.first_name} {user.last_name}
+                              </strong>
+                            </Author>
+                            <Author>
+                              {log.activity_type}ed the topic <strong>{log.topic.name}</strong>
+                            </Author>
+                            <Author>{date.toISOString().split('T')[0]}</Author>
+                          </div>
+                        </ActivityWrapper>
+                      )
 
-                default:
-                  break
-              }
-            })}
+                    default:
+                      break
+                  }
+                })}
+              </div>
+            )}
           </div>
         </Wrapper>
       </TopicWrapper>
