@@ -50,7 +50,7 @@ const IconsDiv = styled.div`
   top: 0;
   left: 0;
   display: flex;
-  justify-content: space-evenly;
+  justify-content: center;
   align-items: center;
   z-index: 10000;
   background: rgba(0, 0, 0, 0.7);
