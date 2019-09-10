@@ -100,7 +100,7 @@ const SignUp = ({ firebase, history, createUser }) => {
             const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
             if (hasuraClaim) {
               console.warn('CREATING USER')
-              createUser({
+              return createUser({
                 variables: {
                   user: [
                     {
@@ -134,27 +134,33 @@ const SignUp = ({ firebase, history, createUser }) => {
                 // if there's no hasuraClaim but token exists, maintain authState({loading: true}) state
                 if (hasuraClaim) {
                   console.warn('CREATING USER')
-                  createUser({
-                    variables: {
-                      user: [
-                        {
-                          email: values.email,
-                          first_name: values.firstName,
-                          last_name: values.lastName,
-                          id: hasuraClaim['x-hasura-user-id'],
-                          fields: {
-                            data: [
-                              {
-                                field: values.fieldOfStudy,
-                                has_finished: values.isStudent,
-                                id: uuid()
-                              }
-                            ]
+                  try {
+                    createUser({
+                      variables: {
+                        user: [
+                          {
+                            email: values.email,
+                            first_name: values.firstName,
+                            last_name: values.lastName,
+                            id: hasuraClaim['x-hasura-user-id'],
+                            fields: {
+                              data: [
+                                {
+                                  field: values.fieldOfStudy,
+                                  has_finished: values.isStudent,
+                                  id: uuid()
+                                }
+                              ]
+                            }
                           }
-                        }
-                      ]
-                    }
-                  })
+                        ]
+                      }
+                    })
+                  } catch (error) {
+                    globalDispatch({
+                      networkError: error.message
+                    })
+                  }
                 }
               })
             }

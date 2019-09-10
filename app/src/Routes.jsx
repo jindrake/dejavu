@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Route, Redirect, Switch } from 'react-router-dom'
 import { withFirebase } from './hocs'
 import gql from 'graphql-tag'
@@ -36,22 +36,12 @@ const FETCH_USER = gql`
 `
 
 const Routes = ({ userEmail, firebase }) => {
-  // const [user, setUser] = useState(null)
-  const [{ user }, globalDispatch] = useStateValue()
+  const [globalState, globalDispatch] = useStateValue()
   const { data, loading: fetchLoading, error: fetchError } = useQuery(FETCH_USER, {
     variables: {
       email: userEmail
     }
   })
-
-  useEffect(() => {
-    if (!user && getObjectValue(data, 'user[0]')) {
-      console.warn('setting user')
-      globalDispatch({
-        user: getObjectValue(data, 'user[0]') || null
-      })
-    }
-  }, [fetchLoading])
 
   if (fetchLoading) {
     return <FullPageLoader />
@@ -62,8 +52,15 @@ const Routes = ({ userEmail, firebase }) => {
     })
     return null
   }
+  const user = getObjectValue(data, 'user[0]')
+  console.log(user)
 
-  console.log(data)
+  if (!globalState.user && user) {
+    console.log('Setting user to globalstate:', user)
+    globalDispatch({
+      user
+    })
+  }
 
   return (
     <>
