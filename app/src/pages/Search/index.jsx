@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
-import { debounce } from 'lodash'
+// import { debounce } from 'lodash'
 import gql from 'graphql-tag'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
@@ -75,7 +75,7 @@ const Search = ({ user, history, insertUserActivity }) => {
         created_at: sortByDateAsc ? 'asc' : 'desc'
       }
     })
-  }, [searchValue, searchByReliability, searchByConsistency, sortByDateAsc])
+  }, [refetch, searchValue, searchByReliability, searchByConsistency, sortByDateAsc])
 
   if (loading) return <FullPageLoader />
   if (error) {
@@ -100,13 +100,13 @@ const Search = ({ user, history, insertUserActivity }) => {
   //   })
   // }, [searchValue, searchByReliability, searchByConsistency, sortByDateAsc])
 
-  let debounceEvent = (...args) => {
-    debounceEvent = debounce(...args)
-    return (e) => {
-      e.persist()
-      return debounceEvent(e)
-    }
-  }
+  // let debounceEvent = (...args) => {
+  //   debounceEvent = debounce(...args)
+  //   return (e) => {
+  //     e.persist()
+  //     return debounceEvent(e)
+  //   }
+  // }
 
   return (
     <MainDiv>
