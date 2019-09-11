@@ -70,14 +70,24 @@ const Wrapper = styled.div`
 
 const SectionTitle = styled.div`
   color: #c5cae9;
-  font-size: 12px;
+  @media (min-width: 800px) {
+    font-size: 20px;
+  }
+  @media (max-width: 1024px) {
+    font-size: 4vw;
+  }
   margin-bottom: 4px;
 `
 
 const Title = styled.div`
   color: #1a237e;
-  font-size: 20px;
-  line-height: 20px;
+  @media (min-width: 800px) {
+    font-size: 20px;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 5vw;
+  }
   font-weight: 700;
   max-height: 60%;
   overflow-y: scroll;
@@ -85,9 +95,15 @@ const Title = styled.div`
 
 const Author = styled.div`
   color: #1a237e;
-  font-size: 12px;
+
+  @media (min-width: 800px) {
+    font-size: 16px;
+  }
+
+  @media (max-width: 1024px) {
+    font-size: 3vw;
+  }
   opacity: 0.8;
-  line-height: 12px;
   margin-bottom: 6px;
 `
 
@@ -111,8 +127,16 @@ const PreviewWrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
-  padding: 20px;
-  width: 210px;
+  padding: 10px;
+
+  @media (min-width: 800px) {
+    width: 210px;
+  }
+
+  @media (max-width: 1024px) {
+    width: 50vw;
+  }
+
   margin-left: 20px;
   &:first-child {
     margin-left: 40px;
