@@ -81,30 +81,26 @@ const SectionTitle = styled.div`
 
 const Title = styled.div`
   color: #1a237e;
-  @media (min-width: 800px) {
+  @media (min-width: 900) {
     font-size: 20px;
   }
 
-  @media (max-width: 1024px) {
-    font-size: 5vw;
+  @media (max-width: 900) {
+    font-size: 4vw;
   }
   font-weight: 700;
-  max-height: 60%;
-  overflow-y: scroll;
 `
 
 const Author = styled.div`
   color: #1a237e;
 
-  @media (min-width: 800px) {
-    font-size: 16px;
+  @media (min-width: 750px) {
+    font-size: 18px;
   }
 
-  @media (max-width: 1024px) {
-    font-size: 3vw;
+  @media (max-width: 750px) {
+    font-size: 4vw;
   }
-  opacity: 0.8;
-  margin-bottom: 6px;
 `
 
 const Belt = styled.div`

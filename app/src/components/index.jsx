@@ -124,7 +124,7 @@ export const FullPageLoader = () => (
 )
 
 export const HeaderText = styled.div`
-  font-size: 5vh;
+  font-size: 4vh;
 `
 
 export const OverlayLoader = () => (

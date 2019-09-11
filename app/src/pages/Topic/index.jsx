@@ -57,7 +57,42 @@ const Topic = ({
         <Button text='Back' onClick={() => history.goBack()} />
       </TopSection>
       <Paper>
-        <div>
+        <FieldDiv>
+          {topic.target_fields && topic.target_fields.length
+            ? topic.target_fields.map((field, index) => {
+              return (
+                <Badge color='secondary' key={index}>
+                  {field.field}
+                </Badge>
+              )
+            })
+            : null}
+        </FieldDiv>
+        <StyledDiv>
+          <div>
+            <TitleDiv>
+              <HeaderText className='flex-grow-1'>{`Title: ${topic.name}`}</HeaderText>
+            </TitleDiv>
+            <DescDiv>
+              {`Description: ${topic.description}`}
+            </DescDiv>
+          </div>
+          <Stat>{`${halfSubset.length} items`}</Stat>
+          <div>
+            <Stat>
+              <Icon name='account_circle' />
+              &nbsp;{`${topic.creator.first_name} ${topic.creator.last_name}`}
+            </Stat>
+            <Stat>
+              <Icon name='account_circle' />
+              &nbsp;&nbsp;{`${topic.creator.email}`}
+            </Stat>
+            <Stat size='4vmin'>
+              created on: &nbsp;{new Date(topic.created_at).toISOString().split('T')[0]}
+            </Stat>
+          </div>
+        </StyledDiv>
+        {/* <div>
           <div>
             {topic.target_fields && topic.target_fields.length
               ? topic.target_fields.map((field, index) => {
@@ -87,10 +122,17 @@ const Topic = ({
               created on: &nbsp;{new Date(topic.created_at).toISOString().split('T')[0]}
             </Stat>
           </div>
-        </PaperBottom>
+        </PaperBottom> */}
       </Paper>
       <BottomSection>
         {/* <Button text='Tackle with a friend' type='secondary' onClick={tackleAlone} /> */}
+        <EditButton
+          text='Edit'
+          type='primary'
+          onClick={() => {
+            console.log('edit')
+          }}
+        />
         <Button
           text='Tackle'
           type='primary'
@@ -103,17 +145,48 @@ const Topic = ({
   )
 }
 
-const PaperBottom = styled.div`
-  flex-grow: 2;
-  justify-content: flex-end;
+const EditButton = styled(Button)`
+  margin-right: 5px;
+`
+
+const DescDiv = styled.div`
+  font-size: 2.5vh;
+  font-weight: 700;
+  word-break: break-word;
+  display: flex;
+  flex-direction: row;
+`
+
+const TitleDiv = styled.div`
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  font-size: 5vh;
+  word-break: break-word;
+`
+
+const StyledDiv = styled.div`
+  height: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: space-evenly;
+  padding-left: 10px;
 `
+
+const FieldDiv = styled.div`
+  align-self: center;
+`
+
+// const PaperBottom = styled.div`
+//   flex-grow: 2;
+//   justify-content: flex-end;
+//   display: flex;
+//   flex-direction: column;
+// `
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   height: 100%;
 `
 
