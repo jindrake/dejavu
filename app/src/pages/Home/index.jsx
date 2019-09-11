@@ -41,6 +41,11 @@ const Home = ({ fetchHotTopics, fetchRecentTopics, history }) => {
     globalDispatch
   ])
 
+  if (window.localStorage.getItem('newUser')) {
+    window.localStorage.removeItem('newUser')
+    history.push('/welcome')
+  }
+
   if (fetchHotTopics.loading || fetchRecentTopics.loading) {
     return <FullPageLoader />
   }
