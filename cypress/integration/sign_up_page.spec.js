@@ -7,7 +7,7 @@ describe('sign-up page', () => {
     cy.visit(`http://localhost:3000/sign-up`)
   })
 
-  it('signup a new user and gets redirected to home', () => {
+  it.only('signup a new user and gets redirected to home', () => {
     const firstName = faker.name.firstName()
     const lastName = faker.name.lastName()
     const email = faker.internet.email()
