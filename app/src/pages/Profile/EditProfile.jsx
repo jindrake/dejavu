@@ -165,7 +165,7 @@ const EditProfile = ({ user, history, updateUser }) => {
           <FormWrapper>
             {isSubmitting && <OverlayLoader />}
             <Form isSubmitting={isSubmitting}>
-              <Close onClick={() => history.push('/')}>
+              <Close onClick={() => history.push('/profile')}>
                 <Icon name='close' />
               </Close>
               <Title>Edit Profile Settings</Title>

@@ -356,70 +356,50 @@ const Profile = ({ user, history, insertUserActivity }) => {
               <div>
                 {activityLogs.map((log, index) => {
                   const date = new Date(log.created_at)
+                  let icon = ''
+                  let activity = ''
                   switch (log.activity_type) {
                     case 'take':
-                      return (
-                        <ActivityWrapper key={index}>
-                          <ActivityIcon>
-                            <Icon name='check_circle' />
-                          </ActivityIcon>
-                          <div style={{ paddingLeft: '40px' }}>
-                            <Author>
-                              <strong>
-                                {user.first_name} {user.last_name}
-                              </strong>
-                            </Author>
-                            <Author>
-                              {log.activity_type}n the topic <strong>{log.topic.name}</strong>
-                            </Author>
-                            <Author>{date.toISOString().split('T')[0]}</Author>
-                          </div>
-                        </ActivityWrapper>
-                      )
+                      icon = 'edit'
+                      activity = 'taken'
+                      break
 
                     case 'answer':
-                      return (
-                        <ActivityWrapper key={index}>
-                          <ActivityIcon>
-                            <Icon name='assignment_turned_in' />
-                          </ActivityIcon>
-                          <div style={{ paddingLeft: '40px' }}>
-                            <Author>
-                              <strong>
-                                {user.first_name} {user.last_name}
-                              </strong>
-                            </Author>
-                            <Author>
-                              {log.activity_type}ed the topic <strong>{log.topic.name}</strong>
-                            </Author>
-                            <Author>{date.toISOString().split('T')[0]}</Author>
-                          </div>
-                        </ActivityWrapper>
-                      )
+                      icon = 'assignment_turned_in'
+                      activity = 'answered'
+                      break
 
                     case 'view':
-                      return (
-                        <ActivityWrapper key={index}>
-                          <ActivityIcon>
-                            <Icon name='visibility' />
-                          </ActivityIcon>
-                          <div style={{ paddingLeft: '40px' }}>
-                            <Author>
-                              <strong>
-                                {user.first_name} {user.last_name}
-                              </strong>
-                            </Author>
-                            <Author>
-                              {log.activity_type}ed the topic <strong>{log.topic.name}</strong>
-                            </Author>
-                            <Author>{date.toISOString().split('T')[0]}</Author>
-                          </div>
-                        </ActivityWrapper>
-                      )
+                      icon = 'visibility'
+                      activity = 'viewed'
+                      break
+
+                    case 'rate':
+                      icon = 'import_export'
+                      activity = 'rated'
+                      break
 
                     default:
                       break
                   }
+                  return (
+                    <ActivityWrapper key={index}>
+                      <ActivityIcon>
+                        <Icon name={icon} />
+                      </ActivityIcon>
+                      <div style={{ paddingLeft: '40px' }}>
+                        <Author>
+                          <strong>
+                            {user.first_name} {user.last_name}
+                          </strong>
+                        </Author>
+                        <Author>
+                          {activity} the topic <strong>{log.topic.name}</strong>
+                        </Author>
+                        <Author>{date.toISOString().split('T')[0]}</Author>
+                      </div>
+                    </ActivityWrapper>
+                  )
                 })}
               </div>
             )}
