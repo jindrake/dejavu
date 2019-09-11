@@ -39,17 +39,26 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
     >
       <Title>{name}</Title>
       <Author>{date.toDateString()}</Author>
-      <Ratings>
-        <StyledIcon name='thumb_up' />
-        {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
-      </Ratings>
-      <Ratings>
-        <StyledIcon name='thumb_down' />
-        {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
-      </Ratings>
+      <RatingContainer>
+        <Ratings>
+          <StyledIcon name='thumb_up' />{'  '}
+          {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
+        </Ratings>
+        <Ratings>
+          <StyledIcon name='thumb_down' />{'  '}
+          {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
+        </Ratings>
+      </RatingContainer>
     </Wrapper>
   )
 }
+
+const RatingContainer = styled.div`
+  display: flex;
+  width: 100%;
+  position: absolute;
+  bottom: 1vh;
+`
 
 const Title = styled.div`
   color: #1a237e;

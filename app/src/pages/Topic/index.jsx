@@ -5,7 +5,7 @@ import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
 import { FETCH_TOPIC_PREVIEW, CREATE_SESSION } from './queries'
-import { getObjectValue, useStateValue, shuffleArray } from '../../libs'
+import { getObjectValue, useStateValue } from '../../libs'
 import { HeaderText, Stat, Button, FullPageLoader } from '../../components'
 import { Paper } from '../../components/Topic'
 import Icon from '../../components/Icon'
@@ -51,12 +51,6 @@ const Topic = ({
   }
   if (loading) return <FullPageLoader />
   const topic = getObjectValue(data, 'topic[0]')
-  const unshuffledQuestionIds = topic.questions.map((q) => q.question_id)
-  const halfSubset = shuffleArray(unshuffledQuestionIds).splice(
-    0,
-    Math.ceil(unshuffledQuestionIds.length / 2)
-  )
-  console.log(unshuffledQuestionIds, halfSubset)
   return (
     <Wrapper>
       <TopSection>
@@ -77,7 +71,7 @@ const Topic = ({
           </div>
           <HeaderText className='flex-grow-1'>{topic.name}</HeaderText>
           <Stat>{topic.description}</Stat>
-          <Stat>{`${halfSubset.length} items`}</Stat>
+          {/* <Stat>{`${halfSubset.length} items`}</Stat> */}
         </div>
         <PaperBottom>
           <div>
@@ -101,7 +95,7 @@ const Topic = ({
           text='Tackle'
           type='primary'
           onClick={() => {
-            tackleAlone(halfSubset)
+            tackleAlone()
           }}
         />
       </BottomSection>

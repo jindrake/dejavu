@@ -39,7 +39,7 @@ const AnswerQuestion = ({
   // const remainingIds = questionIds.slice(1)
   const [answers, setAnswers] = useState([])
   const [timer, setTimer] = useState(10)
-  const [, globalDispatch] = useStateValue()
+  const [globalState, globalDispatch] = useStateValue()
   // const { data, loading, error } = useQuery(FETCH_QUESTION, {
   //   variables: {
   //     questionId
@@ -112,8 +112,11 @@ const AnswerQuestion = ({
     })
     return null
   }
-  if (loading || !question) {
+  if (loading && !globalState.loading) {
     return <FullPageLoader />
+  }
+  if (!question) {
+    return <div />
   }
   const choices = question.answers
   return (
