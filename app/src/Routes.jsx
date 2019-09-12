@@ -17,6 +17,7 @@ import Welcome from './pages/Welcome'
 import AnswerQuestion from './pages/Topic/AnswerQuestion'
 import Result from './pages/Topic/Result'
 import EditProfile from './pages/Profile/EditProfile'
+import Edit from './pages/Topic/Edit'
 import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
 import compose from 'recompose/compose'
@@ -85,6 +86,15 @@ const Routes = ({ userEmail, firebase }) => {
             !user ? <Redirect to='/sign-in' /> : <Create {...routeProps} user={user} />
           }
         />
+
+        <Route
+          exact
+          path='/topic/:id/edit'
+          render={(routeProps) =>
+            !user ? <Redirect to='/sign-in' /> : <Edit {...routeProps} user={user} />
+          }
+        />
+
         <Route
           exact
           path='/topic/:id/questions'

@@ -99,6 +99,14 @@ export const FETCH_USER_PREVIOUS_QUESTIONS = gql`
   }
 `
 
+export const FETCH_FIELDS = gql`
+  query fetchFields {
+    enum_field(order_by: { field: asc }) {
+      field
+    }
+  }
+`
+
 export const FETCH_TOPIC_PREVIEW = gql`
   query fetchFullTopic($topicId: uuid!) {
     topic(where: { id: { _eq: $topicId } }) {
@@ -128,6 +136,7 @@ export const FETCH_TOPIC_PREVIEW = gql`
     }
   }
 `
+
 export const INSERT_USER_ACTIVITY = gql`
   mutation insertUserActivity($userActivity: [user_activity_insert_input!]!) {
     insert_user_activity(objects: $userActivity) {
@@ -148,4 +157,30 @@ export const CREATE_SESSION = gql`
   mutation createSession ($userIds: [ID!]!, $topicId: ID!) {
     create_session(userIds: $userIds, topicId: $topicId)
   }
+`
+
+export const UPDATE_TOPIC = gql`
+  mutation updateTopic ($topic: topic_set_input, $id: uuid!) {
+    update_topic (_set: $topic, where: {id: {_eq: $id}}) {
+      returning {
+        id
+      }
+    }
+  }
+`
+
+export const DELETE_TOPIC_FIELD_RELATIONSHIP = gql`
+  mutation deleteTopicFieldRelationship($id: uuid!) {
+    delete_topic_field(where: {id: {_eq: $id}}) {
+      affected_rows
+    }
+  }
+`
+
+export const CREATE_TOPIC_FIELD_RELATIONSHIP = gql`
+mutation createTopicFieldRelationship($topicField: [topic_field_insert_input!]!) {
+  insert_topic_field(objects: $topicField) {
+    affected_rows
+  }
+}
 `

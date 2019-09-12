@@ -6,6 +6,7 @@ import compose from 'recompose/compose'
 import { useQuery, useMutation, useSubscription } from '@apollo/react-hooks'
 import uuid from 'uuid/v4'
 import { getObjectValue, useStateValue } from '../../libs'
+import styled from 'styled-components'
 import {
   REMOVE_QUESTION,
   INSERT_QUESTION,
@@ -15,18 +16,17 @@ import {
   INSERT_QUESTION_TOPIC_RELATIONSHIP,
   PUBLISH_TOPIC
 } from './queries'
-
 import { Title, OverlayLoader, SubText } from '../../components'
 import {
   CurrentQuestionsSection,
-  QuestionCard,
   CenterText,
   StyledForm,
   RightText,
   UnderlineInput,
   RemoveButton,
   ChoiceItem,
-  Hint
+  Hint,
+  QuestionCard
 } from '../../components/Topic'
 
 const AddQuestions = ({
@@ -362,25 +362,23 @@ const AddQuestions = ({
             .join(', ')
           return (
             <QuestionCard key={`questions:${index}`}>
-              <RightText>
-                <RemoveButton
-                  close
-                  onClick={() => {
-                    removeQuestion({
-                      variables: {
-                        id
-                      }
-                    })
-                  }}
-                />
-              </RightText>
+              <RemoveButton
+                close
+                onClick={() => {
+                  removeQuestion({
+                    variables: {
+                      id
+                    }
+                  })
+                }}
+              />
               <CenterText>{question.question}</CenterText>
-              <div>
-                answers: <span className='text-success'>{correctAnswers}</span>
-              </div>
-              <div>
-                dummy answers: <span className='text-warning'> {dummyAnswers}</span>
-              </div>
+              <AnswerDiv>
+                answers: {correctAnswers}
+              </AnswerDiv>
+              <DummyDiv>
+                wrong answers: {dummyAnswers}
+              </DummyDiv>
             </QuestionCard>
           )
         })}
@@ -416,12 +414,12 @@ const AddQuestions = ({
                 }}
               >
                 <CenterText>{question.question}</CenterText>
-                <div>
-                  answers: <span className='text-success'>{correctAnswers}</span>
-                </div>
-                <div>
-                  dummy answers: <span className='text-warning'> {dummyAnswers}</span>
-                </div>
+                <AnswerDiv>
+                  answers: {correctAnswers}
+                </AnswerDiv>
+                <DummyDiv>
+                  dummy answers: {dummyAnswers}
+                </DummyDiv>
               </QuestionCard>
             )
           })}
@@ -430,5 +428,15 @@ const AddQuestions = ({
     </StyledForm>
   )
 }
+
+const AnswerDiv = styled.div`
+  font-size: 2vh;
+  color: green;
+`
+
+const DummyDiv = styled.div`
+  font-size: 2vh;
+  color: red;
+`
 
 export default compose(withRouter)(AddQuestions)

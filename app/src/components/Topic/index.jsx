@@ -74,6 +74,7 @@ export const CenterText = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
+  font-size: 2.5vh;
 `
 
 export const StyledForm = styled(Form)`
@@ -87,7 +88,7 @@ export const StyledForm = styled(Form)`
 
 export const RightText = styled.div`
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
   width: 100%;
 `
 

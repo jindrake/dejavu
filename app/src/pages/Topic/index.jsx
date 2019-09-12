@@ -5,7 +5,7 @@ import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
 import { FETCH_TOPIC_PREVIEW, CREATE_SESSION } from './queries'
-import { getObjectValue, useStateValue } from '../../libs'
+import { getObjectValue, useStateValue, shuffleArray } from '../../libs'
 import { HeaderText, Stat, Button, FullPageLoader } from '../../components'
 import { Paper } from '../../components/Topic'
 import Icon from '../../components/Icon'
@@ -51,6 +51,15 @@ const Topic = ({
   }
   if (loading) return <FullPageLoader />
   const topic = getObjectValue(data, 'topic[0]')
+
+  const creatorId = topic.creator.id
+
+  const unshuffledQuestionIds = topic.questions.map((q) => q.question_id)
+  const halfSubset = shuffleArray(unshuffledQuestionIds).splice(
+    0,
+    Math.ceil(unshuffledQuestionIds.length / 2)
+  )
+  console.log(unshuffledQuestionIds, halfSubset)
   return (
     <Wrapper>
       <TopSection>
@@ -107,7 +116,7 @@ const Topic = ({
           <HeaderText className='flex-grow-1'>{topic.name}</HeaderText>
           <Stat>{topic.description}</Stat>
           {/* <Stat>{`${halfSubset.length} items`}</Stat> */}
-        </div>
+        {/* </div>
         <PaperBottom>
           <div>
             <Stat>
@@ -125,14 +134,20 @@ const Topic = ({
         </PaperBottom> */}
       </Paper>
       <BottomSection>
-        {/* <Button text='Tackle with a friend' type='secondary' onClick={tackleAlone} /> */}
-        <EditButton
-          text='Edit'
-          type='primary'
-          onClick={() => {
-            console.log('edit')
-          }}
-        />
+        {
+          user.id === creatorId && (
+            <EditButton
+              text='Edit'
+              type='primary'
+              onClick={() => {
+                history.push({
+                  pathname: `/topic/${topic.id}/edit`,
+                  state: { topicId: topic.id }
+                })
+              }}
+            />
+          )
+        }
         <Button
           text='Tackle'
           type='primary'
@@ -174,7 +189,7 @@ const StyledDiv = styled.div`
 `
 
 const FieldDiv = styled.div`
-  align-self: center;
+  align-self: flex-start;
 `
 
 // const PaperBottom = styled.div`
