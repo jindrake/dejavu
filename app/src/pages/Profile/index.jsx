@@ -171,6 +171,9 @@ const ActivityIcon = styled.div`
   padding-left: 0;
   font-size: 1.25em;
   color: #1a237e;
+  margin: 0;
+  position: absolute;
+  top: 35%;
 `
 
 const Image = styled.img`
@@ -414,7 +417,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
                           </strong>
                         </Author>
                         <Author>
-                          {activity} the topic <strong>{log.topic.name}</strong>
+                          {activity} the topic <strong>{ log.topic === null ?  log.question.topics[0].topic.name : log.topic.name }</strong>
                         </Author>
                         <Author>{date.toISOString().split('T')[0]}</Author>
                       </div>
