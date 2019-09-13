@@ -76,26 +76,8 @@ export const FETCH_TOPIC_QUESTIONS = gql`
 `
 
 export const FETCH_USER_PREVIOUS_QUESTIONS = gql`
-  query getUserOldQuestions($creatorId: uuid, $field: String, $topicId: uuid) {
-    question(
-      where: {
-        _and: [
-          { topics: { id: { _neq: $topicId } } }
-          {
-            creator_id: { _eq: $creatorId }
-            topics: { topic: { target_fields: { field: { _eq: $field } } } }
-          }
-        ]
-      }
-    ) {
-      answers {
-        answer
-        is_correct
-        id
-      }
-      question
-      id
-    }
+  query getUserOldQuestions($creatorId: ID, $topicId: ID) {
+    get_topic_suggested_questions (userId: $creatorId, topicId: $topicId)
   }
 `
 

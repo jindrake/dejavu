@@ -11,11 +11,11 @@ const client = new ApolloClient({
 
 client.defaultOptions = {
   watchQuery: {
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'no-cache',
     errorPolicy: 'ignore'
   },
   query: {
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'no-cache',
     errorPolicy: 'all'
   }
 }

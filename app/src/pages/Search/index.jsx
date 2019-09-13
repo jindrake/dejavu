@@ -79,6 +79,7 @@ const Search = ({ user, history, insertUserActivity }) => {
 
   if (loading) return <FullPageLoader />
   if (error) {
+    console.error('error@search:1')
     globalDispatch({
       networkError: error.message
     })

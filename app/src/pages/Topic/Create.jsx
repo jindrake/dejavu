@@ -28,7 +28,6 @@ const CREATE_TOPIC = gql`
       returning {
         id
         name
-        uri
         description
       }
     }
@@ -47,6 +46,7 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
   const [, globalDispatch] = useStateValue()
   const { data, loading, error } = useQuery(FETCH_FIELDS)
   if (error) {
+    console.error('error@create:1')
     globalDispatch({
       networkError: error.message
     })
@@ -57,8 +57,7 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
         name: '',
         description: '',
         isPrivate: false,
-        fieldOfStudy: user.fields.length ? user.fields[0].field : '',
-        uri: ''
+        fieldOfStudy: user.fields.length ? user.fields[0].field : ''
       }}
       validationSchema={yup.object().shape({
         name: yup
@@ -67,8 +66,8 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
           .required('Required'),
         description: yup.string().required('Required'),
         isPrivate: yup.boolean(),
-        fieldOfStudy: yup.string().required('Required'),
-        uri: yup.string().required('Required')
+        fieldOfStudy: yup.string().required('Required')
+        // uri: yup.string().required('Required')
       })}
       onSubmit={(values, { setSubmitting, setStatus }) => {
         setSubmitting(true)
@@ -80,7 +79,7 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
               creator_id: user.id,
               description: values.description,
               id: topicId,
-              uri: values.uri,
+              // uri: values.uri,
               is_private: values.isPrivate
               // target_fields: {
               //   data: {
@@ -142,9 +141,6 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
                 value={values.name}
                 onChange={(e) => {
                   setFieldValue('name', e.target.value)
-                  const uri = `${e.target.value.toLowerCase().replace(/[\W\s^-]/g, '-')}`
-                  const validateUri = uri.replace(/(-+|_+)/g, '')
-                  setFieldValue('uri', `${validateUri}-${uuid().substr(0, 4)}`)
                 }}
                 invalid={errors.name && touched.name}
               />

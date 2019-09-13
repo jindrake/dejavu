@@ -37,8 +37,9 @@ const FETCH_USER = gql`
 `
 
 const Routes = ({ userEmail, firebase }) => {
-  const [globalState, globalDispatch] = useStateValue()
+  const [{ user }, globalDispatch] = useStateValue()
   const { data, loading: fetchLoading, error: fetchError } = useQuery(FETCH_USER, {
+    skip: !userEmail,
     variables: {
       email: userEmail
     }
@@ -48,20 +49,19 @@ const Routes = ({ userEmail, firebase }) => {
     return <FullPageLoader />
   }
   if (fetchError) {
+    console.error('error@routes:1')
     globalDispatch({
       networkError: fetchError.message
     })
     return null
   }
-  const user = getObjectValue(data, 'user[0]')
-  console.log(user)
 
-  if (!globalState.user && user) {
-    console.log('Setting user to globalstate:', user)
+  if (!user && getObjectValue(data, 'user[0]')) {
     globalDispatch({
-      user
+      user: getObjectValue(data, 'user[0]')
     })
   }
+  console.warn('Routes user is:', user)
 
   return (
     <>

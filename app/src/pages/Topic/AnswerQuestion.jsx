@@ -96,7 +96,7 @@ const AnswerQuestion = ({
       // }
     } catch (error) {
       setTimer(0)
-      console.error(error)
+      console.error('error@answerquestion:1')
       globalDispatch({
         networkError: error.message
       })
@@ -107,6 +107,7 @@ const AnswerQuestion = ({
   }
 
   if (error) {
+    console.error('error@answerquestion:2')
     globalDispatch({
       networkError: error.message
     })

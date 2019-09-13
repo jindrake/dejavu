@@ -106,12 +106,16 @@ const EditProfile = ({ user, history, updateUser }) => {
     return <FullPageLoader />
   }
   if (fieldsError) {
+    console.error('error@editprofile:1')
+
     globalDispatch({
       networkError: fieldsError.message
     })
     return null
   }
   if (mutationError) {
+    console.error('error@editprofile:2')
+
     globalDispatch({
       networkError: mutationError.message
     })

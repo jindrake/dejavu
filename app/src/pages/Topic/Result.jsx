@@ -55,6 +55,7 @@ const Result = ({
     }
   })
   if (error) {
+    console.error('error@result:1')
     globalDispatch({
       networkError: error.message
     })

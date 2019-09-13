@@ -1,0 +1,9 @@
+- args:
+    sql: ALTER TABLE "public"."topic" ADD COLUMN "uri" text
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."topic" ALTER COLUMN "uri" DROP NOT NULL
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."topic" ADD CONSTRAINT topic_uri_key UNIQUE (uri)
+  type: run_sql

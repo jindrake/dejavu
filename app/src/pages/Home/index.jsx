@@ -24,11 +24,13 @@ const Home = ({ fetchHotTopics, fetchRecentTopics, history }) => {
       setRecentTopics(fetchHotTopics.topic)
     }
     if (fetchHotTopics.error) {
+      console.error('error@home:1')
       globalDispatch({
         networkError: fetchHotTopics.error.message
       })
     }
     if (fetchRecentTopics.error) {
+      console.error('error@home:2')
       globalDispatch({
         networkError: fetchRecentTopics.error.message
       })

@@ -39,7 +39,7 @@ const AddQuestions = ({
   const [numberOfQuestions, setNumberOfQuestions] = useState(0)
   const [field, setField] = useState(null)
   const [topicId, setTopicId] = useState(null)
-  const [previousQuestions, setPreviousQuestions] = useState([])
+  const [previousQuestions, setPreviousQuestions] = useState(null)
   const [
     insertQuestion,
     { error: insertQuestionError, loading: insertQuestionLoading }
@@ -52,6 +52,7 @@ const AddQuestions = ({
     error: topicQuestionsError,
     loading: topicQuestionsLoading
   } = useSubscription(FETCH_TOPIC_QUESTIONS, {
+    skip: !id,
     variables: {
       topicId: id
     }
@@ -65,7 +66,8 @@ const AddQuestions = ({
     loading: userQuestionsLoading,
     error: userQuestionsError
   } = useQuery(FETCH_USER_PREVIOUS_QUESTIONS, {
-    variables: { creatorId: user.id, field, topicId: topicId }
+    skip: !topicId || !user,
+    variables: { creatorId: user.id, topicId: topicId }
   })
   const [addQuestion, { loading: addQuestionLoading, error: addQuestionError }] = useMutation(
     INSERT_QUESTION_TOPIC_RELATIONSHIP
@@ -75,6 +77,7 @@ const AddQuestions = ({
     error: fetchTopicError,
     loading: fetchTopicLoading
   } = useSubscription(FETCH_TOPIC, {
+    skip: !id,
     variables: {
       id: id
     }
@@ -93,6 +96,7 @@ const AddQuestions = ({
   }
 
   if (fetchTopicError) {
+    console.error('error@questions:1')
     globalDispatch({
       networkError: fetchTopicError.message
     })
@@ -100,6 +104,7 @@ const AddQuestions = ({
   }
 
   if (insertQuestionError) {
+    console.error('error@questions:2')
     globalDispatch({
       networkError: insertQuestionError.message
     })
@@ -107,37 +112,42 @@ const AddQuestions = ({
   }
 
   if (publishTopicError) {
+    console.error('error@questions:3')
     globalDispatch({
       networkError: publishTopicError.message
     })
     return null
   }
   if (topicQuestionsError) {
+    console.error('error@questions:4')
     globalDispatch({
       networkError: topicQuestionsError.message
     })
     return null
   }
   if (removeQuestionError) {
+    console.error('error@questions:5')
     globalDispatch({
       networkError: removeQuestionError.message
     })
     return null
   }
   if (userQuestionsError) {
+    console.error('error@questions:6')
     globalDispatch({
       networkError: userQuestionsError.message
     })
     return null
   }
   if (addQuestionError) {
+    console.error('error@questions:7')
     globalDispatch({
       networkError: addQuestionError.message
     })
     return null
   }
-  if (getObjectValue(userQuestionsData, 'question[0]') && !previousQuestions.length) {
-    setPreviousQuestions(userQuestionsData.question)
+  if (userQuestionsData && userQuestionsData.get_topic_suggested_questions && !previousQuestions) {
+    setPreviousQuestions(JSON.parse(userQuestionsData.get_topic_suggested_questions) || [])
   }
 
   const topicQuestions = topicQuestionsData.question_topic
@@ -216,6 +226,7 @@ const AddQuestions = ({
             })
             .catch((error) => {
               setSubmitting(false)
+              console.error('error@questions:8')
               globalDispatch({
                 networkError: error.message
               })
@@ -386,7 +397,7 @@ const AddQuestions = ({
       {field && (
         <CurrentQuestionsSection>
           <Title>Select from your previous questions</Title>
-          {previousQuestions.map((question, index) => {
+          {previousQuestions && previousQuestions.map((question, index) => {
             const dummyAnswers = question.answers
               .filter((answer) => !answer.is_correct)
               .map((answer) => answer.answer)
@@ -398,8 +409,8 @@ const AddQuestions = ({
             return (
               <QuestionCard
                 key={`questions:${index}`}
-                onClick={() => {
-                  addQuestion({
+                onClick={async () => {
+                  await addQuestion({
                     variables: {
                       questionTopic: {
                         id: uuid(),

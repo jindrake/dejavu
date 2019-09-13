@@ -163,6 +163,68 @@ module.exports = {
       // return user answers
       // return question answers
       return 'test'
+    },
+    get_topic_suggested_questions: async (parent, args, context) => {
+      try {
+        const { topicId, userId } = args
+        // fetch topic
+        const {
+          data: {
+            topic: [topic]
+          }, ...rest
+        } = await graphql.query(
+          gql`
+            query fetchTopic($topicId: uuid!) {
+              topic(where: { id: { _eq: $topicId } }) {
+                id
+                questions {
+                  question_id
+                }
+              }
+            }
+          `,
+          {
+            topicId
+          }
+        )
+        if (!topic) {
+          throw new Error('Topic not found')
+        }
+        console.log('Topic:', topic, rest)
+        // fetch questions
+        const topicQuestionIds = topic
+          ? topic.questions.map((question) => question.question_id)
+          : []
+        console.log('TopicQuestionIds: ', topicQuestionIds)
+        const {
+          data: { question: questions }
+        } = await graphql.query(
+          gql`
+            query getUserOldQuestions($userId: uuid, $topicIds: [uuid!]!) {
+              question(
+                where: { _and: [{ creator_id: { _eq: $userId } }, { id: { _nin: $topicIds } }] }
+              ) {
+                answers {
+                  answer
+                  is_correct
+                  id
+                }
+                question
+                id
+              }
+            }
+          `,
+          {
+            userId,
+            topicIds: topicQuestionIds
+          }
+        )
+        console.log(questions.length)
+        return questions.length ? JSON.stringify(questions) : null
+      } catch (error) {
+        console.log(error.message)
+        throw new ApolloError(error)
+      }
     }
   },
   Mutation: {
@@ -317,12 +379,7 @@ module.exports = {
     },
     answer_question: async (parent, args, context) => {
       try {
-        const {
-          answers,
-          questionId,
-          sessionId,
-          userId
-        } = args
+        const { answers, questionId, sessionId, userId } = args
 
         // check if combination exists first
         // const userActivities = await graphql.query(
@@ -365,8 +422,8 @@ module.exports = {
               insert_user_activity(objects: $userActivity) {
                 affected_rows
               }
-            } 
-           `,
+            }
+          `,
           {
             userActivity: {
               id: uuid(),

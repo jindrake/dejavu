@@ -53,6 +53,7 @@ const SignUp = ({ firebase, history, createUser }) => {
     return <FullPageLoader />
   }
   if (fieldsError) {
+    console.error('error@signup:1')
     globalDispatch({
       networkError: fieldsError.message
     })
@@ -99,7 +100,7 @@ const SignUp = ({ firebase, history, createUser }) => {
           .then((idTokenResult) => {
             const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
             if (hasuraClaim) {
-              console.warn('CREATING USER')
+              console.warn('CREATING USER@1')
               window.localStorage.setItem('newUser', true)
               return createUser({
                 variables: {
@@ -134,7 +135,7 @@ const SignUp = ({ firebase, history, createUser }) => {
                 const hasuraClaim = await idTokenResult.claims['https://hasura.io/jwt/claims']
                 // if there's no hasuraClaim but token exists, maintain authState({loading: true}) state
                 if (hasuraClaim) {
-                  console.warn('CREATING USER')
+                  console.warn('CREATING USER@2')
                   try {
                     await createUser({
                       variables: {
@@ -159,6 +160,7 @@ const SignUp = ({ firebase, history, createUser }) => {
                     })
                     window.localStorage.setItem('newUser', true)
                   } catch (error) {
+                    console.error('error@signup:2')
                     globalDispatch({
                       networkError: error.message
                     })

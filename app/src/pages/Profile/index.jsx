@@ -211,16 +211,19 @@ const Profile = ({ user, history, insertUserActivity }) => {
   const initials = user.first_name.charAt(0) + user.last_name.charAt(0)
 
   if (userTopicsError) {
+    console.error('error@profile:1')
     globalDispatch({
       networkError: userTopicsError.message
     })
   }
   if (takenTopicsError) {
+    console.error('error@profile:2')
     globalDispatch({
       networkError: takenTopicsError.message
     })
   }
   if (activityLogsError) {
+    console.error('error@profile:3')
     globalDispatch({
       networkError: activityLogsError.message
     })

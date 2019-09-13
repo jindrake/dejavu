@@ -6,7 +6,6 @@ export const FETCH_HOT_TOPICS = gql`
       id
       name
       description
-      uri
       created_at
       ratings {
         id
@@ -23,7 +22,6 @@ export const FETCH_RECENT_TOPICS = gql`
       name
       description
       created_at
-      uri
       ratings {
         id
         type

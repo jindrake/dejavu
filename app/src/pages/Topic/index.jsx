@@ -37,6 +37,7 @@ const Topic = ({
       console.log('Session id:', data.create_session)
       history.push('/session/' + data.create_session)
     } catch (error) {
+      console.error('error@topic:1')
       globalDispatch({
         networkError: error.message
       })
@@ -44,6 +45,7 @@ const Topic = ({
   }
 
   if (error) {
+    console.error('error@topic:2')
     globalDispatch({
       networkError: error.message
     })
@@ -63,7 +65,7 @@ const Topic = ({
   return (
     <Wrapper>
       <TopSection>
-        <Button text='Back' onClick={() => history.goBack()} />
+        <Button text='Back' onClick={() => history.push('/')} />
       </TopSection>
       <Paper>
         <FieldDiv>
