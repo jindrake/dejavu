@@ -3,10 +3,12 @@ import styled from 'styled-components'
 import withFirebase from '../../hocs/withFirebase'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
-import { useQuery, useMutation } from '@apollo/react-hooks'
+import { useQuery } from '@apollo/react-hooks'
 import { Formik } from 'formik'
 import * as yup from 'yup'
+import uuid from 'uuid/v4'
 import { withRouter } from 'react-router-dom'
+import { useStateValue, getObjectValue } from '../../libs'
 import gql from 'graphql-tag'
 import Icon from '../../components/Icon'
 // import Alert from '../../components/Alert'
@@ -19,8 +21,6 @@ import {
   Button,
   FullPageLoader
 } from '../../components'
-import { useStateValue } from '../../libs'
-// import uuid from 'uuid/v4'
 
 const Close = styled.div`
   position: absolute;
@@ -85,24 +85,41 @@ const FETCH_FIELDS = gql`
 `
 
 const UPDATE_USER = gql`
-  mutation updateUser($user: [user_insert_input!]!) {
-    update_user(objects: $user) {
+  mutation updateUser(, $id: uuid!, $user: user_set_input) {
+    update_user (_set: $user, where: {id: {_eq: $id}}) {
+      returning {
+        id
+      }
+    }
+  }
+`
+const DELETE_USER_FIELD_RELATIONSHIP = gql`
+  mutation deleteUserFieldRelationship($id: uuid!) {
+    delete_user_field(where: { id: { _eq: $id }}) {
+      affected_rows
+    }
+  }
+`
+const CREATE_USER_FIELD_RELATIONSHIP = gql`
+  mutation insertUserFieldRelationship($userField: [user_field_insert_input!]!) {
+    insert_user_field(objects: $userField) {
       affected_rows
     }
   }
 `
 
-const EditProfile = ({ user, history, updateUser }) => {
+const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelationship, createUserTopicRelationship }) => {
   console.log('EDIT PROFILE PAGE')
-  console.log(user.fields[0].field)
+  // console.log(user.fields[0].field)
   const [, globalDispatch] = useStateValue()
   const { data, loading: fieldsLoading, error: fieldsError } = useQuery(FETCH_FIELDS)
-  const { data: mutationData, loading: mutationLoading, error: mutationError } = useMutation(
-    UPDATE_USER
-  )
-  console.log(mutationData)
-
-  if (fieldsLoading || mutationLoading) {
+  // const { data: mutationData, loading: mutationLoading, error: mutationError } = useMutation(
+  //   UPDATE_USER
+  // )
+  // console.log(user.fields[0].has_finished)
+  const fieldOfStudyId = user.fields[0].id
+  // console.log(fieldOfStudyId)
+  if (fieldsLoading) {
     return <FullPageLoader />
   }
   if (fieldsError) {
@@ -113,6 +130,7 @@ const EditProfile = ({ user, history, updateUser }) => {
     })
     return null
   }
+<<<<<<< HEAD
   if (mutationError) {
     console.error('error@editprofile:2')
 
@@ -120,38 +138,82 @@ const EditProfile = ({ user, history, updateUser }) => {
       networkError: mutationError.message
     })
   }
+=======
+>>>>>>> feat(Added query for edit user profile.):
 
   return (
     <Formik
       initialValues={{
         email: user.email,
-        password: '',
-        passwordConfirmation: '',
+        // password: '',
+        // passwordConfirmation: '',
         firstName: user.first_name,
         lastName: user.last_name,
         fieldOfStudy: user.fields[0].field,
-        isStudent: true
+        isStudent: user.fields[0].has_finished
+        // isStudent: false,
       }}
       validationSchema={yup.object().shape({
         email: yup
           .string()
           .email('Invalid email')
           .required('Required'),
-        password: yup
-          .string()
-          .min(8, 'Password must be at least 8 characters')
-          .required('Required'),
-        passwordConfirmation: yup
-          .string()
-          .oneOf([yup.ref('password'), null], 'Passwords must match')
-          .required('Required'),
+        // password: yup
+        //   .string()
+        //   .min(8, 'Password must be at least 8 characters')
+        //   .required('Required'),
+        // passwordConfirmation: yup
+        //   .string()
+        //   .oneOf([yup.ref('password'), null], 'Passwords must match')
+        //   .required('Required'),
         firstName: yup.string().required('Required'),
         lastName: yup.string().required('Required'),
         fieldOfStudy: yup.string().required('Required')
       })}
       onSubmit={(values, { setSubmitting, setStatus }) => {
         setSubmitting(true)
-        console.log(values)
+        console.log('Values:', values)
+        updateUser({
+          variables: {
+            id: user.id,
+            user: {
+              first_name: values.firstName,
+              last_name: values.lastName
+            }
+          }
+        })
+          .then((res) => {
+            console.log('RES: ', res)
+            if (values.fieldOfStudy !== user.fields[0].field || values.isStudent !== user.fields[0].has_finished) {
+              console.log('UPDATE!')
+              console.log(getObjectValue(res, 'data.update_user.returning[0].id'))
+              deleteUserTopicRelationship({
+                variables: {
+                  id: fieldOfStudyId
+                }
+              })
+              return createUserTopicRelationship({
+                variables: {
+                  userField: {
+                    id: uuid(),
+                    field: values.fieldOfStudy,
+                    user_id: getObjectValue(res, 'data.update_user.returning[0].id'),
+                    has_finished: values.isStudent
+                  }
+                }
+              })
+            }
+            return res
+          })
+          .then((res) => {
+            setSubmitting(false)
+            console.log('RESSSSS:', res)
+          })
+          .catch((err) => {
+            setSubmitting(false)
+            console.log(err.message)
+            setStatus({ type: 'error', text: err.message })
+          })
       }}
     >
       {({
@@ -214,14 +276,15 @@ const EditProfile = ({ user, history, updateUser }) => {
                   data-cy='email'
                   onChange={handleChange}
                   invalid={errors.email && touched.email}
-                  value={values.email}
+                  value={`${values.email} (disabled)`}
+                  disabled
                 />
               </FormItem>
               <FormItem>
                 <Label>
                   Field of study
                   {touched.fieldOfStudy && errors.fieldOfStudy && (
-                    <Hint data-cy='confirm-password-error'>{errors.fieldOfStudy}</Hint>
+                    <Hint data-cy='select-field-of-study'>{errors.fieldOfStudy}</Hint>
                   )}
                 </Label>
                 <StyledInput
@@ -245,7 +308,8 @@ const EditProfile = ({ user, history, updateUser }) => {
                     id={`isStudent`}
                     name={`isStudent`}
                     data-cy='is-student'
-                    checked={!!values.isStudent}
+                    checked={values.isStudent}
+                    // value={values.isStudent}
                     onChange={(event) => {
                       setFieldValue('isStudent', event.target.checked)
                     }}
@@ -253,7 +317,7 @@ const EditProfile = ({ user, history, updateUser }) => {
                   />
                 )}
               </FormItem>
-              <FormItem>
+              {/* <FormItem>
                 <Label>
                   Password
                   {touched.password && errors.password && <Hint>{errors.password}</Hint>}
@@ -266,8 +330,8 @@ const EditProfile = ({ user, history, updateUser }) => {
                   invalid={errors.password && touched.password}
                   value={values.password}
                 />
-              </FormItem>
-              <FormItem>
+              </FormItem> */}
+              {/* <FormItem>
                 <Label>
                   Confirm password
                   {touched.passwordConfirmation && errors.passwordConfirmation && (
@@ -282,7 +346,7 @@ const EditProfile = ({ user, history, updateUser }) => {
                   invalid={errors.passwordConfirmation && touched.passwordConfirmation}
                   value={values.passwordConfirmation}
                 />
-              </FormItem>
+              </FormItem> */}
               <ButtonGroup>
                 <Button onClick={() => history.push('/profile')} text='Cancel' />
                 <Button
@@ -303,5 +367,7 @@ const EditProfile = ({ user, history, updateUser }) => {
 export default compose(
   withRouter,
   withFirebase(),
-  graphql(UPDATE_USER, { name: 'updateUser' })
+  graphql(UPDATE_USER, { name: 'updateUser' }),
+  graphql(DELETE_USER_FIELD_RELATIONSHIP, { name: 'deleteUserTopicRelationship' }),
+  graphql(CREATE_USER_FIELD_RELATIONSHIP, { name: 'createUserTopicRelationship' })
 )(EditProfile)

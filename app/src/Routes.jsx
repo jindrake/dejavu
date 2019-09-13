@@ -31,6 +31,8 @@ const FETCH_USER = gql`
       id
       fields {
         field
+        id
+        has_finished
       }
     }
   }
