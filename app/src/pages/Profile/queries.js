@@ -61,6 +61,13 @@ export const FETCH_ACTIVITY_LOGS = gql`
       id
       activity_type
       created_at
+      question {
+        topics {
+          topic {
+            name
+          }
+        }
+      }
       topic {
         id
         name
