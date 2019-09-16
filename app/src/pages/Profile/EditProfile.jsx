@@ -11,6 +11,7 @@ import { withRouter } from 'react-router-dom'
 import { useStateValue, getObjectValue } from '../../libs'
 import gql from 'graphql-tag'
 import Icon from '../../components/Icon'
+
 // import Alert from '../../components/Alert'
 import {
   StyledInput,
@@ -93,9 +94,25 @@ const UPDATE_USER = gql`
     }
   }
 `
+const FETCH_USER = gql`
+  query fetchUser($userId: uuid!) {
+    user(where: { id: { _eq: $userId } }) {
+      email
+      first_name
+      last_name
+      id
+      fields {
+        field
+        id
+        has_finished
+      }
+    }
+  }
+`
+
 const DELETE_USER_FIELD_RELATIONSHIP = gql`
-  mutation deleteUserFieldRelationship($id: uuid!) {
-    delete_user_field(where: { id: { _eq: $id }}) {
+  mutation deleteUserFieldRelationship($userId: uuid!) {
+    delete_user_field(where: { user_id: { _eq: $userId }}) {
       affected_rows
     }
   }
@@ -110,14 +127,24 @@ const CREATE_USER_FIELD_RELATIONSHIP = gql`
 
 const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelationship, createUserTopicRelationship }) => {
   console.log('EDIT PROFILE PAGE')
-  // console.log(user.fields[0].field)
+  console.log(user)
   const [, globalDispatch] = useStateValue()
   const { data, loading: fieldsLoading, error: fieldsError } = useQuery(FETCH_FIELDS)
+
+  const { data: userData, loading, error } = useQuery(FETCH_USER, {
+    variables: {
+      userId: user.id
+    }
+  })
+  // console.log('DATA:', userData.user)
+  // console.log(getObjectValue(userData, 'user[0]'))
+  const currentUser = getObjectValue(userData, 'user[0]')
+  console.log(currentUser)
   // const { data: mutationData, loading: mutationLoading, error: mutationError } = useMutation(
   //   UPDATE_USER
   // )
   // console.log(user.fields[0].has_finished)
-  const fieldOfStudyId = user.fields[0].id
+  // const fieldOfStudyId = user.fields[0].id
   // console.log(fieldOfStudyId)
   if (fieldsLoading) {
     return <FullPageLoader />
@@ -130,28 +157,30 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
     })
     return null
   }
-<<<<<<< HEAD
-  if (mutationError) {
-    console.error('error@editprofile:2')
+
+  if (loading) {
+    return <FullPageLoader />
+  }
+  if (error) {
+    console.error('error@editprofile:1')
 
     globalDispatch({
-      networkError: mutationError.message
+      networkError: error.message
     })
+    return null
   }
-=======
->>>>>>> feat(Added query for edit user profile.):
 
   return (
     <Formik
       initialValues={{
-        email: user.email,
+        email: currentUser.email,
         // password: '',
         // passwordConfirmation: '',
-        firstName: user.first_name,
-        lastName: user.last_name,
-        fieldOfStudy: user.fields[0].field,
-        isStudent: user.fields[0].has_finished
-        // isStudent: false,
+        firstName: currentUser.first_name,
+        lastName: currentUser.last_name,
+
+        fieldOfStudy: currentUser.fields[0].field,
+        isStudent: currentUser.fields[0].has_finished
       }}
       validationSchema={yup.object().shape({
         email: yup
@@ -183,21 +212,20 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
           }
         })
           .then((res) => {
-            console.log('RES: ', res)
-            if (values.fieldOfStudy !== user.fields[0].field || values.isStudent !== user.fields[0].has_finished) {
-              console.log('UPDATE!')
-              console.log(getObjectValue(res, 'data.update_user.returning[0].id'))
+            const resultId = getObjectValue(res, 'data.update_user.returning[0].id')
+            if (values.fieldOfStudy !== currentUser.fields[0].field || values.isStudent !== currentUser.fields[0].has_finished) {
               deleteUserTopicRelationship({
                 variables: {
-                  id: fieldOfStudyId
+                  userId: resultId
                 }
               })
+
               return createUserTopicRelationship({
                 variables: {
                   userField: {
                     id: uuid(),
                     field: values.fieldOfStudy,
-                    user_id: getObjectValue(res, 'data.update_user.returning[0].id'),
+                    user_id: resultId,
                     has_finished: values.isStudent
                   }
                 }
@@ -208,6 +236,7 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
           .then((res) => {
             setSubmitting(false)
             console.log('RESSSSS:', res)
+            history.goBack()
           })
           .catch((err) => {
             setSubmitting(false)
