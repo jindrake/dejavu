@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDotCircle } from '@fortawesome/free-regular-svg-icons'
-import { faTimes, faSearch, faUserCircle, faHome, faCog } from '@fortawesome/free-solid-svg-icons'
+import { faDotCircle, faPlusSquare } from '@fortawesome/free-regular-svg-icons'
+import { faTimes, faSearch, faUserCircle, faHome, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
 
 import NavigationItem from './NavigationItem'
 
@@ -12,9 +12,11 @@ const Navigation = ({ user, location, history }) => {
 
   const routes = [
     { icon: faSearch, route: '/search', name: 'search' },
+    { icon: faPlusSquare, route: '/topic/create', name: 'create new topic' },
     { icon: faUserCircle, route: '/profile', name: 'profile' },
     { icon: faHome, route: '/', name: 'home' },
-    { icon: faCog, route: '/settings', name: 'settings' }
+    { icon: faCog, route: '/settings', name: 'settings' },
+    { icon: faSignOutAlt, route: '/exit', name: 'sign-out' }
   ]
 
   return (
@@ -25,17 +27,22 @@ const Navigation = ({ user, location, history }) => {
       {
         active && (
           <IconsDiv>
-            {routes.map(({ icon, route }) => (
+            {/* <div className='bg-danger'> */}
+            {routes.map(({ icon, route, name }) => (
               <NavigationItem
                 key={route}
                 icon={icon}
                 route={route}
-                name={route.name}
+                name={name}
                 active={location.pathname === route}
                 onClick={() => history.push(route)}
               />
             ))}
-            <CloseIcon onClick={() => setActive(false)} icon={faTimes}>close</CloseIcon>
+            <NavigationItem
+              icon={faTimes}
+              onClick={() => setActive(false)}
+              name='close'
+            />
           </IconsDiv>
         )
       }
@@ -49,21 +56,11 @@ const IconsDiv = styled.div`
   position: fixed;
   top: 0;
   left: 0;
-  display: flex;
-  justify-content: center;
   align-items: center;
-  z-index: 10000;
   background: rgba(0, 0, 0, 0.7);
   z-index: 999999;
   transition: transform .2s ease-out;
-`
-
-const CloseIcon = styled(FontAwesomeIcon)`
-  color: #e8eaf6;
-  top: 0;
-  left: 0;
-  position: absolute;
-  font-size: 6vh;
+  color: white;
 `
 
 const StyledIcon = styled(FontAwesomeIcon)`
@@ -76,5 +73,7 @@ const StyledIcon = styled(FontAwesomeIcon)`
   position: fixed;
   transition: transform 300ms ease-in-out;
   z-index: 1000;
+  box-shadow: 5px 5px 15px black;
+  border-radius: 40px;
 `
 export default withRouter(Navigation)

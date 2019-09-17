@@ -2,28 +2,32 @@ import React from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
-const NavigationItem = ({ icon, onClick, active }) => (
+const NavigationItem = ({ icon, onClick, active, name }) => (
   <Wrapper onClick={onClick} active={active}>
     <FontAwesomeIcon icon={icon} />
+    <Name>
+      {name}
+    </Name>
   </Wrapper>
 )
 
+const Name = styled.div`
+  font-size: 3vh;
+  margin-left: 3vh;
+`
+
 const Wrapper = styled.div`
   color: #e8eaf6;
-  font-size: 6vh;
+  font-size: 8vh;
   display: flex;
   opacity: ${({ active }) => (active ? 1 : 0.5)};
-  justify-content: center;
   align-items: center;
-  align-self: center;
   transition: 200ms;
   z-index: 99999;
-  border: 3px solid white;
   padding: 10;
   height: 10vh;
-  width: 10vh;
+  width: 100vh;
   margin: 10px;
-  border-radius: 5vh;
 
 `
 
