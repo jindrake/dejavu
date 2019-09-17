@@ -84,9 +84,7 @@ const Topic = ({
             <TitleDiv>
               <HeaderText className='flex-grow-1'>{`Title: ${topic.name}`}</HeaderText>
             </TitleDiv>
-            <DescDiv>
-              {`Description: ${topic.description}`}
-            </DescDiv>
+            <DescDiv>{`Description: ${topic.description}`}</DescDiv>
           </div>
           <Stat>{`${halfSubset.length} items`}</Stat>
           <div>
@@ -96,7 +94,7 @@ const Topic = ({
             </Stat>
             <Stat>
               <Icon name='account_circle' />
-              &nbsp;&nbsp;{`${topic.creator.email}`}
+              &nbsp;{`${topic.creator.email}`}
             </Stat>
             <Stat size='4vmin'>
               created on: &nbsp;{new Date(topic.created_at).toISOString().split('T')[0]}
@@ -136,20 +134,18 @@ const Topic = ({
         </PaperBottom> */}
       </Paper>
       <BottomSection>
-        {
-          user.id === creatorId && (
-            <EditButton
-              text='Edit'
-              type='primary'
-              onClick={() => {
-                history.push({
-                  pathname: `/topic/${topic.id}/edit`,
-                  state: { topicId: topic.id }
-                })
-              }}
-            />
-          )
-        }
+        {user.id === creatorId && (
+          <EditButton
+            text='Edit'
+            type='primary'
+            onClick={() => {
+              history.push({
+                pathname: `/topic/${topic.id}/edit`,
+                state: { topicId: topic.id }
+              })
+            }}
+          />
+        )}
         <Button
           text='Tackle'
           type='primary'

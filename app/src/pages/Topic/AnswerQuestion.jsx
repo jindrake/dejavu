@@ -11,13 +11,18 @@ import { ContentRight, Button, HeaderText, FullPageLoader } from '../../componen
 import { Paper } from '../../components/Topic'
 
 const ANSWER_QUESTION = gql`
-  mutation answerQuestion ($answers: [String!]!, $questionId: ID!, $userId: ID!, $sessionId: ID!) {
-    answer_question(answers: $answers, questionId: $questionId, userId: $userId, sessionId: $sessionId) 
+  mutation answerQuestion($answers: [String!]!, $questionId: ID!, $userId: ID!, $sessionId: ID!) {
+    answer_question(
+      answers: $answers
+      questionId: $questionId
+      userId: $userId
+      sessionId: $sessionId
+    )
   }
 `
 
 const FETCH_NEXT_SESSION_QUESTION = gql`
-  query fetchNextSessionQuestion ($userId: ID!, $sessionId: ID!) {
+  query fetchNextSessionQuestion($userId: ID!, $sessionId: ID!) {
     next_session_question(userId: $userId, sessionId: $sessionId)
   }
 `
@@ -52,7 +57,11 @@ const AnswerQuestion = ({
     }
   })
 
-  console.log('NExtsession result:', data, data.next_session_question && JSON.parse(data.next_session_question))
+  console.log(
+    'NExtsession result:',
+    data,
+    data.next_session_question && JSON.parse(data.next_session_question)
+  )
   const question = data.next_session_question ? JSON.parse(data.next_session_question) : null
   if (!loading && !error && !question) {
     history.push(`/result/${sessionId}`)
@@ -169,23 +178,25 @@ const ChoicesContainer = styled.div`
   bottom: 0px;
   height: 60%;
   border-radius: 1vh;
-  display: flex;
+  text-align: center;
   padding: 1vh;
   justify-content: space-evenly;
-  flex-wrap: wrap;
 `
 
 const Choice = styled.div`
-  background-color: white;
-  width: 50%;
-  height: 50%;
+  padding-top: 5%;
+  margin-bottom: 15px;
+  background: ${(props) =>
+    props.selected ? 'linear-gradient(#FFA726, #FF9800)' : 'linear-gradient(#9c27b0, #7B1FA2)'};
+  color: white;
+  font-weight: 700;
+  width: 100%;
+  height: 20%;
   border-radius: 1vh;
-  border: 1px solid black;
-  border: ${(props) => (props.selected ? '2px solid yellow' : '1px solid black')};
-  display: flex;
-  flex-direction: column;
+  border: ${(props) => (props.selected ? '2px solid #FF9800' : '1px solid #7B1FA2')};
   text-align: center;
   justify-content: center;
+  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
 `
 const QuestionContainer = styled.div`
