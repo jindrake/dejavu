@@ -420,7 +420,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
                           </strong>
                         </Author>
                         <Author>
-                          {activity} the topic <strong>{ log.topic === null ?  log.question.topics[0].topic.name : log.topic.name }</strong>
+                          {activity} the topic <strong>{ log.topic === null ? log.question.topics[0].topic.name : log.topic.name }</strong>
                         </Author>
                         <Author>{date.toISOString().split('T')[0]}</Author>
                       </div>

@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useState } from 'react'
 import gql from 'graphql-tag'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
@@ -10,6 +10,7 @@ import { Button, ContentRight, FullPageLoader } from '../../components'
 import { Card, CardHeader, CardBody } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
+import Icon from '../../components/Icon'
 
 const FETCH_USER_ACTIVITY = gql`
   query fetchUserActivity($sessionId: uuid!) {
@@ -46,8 +47,11 @@ const Result = ({
   match: {
     params: { sessionId }
   },
-  history
+  user,
+  history,
+  createRating
 }) => {
+  const [active, setActive] = useState(false)
   const [, globalDispatch] = useStateValue()
   const { data, error, loading } = useQuery(FETCH_USER_ACTIVITY, {
     variables: {
@@ -125,7 +129,36 @@ const Result = ({
             )
           })}
       </div>
+      {active && (
+        <IconsDiv>
+          <Close onClick={() => history.push('/')}>
+            <Icon name='close' />
+          </Close>
+          <RatingCard>
+            <Title>How was the topic?</Title>
+            <hr />
+            <Button
+              text='Upvote'
+              type='primary'
+              onClick={() => {
+                // createRating({
+                //   variables: {
+                //     topicRating: {
+                //       userId: user.id,
+
+                //     }
+                //   }
+                // })
+                console.log('upvote')
+              }}
+            />
+            <hr />
+            <Button text='Downvote' type='primary' />
+          </RatingCard>
+        </IconsDiv>
+      )}
       <ContentRight>
+        <Button text='Rate' type='primary' onClick={() => setActive(true)} />
         <Button
           text='exit'
           onClick={() => {
@@ -136,6 +169,57 @@ const Result = ({
     </Wrapper>
   )
 }
+
+const Title = styled.div`
+  color: #1a237e;
+  @media (min-width: 900) {
+    font-size: 20px;
+  }
+
+  @media (max-width: 900) {
+    font-size: 4vw;
+  }
+  font-weight: 700;
+`
+
+const RatingCard = styled.div`
+  background: linear-gradient(#e8eaf6, #c5cae9);
+  justify-content: center;
+  padding: 20px;
+  width: 92%;
+  margin-bottom: 10px;
+  &:last-child {
+    margin-bottom: 60px;
+  }
+  border-radius: 6px;
+  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
+  animation-delay: ${({ n }) => n * 100 + 'ms'};
+`
+
+const Close = styled.div`
+  position: absolute;
+  font-size: 2em;
+  color: #e8eaf6;
+  opacity: 0.5;
+  right: 0;
+  top: 0;
+`
+
+const IconsDiv = styled.div`
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10000;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 999999;
+  transition: transform 0.2s ease-out;
+`
 
 const StyledCard = styled(Card)`
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
