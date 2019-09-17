@@ -1,8 +1,12 @@
 import gql from 'graphql-tag'
 
 export const FETCH_HOT_TOPICS = gql`
-  query {
-    topic(order_by: {ratings_aggregate: {count: desc}}, limit: 10, where: {is_private: {_eq: false}}) {
+  query fetchHotTopics {
+    topic(
+      order_by: { ratings_aggregate: { count: desc } }
+      limit: 10
+      where: { _and: [{ is_private: { _eq: false } }, { is_published: { _eq: true } }] }
+    ) {
       id
       name
       description
@@ -16,8 +20,8 @@ export const FETCH_HOT_TOPICS = gql`
 `
 
 export const FETCH_RECENT_TOPICS = gql`
-  query {
-    topic(order_by: {created_at: desc}, limit: 10, where: {is_private: {_eq: false}}) {
+  query fetchRecentTopics {
+    topic(order_by: { created_at: desc }, limit: 10, where: { is_private: { _eq: false } }) {
       id
       name
       description

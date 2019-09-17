@@ -171,7 +171,7 @@ module.exports = {
         const {
           data: {
             topic: [topic]
-          }, ...rest
+          }
         } = await graphql.query(
           gql`
             query fetchTopic($topicId: uuid!) {
@@ -190,7 +190,6 @@ module.exports = {
         if (!topic) {
           throw new Error('Topic not found')
         }
-        console.log('Topic:', topic, rest)
         // fetch questions
         const topicQuestionIds = topic
           ? topic.questions.map((question) => question.question_id)
