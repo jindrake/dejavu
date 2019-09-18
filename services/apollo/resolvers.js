@@ -3,6 +3,7 @@ const gql = require('graphql-tag')
 const { ApolloError } = require('apollo-server-express')
 const { shuffleArray, getObjectValue } = require('../libs')
 const uuid = require('uuid/v4')
+const sentry = require('../sentry')
 
 module.exports = {
   Query: {
@@ -17,6 +18,9 @@ module.exports = {
     },
     next_session_question: async (parent, args, context) => {
       try {
+        if (!context.user) {
+          throw new ApolloError('Validation error')
+        }
         const { sessionId, userId } = args
         // get session with user_activities
         const {
@@ -83,6 +87,8 @@ module.exports = {
         return JSON.stringify(nextQuestion)
       } catch (error) {
         console.log(error.message)
+        sentry.captureException(error)
+        sentry.captureMessage('next_session_question:', error.message)
         throw new ApolloError(error)
       }
     },
@@ -166,6 +172,9 @@ module.exports = {
     },
     get_topic_suggested_questions: async (parent, args, context) => {
       try {
+        if (!context.user) {
+          throw new ApolloError('Validation error')
+        }
         const { topicId, userId } = args
         // fetch topic
         const {
@@ -218,10 +227,12 @@ module.exports = {
             topicIds: topicQuestionIds
           }
         )
-        console.log(questions.length)
-        return questions.length ? JSON.stringify(questions) : null
+        console.log(questions)
+        return questions && questions.length ? JSON.stringify(questions) : null
       } catch (error) {
         console.log(error.message)
+        sentry.captureException(error)
+        sentry.captureMessage('get_topic_suggested_questions:', error.message)
         throw new ApolloError(error)
       }
     }
@@ -229,6 +240,9 @@ module.exports = {
   Mutation: {
     create_session: async (parent, args, context) => {
       try {
+        if (!context.user) {
+          throw new ApolloError('Validation error')
+        }
         // fetch topic
         const { userIds, topicId } = args
         console.log('TopicId:', topicId)
@@ -373,13 +387,17 @@ module.exports = {
         return sessionId
       } catch (error) {
         console.log(error.message)
+        sentry.captureException(error)
+        sentry.captureMessage('create_session:', error.message)
         throw new ApolloError(error)
       }
     },
     answer_question: async (parent, args, context) => {
       try {
         const { answers, questionId, sessionId, userId } = args
-
+        if (!context.user) {
+          throw new ApolloError('Validation error')
+        }
         // check if combination exists first
         // const userActivities = await graphql.query(
         //   gql(`
@@ -437,6 +455,8 @@ module.exports = {
         return 'success'
       } catch (error) {
         console.error(error)
+        sentry.captureException(error)
+        sentry.captureMessage('answer_question:', error.message)
         throw new ApolloError(error)
       }
     }
