@@ -220,7 +220,11 @@ const Routes = ({ userEmail, firebase }) => {
           }}
         />
         <Route
-          component={NotFound}
+          path='*'
+          render={(routeProps) => {
+            document.title = 'Page not found'
+            return <NotFound {...routeProps} />
+          }}
         />
       </Switch>
     </>

@@ -86,7 +86,8 @@ const StyledIcon = styled(FontAwesomeIcon)`
   position: fixed;
   transition: transform 300ms ease-in-out;
   z-index: 1000;
-  box-shadow: 5px 5px 15px black;
+  box-shadow: 5px 5px 5px #240a2b;
   border-radius: 40px;
+  background: linear-gradient(#FFA726, #FF9800);
 `
 export default withRouter(Navigation)

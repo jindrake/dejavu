@@ -2,8 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDizzy } from '@fortawesome/free-regular-svg-icons'
+import { Button } from '../components/Button'
 
-const NotFound = () => {
+const NotFound = ({ history }) => {
   return (
     <StyledContainer>
       <IconContainer>
@@ -11,28 +12,14 @@ const NotFound = () => {
         <FontAwesomeIcon icon={faDizzy} />
         4
       </IconContainer>
-      <ErrorContainer>
-        ERROR
-      </ErrorContainer>
       <TextContainer>
         PAGE NOT FOUND
       </TextContainer>
-      <CommentDiv>
-      There are 4 reason why this http status code appears:
-      </CommentDiv>
-      <DetailsDiv>
-        {` -Your page was deleted from the website.`}
-      </DetailsDiv>
-      <DetailsDiv>
-        {`  -The user has typed the URL address incorrectly.`}
-      </DetailsDiv>
-      <DetailsDiv>
-        {`  -Page was moved and the redirection was configured incorrectly.`}
-      </DetailsDiv>
-      <DetailsDiv>
-        {`  -The server malfunctions (it happens very rarely).`}
-      </DetailsDiv>
-      {/* PAGE NOT FOUND! */}
+      <ButtonContainer>
+        <Button text={'Go Home'} type='warning' onClick={() => {
+          history.push('/')
+        }} />
+      </ButtonContainer>
     </StyledContainer>
   )
 }
@@ -40,6 +27,11 @@ const NotFound = () => {
 const StyledContainer = styled.div`
   height: 98vh;
   diplay: flex;
+`
+
+const ButtonContainer = styled.div`
+  position: absolute;
+  bottom: 1vh;
 `
 
 const IconContainer = styled.div`
@@ -52,36 +44,15 @@ const IconContainer = styled.div`
   font-weight: bold;
 `
 
-const ErrorContainer = styled.div`
-  font-size: 5vh;
-  color: red;
-  font-weight: bold;
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-`
-
 const TextContainer = styled.div`
   font-size: 3vh;
-  color: red;
+  color: linear-gradient(#FFA726, #FF9800);
   font-weight: bold;
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   margin-bottom: 20px;
-`
-
-const CommentDiv = styled.div`
-  font-size: 3vh;
-  color: white;
-  display: flex;
-`
-const DetailsDiv = styled.div`
-  font-size: 2vh;
-  color: white;
-  display: flex;
 `
 
 export default NotFound
