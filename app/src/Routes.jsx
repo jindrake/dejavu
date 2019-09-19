@@ -17,6 +17,7 @@ import Welcome from './pages/Welcome'
 import AnswerQuestion from './pages/Topic/AnswerQuestion'
 import Result from './pages/Topic/Result'
 import EditProfile from './pages/Profile/EditProfile'
+import NotFound from './pages/NotFound'
 import Edit from './pages/Topic/Edit'
 import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
@@ -183,6 +184,9 @@ const Routes = ({ userEmail, firebase }) => {
               <Redirect to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`} />
             )
           }
+        />
+        <Route
+          component={NotFound}
         />
       </Switch>
     </>
