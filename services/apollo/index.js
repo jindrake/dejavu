@@ -24,6 +24,11 @@ const typeDefs = `
       questionId: ID!,
       sessionId: ID!,
       userId: ID!
+    ): String,
+    create_topic_feedback(
+      sessionId: ID!,
+      rating: String,
+      comment: String
     ): String
   }
 `

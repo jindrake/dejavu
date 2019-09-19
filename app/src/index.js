@@ -10,7 +10,8 @@ const initialState = {
   user: null,
   redirectUrl: null,
   loading: false,
-  networkError: null
+  networkError: null,
+  operationSuccess: null
 }
 
 const reducer = (state, payload) => {

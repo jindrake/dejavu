@@ -11,7 +11,7 @@ import { Alert } from 'reactstrap'
 
 const App = ({ firebase, history, location: { search } }) => {
   const [authState, setAuthState] = useState({ loading: true })
-  const [{ loading, networkError }, globalDispatch] = useStateValue()
+  const [{ loading, networkError, operationSuccess }, globalDispatch] = useStateValue()
   useEffect(() => {
     const listener = firebase.auth.onAuthStateChanged(async (user) => {
       console.log('<< AuthStateChange user >>:', user)
@@ -68,12 +68,25 @@ const App = ({ firebase, history, location: { search } }) => {
     }, 4000)
   }
 
+  if (operationSuccess) {
+    setTimeout(() => {
+      globalDispatch({
+        operationSuccess: null
+      })
+    }, 4000)
+  }
+
   return (
     <ApolloProvider client={getInitializedApolloClient(authState.token)}>
       {loading && <OverlayLoader className='bg-transparent' />}
       {networkError && (
         <Notification>
           <Alert color='danger'>{networkError}</Alert>
+        </Notification>
+      )}
+      {operationSuccess && (
+        <Notification>
+          <Alert color='success'>{operationSuccess}</Alert>
         </Notification>
       )}
       <Routes userEmail={getObjectValue(authState, 'user.email')} />

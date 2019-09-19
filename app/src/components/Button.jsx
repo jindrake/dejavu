@@ -6,6 +6,9 @@ export const Button = ({ text, ...props }) => <Wrapper {...props}>{text}</Wrappe
 const TYPE_STYLE = {
   primary: `
     background: linear-gradient(45deg, #7b1fa2, #d500f9);
+  `,
+  warning: `
+    background: linear-gradient(#FFA726, #FF9800);
   `
 }
 

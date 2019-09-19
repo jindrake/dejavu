@@ -19,7 +19,7 @@ module.exports = {
     next_session_question: async (parent, args, context) => {
       try {
         if (!context.user) {
-          throw new ApolloError('Validation error')
+          throw new ApolloError('Authentication error')
         }
         const { sessionId, userId } = args
         // get session with user_activities
@@ -173,7 +173,7 @@ module.exports = {
     get_topic_suggested_questions: async (parent, args, context) => {
       try {
         if (!context.user) {
-          throw new ApolloError('Validation error')
+          throw new ApolloError('Authentication error')
         }
         const { topicId, userId } = args
         // fetch topic
@@ -238,10 +238,121 @@ module.exports = {
     }
   },
   Mutation: {
+    create_topic_feedback: async (parent, args, context) => {
+      try {
+        if (!context.user) {
+          throw new ApolloError('Authentication error')
+        }
+        const { sessionId, rating, comment } = args
+        console.log(args, context.user)
+        if (!rating && !comment) {
+          throw new ApolloError('At least a rating or a comment is required')
+        }
+        // get session with topic
+        const {
+          data: {
+            session: [session]
+          }
+        } = await graphql.query(
+          gql`
+            query getSession($sessionId: uuid!, $userId: uuid!) {
+              session (where: {_and: [{id: {_eq: $sessionId}}, { session_users: {user_id: {_eq: $userId}}}]}) {
+                id
+                topic_id
+              }
+            }
+          `,
+          {
+            sessionId,
+            userId: context.user.id
+          }
+        )
+        if (rating) {
+          await graphql.mutate(
+            gql`
+              mutation deleteTopicRating($topicId: uuid, $userId: uuid) {
+                delete_topic_rating(where: {_and: [{topic_id: {_eq: $topicId}}, {user_id: {_eq: $userId}}]}) {
+                  affected_rows
+                }
+              }
+            `,
+            {
+              topicId: session.topic_id,
+              userId: context.user.id
+            }
+          )
+          await graphql.mutate(
+            gql`
+              mutation insertRating ($rating: [topic_rating_insert_input!]!) {
+                insert_topic_rating (objects: $rating) {
+                  affected_rows
+                }
+              }
+            `,
+            {
+              rating: {
+                id: uuid(),
+                user_id: context.user.id,
+                topic_id: session.topic_id,
+                type: rating
+              }
+            }
+          )
+        }
+
+        const commentId = uuid()
+        // insert comment
+        if (comment) {
+          await graphql.mutate(
+            gql`
+              mutation insertComment ($comment: [topic_comment_insert_input!]!) {
+                insert_topic_comment (objects: $comment) {
+                  affected_rows
+                }
+              }
+            `,
+            {
+              comment: {
+                id: commentId,
+                topic_id: session.topic_id,
+                content: comment,
+                session_id: sessionId,
+                user_id: context.user.id
+              }
+            }
+          )
+        }
+        // insert user_activity
+        await graphql.mutate(
+          gql`
+            mutation insertActivity ($activity: [user_activity_insert_input!]!) {
+              insert_user_activity (objects: $activity) {
+                affected_rows
+              }
+            }
+          `,
+          {
+            activity: {
+              id: uuid(),
+              activity_type: rating ? 'rate' : comment ? 'comment' : 'rate',
+              user_id: context.user.id,
+              topic_id: session.topic_id,
+              topic_comment_id: comment ? commentId : null,
+              topic_session_id: sessionId
+            }
+          }
+        )
+      } catch (error) {
+        console.log(error.message)
+        sentry.captureException(error)
+        sentry.captureMessage('crate_topic_feedback:', error.message)
+        throw new ApolloError(error)
+      }
+    },
     create_session: async (parent, args, context) => {
       try {
         if (!context.user) {
-          throw new ApolloError('Validation error')
+          throw new ApolloError('Authentication error')
         }
         // fetch topic
         const { userIds, topicId } = args
@@ -396,7 +507,7 @@ module.exports = {
       try {
         const { answers, questionId, sessionId, userId } = args
         if (!context.user) {
-          throw new ApolloError('Validation error')
+          throw new ApolloError('Authentication error')
         }
         // check if combination exists first
         // const userActivities = await graphql.query(
