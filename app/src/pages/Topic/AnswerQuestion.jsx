@@ -7,7 +7,7 @@ import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
 
 import { useStateValue } from '../../libs'
-import { ContentRight, Button, HeaderText, FullPageLoader } from '../../components'
+import { Button, HeaderText, ContentBetween, OverlayLoader } from '../../components'
 import { Paper } from '../../components/Topic'
 
 const ANSWER_QUESTION = gql`
@@ -28,11 +28,6 @@ const FETCH_NEXT_SESSION_QUESTION = gql`
 `
 
 const AnswerQuestion = ({
-  // location: {
-  //   state: { questionIds }
-  // },
-  // match: {
-  //   params: { questionId, topicSessionId, id: topicId }
   // },
   match: {
     params: { sessionId }
@@ -41,22 +36,16 @@ const AnswerQuestion = ({
   history,
   answerQuestion
 }) => {
-  // const remainingIds = questionIds.slice(1)
   const [answers, setAnswers] = useState([])
   const [timer, setTimer] = useState(10)
   const [globalState, globalDispatch] = useStateValue()
-  // const { data, loading, error } = useQuery(FETCH_QUESTION, {
-  //   variables: {
-  //     questionId
-  //   }
-  // })
   const { data, loading, error } = useQuery(FETCH_NEXT_SESSION_QUESTION, {
     variables: {
       userId: user.id,
       sessionId
     }
   })
-
+  console.warn('>>>>>>> loading:', loading)
   console.log(
     'NExtsession result:',
     data,
@@ -93,16 +82,6 @@ const AnswerQuestion = ({
           answers
         }
       })
-      // if (remainingIds.length > 0) {
-      //   history.push({
-      //     pathname: `/topic/${topicId}/questions/${remainingIds[0]}/topicSession/${topicSessionId}`,
-      //     state: { questionIds: remainingIds }
-      //   })
-      // } else {
-      //   history.push({
-      //     pathname: `/result/${topicId}/topicSession/${topicSessionId}`
-      //   })
-      // }
     } catch (error) {
       setTimer(0)
       console.error('error@answerquestion:1')
@@ -123,7 +102,7 @@ const AnswerQuestion = ({
     return null
   }
   if (loading && !globalState.loading) {
-    return <FullPageLoader />
+    return <OverlayLoader />
   }
   if (!question) {
     return <div />
@@ -158,7 +137,13 @@ const AnswerQuestion = ({
             })}
         </ChoicesContainer>
       </Paper>
-      <ContentRight>
+      <ContentBetween>
+        <Button
+          text={'Exit'}
+          onClick={() => {
+            history.push('/')
+          }}
+        />
         <Button
           text={timer < 1 ? 'Skip' : 'Submit'}
           type='primary'
@@ -166,7 +151,7 @@ const AnswerQuestion = ({
             handleSubmit()
           }}
         />
-      </ContentRight>
+      </ContentBetween>
     </Wrapper>
   )
 }

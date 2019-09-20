@@ -5,9 +5,9 @@ import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
-import { useStateValue } from '../../libs'
+import { useStateValue, getObjectValue } from '../../libs'
 import { Button, ContentRight, FullPageLoader } from '../../components'
-import { Card, CardHeader, CardBody } from 'reactstrap'
+import { Card, CardHeader, CardBody, Input } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
 import Icon from '../../components/Icon'
@@ -22,6 +22,7 @@ const FETCH_USER_ACTIVITY = gql`
       id
       answer
       question_id
+      topic_id
       question {
         id
         question
@@ -35,10 +36,32 @@ const FETCH_USER_ACTIVITY = gql`
   }
 `
 
-const INSERT_TOPIC_RATING = gql`
-  mutation insertTopicRating($topicRating: [topic_rating_insert_input!]!) {
-    insert_topic_rating(objects: $topicRating) {
-      affected_rows
+const CREATE_TOPIC_FEEDBACK = gql`
+  mutation createTopicFeedback($sessionId: ID!, $rating: String, $comment: String) {
+    create_topic_feedback(sessionId: $sessionId, rating: $rating, comment: $comment)
+  }
+`
+
+const FETCH_USER_RATING = gql`
+  query fetchUserActivityRating ($sessionId: uuid!, $userId: uuid!) {
+    user_activity (where: {_and: [
+      {
+        activity_type: {
+          _eq: "rate"
+        }
+      },
+      {
+        topic_session_id: {
+          _eq: $sessionId
+        }
+      }
+    ]}) {
+      topic_id
+      topic {
+        ratings (where: {user_id: {_eq: $userId}}) {
+          type
+        }
+      }
     }
   }
 `
@@ -49,27 +72,46 @@ const Result = ({
   },
   user,
   history,
-  createRating
+  createTopicFeedback
 }) => {
-  const [active, setActive] = useState(false)
+  const [isFeedbackScreenShown, showFeedbackScreen] = useState(false)
+  const [rating, setRating] = useState(null)
+  const [comment, setComment] = useState('')
   const [, globalDispatch] = useStateValue()
   const { data, error, loading } = useQuery(FETCH_USER_ACTIVITY, {
+    skip: !sessionId,
     variables: {
       sessionId
     }
   })
+  const { data: ratingData, error: ratingError, loading: ratingLoading } = useQuery(FETCH_USER_RATING, {
+    skip: !sessionId || !user.id,
+    variables: {
+      userId: user.id,
+      sessionId
+    }
+  })
+
   if (error) {
     console.error('error@result:1')
     globalDispatch({
       networkError: error.message
     })
-    return
+    return null
   }
-  if (loading) {
+  if (ratingError) {
+    console.error('error@result:2')
+    globalDispatch({
+      networkError: ratingError.message
+    })
+    return null
+  }
+  if (loading || ratingLoading) {
     return <FullPageLoader />
   }
   const answerActivities = data.user_activity
-  console.log('answerActivities:', answerActivities)
+  console.log('answerActivities:', answerActivities, rating)
+  const previousRating = getObjectValue(ratingData, 'user_activity[0].topic.ratings[0].type')
   return (
     <Wrapper>
       {/* <Paper className='bg-transparent'> */}
@@ -129,7 +171,7 @@ const Result = ({
             )
           })}
       </div>
-      {active && (
+      {isFeedbackScreenShown && (
         <IconsDiv>
           <Close onClick={() => history.push('/')}>
             <Icon name='close' />
@@ -137,28 +179,59 @@ const Result = ({
           <RatingCard>
             <Title>How was the topic?</Title>
             <hr />
-            <Button
-              text='Upvote'
-              type='primary'
-              onClick={() => {
-                // createRating({
-                //   variables: {
-                //     topicRating: {
-                //       userId: user.id,
-
-                //     }
-                //   }
-                // })
-                console.log('upvote')
-              }}
-            />
+            <RatingButtonsContainer>
+              <Button
+                text='Upvote'
+                type={!rating && previousRating !== 'upvote' ? 'warning' : rating === 'upvote' ? 'warning' : 'primary'}
+                onClick={() => {
+                  setRating('upvote')
+                }}
+              />
+              <Button
+                text='Downvote'
+                type={!rating && previousRating !== 'downvote' ? 'warning' : rating === 'downvote' ? 'warning' : 'primary'}
+                onClick={() => {
+                  setRating('downvote')
+                }}
+              />
+            </RatingButtonsContainer>
             <hr />
-            <Button text='Downvote' type='primary' />
+            <Title>Comment</Title>
+            <Input type='textarea' value={comment} onChange={(event) => {
+              setComment(event.target.value)
+            }} />
+            <hr />
+            <Button text='Submit' type='primary' onClick={async () => {
+              globalDispatch({
+                loading: true
+              })
+              try {
+                await createTopicFeedback({
+                  variables: {
+                    sessionId,
+                    rating,
+                    comment
+                  }
+                })
+                globalDispatch({
+                  operationSuccess: 'Feedback sent'
+                })
+                showFeedbackScreen(false)
+              } catch (error) {
+                console.error('error@result:3')
+                globalDispatch({
+                  networkError: error.message
+                })
+              }
+              globalDispatch({
+                loading: false
+              })
+            }} />
           </RatingCard>
         </IconsDiv>
       )}
       <ContentRight>
-        <Button text='Rate' type='primary' onClick={() => setActive(true)} />
+        <Button text='Rate' type='primary' onClick={() => showFeedbackScreen(true)} />
         <Button
           text='exit'
           onClick={() => {
@@ -169,6 +242,11 @@ const Result = ({
     </Wrapper>
   )
 }
+
+const RatingButtonsContainer = styled.div`
+  display: flex;
+  justify-content: space-around;
+`
 
 const Title = styled.div`
   color: #1a237e;
@@ -238,5 +316,5 @@ const Wrapper = styled.div`
 
 export default compose(
   withRouter,
-  graphql(INSERT_TOPIC_RATING, { name: 'insertTopicRating' })
+  graphql(CREATE_TOPIC_FEEDBACK, { name: 'createTopicFeedback' })
 )(Result)

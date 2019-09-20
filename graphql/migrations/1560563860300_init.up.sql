@@ -107,6 +107,7 @@ INSERT INTO public.enum_user_activity (user_activity) VALUES ('login');
 INSERT INTO public.enum_user_activity (user_activity) VALUES ('logout');
 INSERT INTO public.enum_user_activity (user_activity) VALUES ('answer');
 INSERT INTO public.enum_user_activity (user_activity) VALUES ('click');
+INSERT INTO public.enum_user_activity (user_activity) VALUES ('comment');
 
 INSERT INTO public.enum_field (field) VALUES ('Business and Management');
 INSERT INTO public.enum_field (field) VALUES ('Nursing');

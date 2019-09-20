@@ -17,6 +17,7 @@ import Welcome from './pages/Welcome'
 import AnswerQuestion from './pages/Topic/AnswerQuestion'
 import Result from './pages/Topic/Result'
 import EditProfile from './pages/Profile/EditProfile'
+import NotFound from './pages/NotFound'
 import Edit from './pages/Topic/Edit'
 import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
@@ -31,6 +32,8 @@ const FETCH_USER = gql`
       id
       fields {
         field
+        id
+        has_finished
       }
     }
   }
@@ -71,73 +74,104 @@ const Routes = ({ userEmail, firebase }) => {
         render={() => <Navigation user={user} />}
       />
       <Switch>
-        <Route exact path='/welcome' render={() => <Welcome user={user} />} />
+        <Route
+          exact
+          path='/welcome'
+          render={() => {
+            document.title = 'Welcome to Dejavu!'
+            return <Welcome user={user} />
+          }}
+        />
         <Route
           exact
           path='/search'
-          render={(routeProps) =>
-            <Search {...routeProps} user={user} />
-          }
+          render={(routeProps) => {
+            document.title = 'Search Topics'
+            return <Search {...routeProps} user={user} />
+          }}
         />
         <Route
           exact
           path='/topic/create'
-          render={(routeProps) =>
-            !user ? <Redirect to='/sign-in' /> : <Create {...routeProps} user={user} />
-          }
+          render={(routeProps) => {
+            document.title = 'Create a Topic'
+            return !user ? <Redirect to='/sign-in' /> : <Create {...routeProps} user={user} />
+          }}
         />
 
         <Route
           exact
           path='/topic/:id/edit'
-          render={(routeProps) =>
-            !user ? <Redirect to='/sign-in' /> : <Edit {...routeProps} user={user} />
-          }
+          render={(routeProps) => {
+            document.title = 'Edit Topic'
+            return !user ? <Redirect to='/sign-in' /> : <Edit {...routeProps} user={user} />
+          }}
         />
 
         <Route
           exact
           path='/topic/:id/questions'
-          render={(routeProps) =>
-            !user ? (
+          render={(routeProps) => {
+            document.title = 'Topic Questions'
+            return !user ? (
               <Redirect to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`} />
             ) : (
               <Questions {...routeProps} user={user} />
             )
-          }
+          }}
         />
         <Route
           exact
           path='/topic/:id'
-          render={(routeProps) =>
-            user ? (
+          render={(routeProps) => {
+            document.title = 'View Topic'
+            return user ? (
               <Topic {...routeProps} user={user} />
             ) : (
               <Redirect to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`} />
             )
-          }
+          }}
         />
 
-        <Route exact path='/' render={(routeProps) => <Home {...routeProps} />} />
+        <Route
+          exact
+          path='/'
+          render={(routeProps) => {
+            document.title = 'Dejavu'
+            return <Home {...routeProps} />
+          }}
+        />
         <Route
           exact
           path='/sign-up'
-          render={(routeProps) => (user ? <Redirect to='/' /> : <SignUp {...routeProps} />)}
+          render={(routeProps) => {
+            document.title = 'Register to Dejavu'
+            return user ? <Redirect to='/' /> : <SignUp {...routeProps} />
+          }}
         />
         <Route
           exact
           path='/profile'
-          render={() => (user ? <Profile user={user} /> : <Redirect to='/sign-in' />)}
+          render={() => {
+            document.title = 'Profile'
+            return user ? <Profile user={user} /> : <Redirect to='/sign-in' />
+          }}
         />
         <Route
           exact
           path='/edit-profile'
-          render={() => (user ? <EditProfile user={user} /> : <Redirect to='/sign-in' />)}
+          render={() => {
+            document.title = 'Edit Profile'
+            return user ? <EditProfile user={user} /> : <Redirect to='/sign-in' />
+          }}
         />
         <Route
           exact
           path='/sign-in'
-          render={(routeProps) => (user ? <Redirect to='/' /> : <SignIn {...routeProps} />)}
+          render={(routeProps) => {
+            document.title = 'Login to Dejavu'
+            return user ? <Redirect to='/' /> : <SignIn {...routeProps} />
+          }}
         />
         <Route
           exact
@@ -156,37 +190,45 @@ const Routes = ({ userEmail, firebase }) => {
         <Route
           exact
           path='/feedback'
-          render={(routeProps) =>
-            user ? <Feedback {...routeProps} user={user} /> : <Redirect to='/' />
-          }
+          render={(routeProps) => {
+            document.title = "How's your Experience?"
+            return user ? <Feedback {...routeProps} user={user} /> : <Redirect to='/' />
+          }}
         />
         <Route
           exact
           path='/session/:sessionId'
-          render={(routeProps) =>
-            user ? (
+          render={(routeProps) => {
+            document.title = 'In Game!'
+            return user ? (
               <AnswerQuestion {...routeProps} user={user} />
             ) : (
               <Redirect to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`} />
             )
-          }
+          }}
         />
         <Route
           exact
           path='/result/:sessionId'
-          render={(routeProps) =>
-            user ? (
+          render={(routeProps) => {
+            document.title = 'Results'
+            return user ? (
               <Result {...routeProps} user={user} />
             ) : (
               <Redirect to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`} />
             )
-          }
+          }}
+        />
+        <Route
+          path='*'
+          render={(routeProps) => {
+            document.title = 'Page not found'
+            return <NotFound {...routeProps} />
+          }}
         />
       </Switch>
     </>
   )
 }
 
-export default compose(
-  withFirebase()
-)(Routes)
+export default compose(withFirebase())(Routes)

@@ -101,37 +101,6 @@ const Topic = ({
             </Stat>
           </div>
         </StyledDiv>
-        {/* <div>
-          <div>
-            {topic.target_fields && topic.target_fields.length
-              ? topic.target_fields.map((field, index) => {
-                return (
-                  <Badge color='secondary' key={index}>
-                    {field.field}
-                  </Badge>
-                )
-              })
-              : null}
-          </div>
-          <HeaderText className='flex-grow-1'>{topic.name}</HeaderText>
-          <Stat>{topic.description}</Stat>
-          {/* <Stat>{`${halfSubset.length} items`}</Stat> */}
-        {/* </div>
-        <PaperBottom>
-          <div>
-            <Stat>
-              <Icon name='account_circle' />
-              &nbsp;{`${topic.creator.first_name} ${topic.creator.last_name}`}
-            </Stat>
-            <Stat>
-              <Icon name='account_circle' />
-              &nbsp;&nbsp;{`${topic.creator.email}`}
-            </Stat>
-            <Stat size='4vmin'>
-              created on: &nbsp;{new Date(topic.created_at).toISOString().split('T')[0]}
-            </Stat>
-          </div>
-        </PaperBottom> */}
       </Paper>
       <BottomSection>
         {user.id === creatorId && (

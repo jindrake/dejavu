@@ -3,14 +3,15 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDotCircle, faPlusSquare } from '@fortawesome/free-regular-svg-icons'
-import { faTimes, faSearch, faUserCircle, faHome, faCog, faSignOutAlt } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faSearch, faUserCircle, faHome, faCog, faSignOutAlt, faSignInAlt, faUserPlus } from '@fortawesome/free-solid-svg-icons'
 
 import NavigationItem from './NavigationItem'
 
 const Navigation = ({ user, location, history }) => {
   const [active, setActive] = useState(false)
+  let routes
 
-  const routes = [
+  const userRoutes = [
     { icon: faSearch, route: '/search', name: 'search' },
     { icon: faPlusSquare, route: '/topic/create', name: 'create new topic' },
     { icon: faUserCircle, route: '/profile', name: 'profile' },
@@ -18,6 +19,18 @@ const Navigation = ({ user, location, history }) => {
     { icon: faCog, route: '/settings', name: 'settings' },
     { icon: faSignOutAlt, route: '/exit', name: 'sign-out' }
   ]
+
+  const noUserRoutes = [
+    { icon: faSearch, route: '/search', name: 'search' },
+    { icon: faPlusSquare, route: '/topic/create', name: 'create new topic' },
+    { icon: faUserCircle, route: '/profile', name: 'profile' },
+    { icon: faHome, route: '/', name: 'home' },
+    { icon: faCog, route: '/settings', name: 'settings' },
+    { icon: faSignInAlt, route: '/sign-in', name: 'sign-in' },
+    { icon: faUserPlus, route: '/sign-up', name: 'sign-up' }
+  ]
+
+  routes = user ? userRoutes : noUserRoutes
 
   return (
     <div>
@@ -73,7 +86,8 @@ const StyledIcon = styled(FontAwesomeIcon)`
   position: fixed;
   transition: transform 300ms ease-in-out;
   z-index: 1000;
-  box-shadow: 5px 5px 15px black;
+  box-shadow: 5px 5px 5px #240a2b;
   border-radius: 40px;
+  background: linear-gradient(#FFA726, #FF9800);
 `
 export default withRouter(Navigation)
