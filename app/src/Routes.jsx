@@ -54,7 +54,6 @@ const Routes = ({ userEmail, firebase }) => {
   if (fetchError) {
     console.error('error@routes:1')
     if (fetchError.message.includes('Could not verify JWT: JWTExpired')) {
-      console.error('LSKJDFSKLDJFSLDKFJ')
       firebase.auth.currentUser.getIdToken()
     } else {
       globalDispatch({

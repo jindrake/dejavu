@@ -44,9 +44,9 @@ const Topic = ({
     }
   }
 
-  const tackleWithAFriend = async () => {
+  // const tackleWithAFriend = async () => {
 
-  }
+  // }
 
   if (error) {
     console.error('error@topic:2')
@@ -119,18 +119,18 @@ const Topic = ({
         </StyledDiv>
       </Paper>
       <BottomSection>
-        <Button
+        {/* <Button
           text='Tackle with a friend'
           type='primary'
           onClick={() => {
-            tackleAlone()
+            tackleWithAFriend()
           }}
-        />
+          /> */}
         <Button
           text='Tackle'
           type='primary'
           onClick={() => {
-            tackleWithAFriend()
+            tackleAlone()
           }}
         />
       </BottomSection>
