@@ -44,9 +44,23 @@ const Topic = ({
     }
   }
 
-  // const tackleWithAFriend = async () => {
-
-  // }
+  const tackleWithAFriend = async () => {
+    try {
+      const { data } = await createSession({
+        variables: {
+          userIds: [user.id],
+          topicId: id
+        }
+      })
+      console.log('Session id:', data.create_session)
+      history.push('/session/' + data.create_session + '/lobby')
+    } catch (error) {
+      console.error('error@topic:2')
+      globalDispatch({
+        networkError: error.message
+      })
+    }
+  }
 
   if (error) {
     console.error('error@topic:2')
@@ -119,13 +133,13 @@ const Topic = ({
         </StyledDiv>
       </Paper>
       <BottomSection>
-        {/* <Button
+        <Button
           text='Tackle with a friend'
           type='primary'
           onClick={() => {
             tackleWithAFriend()
           }}
-          /> */}
+        />
         <Button
           text='Tackle'
           type='primary'
