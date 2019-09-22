@@ -44,6 +44,10 @@ const Topic = ({
     }
   }
 
+  const tackleWithAFriend = async () => {
+
+  }
+
   if (error) {
     console.error('error@topic:2')
     globalDispatch({
@@ -66,6 +70,18 @@ const Topic = ({
     <Wrapper>
       <TopSection>
         <Button text='Back' onClick={() => history.push('/')} />
+        {user.id === creatorId && (
+          <EditButton
+            text='Edit Topic'
+            type='primary'
+            onClick={() => {
+              history.push({
+                pathname: `/topic/${topic.id}/edit`,
+                state: { topicId: topic.id }
+              })
+            }}
+          />
+        )}
       </TopSection>
       <Paper>
         <FieldDiv>
@@ -103,23 +119,18 @@ const Topic = ({
         </StyledDiv>
       </Paper>
       <BottomSection>
-        {user.id === creatorId && (
-          <EditButton
-            text='Edit'
-            type='primary'
-            onClick={() => {
-              history.push({
-                pathname: `/topic/${topic.id}/edit`,
-                state: { topicId: topic.id }
-              })
-            }}
-          />
-        )}
+        <Button
+          text='Tackle with a friend'
+          type='primary'
+          onClick={() => {
+            tackleAlone()
+          }}
+        />
         <Button
           text='Tackle'
           type='primary'
           onClick={() => {
-            tackleAlone()
+            tackleWithAFriend()
           }}
         />
       </BottomSection>
@@ -176,13 +187,14 @@ const TopSection = styled.div`
   display: flex;
   align-items: center;
   height: 100px;
+  justify-content: space-between;
 `
 
 const BottomSection = styled.div`
   display: flex;
   align-items: center;
   height: 100px;
-  justify-content: flex-end;
+  justify-content: space-between;
 `
 
 export default compose(
