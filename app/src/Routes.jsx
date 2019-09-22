@@ -53,9 +53,13 @@ const Routes = ({ userEmail, firebase }) => {
   }
   if (fetchError) {
     console.error('error@routes:1')
-    globalDispatch({
-      networkError: fetchError.message
-    })
+    if (fetchError.message.includes('Could not verify JWT: JWTExpired')) {
+      firebase.auth.currentUser.getIdToken()
+    } else {
+      globalDispatch({
+        networkError: fetchError.message
+      })
+    }
     return null
   }
 
@@ -63,6 +67,10 @@ const Routes = ({ userEmail, firebase }) => {
     globalDispatch({
       user: getObjectValue(data, 'user[0]')
     })
+  }
+
+  if (fetchLoading || (!user && userEmail)) {
+    return <FullPageLoader />
   }
   console.warn('Routes user is:', user)
 
