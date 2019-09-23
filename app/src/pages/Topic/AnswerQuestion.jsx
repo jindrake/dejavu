@@ -112,7 +112,9 @@ const AnswerQuestion = ({
     <Wrapper>
       <Paper loadingPercentage={timer * 10}>
         <QuestionContainer>
-          <HeaderText>{question.question}</HeaderText>
+          <HeaderText>
+            <Question>{question.question}</Question>
+          </HeaderText>
         </QuestionContainer>
         <ChoicesContainer>
           {choices &&
@@ -156,6 +158,12 @@ const AnswerQuestion = ({
   )
 }
 
+const Question = styled.div`
+  color: #1a237e;
+  font-size: 1.25em;
+  font-weight: 700;
+`
+
 const ChoicesContainer = styled.div`
   width: 100%;
   position: absolute;
@@ -174,7 +182,7 @@ const Choice = styled.div`
   background: ${(props) =>
     props.selected ? 'linear-gradient(#FFA726, #FF9800)' : 'linear-gradient(#9c27b0, #7B1FA2)'};
   color: white;
-  font-weight: 700;
+  font-weight: ${(props) => props.selected ? '700' : 'normal'};
   width: 100%;
   height: 20%;
   border-radius: 1vh;

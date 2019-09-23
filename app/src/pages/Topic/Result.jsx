@@ -115,7 +115,7 @@ const Result = ({
   return (
     <Wrapper>
       {/* <Paper className='bg-transparent'> */}
-      <div className='text-white'>Results</div>
+      <PageTitle>RESULTS</PageTitle>
       <div>
         {answerActivities &&
           answerActivities.map((res, index) => {
@@ -130,7 +130,9 @@ const Result = ({
             return (
               <Fragment key={index}>
                 <StyledCard>
-                  <CardHeader className='text-center'>{res.question.question}</CardHeader>
+                  <CardHeader className='text-center' style={{ background: 'none' }}>
+                    <Question>Q{index + 1}: {res.question.question}</Question>
+                  </CardHeader>
                   {isCorrect ? (
                     <CardBody className='text-success d-flex justify-content-between'>
                       <FontAwesomeIcon icon={faCheck} />
@@ -233,7 +235,7 @@ const Result = ({
       <ContentRight>
         <Button text='Rate' type='primary' onClick={() => showFeedbackScreen(true)} />
         <Button
-          text='exit'
+          text='Exit'
           onClick={() => {
             history.push('/')
           }}
@@ -242,6 +244,20 @@ const Result = ({
     </Wrapper>
   )
 }
+
+const PageTitle = styled.div`
+  color: white;
+  text-align: center;
+  font-weight: 700;
+  margin-bottom: 15px;
+  font-size: 1.25em;
+`
+
+const Question = styled.div`
+  color: #1a237e;
+  font-size: 25px;
+  font-weight: 700;
+`
 
 const RatingButtonsContainer = styled.div`
   display: flex;
@@ -303,6 +319,7 @@ const StyledCard = styled(Card)`
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   padding: 1vh;
   border-radius: 1vh;
+  background: linear-gradient(#e8eaf6, #c5cae9);
 `
 
 const Wrapper = styled.div`
