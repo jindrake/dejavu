@@ -18,13 +18,14 @@ import { useStateValue } from '../../libs'
 import PlaceholderImage from '../../assets/placeholder.png'
 
 const AvatarContainer = styled.div`
-  border-radius: 50%;
-  vertical-align: middle;
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
+  border-radius: 6vh;
+  width: 12vh;
+  height:  12vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   background-color: #c5cae9;
-  font-size: 0.75em;
+  font-size: 7vh;
   color: #1a237e;
 `
 
@@ -81,26 +82,27 @@ const SectionTitle = styled.div`
 
 const Title = styled.div`
   color: #1a237e;
-  @media (min-width: 900) {
-    font-size: 20px;
+  font-size: 2vh;
+  ${'' /* @media (min-width: 900px) {
+    font-size: 12px;
   }
 
-  @media (max-width: 900) {
-    font-size: 4vw;
-  }
+  @media (max-width: 900px) {
+    font-size: 3vw;
+  } */}
   font-weight: 700;
 `
 
 const Author = styled.div`
   color: #1a237e;
-
-  @media (min-width: 750px) {
-    font-size: 18px;
+  font-size: 2vh;
+  ${'' /* @media (min-width: 900px) {
+    font-size: 16px;
   }
 
-  @media (max-width: 750px) {
+  @media (max-width: 900px) {
     font-size: 4vw;
-  }
+  } */}
 `
 
 const Belt = styled.div`
@@ -122,7 +124,7 @@ const PreviewWrapper = styled.div`
   background: linear-gradient(#e8eaf6, #c5cae9);
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-evenly;
   padding: 10px;
 
   @media (min-width: 800px) {
@@ -288,18 +290,22 @@ const Profile = ({ user, history, insertUserActivity }) => {
                       <Title>{topic.name}</Title>
                       <Author>{date.toDateString()}</Author>
                       <Author>{topic.description}</Author>
-                      <Author>
-                        <Icon name='thumb_up_alt' />{' '}
-                        {topic.ratings.length > 0
-                          ? topic.ratings.filter((r) => r.type === 'upvote').length
-                          : 0}
-                      </Author>
-                      <Author>
-                        <Icon name='thumb_down_alt' />{' '}
-                        {topic.ratings.length > 0
-                          ? topic.ratings.filter((r) => r.type === 'downvote').length
-                          : 0}
-                      </Author>
+                      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
+                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
+                          <Author>
+                            <Icon name='thumb_down_alt' />{' '}
+                            {topic.ratings.length > 0
+                              ? topic.ratings.filter((r) => r.type === 'downvote').length
+                              : 0}
+                          </Author>
+                          <Author>
+                            <Icon name='thumb_up_alt' />{' '}
+                            {topic.ratings.length > 0
+                              ? topic.ratings.filter((r) => r.type === 'upvote').length
+                              : 0}
+                          </Author>
+                        </div>
+                      </div>
                     </PreviewWrapper>
                   )
                 })}
@@ -413,7 +419,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
                       <ActivityIcon>
                         <Icon name={icon} />
                       </ActivityIcon>
-                      <div style={{ paddingLeft: '40px' }}>
+                      <div style={{ paddingLeft: '6vh' }}>
                         <Author>
                           <strong>
                             {user.first_name} {user.last_name}

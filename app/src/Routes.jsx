@@ -18,7 +18,10 @@ import AnswerQuestion from './pages/Topic/AnswerQuestion'
 import Result from './pages/Topic/Result'
 import EditProfile from './pages/Profile/EditProfile'
 import NotFound from './pages/NotFound'
+import ManageUsers from './pages/ManageUsers'
 import Edit from './pages/Topic/Edit'
+import AddingUsers from './pages/ManageUsers/AddingUsers'
+import Settings from './pages/Settings'
 import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
 import compose from 'recompose/compose'
@@ -96,6 +99,30 @@ const Routes = ({ userEmail, firebase }) => {
           render={(routeProps) => {
             document.title = 'Search Topics'
             return <Search {...routeProps} user={user} />
+          }}
+        />
+        <Route
+          exact
+          path='/manage-users'
+          render={(routeProps) => {
+            document.title = 'Manage Users'
+            return <ManageUsers {...routeProps} user={user} />
+          }}
+        />
+        <Route
+          exact
+          path='/manage-users/:id'
+          render={(routeProps) => {
+            document.title = 'Adding/Remove Users'
+            return <AddingUsers {...routeProps} user={user} />
+          }}
+        />
+        <Route
+          exact
+          path='/settings'
+          render={(routeProps) => {
+            document.title = 'Settings'
+            return <Settings {...routeProps} user={user} />
           }}
         />
         <Route

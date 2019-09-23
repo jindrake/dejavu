@@ -7,8 +7,8 @@ export * from './Button'
 
 export const StyledInput = styled(Input)`
   margin-top: 6px;
-  font-size: 14px;
-  height: 36px;
+  font-size: 2vh;
+  height: 5vh;
   width: 100%;
   color: #1a237e;
   padding-left: 12px;

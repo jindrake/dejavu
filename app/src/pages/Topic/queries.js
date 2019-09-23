@@ -49,6 +49,7 @@ export const FETCH_TOPIC = gql`
     topic(where: { id: { _eq: $id } }) {
       id
       is_published
+      is_private
       name
       target_fields {
         id
