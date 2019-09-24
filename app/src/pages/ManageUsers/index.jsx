@@ -94,7 +94,7 @@ const ManageUsers = ({ user, history }) => {
                   onClick={() => {
                     history.push({
                       pathname: `/manage-users/${topic.id}`,
-                      state: { topicId: topic.id, type: 'user' }
+                      state: { topicId: topic.id, type: 'user', topicName: topic.name }
                     })
                   }}
                 >
@@ -105,7 +105,7 @@ const ManageUsers = ({ user, history }) => {
                   onClick={() => {
                     history.push({
                       pathname: `/manage-users/${topic.id}`,
-                      state: { topicId: topic.id, type: 'admin' }
+                      state: { topicId: topic.id, type: 'admin', topicName: topic.name }
                     })
                   }}
                 >
