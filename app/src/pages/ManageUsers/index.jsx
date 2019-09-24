@@ -44,7 +44,7 @@ const ManageUsers = ({ user, history }) => {
     })
   }
 
-  console.log(userTopicsData.topic)
+  // console.log(userTopicsData.topic)
 
   return (
     <div>

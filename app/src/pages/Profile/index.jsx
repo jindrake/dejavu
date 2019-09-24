@@ -5,16 +5,16 @@ import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import uuid from 'uuid'
-
+import gql from 'graphql-tag'
 import {
   FETCH_MY_TOPIC,
-  FETCH_TAKEN_TOPIC,
+  // FETCH_TAKEN_TOPIC,
   INSERT_USER_ACTIVITY,
   FETCH_ACTIVITY_LOGS
 } from './queries'
 import { Button, FullPageLoader } from '../../components'
 import Icon from '../../components/Icon'
-import { useStateValue } from '../../libs'
+import { useStateValue, getObjectValue } from '../../libs'
 import PlaceholderImage from '../../assets/placeholder.png'
 
 const AvatarContainer = styled.div`
@@ -43,6 +43,8 @@ const CenteredText = styled.div`
   display: flex;
   justify-content: center;
   padding: 5px;
+  color: white;
+  font-weight: 500;
 `
 
 const Container = styled.div`
@@ -182,8 +184,35 @@ const Image = styled.img`
   width: 30px;
 `
 
+const FETCH_USER = gql`
+  query fetchUser($userId: uuid!) {
+    user(where: { id: { _eq: $userId } }) {
+      email
+      first_name
+      last_name
+      id
+      fields {
+        field
+        id
+        has_finished
+      }
+    }
+  }
+`
+
 const Profile = ({ user, history, insertUserActivity }) => {
   const [, globalDispatch] = useStateValue()
+
+  const { data: userData, loading: userDataLoading, error: userDataError } = useQuery(FETCH_USER, {
+    variables: {
+      userId: user.id
+    }
+  })
+  // console.log('DATA:', userData.user)
+  // console.log(getObjectValue(userData, 'user[0]'))
+  const currentUser = getObjectValue(userData, 'user[0]')
+  console.log(currentUser)
+
   const { data: userTopicsData, error: userTopicsError, loading: userTopicsLoading } = useQuery(
     FETCH_MY_TOPIC,
     {
@@ -192,14 +221,14 @@ const Profile = ({ user, history, insertUserActivity }) => {
       }
     }
   )
-  const { data: takenTopicsData, error: takenTopicsError, loading: takenTopicsLoading } = useQuery(
-    FETCH_TAKEN_TOPIC,
-    {
-      variables: {
-        userId: user.id
-      }
-    }
-  )
+  // const { data: takenTopicsData, error: takenTopicsError, loading: takenTopicsLoading } = useQuery(
+  //   FETCH_TAKEN_TOPIC,
+  //   {
+  //     variables: {
+  //       userId: user.id
+  //     }
+  //   }
+  // )
   const {
     data: activityLogsData,
     error: activityLogsError,
@@ -209,7 +238,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
       userId: user.id
     }
   })
-  if (userTopicsLoading || takenTopicsLoading || activityLogsLoading) {
+  if (userTopicsLoading || activityLogsLoading || userDataLoading) {
     return <FullPageLoader />
   }
 
@@ -221,12 +250,19 @@ const Profile = ({ user, history, insertUserActivity }) => {
       networkError: userTopicsError.message
     })
   }
-  if (takenTopicsError) {
+
+  if (userDataError) {
     console.error('error@profile:2')
     globalDispatch({
-      networkError: takenTopicsError.message
+      networkError: userTopicsError.message
     })
   }
+  // if (takenTopicsError) {
+  //   console.error('error@profile:2')
+  //   globalDispatch({
+  //     networkError: takenTopicsError.message
+  //   })
+  // }
   if (activityLogsError) {
     console.error('error@profile:3')
     globalDispatch({
@@ -234,20 +270,23 @@ const Profile = ({ user, history, insertUserActivity }) => {
     })
   }
   const userTopics = userTopicsData.topic
-  const takenTopics = takenTopicsData.user_activity
+  // const takenTopics = takenTopicsData.user_activity
   const activityLogs = activityLogsData.user_activity
-  console.log('MY TOPICS: ', userTopics, takenTopics)
+  // console.log('MY TOPICS: ', userTopics, takenTopics)
+  // console.log(activityLogs)
+  const uniqueLogs = Array.from(new Set(activityLogs.map(a => a.topic.id))).map(id => { return activityLogs.find(a => a.topic.id === id) })
+  console.log('mytopics', userTopics)
   return (
     <Container>
       <ProfileInfo onClick={() => history.push('/edit-profile')}>
-        {user.avatar === undefined ? (
+        {currentUser.avatar === undefined ? (
           <AvatarContainer>{initials.toUpperCase()}</AvatarContainer>
         ) : (
-          <AvatarContainer style={{ backgroundImage: `${user.avatar}` }} />
+          <AvatarContainer style={{ backgroundImage: `${currentUser.avatar}` }} />
         )}
       </ProfileInfo>
       <CenteredText>
-        {user.first_name} {user.last_name}
+        {currentUser.first_name} {currentUser.last_name}
       </CenteredText>
       <hr />
       <TopicWrapper>
@@ -287,7 +326,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
                         history.push(`topic/${topic.id}`)
                       }}
                     >
-                      <Title>{topic.name}</Title>
+                      <Title>Title:{topic.name}</Title>
                       <Author>{date.toDateString()}</Author>
                       <Author>{topic.description}</Author>
                       <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -298,12 +337,18 @@ const Profile = ({ user, history, insertUserActivity }) => {
                               ? topic.ratings.filter((r) => r.type === 'downvote').length
                               : 0}
                           </Author>
-                          <Author>
+                          <div
+                            style={{
+                              color: '#1a237e',
+                              fontSize: '2vh',
+                              marginLeft: '10px'
+                            }}
+                          >
                             <Icon name='thumb_up_alt' />{' '}
                             {topic.ratings.length > 0
                               ? topic.ratings.filter((r) => r.type === 'upvote').length
                               : 0}
-                          </Author>
+                          </div>
                         </div>
                       </div>
                     </PreviewWrapper>
@@ -323,7 +368,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
             }}
           />
         </CenteredText>
-        <Wrapper>
+        {/* <Wrapper>
           <SectionTitle>Recent Topics</SectionTitle>
           <TopicsContainer>
             {takenTopics.length === 0 ? (
@@ -376,67 +421,66 @@ const Profile = ({ user, history, insertUserActivity }) => {
               </Belt>
             )}
           </TopicsContainer>
-        </Wrapper>
-        <Wrapper>
-          <SectionTitle>Activity Logs</SectionTitle>
-          <div>
-            {activityLogs.length === 0 ? (
-              <NoTopicsHolder>
-                <Image src={PlaceholderImage} /> No Activity Logs Yet
-              </NoTopicsHolder>
-            ) : (
-              <div>
-                {activityLogs.map((log, index) => {
-                  const date = new Date(log.created_at)
-                  let icon = ''
-                  let activity = ''
-                  switch (log.activity_type) {
-                    case 'take':
-                      icon = 'edit'
-                      activity = 'taken'
-                      break
+        </Wrapper> */}
+        <SectionTitle>Activity Logs</SectionTitle>
+        <div style={{ height: '40vh', overflowY: 'scroll' }}>
+          {uniqueLogs.length === 0 ? (
+            <NoTopicsHolder>
+              {/* <Image src={PlaceholderImage} />  */}
+                No Activity Logs Yet
+            </NoTopicsHolder>
+          ) : (
+            <div>
+              {uniqueLogs.map((log, index) => {
+                const date = new Date(log.created_at)
+                let icon = ''
+                let activity = ''
+                switch (log.activity_type) {
+                  case 'take':
+                    icon = 'edit'
+                    activity = 'taken'
+                    break
 
-                    case 'answer':
-                      icon = 'assignment_turned_in'
-                      activity = 'answered'
-                      break
+                  case 'answer':
+                    icon = 'assignment_turned_in'
+                    activity = 'answered'
+                    break
 
-                    case 'view':
-                      icon = 'visibility'
-                      activity = 'viewed'
-                      break
+                  case 'view':
+                    icon = 'visibility'
+                    activity = 'viewed'
+                    break
 
-                    case 'rate':
-                      icon = 'import_export'
-                      activity = 'rated'
-                      break
+                  case 'rate':
+                    icon = 'import_export'
+                    activity = 'rated'
+                    break
 
-                    default:
-                      break
-                  }
-                  return (
-                    <ActivityWrapper key={index}>
-                      <ActivityIcon>
-                        <Icon name={icon} />
-                      </ActivityIcon>
-                      <div style={{ paddingLeft: '6vh' }}>
-                        <Author>
-                          <strong>
-                            {user.first_name} {user.last_name}
-                          </strong>
-                        </Author>
-                        <Author>
-                          {activity} the topic <strong>{ log.topic === null ? log.question.topics[0].topic.name : log.topic.name }</strong>
-                        </Author>
-                        <Author>{date.toISOString().split('T')[0]}</Author>
-                      </div>
-                    </ActivityWrapper>
-                  )
-                })}
-              </div>
-            )}
-          </div>
-        </Wrapper>
+                  default:
+                    break
+                }
+                return (
+                  <ActivityWrapper key={index}>
+                    <ActivityIcon>
+                      <Icon name={icon} />
+                    </ActivityIcon>
+                    <div style={{ paddingLeft: '6vh' }}>
+                      <Author>
+                        <strong>
+                          {user.first_name} {user.last_name}
+                        </strong>
+                      </Author>
+                      <Author>
+                        {activity} the topic <strong>{ log.topic === null ? log.question.topics[0].topic.name : log.topic.name }</strong>
+                      </Author>
+                      <Author>{date.toISOString().split('T')[0]}</Author>
+                    </div>
+                  </ActivityWrapper>
+                )
+              })}
+            </div>
+          )}
+        </div>
       </TopicWrapper>
     </Container>
   )

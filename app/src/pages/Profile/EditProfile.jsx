@@ -34,7 +34,7 @@ const Close = styled.div`
 
 const Label = styled.div`
   color: #e8eaf6;
-  font-size: 12px;
+  font-size: 2vh;
 `
 
 const Hint = styled.span`
@@ -377,7 +377,7 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
                 />
               </FormItem> */}
               <ButtonGroup>
-                <Button onClick={() => history.push('/profile')} text='Cancel' />
+                <Button onClick={() => history.goBack()} text='Cancel' />
                 <Button
                   data-cy='submit-button'
                   onClick={handleSubmit}

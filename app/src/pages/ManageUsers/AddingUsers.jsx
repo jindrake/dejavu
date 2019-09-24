@@ -47,7 +47,28 @@ const INSERT_TOPIC_ADMIN = gql`
   }
 `
 
-const AddingUsers = ({ deleteTopicUser, updateTopicUser, history, location, insertTopicUser, insertTopicAdmin }) => {
+const DELETE_TOPIC_ADMIN = gql`
+  mutation deleteTopicAdmin($topicAdminId: uuid!) {
+    delete_admin_topic(where: {id: {_eq: $topicAdminId}}) {
+      affected_rows
+    }
+  }
+`
+
+const FETCH_TOPIC_ADMIN = gql`
+  query fetchTopicAdmin {
+    admin_topic {
+      id
+      user {
+        email
+        first_name
+        last_name
+      }
+    }
+  }
+`
+
+const AddingUsers = ({ deleteTopicUser, updateTopicUser, history, deleteTopicAdmin, location, insertTopicUser, insertTopicAdmin }) => {
   const [searchValue, setSearchValue] = useState('')
   const { state: { topicId, type, topicName } } = location
   // console.log(location.state)
@@ -56,6 +77,8 @@ const AddingUsers = ({ deleteTopicUser, updateTopicUser, history, location, inse
   // console.log(type)
 
   const { loading, error, data, refetch } = useQuery(FETCH_TOPIC_USER)
+  const { loading: adminTopicLoading, error: adminTopicError, data: adminTopicData, refetch: adminTopicRefetch } = useQuery(FETCH_TOPIC_ADMIN)
+
   if (loading) return <FullPageLoader />
   if (error) {
     console.error('error@search:1')
@@ -65,7 +88,17 @@ const AddingUsers = ({ deleteTopicUser, updateTopicUser, history, location, inse
     return null
   }
 
+  if (adminTopicLoading) return <FullPageLoader />
+  if (adminTopicError) {
+    console.error('error@search:1')
+    globalDispatch({
+      networkError: error.message
+    })
+    return null
+  }
+
   // console.log('DATA', data)
+  // console.log('ADMIN TOPIC', adminTopicData)
   const notAllowedUsers = data.topic_user && data.topic_user.filter(user => user.is_allowed === false)
   const allowedUsers = data.topic_user && data.topic_user.filter(user => user.is_allowed === true)
 
@@ -129,37 +162,54 @@ const AddingUsers = ({ deleteTopicUser, updateTopicUser, history, location, inse
             if (searchValue.length > 0) {
               if (type === 'user') {
                 // console.log(searchValue)
-                insertTopicUser({
-                  variables: {
-                    topicUser: {
-                      email: searchValue,
-                      is_allowed: true,
-                      topic_id: topicId
+                if (!(/(.)+@(\w)+.com/.test(searchValue))) {
+                  globalDispatch({
+                    networkError: 'Invalid input for email.'
+                  })
+                } else {
+                  insertTopicUser({
+                    variables: {
+                      topicUser: {
+                        email: searchValue,
+                        is_allowed: true,
+                        topic_id: topicId
+                      }
                     }
-                  }
-                })
-                  .then((res) => {
+                  })
+                    .then((res) => {
                     // console.log(res)
-                    refetch()
-                  })
-                  .catch((err) => {
-                    console.log(err.message)
-                  })
+                      refetch()
+                    })
+                    .catch((err) => {
+                      console.log(err.message)
+                    })
+                }
               } else {
                 // console.log('add admin!')
-                insertTopicAdmin({
-                  variables: {
-                    email: searchValue,
-                    topicId: topicId
-                  }
-                })
-                  .then((res) => {
-                    console.log(res)
+                console.log(/(.)+@(\w)+.com/.test(searchValue))
+                if (!(/(.)+@(\w)+.com/.test(searchValue))) {
+                  globalDispatch({
+                    networkError: 'Invalid input for email.'
+                  })
+                } else {
+                  insertTopicAdmin({
+                    variables: {
+                      email: searchValue,
+                      topicId: topicId
+                    }
+                  })
+                    .then((res) => {
+                      console.log(res)
+                      adminTopicRefetch()
                     // refetch()
-                  })
-                  .catch((err) => {
-                    console.log(err.message)
-                  })
+                    })
+                    .catch((err) => {
+                      console.log(err.message)
+                      globalDispatch({
+                        networkError: err.message.substring(14)
+                      })
+                    })
+                }
               }
             }
           }}
@@ -186,7 +236,7 @@ const AddingUsers = ({ deleteTopicUser, updateTopicUser, history, location, inse
               // console.log(uuid.fromString('the native web'))
               // const uuidTopicId = uuid.fromString(topicId)
               // console.log(uuidTopicId)
-              console.log('CLICK ALL ALLOWED!!')
+              // console.log('CLICK ALL ALLOWED!!')
               deleteTopicUser({
                 variables: {
                   topicId: topicId
@@ -205,101 +255,157 @@ const AddingUsers = ({ deleteTopicUser, updateTopicUser, history, location, inse
           </div>
         )
       }
-      <div style={{ color: 'white', minHeight: '20vh', maxHeight: '60vh', fontWeight: '500', fontSize: '3vh' }}>
-        {`Allowed ${type}s:`}
-        {
-          type === 'user' && allowedUsers.map((user, i) => (
-            <div
-              key={i.toString()}
-              style={{
-                fontWeight: '500',
-                fontSize: '2.5vh',
-                borderRadius: '10px',
-                margin: '10px',
-                backgroundColor: 'white',
-                padding: '5px',
-                color: 'black',
-                border: '2px solid green',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-                flexDirection: 'row'
-              }}
-            >
-              <div>{user.email}</div>
-              {/* <div>{typeof user.topic_id}</div> */}
-              <div
-                style={{ fontSize: '2vh', color: 'white', paddingLeft: '10px', paddingRight: '10px', borderRadius: '10px', backgroundColor: 'red' }}
-                onClick={() => {
-                  updateTopicUser({
-                    variables: {
-                      email: user.email,
-                      isAllowed: false
-                    }
-                  })
-                    .then((res) => {
-                    // console.log(res)
-                      refetch()
-                    })
-                    .catch((err) => {
-                      console.log(err.message)
-                    })
-                }}
-              >
-                ban
-              </div>
+      {
+        type === 'user' ? (
+          <div>
+            <div style={{ color: 'white', minHeight: '20vh', maxHeight: '60vh', fontWeight: '500', fontSize: '3vh' }}>
+              {`Allowed ${type}s:`}
+              {
+                type === 'user' && allowedUsers.map((user, i) => (
+                  <div
+                    key={i.toString()}
+                    style={{
+                      fontWeight: '500',
+                      fontSize: '2.5vh',
+                      borderRadius: '10px',
+                      margin: '10px',
+                      backgroundColor: 'white',
+                      padding: '5px',
+                      color: 'black',
+                      border: '2px solid green',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexDirection: 'row'
+                    }}
+                  >
+                    <div>{user.email}</div>
+                    {/* <div>{typeof user.topic_id}</div> */}
+                    <div
+                      style={{ fontSize: '2vh', color: 'white', paddingLeft: '10px', paddingRight: '10px', borderRadius: '10px', backgroundColor: 'red' }}
+                      onClick={() => {
+                        updateTopicUser({
+                          variables: {
+                            email: user.email,
+                            isAllowed: false
+                          }
+                        })
+                          .then((res) => {
+                          // console.log(res)
+                            refetch()
+                          })
+                          .catch((err) => {
+                            console.log(err.message)
+                          })
+                      }}
+                    >
+                      ban
+                    </div>
+                  </div>
+                ))
+              }
             </div>
-          ))
-        }
-      </div>
-      <div style={{ color: 'white', minHeight: '40vh', maxHeight: '60vh', fontWeight: '500', fontSize: '3vh' }}>
-        {`Banned ${type}s:`}
-        {
-          type === 'user' && notAllowedUsers.map((user, i) => {
-            return (
-              <div
-                key={i.toString()}
-                style={{
-                  fontWeight: '500',
-                  fontSize: '2.5vh',
-                  borderRadius: '10px',
-                  margin: '10px',
-                  backgroundColor: 'white',
-                  padding: '5px',
-                  color: 'black',
-                  border: '2px solid red',
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  flexDirection: 'row'
-                }}
-              >
-                <div>{user.email}</div>
-                <div
-                  style={{ fontSize: '2vh', color: 'white', paddingLeft: '10px', paddingRight: '10px', borderRadius: '10px', backgroundColor: 'green' }}
-                  onClick={() => {
-                    updateTopicUser({
-                      variables: {
-                        email: user.email,
-                        isAllowed: true
-                      }
-                    })
-                      .then((res) => {
-                      // console.log(res)
-                        refetch()
-                      })
-                      .catch((err) => {
-                        console.log(err.message)
-                      })
-                  }}
-                >
-                  allow
-                </div>
-              </div>
-            )
-          })
-        }
-      </div>
+            <div style={{ color: 'white', minHeight: '40vh', maxHeight: '60vh', fontWeight: '500', fontSize: '3vh' }}>
+              {`Banned ${type}s:`}
+              {
+                type === 'user' && notAllowedUsers.map((user, i) => {
+                  return (
+                    <div
+                      key={i.toString()}
+                      style={{
+                        fontWeight: '500',
+                        fontSize: '2.5vh',
+                        borderRadius: '10px',
+                        margin: '10px',
+                        backgroundColor: 'white',
+                        padding: '5px',
+                        color: 'black',
+                        border: '2px solid red',
+                        display: 'flex',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        flexDirection: 'row'
+                      }}
+                    >
+                      <div>{user.email}</div>
+                      <div
+                        style={{ fontSize: '2vh', color: 'white', paddingLeft: '10px', paddingRight: '10px', borderRadius: '10px', backgroundColor: 'green' }}
+                        onClick={() => {
+                          updateTopicUser({
+                            variables: {
+                              email: user.email,
+                              isAllowed: true
+                            }
+                          })
+                            .then((res) => {
+                            // console.log(res)
+                              refetch()
+                            })
+                            .catch((err) => {
+                              console.log(err.message)
+                            })
+                        }}
+                      >
+                        allow
+                      </div>
+                    </div>
+                  )
+                })
+              }
+            </div>
+          </div>
+        ) : (
+          <div style={{ marginTop: '10px', color: 'white', fontWeight: '500', fontSize: '3vh' }}>
+            Admin List:
+            {
+              adminTopicData.admin_topic && adminTopicData.admin_topic.map((tAdmin) => {
+                return (
+                  <div
+                    key={tAdmin.id}
+                    style={{
+                      fontWeight: '500',
+                      fontSize: '2.5vh',
+                      borderRadius: '10px',
+                      margin: '10px',
+                      backgroundColor: 'white',
+                      padding: '10px',
+                      color: 'black',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      alignItems: 'center',
+                      flexDirection: 'row'
+                    }}
+                  >
+                    <div style={{ display: 'flex', flexDirection: 'column' }}>
+                      <div>Email: {tAdmin.user.email}</div>
+                      <div>Name: {tAdmin.user.first_name} {tAdmin.user.last_name}</div>
+                    </div>
+                    <div
+                      style={{ fontSize: '2vh', color: 'white', paddingTop: '5px', paddingBottom: '5px', paddingLeft: '10px', paddingRight: '10px', borderRadius: '10px', backgroundColor: 'red' }}
+                      onClick={() => {
+                        deleteTopicAdmin({
+                          variables: {
+                            topicAdminId: tAdmin.id
+                          }
+                        })
+                          .then((res) => {
+                            console.log(res)
+                            adminTopicRefetch()
+                          })
+                          .catch((err) => {
+                            console.log(err.message)
+                          })
+                      }}
+                    >
+                        remove
+                    </div>
+                  </div>
+                )
+              })
+            }
+          </div>
+        )
+      }
     </div>
   )
 }
@@ -309,5 +415,6 @@ export default compose(
   graphql(INSERT_TOPIC_USER, { name: 'insertTopicUser' }),
   graphql(INSERT_TOPIC_ADMIN, { name: 'insertTopicAdmin' }),
   graphql(UPDATE_TOPIC_USER, { name: 'updateTopicUser' }),
-  graphql(DELETE_TOPIC_USER, { name: 'deleteTopicUser' })
+  graphql(DELETE_TOPIC_USER, { name: 'deleteTopicUser' }),
+  graphql(DELETE_TOPIC_ADMIN, { name: 'deleteTopicAdmin' })
 )(AddingUsers)

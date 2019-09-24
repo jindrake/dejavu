@@ -83,7 +83,7 @@ const Topic = ({
   return (
     <Wrapper>
       <TopSection>
-        <Button text='Back' onClick={() => history.push('/')} />
+        <Button text='Back' onClick={() => history.goBack()} />
         {user.id === creatorId && (
           <EditButton
             text='Edit Topic'

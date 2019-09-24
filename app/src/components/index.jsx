@@ -88,7 +88,7 @@ export const ContentBetween = styled.div`
 `
 
 export const StyledCheckbox = styled(CustomInput)`
-font-size: 14px;
+font-size: 2vh;
 color: white;
 height: 10px;
 padding-top: 5px;

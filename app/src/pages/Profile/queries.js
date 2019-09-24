@@ -7,6 +7,9 @@ export const FETCH_MY_TOPIC = gql`
       name
       description
       created_at
+      user_activities(where: {activity_type: {_eq: "take"}}) {
+        id
+      }
       ratings {
         id
         type
