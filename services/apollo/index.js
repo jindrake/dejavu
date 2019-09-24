@@ -29,6 +29,10 @@ const typeDefs = `
       sessionId: ID!,
       rating: String,
       comment: String
+    ): String,
+    add_admin_by_email(
+      topicId: ID!,
+      email: String
     ): String
   }
 `

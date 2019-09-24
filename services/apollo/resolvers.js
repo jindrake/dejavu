@@ -570,6 +570,84 @@ module.exports = {
         sentry.captureMessage('answer_question:', error.message)
         throw new ApolloError(error)
       }
+    },
+    add_admin_by_email: async (parent, args, context) => {
+      try {
+        if (!context.user) {
+          throw new ApolloError('Authentication error')
+        }
+        const { email, topicId } = args
+        // fetch topic
+        const {
+          data: {
+            topic: [topic]
+          }
+        } = await graphql.query(
+          gql`
+            query fetchTopic($topicId: uuid!) {
+              topic(where: { id: { _eq: $topicId } }) {
+                id
+                admins {
+                  user_id
+                }
+                creator_id
+              }
+            }
+          `,
+          {
+            topicId
+          }
+        )
+        if (!topic) {
+          throw new Error('Topic not found')
+        }
+        // check if user doing the operation is an admin / creator
+        if (!context.user.id === topic.creator_id && !topic.admins.map(admin => admin.user_id).includes(context.user.id)) {
+          throw new Error('User anauthorized')
+        }
+        // find userId of email
+        const {
+          data
+        } = await graphql.query(
+          gql`
+            query fetchUser ($email: String) {
+              user (where: {email: {_eq: $email}}) {
+                id
+              }
+            }
+          `,
+          {
+            email
+          }
+        )
+        if (!data.user || !data.user.length) {
+          throw new Error('User not found by email')
+        }
+        // insert to admin_topic table
+        await graphql.mutate(
+          gql`
+            mutation insertAdmin ($userAdmin: [admin_topic_insert_input!]!) {
+              insert_admin_topic (objects: $userAdmin) {
+                affected_rows
+              }
+            }
+          `,
+          {
+            userAdmin: {
+              id: uuid(),
+              user_id: data.user[0].id,
+              topic_id: topicId
+            }
+          }
+        )
+        // return 'success'?
+        return 'success'
+      } catch (error) {
+        console.error(error)
+        sentry.captureException(error)
+        sentry.captureMessage('add_admin_by_email:', error.message)
+        throw new ApolloError(error)
+      }
     }
   }
 }
