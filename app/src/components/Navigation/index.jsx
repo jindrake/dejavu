@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faDotCircle, faPlusSquare } from '@fortawesome/free-regular-svg-icons'
-import { faTimes, faSearch, faUserCircle, faHome, faCog, faSignOutAlt, faSignInAlt, faUserPlus } from '@fortawesome/free-solid-svg-icons'
+import { faCompass } from '@fortawesome/free-regular-svg-icons'
+import { faTimes, faSearch, faUserCircle, faHome, faCogs, faSignOutAlt, faSignInAlt, faUserPlus, faEdit } from '@fortawesome/free-solid-svg-icons'
 
 import NavigationItem from './NavigationItem'
 
@@ -12,22 +12,22 @@ const Navigation = ({ user, location, history }) => {
   let routes
 
   const userRoutes = [
-    { icon: faSearch, route: '/search', name: 'search' },
-    { icon: faPlusSquare, route: '/topic/create', name: 'create new topic' },
-    { icon: faUserCircle, route: '/profile', name: 'profile' },
-    { icon: faHome, route: '/', name: 'home' },
-    { icon: faCog, route: '/settings', name: 'settings' },
-    { icon: faSignOutAlt, route: '/exit', name: 'sign-out' }
+    { icon: faSearch, route: '/search', name: 'Search' },
+    { icon: faEdit, route: '/topic/create', name: 'Create' },
+    { icon: faUserCircle, route: '/profile', name: 'Profile' },
+    { icon: faHome, route: '/', name: 'Home' },
+    { icon: faCogs, route: '/settings', name: 'Settings' },
+    { icon: faSignOutAlt, route: '/exit', name: 'Sign Out' }
   ]
 
   const noUserRoutes = [
-    { icon: faSearch, route: '/search', name: 'search' },
-    { icon: faPlusSquare, route: '/topic/create', name: 'create new topic' },
-    { icon: faUserCircle, route: '/profile', name: 'profile' },
-    { icon: faHome, route: '/', name: 'home' },
-    { icon: faCog, route: '/settings', name: 'settings' },
-    { icon: faSignInAlt, route: '/sign-in', name: 'sign-in' },
-    { icon: faUserPlus, route: '/sign-up', name: 'sign-up' }
+    { icon: faSearch, route: '/search', name: 'Search' },
+    { icon: faEdit, route: '/topic/create', name: 'Create' },
+    { icon: faUserCircle, route: '/profile', name: 'Profile' },
+    { icon: faHome, route: '/', name: 'Home' },
+    { icon: faCogs, route: '/settings', name: 'Settings' },
+    { icon: faSignInAlt, route: '/sign-in', name: 'Sign In' },
+    { icon: faUserPlus, route: '/sign-up', name: 'Sign Up' }
   ]
 
   routes = user ? userRoutes : noUserRoutes
@@ -35,27 +35,29 @@ const Navigation = ({ user, location, history }) => {
   return (
     <div>
       {
-        <StyledIcon icon={faDotCircle} onClick={() => setActive(true)} />
+        <StyledIcon icon={faCompass} onClick={() => setActive(true)} />
       }
       {
         active && (
           <IconsDiv>
             {/* <div className='bg-danger'> */}
-            {routes.map(({ icon, route, name }) => (
+            <IconContainer>
+              {routes.map(({ icon, route, name }) => (
+                <NavigationItem
+                  key={route}
+                  icon={icon}
+                  route={route}
+                  name={name}
+                  active={location.pathname === route}
+                  onClick={() => history.push(route)}
+                />
+              ))}
               <NavigationItem
-                key={route}
-                icon={icon}
-                route={route}
-                name={name}
-                active={location.pathname === route}
-                onClick={() => history.push(route)}
+                icon={faTimes}
+                onClick={() => setActive(false)}
+                name='Close'
               />
-            ))}
-            <NavigationItem
-              icon={faTimes}
-              onClick={() => setActive(false)}
-              name='close'
-            />
+            </IconContainer>
           </IconsDiv>
         )
       }
@@ -77,7 +79,9 @@ const IconsDiv = styled.div`
 `
 
 const StyledIcon = styled(FontAwesomeIcon)`
-  font-size: 9vh;
+  font-size: 8vh;
+  width: 1em;
+  height: 1em;
   color: #e8eaf6;
   bottom: 0;
   right: 0;
@@ -90,4 +94,12 @@ const StyledIcon = styled(FontAwesomeIcon)`
   border-radius: 40px;
   background: linear-gradient(#FFA726, #FF9800);
 `
+
+const IconContainer = styled.div`
+  text-align: right;
+  right: .25em;
+  bottom: 3em;
+  position: absolute;
+`
+
 export default withRouter(Navigation)
