@@ -3,7 +3,18 @@ import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCompass } from '@fortawesome/free-regular-svg-icons'
-import { faTimes, faSearch, faUserCircle, faHome, faCogs, faSignOutAlt, faSignInAlt, faUserPlus, faEdit } from '@fortawesome/free-solid-svg-icons'
+import {
+  faTimes,
+  faSearch,
+  faUserCircle,
+  faHome,
+  faCogs,
+  faSignOutAlt,
+  faSignInAlt,
+  faUserPlus,
+  faEdit,
+  faBullhorn
+} from '@fortawesome/free-solid-svg-icons'
 
 import NavigationItem from './NavigationItem'
 
@@ -17,7 +28,8 @@ const Navigation = ({ user, location, history }) => {
     { icon: faUserCircle, route: '/profile', name: 'Profile' },
     { icon: faHome, route: '/', name: 'Home' },
     { icon: faCogs, route: '/settings', name: 'Settings' },
-    { icon: faSignOutAlt, route: '/exit', name: 'Sign Out' }
+    { icon: faSignOutAlt, route: '/exit', name: 'Sign Out' },
+    { icon: faBullhorn, route: '/feedback', name: 'Feedback' }
   ]
 
   const noUserRoutes = [
@@ -34,33 +46,25 @@ const Navigation = ({ user, location, history }) => {
 
   return (
     <div>
-      {
-        <StyledIcon icon={faCompass} onClick={() => setActive(true)} />
-      }
-      {
-        active && (
-          <IconsDiv>
-            {/* <div className='bg-danger'> */}
-            <IconContainer>
-              {routes.map(({ icon, route, name }) => (
-                <NavigationItem
-                  key={route}
-                  icon={icon}
-                  route={route}
-                  name={name}
-                  active={location.pathname === route}
-                  onClick={() => history.push(route)}
-                />
-              ))}
+      {<StyledIcon icon={faCompass} onClick={() => setActive(true)} />}
+      {active && (
+        <IconsDiv>
+          {/* <div className='bg-danger'> */}
+          <IconContainer>
+            {routes.map(({ icon, route, name }) => (
               <NavigationItem
-                icon={faTimes}
-                onClick={() => setActive(false)}
-                name='Close'
+                key={route}
+                icon={icon}
+                route={route}
+                name={name}
+                active={location.pathname === route}
+                onClick={() => history.push(route)}
               />
-            </IconContainer>
-          </IconsDiv>
-        )
-      }
+            ))}
+            <NavigationItem icon={faTimes} onClick={() => setActive(false)} name='Close' />
+          </IconContainer>
+        </IconsDiv>
+      )}
     </div>
   )
 }
@@ -74,7 +78,7 @@ const IconsDiv = styled.div`
   align-items: center;
   background: rgba(0, 0, 0, 0.7);
   z-index: 999999;
-  transition: transform .2s ease-out;
+  transition: transform 0.2s ease-out;
   color: white;
 `
 
@@ -92,12 +96,12 @@ const StyledIcon = styled(FontAwesomeIcon)`
   z-index: 1000;
   box-shadow: 5px 5px 5px #240a2b;
   border-radius: 40px;
-  background: linear-gradient(#FFA726, #FF9800);
+  background: linear-gradient(#ffa726, #ff9800);
 `
 
 const IconContainer = styled.div`
   text-align: right;
-  right: .25em;
+  right: 0.25em;
   bottom: 3em;
   position: absolute;
 `

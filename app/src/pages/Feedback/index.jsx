@@ -1,14 +1,16 @@
 import React from 'react'
-import { Input, Form, FormGroup, Label, Button } from 'reactstrap'
+import { Input, Form, FormGroup } from 'reactstrap'
 import { Formik } from 'formik'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import uuid from 'uuid/v4'
+import styled from 'styled-components'
 
 import Icon from '../../components/Icon'
 import Alert from '../../components/Alert'
+import { Button } from '../../components'
 
 const CREATE_FEEDBACK = gql`
   mutation createFeedback($feedback: [feedback_insert_input!]!) {
@@ -18,7 +20,7 @@ const CREATE_FEEDBACK = gql`
   }
 `
 
-const Feedback = ({ createFeedback, user }) => {
+const Feedback = ({ createFeedback, user, history }) => {
   return (
     <Formik
       initialValues={{
@@ -54,37 +56,50 @@ const Feedback = ({ createFeedback, user }) => {
             setStatus({ type: 'error', text: error.message })
           })
       }}
-      render={({ values, errors, status, touched, handleChange, handleSubmit, isSubmitting }) => {
+      render={({
+        values,
+        errors,
+        status,
+        touched,
+        handleChange,
+        handleSubmit,
+        isSubmitting
+      }) => {
         return (
           <Form>
-            <Label>Help us make this application better!</Label>
+            <Title>FEEDBACK</Title>
+            <Close onClick={() => history.push('/')}>
+              <Icon name='close' />
+            </Close>
+            <hr />
             <FormGroup>
-              <Label>Did you have a great experience?</Label>
-              <Button
-                onClick={() => {
-                  values.rating = 'Good'
-                }}
-              >
-                <Icon name='thumb_up' />
-                Yes! It was Great!
-              </Button>
-              <Button
-                onClick={() => {
-                  values.rating = 'Bad'
-                }}
-              >
-                <Icon name='thumb_down' />
-                No! It needs improvement.
-              </Button>
+              <Label>How would you rate your experience?</Label>
+              <ButtonContainer>
+                <NewButton
+                  onClick={() => {
+                    values.rating = 'Good'
+                  }}
+                  type='primary'
+                  text='It was great!'
+                />
+                <br />
+                <NewButton
+                  onClick={() => {
+                    values.rating = 'Bad'
+                  }}
+                  text='It needs improvement'
+                />
+              </ButtonContainer>
             </FormGroup>
+            <hr />
             {/* <ErrorText text={errors.rating && touched.rating} /> */}
             <FormGroup>
-              <Label>Tell us more how can we improve the app :)</Label>
-              <Input
+              <Label>Tell us more on how we can improve the app</Label>
+              <FeedbackText
                 name='message'
                 id='message'
                 type='textarea'
-                placeholder='Give us your feedback...'
+                placeholder='Your Suggestions'
                 onChange={handleChange}
                 value={values.message}
                 invalid={errors.message && touched.message}
@@ -92,11 +107,13 @@ const Feedback = ({ createFeedback, user }) => {
               {/* <ErrorText text={errors.message && touched.message} /> */}
             </FormGroup>
             {status && <Alert {...status} />}
-            <FormGroup>
-              <Button data-cy='submit' onClick={handleSubmit}>
-                {isSubmitting ? 'Submitting...' : 'Submit'}
-              </Button>
-            </FormGroup>
+            <SubmitDiv>
+              <NewButton
+                text={isSubmitting ? 'Submitting...' : 'Submit'}
+                type='primary'
+                onClick={handleSubmit}
+              />
+            </SubmitDiv>
           </Form>
         )
       }}
@@ -104,6 +121,50 @@ const Feedback = ({ createFeedback, user }) => {
   )
 }
 
+const Title = styled.div`
+  color: #e8eaf6;
+  font-size: 1.25em;
+  font-weight: 700;
+  text-align: center;
+`
+
+const NewButton = styled(Button)`
+  margin-bottom: 20px;
+  width: 75%;
+  display: flex;
+  justify-content: center;
+`
+
+const ButtonContainer = styled.div`
+  display: flex;
+  align-content: center;
+  justify-content: center;
+`
+
+const Close = styled.div`
+  position: absolute;
+  font-size: 20px;
+  color: #e8eaf6;
+  opacity: 0.5;
+  right: .25em;
+  top: .25em;
+`
+
+const FeedbackText = styled(Input)`
+  background: linear-gradient(#e8eaf6, #c5cae9);
+`
+
+const SubmitDiv = styled(FormGroup)`
+  display: flex;
+  justify-content: center;
+`
+
+const Label = styled.div`
+  color: #e8eaf6;
+  font-size: .75em;
+  text-align: center;
+  margin-bottom: 10px;
+`
 export default compose(
   withRouter,
   graphql(CREATE_FEEDBACK, { name: 'createFeedback' })
