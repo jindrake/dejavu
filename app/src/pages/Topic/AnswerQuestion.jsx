@@ -9,6 +9,7 @@ import { useQuery } from '@apollo/react-hooks'
 import { useStateValue } from '../../libs'
 import { Button, HeaderText, ContentBetween, OverlayLoader } from '../../components'
 import { Paper } from '../../components/Topic'
+import SessionWaitingScreen from '../../components/Topic/SessionWaitingScreen'
 
 const ANSWER_QUESTION = gql`
   mutation answerQuestion($answers: [String!]!, $questionId: ID!, $userId: ID!, $sessionId: ID!) {
@@ -43,18 +44,10 @@ const AnswerQuestion = ({
     variables: {
       userId: user.id,
       sessionId
-    }
+    },
+    pollInterval: 1000
   })
-  console.warn('>>>>>>> loading:', loading)
-  console.log(
-    'NExtsession result:',
-    data,
-    data.next_session_question && JSON.parse(data.next_session_question)
-  )
-  const question = data.next_session_question ? JSON.parse(data.next_session_question) : null
-  if (!loading && !error && !question) {
-    history.push(`/result/${sessionId}`)
-  }
+
   useEffect(() => {
     const tick = () => {
       setTimer(timer - 1)
@@ -68,6 +61,28 @@ const AnswerQuestion = ({
       clearInterval(timerID)
     }
   })
+
+  useEffect(() => {
+    console.warn('resetting:', data)
+    setTimer(10)
+  }, [data])
+
+  if (error) {
+    globalDispatch({
+      networkError: error.message
+    })
+    history.push('/')
+    return null
+  }
+
+  if (data.next_session_question === 'waiting') {
+    return <SessionWaitingScreen />
+  }
+
+  const question = data.next_session_question ? JSON.parse(data.next_session_question) : null
+  if (!loading && !error && !question) {
+    history.push(`/result/${sessionId}`)
+  }
 
   const handleSubmit = async () => {
     globalDispatch({

@@ -1,0 +1,3 @@
+- args:
+    sql: ALTER TABLE "public"."session" ADD COLUMN "creator_id" uuid NULL;
+  type: run_sql

@@ -1,0 +1,6 @@
+- args:
+    relationship: creator
+    table:
+      name: session
+      schema: public
+  type: drop_relationship

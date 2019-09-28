@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."session" ALTER COLUMN "creator_id" SET NOT NULL;
+  type: run_sql
+- args:
+    sql: COMMENT ON COLUMN "public"."session"."creator_id" IS E''
+  type: run_sql

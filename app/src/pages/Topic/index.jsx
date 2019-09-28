@@ -30,8 +30,9 @@ const Topic = ({
     try {
       const { data } = await createSession({
         variables: {
-          userIds: [user.id],
-          topicId: id
+          userId: user.id,
+          topicId: id,
+          type: 'solo'
         }
       })
       console.log('Session id:', data.create_session)
@@ -48,8 +49,9 @@ const Topic = ({
     try {
       const { data } = await createSession({
         variables: {
-          userIds: [user.id],
-          topicId: id
+          userId: user.id,
+          topicId: id,
+          type: 'duo'
         }
       })
       console.log('Session id:', data.create_session)

@@ -1,0 +1,20 @@
+- args:
+    role: user
+    table:
+      name: session
+      schema: public
+  type: drop_select_permission
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - creator_id
+      - id
+      - topic_id
+      filter: {}
+      limit: 1
+    role: user
+    table:
+      name: session
+      schema: public
+  type: create_select_permission

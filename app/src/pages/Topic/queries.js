@@ -137,8 +137,8 @@ export const PUBLISH_TOPIC = gql`
 `
 
 export const CREATE_SESSION = gql`
-  mutation createSession ($userIds: [ID!]!, $topicId: ID!) {
-    create_session(userIds: $userIds, topicId: $topicId)
+  mutation createSession ($userId: ID!, $topicId: ID!, $type: String) {
+    create_session(userId: $userId, topicId: $topicId, type: $type)
   }
 `
 

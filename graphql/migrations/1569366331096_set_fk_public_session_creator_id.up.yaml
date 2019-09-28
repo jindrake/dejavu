@@ -1,0 +1,6 @@
+- args:
+    sql: "\n           alter table \"public\".\"session\"\n           add constraint
+      \"session_creator_id_fkey\" \n           foreign key (\"creator_id\") \n           references
+      \"public\".\"user\"\n           (\"id\") on update restrict on delete restrict;\n
+      \     "
+  type: run_sql

@@ -15,6 +15,7 @@ import Search from './pages/Search'
 import Feedback from './pages/Feedback'
 import Welcome from './pages/Welcome'
 import AnswerQuestion from './pages/Topic/AnswerQuestion'
+import SessionLobby from './pages/Topic/SessionLobby'
 import Result from './pages/Topic/Result'
 import EditProfile from './pages/Profile/EditProfile'
 import NotFound from './pages/NotFound'
@@ -22,6 +23,7 @@ import ManageUsers from './pages/ManageUsers'
 import Edit from './pages/Topic/Edit'
 import AddingUsers from './pages/ManageUsers/AddingUsers'
 import Settings from './pages/Settings'
+import ChallengerScreen from './pages/Topic/ChallengerScreen'
 import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
 import compose from 'recompose/compose'
@@ -56,13 +58,9 @@ const Routes = ({ userEmail, firebase }) => {
   }
   if (fetchError) {
     console.error('error@routes:1')
-    if (fetchError.message.includes('Could not verify JWT: JWTExpired')) {
-      firebase.auth.currentUser.getIdToken()
-    } else {
-      globalDispatch({
-        networkError: fetchError.message
-      })
-    }
+    globalDispatch({
+      networkError: fetchError.message
+    })
     return null
   }
 
@@ -149,7 +147,7 @@ const Routes = ({ userEmail, firebase }) => {
           render={(routeProps) => {
             document.title = 'Topic Questions'
             return !user ? (
-              <Redirect to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`} />
+              <Redirect to={`/sign-in?redirectUrl=${encodeURIComponent(routeProps.location.pathname)}`} />
             ) : (
               <Questions {...routeProps} user={user} />
             )
@@ -163,7 +161,7 @@ const Routes = ({ userEmail, firebase }) => {
             return user ? (
               <Topic {...routeProps} user={user} />
             ) : (
-              <Redirect to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`} />
+              <Redirect to={`/sign-in?redirectUrl=${encodeURIComponent(routeProps.location.pathname)}`} />
             )
           }}
         />
@@ -232,13 +230,35 @@ const Routes = ({ userEmail, firebase }) => {
         />
         <Route
           exact
+          path='/session/:sessionId/lobby'
+          render={(routeProps) => {
+            document.title = 'Challenge a Friend'
+            return user ? (
+              <SessionLobby {...routeProps} user={user} />
+            ) : (
+              <Redirect to={`/sign-in?redirectUrl=${encodeURIComponent(routeProps.location.pathname)}`} />
+            )
+          }}
+        />
+        <Route
+          exact
+          path='/session/:sessionId/challenge/:userName/topic/:topicName'
+          render={(routeProps) => {
+            document.title = 'Accept Challenge'
+            return (
+              <ChallengerScreen {...routeProps} user={user} />
+            )
+          }}
+        />
+        <Route
+          exact
           path='/session/:sessionId'
           render={(routeProps) => {
             document.title = 'In Game!'
             return user ? (
               <AnswerQuestion {...routeProps} user={user} />
             ) : (
-              <Redirect to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`} />
+              <Redirect to={`/sign-in?redirectUrl=${encodeURIComponent(routeProps.location.pathname)}`} />
             )
           }}
         />
@@ -250,7 +270,7 @@ const Routes = ({ userEmail, firebase }) => {
             return user ? (
               <Result {...routeProps} user={user} />
             ) : (
-              <Redirect to={`/sign-in?redirectUrl=${encodeURI(routeProps.location.pathname)}`} />
+              <Redirect to={`/sign-in?redirectUrl=${encodeURIComponent(routeProps.location.pathname)}`} />
             )
           }}
         />

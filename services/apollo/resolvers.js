@@ -22,16 +22,18 @@ module.exports = {
           throw new ApolloError('Authentication error')
         }
         const { sessionId, userId } = args
-        // get session with user_activities
+        // get session
         const {
           data: {
             session: [session]
           }
         } = await graphql.query(
           gql`
-            query getSession($sessionId: uuid!, $userId: uuid!) {
+            query getSession($sessionId: uuid!) {
               session(where: { id: { _eq: $sessionId } }) {
                 id
+                type
+                creator_id
                 session_questions {
                   question_id
                   question {
@@ -43,47 +45,110 @@ module.exports = {
                     }
                   }
                 }
-                session_users(where: { user_id: { _eq: $userId } }) {
-                  user {
-                    activities(
-                      where: {
-                        _and: [
-                          { topic_session_id: { _eq: $sessionId } }
-                          { activity_type: { _eq: "answer" } }
-                        ]
-                      }
-                    ) {
-                      id
-                      answer
-                      question_id
-                    }
-                  }
-                }
               }
             }
           `,
           {
-            sessionId,
-            userId
+            sessionId
           }
         )
-        // see next question that's unanswered
-
-        let nextQuestion = null
-        const userActivities = getObjectValue(session, 'session_users[0].user.activities') || []
-        const answeredQuestionIds = userActivities.map((activity) => activity.question_id)
+        // fetch user_activities of session
+        const {
+          data: {
+            user_activity: sessionActivities
+          }
+        } = await graphql.query(
+          gql`
+            query fetchUserActivities($sessionId: uuid) {
+              user_activity(where: {_and: [{topic_session_id: {_eq: $sessionId}}, {activity_type: {_eq: "answer"}}]}) {
+                id
+                answer
+                question_id
+                user_id
+              }
+            }
+          `,
+          {
+            sessionId
+          }
+        )
+        // check if user belongs in the session
+        const {
+          data: {
+            session_user: [sessionUser]
+          }
+        } = await graphql.query(
+          gql`
+            query getSessionUser($userId: uuid!, $sessionId: uuid!) {
+              session_user(
+                where: {
+                  _and: [{ user_id: { _eq: $userId } }, { session_id: { _eq: $sessionId } }]
+                }
+              ) {
+                user_id
+              }
+            }
+          `,
+          {
+            userId,
+            sessionId
+          }
+        )
+        if (!sessionUser) throw new ApolloError('Authorization error')
         const sessionQuestions = getObjectValue(session, 'session_questions') || []
+        const userActivities = sessionActivities.filter(activity => activity.user_id === context.user.id)
+        const userQuestionIds = userActivities.map((activity) => activity.question_id)
+        // see next question that's unanswered
+        let nextQuestion = null
+        // console.log('Session Questions:', sessionQuestions.map(x => x.question_id), userQuestionIds)
         for (let sessionQuestion of sessionQuestions) {
-          if (!answeredQuestionIds.includes(sessionQuestion.question_id)) {
+          if (!userQuestionIds.includes(sessionQuestion.question_id)) {
             nextQuestion = sessionQuestion.question
             break
           }
         }
-        // console.log(nextQuestion, userActivities, answeredQuestionIds, sessionQuestions)
-        // console.log('next question is:', nextQuestion)
-        // console.log('answered question ids:', answeredQuestionIds)
-        // console.log('user activities:', userActivities)
-        // console.log('WHOLE session:', session)
+        if (!nextQuestion) {
+          return null
+        }
+        // check if duo
+        if (session.type === 'duo') {
+          // get opponents activities
+          const opponentsQuestionIds = sessionActivities
+            .filter((activity) => activity.user_id !== context.user.id)
+            .map((activity) => activity.question_id)
+
+          // check if opponent is finished with the session
+          const isOpponentFinished = sessionQuestions.every(question => opponentsQuestionIds.includes(question.question_id))
+
+          if (session.creator_id === context.user.id) {
+            if (isOpponentFinished) {
+              throw new Error('Integrity Error: opponent finished before the creator')
+            }
+            if (
+              userQuestionIds.length - opponentsQuestionIds.length === 2 ||
+              (userQuestionIds.length - opponentsQuestionIds.length === 1 &&
+                userQuestionIds.length % 2 === 0)
+            ) {
+              console.log('Session creator and is waiting!')
+              return 'waiting'
+            }
+          } else {
+            if (!isOpponentFinished) {
+              if (
+                (!opponentsQuestionIds.length && !userQuestionIds.length) ||
+                (opponentsQuestionIds.length - userQuestionIds.length === 1 &&
+                  userQuestionIds.length % 2 === 0) ||
+                (userQuestionIds.length === opponentsQuestionIds.length &&
+                  opponentsQuestionIds.length % 2 === 0) ||
+                  userQuestionIds.length > opponentsQuestionIds.length
+              ) {
+                console.log('Session challenger and is waiting!')
+                return 'waiting'
+              }
+            }
+          }
+        }
+
         return JSON.stringify(nextQuestion)
       } catch (error) {
         console.log(error.message)
@@ -93,81 +158,6 @@ module.exports = {
       }
     },
     get_session_result: async (parent, args, context) => {
-      // const { sessionId, userId } = args
-      // // get session user activities
-      // const {
-      //   data: {
-      //     session: [session]
-      //   }
-      // } = await graphql.query(
-      //   gql`
-      //     query getSession($sessionId: uuid!, $userId: uuid!) {
-      //       session(where: { id: { _eq: $sessionId } }) {
-      //         id
-      //         session_questions {
-      //           question_id
-      //           question {
-      //             id
-      //             question
-      //             answers {
-      //               id
-      //               answer
-      //               is_correct
-      //             }
-      //           }
-      //         }
-      //         session_users(where: { user_id: { _eq: $userId } }) {
-      //           user {
-      //             activities(
-      //               where: {
-      //                 _and: [
-      //                   { topic_session_id: { _eq: $sessionId } }
-      //                   { activity_type: { _eq: "answer" } }
-      //                 ]
-      //               }
-      //             ) {
-      //               id
-      //               answer
-      //               question_id
-      //               question {
-      //                 id
-      //                 answers {
-      //                   id
-      //                   answer
-      //                   is_correct
-      //                 }
-      //               }
-      //             }
-      //           }
-      //         }
-      //       }
-      //     }
-      //   `,
-      //   {
-      //     sessionId,
-      //     userId
-      //   }
-      // )
-      // // get user answers compare against question correct answers
-      // const userActivities = getObjectValue(session, 'session_users.user.activities') || []
-      // // const userAnswers = userActivities.map(activity => activity.answer)
-      // const sessionQuestions = session.session_questions.question
-      // const score = 0
-      // const total = ''
-      // for (let activity of userActivities) {
-      //   const userAnswers = activity.answer
-      //   const isCorrect = userAnswers
-      //     ? userAnswers.sort().join(',') ===
-      //       res.question.answers
-      //         .map((answerObject) => answerObject.answer)
-      //         .sort()
-      //         .join(',')
-      //     : false
-
-      // }
-      // return score
-      // return user answers
-      // return question answers
       return 'test'
     },
     get_topic_suggested_questions: async (parent, args, context) => {
@@ -256,7 +246,14 @@ module.exports = {
         } = await graphql.query(
           gql`
             query getSession($sessionId: uuid!, $userId: uuid!) {
-              session (where: {_and: [{id: {_eq: $sessionId}}, { session_users: {user_id: {_eq: $userId}}}]}) {
+              session(
+                where: {
+                  _and: [
+                    { id: { _eq: $sessionId } }
+                    { session_users: { user_id: { _eq: $userId } } }
+                  ]
+                }
+              ) {
                 id
                 topic_id
               }
@@ -271,7 +268,9 @@ module.exports = {
           await graphql.mutate(
             gql`
               mutation deleteTopicRating($topicId: uuid, $userId: uuid) {
-                delete_topic_rating(where: {_and: [{topic_id: {_eq: $topicId}}, {user_id: {_eq: $userId}}]}) {
+                delete_topic_rating(
+                  where: { _and: [{ topic_id: { _eq: $topicId } }, { user_id: { _eq: $userId } }] }
+                ) {
                   affected_rows
                 }
               }
@@ -283,8 +282,8 @@ module.exports = {
           )
           await graphql.mutate(
             gql`
-              mutation insertRating ($rating: [topic_rating_insert_input!]!) {
-                insert_topic_rating (objects: $rating) {
+              mutation insertRating($rating: [topic_rating_insert_input!]!) {
+                insert_topic_rating(objects: $rating) {
                   affected_rows
                 }
               }
@@ -305,8 +304,8 @@ module.exports = {
         if (comment) {
           await graphql.mutate(
             gql`
-              mutation insertComment ($comment: [topic_comment_insert_input!]!) {
-                insert_topic_comment (objects: $comment) {
+              mutation insertComment($comment: [topic_comment_insert_input!]!) {
+                insert_topic_comment(objects: $comment) {
                   affected_rows
                 }
               }
@@ -325,8 +324,8 @@ module.exports = {
         // insert user_activity
         await graphql.mutate(
           gql`
-            mutation insertActivity ($activity: [user_activity_insert_input!]!) {
-              insert_user_activity (objects: $activity) {
+            mutation insertActivity($activity: [user_activity_insert_input!]!) {
+              insert_user_activity(objects: $activity) {
                 affected_rows
               }
             }
@@ -355,7 +354,7 @@ module.exports = {
           throw new ApolloError('Authentication error')
         }
         // fetch topic
-        const { userIds, topicId } = args
+        const { userId, topicId, type = 'solo' } = args
         console.log('TopicId:', topicId)
         const {
           data: {
@@ -379,33 +378,33 @@ module.exports = {
         if (!topic) {
           throw new Error('Topic not found')
         }
-        for (let userId of userIds) {
-          const {
-            data: {
-              user: [user]
-            }
-          } = await graphql.query(
-            gql`
-              query fetchUser($userId: uuid!) {
-                user(where: { id: { _eq: $userId } }) {
-                  id
-                }
-              }
-            `,
-            {
-              userId
-            }
-          )
-          if (!user) {
-            throw new Error('User not found')
+        const {
+          data: {
+            user: [user]
           }
+        } = await graphql.query(
+          gql`
+            query fetchUser($userId: uuid!) {
+              user(where: { id: { _eq: $userId } }) {
+                id
+              }
+            }
+          `,
+          {
+            userId
+          }
+        )
+        if (!user) {
+          throw new Error('User not found')
         }
 
         console.log('Topic:', topic, topicId)
         // get subset of question ids
         const unshuffledQuestionIds = topic.questions.map((q) => q.question_id)
         let questionSubset = null
-        if (unshuffledQuestionIds.length > 10) {
+        if (type === 'duo') {
+          questionSubset = shuffleArray(unshuffledQuestionIds).splice(0, 5)
+        } else if (unshuffledQuestionIds.length > 10) {
           questionSubset = shuffleArray(unshuffledQuestionIds).splice(
             0,
             Math.ceil(unshuffledQuestionIds.length / 3)
@@ -434,7 +433,9 @@ module.exports = {
             session: [
               {
                 id: sessionId,
-                topic_id: topicId
+                topic_id: topicId,
+                type,
+                creator_id: userId
               }
             ]
           }
@@ -460,25 +461,23 @@ module.exports = {
           )
         }
         // set user to session in session_user
-        for (let userId of userIds) {
-          await graphql.mutate(
-            gql`
-              mutation createSessionUser($sessionUser: [session_user_insert_input!]!) {
-                insert_session_user(objects: $sessionUser) {
-                  affected_rows
-                }
+        await graphql.mutate(
+          gql`
+            mutation createSessionUser($sessionUser: [session_user_insert_input!]!) {
+              insert_session_user(objects: $sessionUser) {
+                affected_rows
               }
-            `,
-            {
-              sessionUser: [
-                {
-                  user_id: userId,
-                  session_id: sessionId
-                }
-              ]
             }
-          )
-        }
+          `,
+          {
+            sessionUser: [
+              {
+                user_id: userId,
+                session_id: sessionId
+              }
+            ]
+          }
+        )
         // insert user activity
         await graphql.mutate(
           gql(`
@@ -486,7 +485,7 @@ module.exports = {
               insert_user_activity(objects: {
                 id: "${uuid()}",
                 activity_type: "take",
-                user_id: "${userIds[0]}",
+                user_id: "${userId}",
                 topic_id: "${topicId}",
                 topic_session_id: "${sessionId}"
               }) {
@@ -509,41 +508,33 @@ module.exports = {
         if (!context.user) {
           throw new ApolloError('Authentication error')
         }
-        // check if combination exists first
-        // const userActivities = await graphql.query(
-        //   gql(`
-        //     query fetchUserActivity {
-        //       user_activity (where: {
-        //         _and: [
-        //           {
-        //             answer: {
-        //               _eq: ${JSON.stringify(answers)}
-        //             }
-        //           },
-        //           {
-        //             question_id: {
-        //               _eq: "${questionId}"
-        //             }
-        //           },
-        //           {
-        //             topic_session_id: {
-        //               _eq: "${sessionId}"
-        //             }
-        //           },
-        //           {
-        //             user_id: {
-        //               _eq: "${userId}"
-        //             }
-        //           }
-        //         ]
-        //       }) {
+        // check if duplicate activity_type & topic_session_id & user_id
+        // const {
+        //   data: { user_activity }
+        // } = await graphql.query(
+        //   gql`
+        //     query fetchUserActivity($sessionId: uuid, $userId: uuid) {
+        //       user_activity(
+        //         where: {
+        //           _and: [
+        //             { activity_type: { _eq: "answer" } }
+        //             { topic_session_id: { _eq: $sessionId } }
+        //             { user_id: { _eq: $userId } }
+        //           ]
+        //         }
+        //       ) {
         //         id
         //       }
         //     }
-        //    `)
+        //   `,
+        //   {
+        //     sessionId,
+        //     userId: context.user.id
+        //   }
         // )
-        // console.log('RESULT:', userActivities)
-
+        // if (user_activity.length) {
+        //   throw new Error('Duplicate activity')
+        // }
         await graphql.mutate(
           gql`
             mutation insertUserActivity($userActivity: [user_activity_insert_input!]!) {
@@ -602,16 +593,17 @@ module.exports = {
           throw new Error('Topic not found')
         }
         // check if user doing the operation is an admin / creator
-        if (!context.user.id === topic.creator_id && !topic.admins.map(admin => admin.user_id).includes(context.user.id)) {
+        if (
+          !context.user.id === topic.creator_id &&
+          !topic.admins.map((admin) => admin.user_id).includes(context.user.id)
+        ) {
           throw new Error('User anauthorized')
         }
         // find userId of email
-        const {
-          data
-        } = await graphql.query(
+        const { data } = await graphql.query(
           gql`
-            query fetchUser ($email: String) {
-              user (where: {email: {_eq: $email}}) {
+            query fetchUser($email: String) {
+              user(where: { email: { _eq: $email } }) {
                 id
               }
             }
@@ -626,8 +618,8 @@ module.exports = {
         // insert to admin_topic table
         await graphql.mutate(
           gql`
-            mutation insertAdmin ($userAdmin: [admin_topic_insert_input!]!) {
-              insert_admin_topic (objects: $userAdmin) {
+            mutation insertAdmin($userAdmin: [admin_topic_insert_input!]!) {
+              insert_admin_topic(objects: $userAdmin) {
                 affected_rows
               }
             }
@@ -646,6 +638,69 @@ module.exports = {
         console.error(error)
         sentry.captureException(error)
         sentry.captureMessage('add_admin_by_email:', error.message)
+        throw new ApolloError(error)
+      }
+    },
+    join_session: async (parent, args, context) => {
+      try {
+        if (!context.user) {
+          throw new ApolloError('Authentication error')
+        }
+        const { sessionId } = args
+        // fetch session
+        const {
+          data: {
+            session: [session]
+          }
+        } = await graphql.query(
+          gql`
+            query getSession($sessionId: uuid!) {
+              session(where: { id: { _eq: $sessionId } }) {
+                id
+                type
+                session_users {
+                  user_id
+                }
+              }
+            }
+          `,
+          {
+            sessionId
+          }
+        )
+        // if session type is solo and user exists throw error
+        if (session.type === 'solo' && session.session_users.length) {
+          throw new Error('Session already full')
+        }
+        // if session type is duo and has 2 users already throw error
+        if (session.type === 'duo' && session.session_users.length >= 2) {
+          throw new Error('Session already full')
+        }
+
+        // insert user to session
+        await graphql.mutate(
+          gql`
+            mutation createSessionUser($sessionUser: [session_user_insert_input!]!) {
+              insert_session_user(objects: $sessionUser) {
+                affected_rows
+              }
+            }
+          `,
+          {
+            sessionUser: [
+              {
+                user_id: context.user.id,
+                session_id: sessionId
+              }
+            ]
+          }
+        )
+        // return 'success'?
+        return 'success'
+      } catch (error) {
+        console.error(error)
+        sentry.captureException(error)
+        sentry.captureMessage('join_session:', error.message)
         throw new ApolloError(error)
       }
     }

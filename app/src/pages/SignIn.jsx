@@ -9,7 +9,8 @@ import Icon from '../components/Icon'
 import Alert from '../components/Alert'
 import { StyledInput, FormWrapper, Title, OverlayLoader, Button } from '../components'
 
-const SignIn = ({ firebase, history }) => {
+const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
+  console.log('rest:', rest)
   return (
     <Formik
       initialValues={{
@@ -90,7 +91,12 @@ const SignIn = ({ firebase, history }) => {
                 />
               </FormItem>
               <ButtonGroup>
-                <Button onClick={() => history.push('/sign-up')} text='No account? Sign up!' />
+                <Button
+                  onClick={() =>
+                    history.push('/sign-up' + search)
+                  }
+                  text='No account? Sign up!'
+                />
                 <Button data-cy='submit' onClick={handleSubmit} text='Sign in' type='primary' />
               </ButtonGroup>
             </Form>

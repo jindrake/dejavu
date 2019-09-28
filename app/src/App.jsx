@@ -27,7 +27,9 @@ const App = ({ firebase, history, location: { search } }) => {
           }
           setAuthState({ user, token })
           if (search.startsWith('?redirectUrl=')) {
-            history.push(decodeURI(search.substr(13)))
+            console.log(search)
+            console.log('>>>> redirecting:', decodeURIComponent(search.substr(13)))
+            history.push(decodeURIComponent(search.substr(13)))
           }
         } else {
           // Check if refresh is required.
@@ -42,7 +44,9 @@ const App = ({ firebase, history, location: { search } }) => {
             if (hasuraClaim) {
               setAuthState({ user, token })
               if (search.startsWith('?redirectUrl=')) {
-                history.push(decodeURI(search.substr(13)))
+                console.log(search)
+                console.log('>>>> redirecting:', decodeURIComponent(search.substr(13)))
+                history.push(decodeURIComponent(search.substr(13)))
               }
             }
           })
@@ -61,11 +65,19 @@ const App = ({ firebase, history, location: { search } }) => {
   }
 
   if (networkError) {
-    setTimeout(() => {
-      globalDispatch({
-        networkError: null
+    if (networkError.includes('JWTExpired')) {
+      console.log('JWT EXPIRED')
+      firebase.auth.currentUser.getIdToken().then((res) => {
+        console.log('RESULT:', res)
       })
-    }, 4000)
+      window.location.reload()
+    } else {
+      setTimeout(() => {
+        globalDispatch({
+          networkError: null
+        })
+      }, 4000)
+    }
   }
 
   if (operationSuccess) {

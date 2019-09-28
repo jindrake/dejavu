@@ -17,7 +17,8 @@ const typeDefs = `
   type Mutation {
     create_session(
       topicId: ID!,
-      userIds: [ID!]!
+      userId: ID!,
+      type: String
     ): String,
     answer_question(
       answers: [String!]!,
@@ -33,6 +34,9 @@ const typeDefs = `
     add_admin_by_email(
       topicId: ID!,
       email: String
+    ): String,
+    join_session(
+      sessionId: ID!
     ): String
   }
 `

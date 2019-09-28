@@ -9,6 +9,9 @@ const TYPE_STYLE = {
   `,
   warning: `
     background: linear-gradient(#FFA726, #FF9800);
+  `,
+  success: `
+    background: linear-gradient(266deg, rgba(90,199,133,1) 0%, rgba(24,128,24,0.8194842406876791) 100%, rgba(252,176,69,1) 100%);
   `
 }
 
@@ -27,5 +30,7 @@ const Wrapper = styled.div`
   /* font-size: 12px; */
   font-size: 2vh;
   white-space: nowrap;
-  ${({ type }) => TYPE_STYLE[type]}
+  ${({ type }) => TYPE_STYLE[type]};
+  /* justify-content: ${({ center }) => center ? 'center' : 'start'}; */
+  justify-content: ${props => props.center ? 'center' : ''};
 `
