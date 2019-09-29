@@ -24,6 +24,7 @@ import Edit from './pages/Topic/Edit'
 // import AddingUsers from './pages/Topic/AddingUsers'
 import ChallengerScreen from './pages/Topic/ChallengerScreen'
 // import LandingPage from './components/LandingPage'
+import Analytics from './pages/Analytics'
 import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
 import compose from 'recompose/compose'
@@ -280,6 +281,14 @@ const Routes = ({ userEmail, firebase }) => {
             return (
               <ChallengerScreen {...routeProps} user={user} />
             )
+          }}
+        />
+        <Route
+          exact
+          path='/analytics'
+          render={(routeProps) => {
+            document.title = 'Topic Analytics'
+            return user ? <Analytics {...routeProps} user={user} /> : <Redirect to='/' />
           }}
         />
         <Route
