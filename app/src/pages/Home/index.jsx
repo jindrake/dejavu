@@ -4,12 +4,11 @@ import { graphql } from '@apollo/react-hoc'
 import compose from 'recompose/compose'
 import withFirebase from '../../hocs/withFirebase'
 
-import Greeting from './Greeting'
-import Section from './Section'
 import { useStateValue } from '../../libs'
-
+import { Button } from 'reactstrap'
 import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS } from './queries'
-import { FullPageLoader } from '../../components'
+import { FullPageLoader, Icon, Placeholder } from '../../components'
+import TopicPreview from './TopicPreview'
 
 const Home = ({ fetchHotTopics, fetchRecentTopics, history }) => {
   const [hotTopics, setHotTopics] = useState([])
@@ -54,9 +53,43 @@ const Home = ({ fetchHotTopics, fetchRecentTopics, history }) => {
 
   return (
     <Wrapper>
-      <Greeting topics={recentTopics} user={user} history={history} />
-      <Section title='Hot Topics' topics={hotTopics} user={user} />
-      <Section title='Recent Topics' topics={recentTopics} user={user} />
+      <GreetingWrapper>
+        Hello, {user ? user.first_name : 'Study Buddy'}!
+        <CreateButtonContainer>
+          <CreateTopicButton id='button' onClick={() => history.push('/topic/create')}>
+            <AddIcon name='add' />
+            Create a Topic
+          </CreateTopicButton>
+        </CreateButtonContainer>
+      </GreetingWrapper>
+      <SectionWrapper>
+        <Title>Hot Topics</Title>
+        <TopicsContainer>
+          <Belt className='w-100'>
+            {hotTopics.length > 0 ? (
+              hotTopics.map((topic, index) => (
+                <TopicPreview key={index} n={index} topic={topic} user={user} />
+              ))
+            ) : (
+              <Placeholder />
+            )}
+          </Belt>
+        </TopicsContainer>
+      </SectionWrapper>
+      <SectionWrapper>
+        <Title>Recent Topics</Title>
+        <TopicsContainer>
+          <Belt className='w-100'>
+            {recentTopics.length > 0 ? (
+              recentTopics.map((topic, index) => (
+                <TopicPreview key={index} n={index} topic={topic} user={user} />
+              ))
+            ) : (
+              <Placeholder />
+            )}
+          </Belt>
+        </TopicsContainer>
+      </SectionWrapper>
     </Wrapper>
   )
 }
@@ -70,6 +103,55 @@ const Wrapper = styled.div`
   top: 0;
   padding: 40px;
   padding-bottom: 0;
+`
+
+const GreetingWrapper = styled.div`
+  font-size: 20px;
+  font-weight: 700;
+  color: #e8eaf6;
+  text-align: left;
+`
+
+const CreateButtonContainer = styled.div`
+  justify-content: left;
+`
+
+const CreateTopicButton = styled(Button)`
+  background: linear-gradient(#ffa726, #ff9800);
+  font-size: 12px;
+  border: none;
+`
+
+const AddIcon = styled(Icon)`
+  width: 30%;
+`
+
+const Belt = styled.div`
+  position: absolute;
+  top: 6px;
+  bottom: 6px;
+  display: flex;
+`
+
+const TopicsContainer = styled.div`
+  position: relative;
+  overflow-x: scroll;
+  height: 100%;
+  margin-left: -40px;
+  margin-right: -40px;
+`
+
+const Title = styled.div`
+  color: #c5cae9;
+  font-size: 12px;
+  margin-bottom: 4px;
+`
+
+const SectionWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin-top: 4vh;
+  height: 80%;
 `
 
 export default compose(

@@ -6,9 +6,8 @@ import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
 import { FETCH_TOPIC_PREVIEW, CREATE_SESSION } from './queries'
 import { getObjectValue, useStateValue, shuffleArray } from '../../libs'
-import { HeaderText, Stat, Button, FullPageLoader } from '../../components'
+import { HeaderText, Stat, Button, FullPageLoader, Icon } from '../../components'
 import { Paper } from '../../components/Topic'
-import Icon from '../../components/Icon'
 import { Badge } from 'reactstrap'
 
 const Topic = ({

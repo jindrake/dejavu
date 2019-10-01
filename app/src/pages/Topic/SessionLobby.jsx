@@ -126,28 +126,6 @@ const SessionLobby = ({
             </ContentAround>
           </HeaderText>
         </QuestionContainer>
-        {/* <ChoicesContainer>
-          {choices &&
-            choices.map((choice, index) => {
-              return (
-                <Choice
-                  key={index}
-                  selected={answers.includes(choice.answer)}
-                  onClick={() => {
-                    if (timer) {
-                      if (!answers.includes(choice.answer)) {
-                        setAnswers(answers.concat(choice.answer))
-                      } else {
-                        setAnswers(answers.filter((answer) => answer !== choice.answer))
-                      }
-                    }
-                  }}
-                >
-                  {choice.answer}
-                </Choice>
-              )
-            })}
-        </ChoicesContainer> */}
       </Paper>
       <ContentBetween>
         <Button

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 
-const Alert = ({ text, ...props }) => <Wrapper {...props}>{text}</Wrapper>
+export const Alert = ({ text, ...props }) => <Wrapper {...props}>{text}</Wrapper>
 
 const TYPE_STYLE = {
   error: `

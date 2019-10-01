@@ -2,8 +2,7 @@ import React, { createRef, useState, useEffect } from 'react'
 import styled from 'styled-components'
 import { Swipeable } from 'react-touch'
 import { withRouter } from 'react-router-dom'
-import { Title } from '../../components'
-import Icon from '../../components/Icon'
+import { Title, Icon } from '../../components'
 
 const steps = [
   {

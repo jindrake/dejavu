@@ -1,9 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Input, CustomInput } from 'reactstrap'
-// import { Button } from './Button'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faFile } from '@fortawesome/free-regular-svg-icons'
 
 export * from './Button'
+export * from './Alert'
 
 export const StyledInput = styled(Input)`
   margin-top: 6px;
@@ -88,10 +90,9 @@ export const ContentBetween = styled.div`
 `
 
 export const StyledCheckbox = styled(CustomInput)`
-font-size: 2vh;
-color: white;
-height: 10px;
-padding-top: 5px;
+  font-size: 2vh;
+  height: 10px;
+  padding-top: 5px;
 `
 
 export const SubText = styled.div`
@@ -149,4 +150,28 @@ export const Stat = styled.div`
   i {
     margin-right: 6px;
   }
+`
+
+export const Icon = ({ name }) => <i className={`material-icons`}>{name}</i>
+
+export const Placeholder = () => (
+  <PlaceholderWrapper>
+    <ContentCenter>
+      <PlaceholderIcon icon={faFile} />
+    </ContentCenter>
+    No topics yet
+  </PlaceholderWrapper>
+)
+
+const PlaceholderIcon = styled(FontAwesomeIcon)`
+  font-size: 60px;
+`
+
+const PlaceholderWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+  justify-content: center;
+  text-align: center;
 `

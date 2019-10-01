@@ -2,13 +2,11 @@ import React from 'react'
 import styled from 'styled-components'
 import withFirebase from '../hocs/withFirebase'
 import compose from 'recompose/compose'
-import { graphql } from '@apollo/react-hoc'
-import { useQuery } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
-import Icon from '../components/Icon'
 import Alert from '../components/Alert'
 import {
   StyledInput,
@@ -17,7 +15,8 @@ import {
   StyledCheckbox,
   OverlayLoader,
   Button,
-  FullPageLoader
+  FullPageLoader,
+  Icon
 } from '../components'
 import { useStateValue } from '../libs'
 import uuid from 'uuid/v4'
@@ -44,10 +43,11 @@ const FETCH_FIELDS = gql`
   }
 `
 
-const SignUp = ({ firebase, history, createUser }) => {
-  console.log('UR IN SIGNUP')
+const SignUp = ({ firebase, history }) => {
+  console.log('UR IN SIGNUP:')
   const [, globalDispatch] = useStateValue()
   const { data, loading: fieldsLoading, error: fieldsError } = useQuery(FETCH_FIELDS)
+  const [createUser, { loading: createUserLoading }] = useMutation(CREATE_USER)
 
   if (fieldsLoading) {
     return <FullPageLoader />
@@ -99,7 +99,7 @@ const SignUp = ({ firebase, history, createUser }) => {
           })
           .then((idTokenResult) => {
             const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
-            if (hasuraClaim) {
+            if (hasuraClaim && !createUserLoading) {
               console.warn('CREATING USER@1')
               window.localStorage.setItem('newUser', true)
               return createUser({
@@ -134,7 +134,7 @@ const SignUp = ({ firebase, history, createUser }) => {
                 const idTokenResult = await firebaseUser.getIdTokenResult(true)
                 const hasuraClaim = await idTokenResult.claims['https://hasura.io/jwt/claims']
                 // if there's no hasuraClaim but token exists, maintain authState({loading: true}) state
-                if (hasuraClaim) {
+                if (hasuraClaim && !createUserLoading) {
                   console.warn('CREATING USER@2')
                   try {
                     await createUser({
@@ -380,6 +380,5 @@ const Form = styled.form`
 
 export default compose(
   withRouter,
-  withFirebase(),
-  graphql(CREATE_USER, { name: 'createUser' })
+  withFirebase()
 )(SignUp)

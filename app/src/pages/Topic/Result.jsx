@@ -6,11 +6,10 @@ import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { useStateValue, getObjectValue } from '../../libs'
-import { Button, ContentRight, FullPageLoader } from '../../components'
+import { Button, ContentRight, FullPageLoader, Icon } from '../../components'
 import { Card, CardHeader, CardBody, Input } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
-import Icon from '../../components/Icon'
 
 const FETCH_USER_ACTIVITY = gql`
   query fetchUserActivity($sessionId: uuid!) {

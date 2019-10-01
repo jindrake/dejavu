@@ -5,7 +5,7 @@ import uuid from 'uuid/v4'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { INSERT_USER_ACTIVITY } from './queries'
-import Icon from '../../components/Icon'
+import { Icon } from '../../components'
 
 const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const {

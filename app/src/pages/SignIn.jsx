@@ -5,12 +5,10 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import { withFirebase } from '../hocs'
 import { withRouter } from 'react-router-dom'
-import Icon from '../components/Icon'
 import Alert from '../components/Alert'
-import { StyledInput, FormWrapper, Title, OverlayLoader, Button } from '../components'
+import { StyledInput, FormWrapper, Title, OverlayLoader, Button, Icon } from '../components'
 
 const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
-  console.log('rest:', rest)
   return (
     <Formik
       initialValues={{

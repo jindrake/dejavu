@@ -19,7 +19,7 @@ export const PaperWrapper = styled.div`
   height: 100%;
   margin-bottom: 1vh;
   overflow-y: scroll;
-
+  color: #1a237e;
   /* border-top-style: solid;
   border-top-color: red;
   border-top-width: 10px; */

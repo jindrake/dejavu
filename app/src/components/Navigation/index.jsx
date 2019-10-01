@@ -79,7 +79,6 @@ const IconsDiv = styled.div`
   background: rgba(0, 0, 0, 0.7);
   z-index: 999999;
   transition: transform 0.2s ease-out;
-  color: white;
 `
 
 const StyledIcon = styled(FontAwesomeIcon)`

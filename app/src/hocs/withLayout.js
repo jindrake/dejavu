@@ -17,6 +17,7 @@ const Body = styled.div`
   display: flex;
   animation: BorealisEffect 30s ease infinite;
   font-size: 3vh;
+  color: #c5cae9 !important;
 `
 
 const Wrapper = styled.div`

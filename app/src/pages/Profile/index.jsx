@@ -12,15 +12,13 @@ import {
   INSERT_USER_ACTIVITY,
   FETCH_ACTIVITY_LOGS
 } from './queries'
-import { Button, FullPageLoader } from '../../components'
-import Icon from '../../components/Icon'
+import { FullPageLoader, Placeholder, Icon, ContentCenter } from '../../components'
 import { useStateValue, getObjectValue } from '../../libs'
-import PlaceholderImage from '../../assets/placeholder.png'
 
 const AvatarContainer = styled.div`
   border-radius: 6vh;
   width: 12vh;
-  height:  12vh;
+  height: 12vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -43,7 +41,6 @@ const CenteredText = styled.div`
   display: flex;
   justify-content: center;
   padding: 5px;
-  color: white;
   font-weight: 500;
 `
 
@@ -51,18 +48,7 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   margin: auto;
-`
-
-const TopicWrapper = styled.div`
-  position: absolute;
-  display: flex;
-  flex-direction: column;
-  bottom: 80px;
-  width: 100%;
-  height: 100%;
-  top: 20%;
-  padding: 30px;
-  padding-bottom: 0;
+  padding-top: 5vh;
 `
 
 const Wrapper = styled.div`
@@ -85,26 +71,12 @@ const SectionTitle = styled.div`
 const Title = styled.div`
   color: #1a237e;
   font-size: 2vh;
-  ${'' /* @media (min-width: 900px) {
-    font-size: 12px;
-  }
-
-  @media (max-width: 900px) {
-    font-size: 3vw;
-  } */}
   font-weight: 700;
 `
 
 const Author = styled.div`
   color: #1a237e;
   font-size: 2vh;
-  ${'' /* @media (min-width: 900px) {
-    font-size: 16px;
-  }
-
-  @media (max-width: 900px) {
-    font-size: 4vw;
-  } */}
 `
 
 const Belt = styled.div`
@@ -120,6 +92,7 @@ const TopicsContainer = styled.div`
   height: 100%;
   margin-left: -40px;
   margin-right: -40px;
+  margin-top: 30px;
 `
 
 const PreviewWrapper = styled.div`
@@ -150,11 +123,6 @@ const PreviewWrapper = styled.div`
   animation-delay: ${({ n }) => n * 100 + 'ms'};
 `
 
-const NoTopicsHolder = styled.div`
-  color: white;
-  font-size: 20px;
-  text-align: center;
-`
 const ActivityWrapper = styled.div`
   background: linear-gradient(#e8eaf6, #c5cae9);
   justify-content: center;
@@ -178,10 +146,6 @@ const ActivityIcon = styled.div`
   margin: 0;
   position: absolute;
   top: 35%;
-`
-
-const Image = styled.img`
-  width: 30px;
 `
 
 const FETCH_USER = gql`
@@ -208,8 +172,6 @@ const Profile = ({ user, history, insertUserActivity }) => {
       userId: user.id
     }
   })
-  // console.log('DATA:', userData.user)
-  // console.log(getObjectValue(userData, 'user[0]'))
   const currentUser = getObjectValue(userData, 'user[0]')
   console.log(currentUser)
 
@@ -221,14 +183,6 @@ const Profile = ({ user, history, insertUserActivity }) => {
       }
     }
   )
-  // const { data: takenTopicsData, error: takenTopicsError, loading: takenTopicsLoading } = useQuery(
-  //   FETCH_TAKEN_TOPIC,
-  //   {
-  //     variables: {
-  //       userId: user.id
-  //     }
-  //   }
-  // )
   const {
     data: activityLogsData,
     error: activityLogsError,
@@ -257,12 +211,6 @@ const Profile = ({ user, history, insertUserActivity }) => {
       networkError: userTopicsError.message
     })
   }
-  // if (takenTopicsError) {
-  //   console.error('error@profile:2')
-  //   globalDispatch({
-  //     networkError: takenTopicsError.message
-  //   })
-  // }
   if (activityLogsError) {
     console.error('error@profile:3')
     globalDispatch({
@@ -270,33 +218,34 @@ const Profile = ({ user, history, insertUserActivity }) => {
     })
   }
   const userTopics = userTopicsData.topic
-  // const takenTopics = takenTopicsData.user_activity
   const activityLogs = activityLogsData.user_activity
-  // console.log('MY TOPICS: ', userTopics, takenTopics)
-  // console.log(activityLogs)
-  const uniqueLogs = Array.from(new Set(activityLogs.map(a => a.topic.id))).map(id => { return activityLogs.find(a => a.topic.id === id) })
+  const uniqueLogs = Array.from(new Set(activityLogs.map((a) => a.topic.id))).map((id) => {
+    return activityLogs.find((a) => a.topic.id === id)
+  })
   console.log('mytopics', userTopics)
   return (
     <Container>
-      <ProfileInfo onClick={() => history.push('/edit-profile')}>
-        {currentUser.avatar === undefined ? (
-          <AvatarContainer>{initials.toUpperCase()}</AvatarContainer>
-        ) : (
-          <AvatarContainer style={{ backgroundImage: `${currentUser.avatar}` }} />
-        )}
-      </ProfileInfo>
-      <CenteredText>
-        {currentUser.first_name} {currentUser.last_name}
-      </CenteredText>
-      <hr />
-      <TopicWrapper>
+      <div>
+        <ProfileInfo onClick={() => history.push('/edit-profile')}>
+          {currentUser.avatar === undefined ? (
+            <AvatarContainer>{initials.toUpperCase()}</AvatarContainer>
+          ) : (
+            <AvatarContainer style={{ backgroundImage: `${currentUser.avatar}` }} />
+          )}
+        </ProfileInfo>
+        <CenteredText className='h2'>
+          {currentUser.first_name} {currentUser.last_name}
+        </CenteredText>
+        <ContentCenter className='h6'>
+          {currentUser.email}
+        </ContentCenter>
+      </div>
+      <div className='mt-5'>
         <Wrapper>
           <SectionTitle>Your created topics</SectionTitle>
           <TopicsContainer>
             {userTopics.length === 0 ? (
-              <NoTopicsHolder>
-                <Image src={PlaceholderImage} /> No Created Topics
-              </NoTopicsHolder>
+              <Placeholder />
             ) : (
               <Belt>
                 {userTopics.map((topic, index) => {
@@ -316,12 +265,6 @@ const Profile = ({ user, history, insertUserActivity }) => {
                               }
                             }
                           })
-                            .then((res) => {
-                              console.log(res)
-                            })
-                            .catch((err) => {
-                              console.log(err.message)
-                            })
                         }
                         history.push(`topic/${topic.id}`)
                       }}
@@ -329,8 +272,8 @@ const Profile = ({ user, history, insertUserActivity }) => {
                       <Title>Title:{topic.name}</Title>
                       <Author>{date.toDateString()}</Author>
                       <Author>{topic.description}</Author>
-                      <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-evenly' }}>
+                      <div className='d-flex justify-content-between text-center'>
+                        <div className='d-flex text-center justify-content-evenly'>
                           <Author>
                             <Icon name='thumb_down_alt' />{' '}
                             {topic.ratings.length > 0
@@ -359,76 +302,14 @@ const Profile = ({ user, history, insertUserActivity }) => {
           </TopicsContainer>
         </Wrapper>
         <br />
-        <CenteredText>
-          <Button
-            text='Create New Topic'
-            type='primary'
-            onClick={() => {
-              history.push('/topic/create')
-            }}
-          />
-        </CenteredText>
-        {/* <Wrapper>
-          <SectionTitle>Recent Topics</SectionTitle>
-          <TopicsContainer>
-            {takenTopics.length === 0 ? (
-              <NoTopicsHolder>
-                <Image src={PlaceholderImage} /> No Recent Topics
-              </NoTopicsHolder>
-            ) : (
-              <Belt>
-                {takenTopics.map((topic, index) => (
-                  <PreviewWrapper
-                    key={index}
-                    onClick={() => {
-                      if (user) {
-                        insertUserActivity({
-                          variables: {
-                            userActivity: {
-                              id: uuid(),
-                              activity_type: 'view',
-                              user_id: user.id,
-                              topic_id: topic.topic.id
-                            }
-                          }
-                        })
-                          .then((res) => {
-                            console.log(res)
-                          })
-                          .catch((err) => {
-                            console.log(err.message)
-                          })
-                      }
-                      history.push(`topic/${topic.topic.id}`)
-                    }}
-                  >
-                    <Title>{topic.topic.name}</Title>
-                    <Author>{topic.topic.description}</Author>
-                    <Author>
-                      <Icon name='thumb_up_alt' />{' '}
-                      {topic.topic.ratings.length > 0
-                        ? topic.topic.ratings.filter((r) => r.type === 'upvote').length
-                        : 0}
-                    </Author>
-                    <Author>
-                      <Icon name='thumb_down_alt' />{' '}
-                      {topic.topic.ratings.length > 0
-                        ? topic.topic.ratings.filter((r) => r.type === 'downvote').length
-                        : 0}
-                    </Author>
-                  </PreviewWrapper>
-                ))}
-              </Belt>
-            )}
-          </TopicsContainer>
-        </Wrapper> */}
         <SectionTitle>Activity Logs</SectionTitle>
         <div style={{ height: '40vh', overflowY: 'scroll' }}>
           {uniqueLogs.length === 0 ? (
-            <NoTopicsHolder>
-              {/* <Image src={PlaceholderImage} />  */}
-                No Activity Logs Yet
-            </NoTopicsHolder>
+            <div className='mt-5'>
+              <ContentCenter>
+                No Activity Yet
+              </ContentCenter>
+            </div>
           ) : (
             <div>
               {uniqueLogs.map((log, index) => {
@@ -471,7 +352,10 @@ const Profile = ({ user, history, insertUserActivity }) => {
                         </strong>
                       </Author>
                       <Author>
-                        {activity} the topic <strong>{ log.topic === null ? log.question.topics[0].topic.name : log.topic.name }</strong>
+                        {activity} the topic{' '}
+                        <strong>
+                          {log.topic === null ? log.question.topics[0].topic.name : log.topic.name}
+                        </strong>
                       </Author>
                       <Author>{date.toISOString().split('T')[0]}</Author>
                     </div>
@@ -481,7 +365,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
             </div>
           )}
         </div>
-      </TopicWrapper>
+      </div>
     </Container>
   )
 }

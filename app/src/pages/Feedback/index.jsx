@@ -8,9 +8,8 @@ import gql from 'graphql-tag'
 import uuid from 'uuid/v4'
 import styled from 'styled-components'
 
-import Icon from '../../components/Icon'
 import Alert from '../../components/Alert'
-import { Button } from '../../components'
+import { Button, Icon } from '../../components'
 
 const CREATE_FEEDBACK = gql`
   mutation createFeedback($feedback: [feedback_insert_input!]!) {
@@ -67,15 +66,15 @@ const Feedback = ({ createFeedback, user, history }) => {
       }) => {
         return (
           <Form>
-            <Title>FEEDBACK</Title>
-            <Close onClick={() => history.push('/')}>
+            <FeedbackTitle>FEEDBACK</FeedbackTitle>
+            <FeedbackClose onClick={() => history.push('/')}>
               <Icon name='close' />
-            </Close>
+            </FeedbackClose>
             <hr />
             <FormGroup>
-              <Label>How would you rate your experience?</Label>
-              <ButtonContainer>
-                <NewButton
+              <FeedbackLabel>How would you rate your experience?</FeedbackLabel>
+              <FeedbackButtonContainer>
+                <FeedbackNewButton
                   onClick={() => {
                     values.rating = 'Good'
                   }}
@@ -83,18 +82,18 @@ const Feedback = ({ createFeedback, user, history }) => {
                   text='It was great!'
                 />
                 <br />
-                <NewButton
+                <FeedbackNewButton
                   onClick={() => {
                     values.rating = 'Bad'
                   }}
                   text='It needs improvement'
                 />
-              </ButtonContainer>
+              </FeedbackButtonContainer>
             </FormGroup>
             <hr />
             {/* <ErrorText text={errors.rating && touched.rating} /> */}
             <FormGroup>
-              <Label>Tell us more on how we can improve the app</Label>
+              <FeedbackLabel>Tell us more on how we can improve the app</FeedbackLabel>
               <FeedbackText
                 name='message'
                 id='message'
@@ -107,13 +106,13 @@ const Feedback = ({ createFeedback, user, history }) => {
               {/* <ErrorText text={errors.message && touched.message} /> */}
             </FormGroup>
             {status && <Alert {...status} />}
-            <SubmitDiv>
-              <NewButton
+            <FeedbackSubmitDiv>
+              <FeedbackNewButton
                 text={isSubmitting ? 'Submitting...' : 'Submit'}
                 type='primary'
                 onClick={handleSubmit}
               />
-            </SubmitDiv>
+            </FeedbackSubmitDiv>
           </Form>
         )
       }}
@@ -121,27 +120,27 @@ const Feedback = ({ createFeedback, user, history }) => {
   )
 }
 
-const Title = styled.div`
+const FeedbackTitle = styled.div`
   color: #e8eaf6;
   font-size: 1.25em;
   font-weight: 700;
   text-align: center;
 `
 
-const NewButton = styled(Button)`
+const FeedbackNewButton = styled(Button)`
   margin-bottom: 20px;
   width: 75%;
   display: flex;
   justify-content: center;
 `
 
-const ButtonContainer = styled.div`
+const FeedbackButtonContainer = styled.div`
   display: flex;
   align-content: center;
   justify-content: center;
 `
 
-const Close = styled.div`
+const FeedbackClose = styled.div`
   position: absolute;
   font-size: 20px;
   color: #e8eaf6;
@@ -154,17 +153,18 @@ const FeedbackText = styled(Input)`
   background: linear-gradient(#e8eaf6, #c5cae9);
 `
 
-const SubmitDiv = styled(FormGroup)`
+const FeedbackSubmitDiv = styled(FormGroup)`
   display: flex;
   justify-content: center;
 `
 
-const Label = styled.div`
+const FeedbackLabel = styled.div`
   color: #e8eaf6;
   font-size: .75em;
   text-align: center;
   margin-bottom: 10px;
 `
+
 export default compose(
   withRouter,
   graphql(CREATE_FEEDBACK, { name: 'createFeedback' })

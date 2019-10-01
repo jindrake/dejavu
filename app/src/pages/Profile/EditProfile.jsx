@@ -10,9 +10,6 @@ import uuid from 'uuid/v4'
 import { withRouter } from 'react-router-dom'
 import { useStateValue, getObjectValue } from '../../libs'
 import gql from 'graphql-tag'
-import Icon from '../../components/Icon'
-
-// import Alert from '../../components/Alert'
 import {
   StyledInput,
   FormWrapper,
@@ -20,7 +17,8 @@ import {
   StyledCheckbox,
   OverlayLoader,
   Button,
-  FullPageLoader
+  FullPageLoader,
+  Icon
 } from '../../components'
 
 const Close = styled.div`

@@ -9,7 +9,7 @@ import styled from 'styled-components'
 import uuid from 'uuid/v4'
 import { useStateValue } from '../../libs'
 import { StyledInput, FullPageLoader } from '../../components/'
-import Icon from '../../components/Icon'
+import { Icon } from '../../components'
 
 const FETCH_TOPIC = gql`
   query fetchTopic($query: topic_bool_exp, $orderBy: [topic_order_by!]) {
