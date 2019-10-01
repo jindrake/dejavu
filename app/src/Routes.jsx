@@ -25,7 +25,6 @@ import AddingUsers from './pages/ManageUsers/AddingUsers'
 import Settings from './pages/Settings'
 import ChallengerScreen from './pages/Topic/ChallengerScreen'
 import LandingPage from './components/LandingPage'
-import AboutDejavu from './components/LandingPage/AboutDejavu'
 import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
 import compose from 'recompose/compose'
@@ -77,6 +76,11 @@ const Routes = ({ userEmail, firebase }) => {
   }
   console.warn('Routes user is:', user)
 
+  console.log(window.screen)
+  if (window.screen.width >= 1024) {
+    return <LandingPage />
+  }
+
   return (
     <>
       <Route
@@ -85,22 +89,6 @@ const Routes = ({ userEmail, firebase }) => {
         render={() => <Navigation user={user} />}
       />
       <Switch>
-        <Route
-          exact
-          path='/landing-page'
-          render={() => {
-            document.title = 'Welcome to Dejavu!'
-            return <LandingPage />
-          }}
-        />
-        <Route
-          exact
-          path='/landing-page/about-dejavu'
-          render={() => {
-            document.title = 'About Dejavu!'
-            return <AboutDejavu />
-          }}
-        />
         <Route
           exact
           path='/welcome'
