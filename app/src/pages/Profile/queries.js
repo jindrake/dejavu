@@ -14,6 +14,15 @@ export const FETCH_MY_TOPIC = gql`
         id
         type
       }
+      target_fields {
+        id
+        field
+      }
+      user_activities_aggregate (where: {activity_type: {_eq: "take"}}, distinct_on: user_id) {
+        aggregate {
+          count
+        }
+      }
     }
   }
 `
@@ -64,6 +73,7 @@ export const FETCH_ACTIVITY_LOGS = gql`
       id
       activity_type
       created_at
+      topic_id
       question {
         topics {
           topic {

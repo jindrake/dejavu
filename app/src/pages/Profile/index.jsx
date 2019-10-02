@@ -4,7 +4,6 @@ import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
-import uuid from 'uuid'
 import gql from 'graphql-tag'
 import {
   FETCH_MY_TOPIC,
@@ -12,7 +11,7 @@ import {
   INSERT_USER_ACTIVITY,
   FETCH_ACTIVITY_LOGS
 } from './queries'
-import { FullPageLoader, Placeholder, Icon, ContentCenter } from '../../components'
+import { FullPageLoader, Placeholder, Icon, ContentCenter, Button } from '../../components'
 import { useStateValue, getObjectValue } from '../../libs'
 
 const AvatarContainer = styled.div`
@@ -68,84 +67,36 @@ const SectionTitle = styled.div`
   margin-bottom: 4px;
 `
 
-const Title = styled.div`
-  color: #1a237e;
-  font-size: 2vh;
-  font-weight: 700;
-`
-
 const Author = styled.div`
   color: #1a237e;
   font-size: 2vh;
 `
 
-const Belt = styled.div`
-  position: absolute;
-  top: 6px;
-  bottom: 6px;
-  display: flex;
-`
+const TopicsContainer = styled.div``
 
-const TopicsContainer = styled.div`
-  position: relative;
-  overflow-x: scroll;
-  height: 100%;
-  margin-left: -40px;
-  margin-right: -40px;
-  margin-top: 30px;
-`
-
-const PreviewWrapper = styled.div`
+const DejavuCard = styled.div`
   background: linear-gradient(#e8eaf6, #c5cae9);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-evenly;
-  padding: 10px;
-
-  @media (min-width: 800px) {
-    width: 210px;
-  }
-
-  @media (max-width: 1024px) {
-    width: 50vw;
-  }
-
-  margin-left: 20px;
-  &:first-child {
-    margin-left: 40px;
-  }
-  &:last-child {
-    margin-right: 40px;
-  }
-  border-radius: 6px;
-  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
-  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-  animation-delay: ${({ n }) => n * 100 + 'ms'};
-`
-
-const ActivityWrapper = styled.div`
-  background: linear-gradient(#e8eaf6, #c5cae9);
-  justify-content: center;
+  /* justify-content: center;
   padding: 20px;
   width: 92%;
   margin-bottom: 10px;
   &:last-child {
     margin-bottom: 60px;
-  }
+  } */
   border-radius: 6px;
-  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-  animation-delay: ${({ n }) => n * 100 + 'ms'};
+  animation-delay: ${({ n }) => n * 100 + 'ms'}; */
+  display: flex;
+  justify-content: flex-start;
+  padding: 1vh;
+  color: #1a237e;
 `
 
 const ActivityIcon = styled.div`
-  float: left;
-  padding-left: 0;
   font-size: 1.25em;
   color: #1a237e;
-  margin: 0;
-  position: absolute;
-  top: 35%;
+  margin: 1vh;
 `
 
 const FETCH_USER = gql`
@@ -164,7 +115,7 @@ const FETCH_USER = gql`
   }
 `
 
-const Profile = ({ user, history, insertUserActivity }) => {
+const Profile = ({ user }) => {
   const [, globalDispatch] = useStateValue()
 
   const { data: userData, loading: userDataLoading, error: userDataError } = useQuery(FETCH_USER, {
@@ -217,16 +168,18 @@ const Profile = ({ user, history, insertUserActivity }) => {
       networkError: activityLogsError.message
     })
   }
-  const userTopics = userTopicsData.topic
-  const activityLogs = activityLogsData.user_activity
-  const uniqueLogs = Array.from(new Set(activityLogs.map((a) => a.topic.id))).map((id) => {
-    return activityLogs.find((a) => a.topic.id === id)
+  const userTopics = getObjectValue(userTopicsData, 'topic') || []
+  const activityLogs = getObjectValue(activityLogsData, 'user_activity') || []
+  const uniqueLogs = Array.from(new Set(activityLogs.map((a) => a.topic_id))).map((id) => {
+    return activityLogs.find((a) => a.topic_id === id)
   })
+
   console.log('mytopics', userTopics)
+
   return (
     <Container>
       <div>
-        <ProfileInfo onClick={() => history.push('/edit-profile')}>
+        <ProfileInfo>
           {currentUser.avatar === undefined ? (
             <AvatarContainer>{initials.toUpperCase()}</AvatarContainer>
           ) : (
@@ -236,9 +189,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
         <CenteredText className='h2'>
           {currentUser.first_name} {currentUser.last_name}
         </CenteredText>
-        <ContentCenter className='h6'>
-          {currentUser.email}
-        </ContentCenter>
+        <ContentCenter className='h6'>{currentUser.email}</ContentCenter>
       </div>
       <div className='mt-5'>
         <Wrapper>
@@ -247,57 +198,73 @@ const Profile = ({ user, history, insertUserActivity }) => {
             {userTopics.length === 0 ? (
               <Placeholder />
             ) : (
-              <Belt>
+              <div>
                 {userTopics.map((topic, index) => {
-                  const date = new Date(topic.created_at)
                   return (
-                    <PreviewWrapper
-                      key={index}
-                      onClick={() => {
-                        if (user) {
-                          insertUserActivity({
-                            variables: {
-                              userActivity: {
-                                id: uuid(),
-                                activity_type: 'view',
-                                user_id: user.id,
-                                topic_id: topic.id
-                              }
-                            }
-                          })
-                        }
-                        history.push(`topic/${topic.id}`)
-                      }}
-                    >
-                      <Title>Title:{topic.name}</Title>
-                      <Author>{date.toDateString()}</Author>
-                      <Author>{topic.description}</Author>
-                      <div className='d-flex justify-content-between text-center'>
-                        <div className='d-flex text-center justify-content-evenly'>
-                          <Author>
-                            <Icon name='thumb_down_alt' />{' '}
-                            {topic.ratings.length > 0
-                              ? topic.ratings.filter((r) => r.type === 'downvote').length
-                              : 0}
-                          </Author>
-                          <div
-                            style={{
-                              color: '#1a237e',
-                              fontSize: '2vh',
-                              marginLeft: '10px'
-                            }}
-                          >
-                            <Icon name='thumb_up_alt' />{' '}
-                            {topic.ratings.length > 0
-                              ? topic.ratings.filter((r) => r.type === 'upvote').length
-                              : 0}
+                    <DejavuCard className='justify-content-between flex-column' key={index}>
+                      <div>
+                        <div>{topic.name}</div>
+                        <div>
+                          <small>{topic.description}</small>
+                        </div>
+                        <div className='small w-100 d-flex justify-content-between'>
+                          <div>
+                            {getObjectValue(topic, 'user_activities_aggregate.aggregate.count') || '0'} takers
                           </div>
+                          <span className='d-flex text-center justify-content-evenly'>
+                            <Author>
+                              <Icon name='thumb_down_alt' />{' '}
+                              {topic.ratings.length > 0
+                                ? topic.ratings.filter((r) => r.type === 'downvote').length
+                                : 0}
+                            </Author>
+                            <div
+                              style={{
+                                color: '#1a237e',
+                                fontSize: '2vh',
+                                marginLeft: '10px'
+                              }}
+                            >
+                              <Icon name='thumb_up_alt' />{' '}
+                              {topic.ratings.length > 0
+                                ? topic.ratings.filter((r) => r.type === 'upvote').length
+                                : 0}
+                            </div>
+                          </span>
                         </div>
                       </div>
-                    </PreviewWrapper>
+                      <div className='w-100 d-flex justify-content-end'>
+                        {/* <div className='d-flex'>
+                          Takers 1,023 */}
+                        {/* <span className='d-flex text-center justify-content-evenly'>
+                            <Author>
+                              <Icon name='thumb_down_alt' />{' '}
+                              {topic.ratings.length > 0
+                                ? topic.ratings.filter((r) => r.type === 'downvote').length
+                                : 0}
+                            </Author>
+                            <div
+                              style={{
+                                color: '#1a237e',
+                                fontSize: '2vh',
+                                marginLeft: '10px'
+                              }}
+                            >
+                              <Icon name='thumb_up_alt' />{' '}
+                              {topic.ratings.length > 0
+                                ? topic.ratings.filter((r) => r.type === 'upvote').length
+                                : 0}
+                            </div>
+                          </span> */}
+                        {/* </div> */}
+                        <div className='text-right w-100 d-flex justify-content-end'>
+                          <Button text='Manage' />
+                        </div>
+                      </div>
+                    </DejavuCard>
                   )
                 })}
-              </Belt>
+              </div>
             )}
           </TopicsContainer>
         </Wrapper>
@@ -306,9 +273,7 @@ const Profile = ({ user, history, insertUserActivity }) => {
         <div style={{ height: '40vh', overflowY: 'scroll' }}>
           {uniqueLogs.length === 0 ? (
             <div className='mt-5'>
-              <ContentCenter>
-                No Activity Yet
-              </ContentCenter>
+              <ContentCenter>No Activity Yet</ContentCenter>
             </div>
           ) : (
             <div>
@@ -341,25 +306,20 @@ const Profile = ({ user, history, insertUserActivity }) => {
                     break
                 }
                 return (
-                  <ActivityWrapper key={index}>
+                  <DejavuCard key={index}>
                     <ActivityIcon>
                       <Icon name={icon} />
                     </ActivityIcon>
-                    <div style={{ paddingLeft: '6vh' }}>
+                    <div className='mx-5'>
                       <Author>
-                        <strong>
-                          {user.first_name} {user.last_name}
-                        </strong>
-                      </Author>
-                      <Author>
-                        {activity} the topic{' '}
+                        You {activity} the topic{' '}
                         <strong>
                           {log.topic === null ? log.question.topics[0].topic.name : log.topic.name}
                         </strong>
                       </Author>
-                      <Author>{date.toISOString().split('T')[0]}</Author>
+                      <Author> on {date.toISOString().split('T')[0]}</Author>
                     </div>
-                  </ActivityWrapper>
+                  </DejavuCard>
                 )
               })}
             </div>
