@@ -115,7 +115,7 @@ const FETCH_USER = gql`
   }
 `
 
-const Profile = ({ user }) => {
+const Profile = ({ user, history }) => {
   const [, globalDispatch] = useStateValue()
 
   const { data: userData, loading: userDataLoading, error: userDataError } = useQuery(FETCH_USER, {
@@ -203,7 +203,7 @@ const Profile = ({ user }) => {
                   return (
                     <DejavuCard className='justify-content-between flex-column' key={index}>
                       <div>
-                        <div>{topic.name}</div>
+                        <div className='font-weight-bold'>{topic.name}</div>
                         <div>
                           <small>{topic.description}</small>
                         </div>
@@ -234,31 +234,10 @@ const Profile = ({ user }) => {
                         </div>
                       </div>
                       <div className='w-100 d-flex justify-content-end'>
-                        {/* <div className='d-flex'>
-                          Takers 1,023 */}
-                        {/* <span className='d-flex text-center justify-content-evenly'>
-                            <Author>
-                              <Icon name='thumb_down_alt' />{' '}
-                              {topic.ratings.length > 0
-                                ? topic.ratings.filter((r) => r.type === 'downvote').length
-                                : 0}
-                            </Author>
-                            <div
-                              style={{
-                                color: '#1a237e',
-                                fontSize: '2vh',
-                                marginLeft: '10px'
-                              }}
-                            >
-                              <Icon name='thumb_up_alt' />{' '}
-                              {topic.ratings.length > 0
-                                ? topic.ratings.filter((r) => r.type === 'upvote').length
-                                : 0}
-                            </div>
-                          </span> */}
-                        {/* </div> */}
                         <div className='text-right w-100 d-flex justify-content-end'>
-                          <Button text='Manage' />
+                          <Button text='Manage' onClick={() => {
+                            history.push(`/topic/${topic.id}/manage`)
+                          }} />
                         </div>
                       </div>
                     </DejavuCard>

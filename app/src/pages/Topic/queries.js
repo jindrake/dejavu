@@ -59,6 +59,25 @@ export const FETCH_TOPIC = gql`
   }
 `
 
+export const FETCH_TOPIC_WITH_USERS = gql`
+  query fetchTopicWithUsers ($id: uuid) {
+    topic(where: { id: { _eq: $id } }) {
+      id
+      is_published
+      is_private
+      name
+      target_fields {
+        id
+        field
+      }
+      users {
+        email
+        is_allowed
+      }
+    }
+  }
+`
+
 export const FETCH_TOPIC_QUESTIONS = gql`
   subscription fetchTopicQuestions($topicId: uuid) {
     question_topic(where: { topic: { id: { _eq: $topicId } } }) {
@@ -78,7 +97,7 @@ export const FETCH_TOPIC_QUESTIONS = gql`
 
 export const FETCH_USER_PREVIOUS_QUESTIONS = gql`
   query getUserOldQuestions($creatorId: ID, $topicId: ID) {
-    get_topic_suggested_questions (userId: $creatorId, topicId: $topicId)
+    get_topic_suggested_questions(userId: $creatorId, topicId: $topicId)
   }
 `
 
@@ -90,13 +109,14 @@ export const FETCH_FIELDS = gql`
   }
 `
 
-export const FETCH_TOPIC_PREVIEW = gql`
+export const FETCH_FULL_TOPIC = gql`
   query fetchFullTopic($topicId: uuid!) {
     topic(where: { id: { _eq: $topicId } }) {
       id
       name
       description
       is_private
+      is_published
       created_at
       ratings {
         id
@@ -137,14 +157,14 @@ export const PUBLISH_TOPIC = gql`
 `
 
 export const CREATE_SESSION = gql`
-  mutation createSession ($userId: ID!, $topicId: ID!, $type: String) {
+  mutation createSession($userId: ID!, $topicId: ID!, $type: String) {
     create_session(userId: $userId, topicId: $topicId, type: $type)
   }
 `
 
 export const UPDATE_TOPIC = gql`
-  mutation updateTopic ($topic: topic_set_input, $id: uuid!) {
-    update_topic (_set: $topic, where: {id: {_eq: $id}}) {
+  mutation updateTopic($topic: topic_set_input, $id: uuid!) {
+    update_topic(_set: $topic, where: { id: { _eq: $id } }) {
       returning {
         id
       }
@@ -154,16 +174,16 @@ export const UPDATE_TOPIC = gql`
 
 export const DELETE_TOPIC_FIELD_RELATIONSHIP = gql`
   mutation deleteTopicFieldRelationship($id: uuid!) {
-    delete_topic_field(where: {id: {_eq: $id}}) {
+    delete_topic_field(where: { id: { _eq: $id } }) {
       affected_rows
     }
   }
 `
 
 export const CREATE_TOPIC_FIELD_RELATIONSHIP = gql`
-mutation createTopicFieldRelationship($topicField: [topic_field_insert_input!]!) {
-  insert_topic_field(objects: $topicField) {
-    affected_rows
+  mutation createTopicFieldRelationship($topicField: [topic_field_insert_input!]!) {
+    insert_topic_field(objects: $topicField) {
+      affected_rows
+    }
   }
-}
 `

@@ -191,8 +191,6 @@ const AddQuestions = ({
           const questionId = uuid()
           let correctAnswers = values.choices.filter((_, index) => !!values.correctAnswers[index])
           let dummyAnswers = values.choices.filter((_, index) => !values.correctAnswers[index])
-          // changed the format of correct answers from '[]' to this '[<>[]<>]'
-          // to make the possibility of user input causing problems with our format even more edgy
           insertQuestion({
             variables: {
               questionObject: {

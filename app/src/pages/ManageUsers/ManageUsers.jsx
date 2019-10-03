@@ -4,7 +4,7 @@ import gql from 'graphql-tag'
 import compose from 'recompose/compose'
 import { useQuery } from '@apollo/react-hooks'
 import { useStateValue } from '../../libs'
-import { FullPageLoader } from '../../components/'
+import { FullPageLoader } from '../../components'
 
 const FETCH_MY_TOPIC = gql`
   query fetchMyTopic($userId: uuid!) {

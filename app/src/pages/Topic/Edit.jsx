@@ -1,7 +1,7 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import compose from 'recompose/compose'
-import { FETCH_TOPIC_PREVIEW, FETCH_FIELDS, UPDATE_TOPIC, DELETE_TOPIC_FIELD_RELATIONSHIP, CREATE_TOPIC_FIELD_RELATIONSHIP } from './queries'
+import { FETCH_FULL_TOPIC, FETCH_FIELDS, UPDATE_TOPIC, DELETE_TOPIC_FIELD_RELATIONSHIP, CREATE_TOPIC_FIELD_RELATIONSHIP } from './queries'
 import { useQuery } from '@apollo/react-hooks'
 import { Formik } from 'formik'
 import { useStateValue, getObjectValue } from '../../libs'
@@ -17,7 +17,7 @@ const EditTopicScreen = ({ user, history, updateTopic, deleteTopicFieldRelations
   // console.log(history.location.state.topicId)
   const [, globalDispatch] = useStateValue()
   const topicId = history.location.state.topicId
-  const { data, loading, error } = useQuery(FETCH_TOPIC_PREVIEW, {
+  const { data, loading, error } = useQuery(FETCH_FULL_TOPIC, {
     variables: {
       topicId: topicId
     }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { StyledInput, FullPageLoader } from '../../components/'
+import { StyledInput, FullPageLoader } from '../../components'
 import gql from 'graphql-tag'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
@@ -15,6 +15,7 @@ const INSERT_TOPIC_USER = gql`
     }
   }
 `
+
 const UPDATE_TOPIC_USER = gql`
   mutation updateTopicUser($email: String, $isAllowed: Boolean!) {
     update_topic_user(where: {email: {_eq: $email}}, _set: {is_allowed: $isAllowed}) {
@@ -22,6 +23,7 @@ const UPDATE_TOPIC_USER = gql`
     }
   }
 `
+
 const DELETE_TOPIC_USER = gql`
   mutation deleteTopicUser($topicId: uuid!) {
     delete_topic_user(where: {topic_id: {_eq: $topicId}}) {

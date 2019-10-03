@@ -95,6 +95,17 @@ export const StyledCheckbox = styled(CustomInput)`
   padding-top: 5px;
 `
 
+export const Pill = styled.div`
+  width: 100%;
+  border-radius: 1vh;
+  border: 1px solid violet;
+  padding: 1vh;
+  background: linear-gradient(#e8eaf6, #c5cae9);
+  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
+  color: #1a237e;
+  margin-bottom: 1vh;
+`
+
 export const SubText = styled.div`
   font-size: 12px;
 `
@@ -102,7 +113,7 @@ export const SubText = styled.div`
 export const OverlayLoaderContainer = styled.div`
   width: 100%;
   height: 100%;
-  background-color: rgba(0,0,0,0.2);
+  background-color: rgba(0, 0, 0, 0.2);
   position: fixed;
   top: 0px;
   left: 0px;
@@ -146,8 +157,7 @@ export const Stat = styled.div`
   overflow: hidden;
   margin-bottom: 2px;
   text-overflow: ellipsis;
-  font-size: ${props => props.size ? props.size : null}
-  i {
+  font-size: ${(props) => (props.size ? props.size : null)} i {
     margin-right: 6px;
   }
 `
@@ -174,4 +184,13 @@ const PlaceholderWrapper = styled.div`
   text-align: center;
   justify-content: center;
   text-align: center;
+`
+
+export const Close = styled.div`
+  position: absolute;
+  font-size: 20px;
+  color: #e8eaf6;
+  opacity: 0.5;
+  right: 0;
+  top: 0;
 `

@@ -19,15 +19,16 @@ import SessionLobby from './pages/Topic/SessionLobby'
 import Result from './pages/Topic/Result'
 import EditProfile from './pages/Profile/EditProfile'
 import NotFound from './pages/NotFound'
-import ManageUsers from './pages/ManageUsers'
+import ManageUsers from './pages/Topic/ManageUsers'
 import Edit from './pages/Topic/Edit'
-import AddingUsers from './pages/ManageUsers/AddingUsers'
+// import AddingUsers from './pages/Topic/AddingUsers'
 import Settings from './pages/Settings'
 import ChallengerScreen from './pages/Topic/ChallengerScreen'
 // import LandingPage from './components/LandingPage'
 import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
 import compose from 'recompose/compose'
+import ManageTopic from './pages/Topic/ManageTopic'
 
 const FETCH_USER = gql`
   query fetchUser($email: String!) {
@@ -85,7 +86,7 @@ const Routes = ({ userEmail, firebase }) => {
     <>
       <Route
         exact
-        path={['/', '/search', '/settings', '/profile', '/topic/create', '/topic/:uri/questions']}
+        path={['/', '/search', '/settings', '/profile', '/topic/create', '/topic/:id/questions']}
         render={() => <Navigation user={user} />}
       />
       <Switch>
@@ -107,20 +108,20 @@ const Routes = ({ userEmail, firebase }) => {
         />
         <Route
           exact
-          path='/manage-users'
+          path='/topic/:id/users'
           render={(routeProps) => {
             document.title = 'Manage Users'
             return <ManageUsers {...routeProps} user={user} />
           }}
         />
-        <Route
+        {/* <Route
           exact
           path='/manage-users/:id'
           render={(routeProps) => {
             document.title = 'Adding/Remove Users'
             return <AddingUsers {...routeProps} user={user} />
           }}
-        />
+        /> */}
         <Route
           exact
           path='/settings'
@@ -146,7 +147,6 @@ const Routes = ({ userEmail, firebase }) => {
             return !user ? <Redirect to='/sign-in' /> : <Edit {...routeProps} user={user} />
           }}
         />
-
         <Route
           exact
           path='/topic/:id/questions'
@@ -156,6 +156,18 @@ const Routes = ({ userEmail, firebase }) => {
               <Redirect to={`/sign-in?redirectUrl=${encodeURIComponent(routeProps.location.pathname)}`} />
             ) : (
               <Questions {...routeProps} user={user} />
+            )
+          }}
+        />
+        <Route
+          exact
+          path='/topic/:id/manage'
+          render={(routeProps) => {
+            document.title = 'Manage Topic'
+            return !user ? (
+              <Redirect to={`/sign-in?redirectUrl=${encodeURIComponent(routeProps.location.pathname)}`} />
+            ) : (
+              <ManageTopic {...routeProps} user={user} />
             )
           }}
         />

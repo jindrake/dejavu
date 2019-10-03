@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
-import { FETCH_TOPIC_PREVIEW, CREATE_SESSION } from './queries'
+import { FETCH_FULL_TOPIC, CREATE_SESSION } from './queries'
 import { getObjectValue, useStateValue, shuffleArray } from '../../libs'
 import { HeaderText, Stat, Button, FullPageLoader, Icon } from '../../components'
 import { Paper } from '../../components/Topic'
@@ -19,7 +19,7 @@ const Topic = ({
   createSession
 }) => {
   const [, globalDispatch] = useStateValue()
-  const { data, loading, error } = useQuery(FETCH_TOPIC_PREVIEW, {
+  const { data, loading, error } = useQuery(FETCH_FULL_TOPIC, {
     variables: {
       topicId: id
     }
