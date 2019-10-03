@@ -7,6 +7,9 @@ import { graphql } from '@apollo/react-hoc'
 
 import { Button, HeaderText, ContentBetween } from '../../components'
 import { Paper } from '../../components/Topic'
+import { Card, CardTitle } from 'reactstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faMinus } from '@fortawesome/free-solid-svg-icons'
 
 const ANSWER_QUESTION = gql`
   mutation answerQuestion($answers: [String!]!, $questionId: ID!, $userId: ID!, $sessionId: ID!) {
@@ -18,6 +21,21 @@ const ANSWER_QUESTION = gql`
     )
   }
 `
+
+// const PARTIAL_RESULTS = gql`
+//   query fetchUserAnswers($sessionId: uuid!) {
+//     session(where: { id: { _eq: $sessionId } }) {
+//       session_questions {
+//         question {
+//           answers {
+//             id
+//             is_correct
+//           }
+//         }
+//       }
+//     }
+//   }
+// `
 
 const SessionWaitingScreen = ({
   // },
@@ -36,28 +54,25 @@ const SessionWaitingScreen = ({
             <hr />
           </HeaderText>
         </QuestionContainer>
-        {/* <ChoicesContainer>
-          {choices &&
-            choices.map((choice, index) => {
-              return (
-                <Choice
-                  key={index}
-                  selected={answers.includes(choice.answer)}
-                  onClick={() => {
-                    if (timer) {
-                      if (!answers.includes(choice.answer)) {
-                        setAnswers(answers.concat(choice.answer))
-                      } else {
-                        setAnswers(answers.filter((answer) => answer !== choice.answer))
-                      }
-                    }
-                  }}
-                >
-                  {choice.answer}
-                </Choice>
-              )
-            })}
-        </ChoicesContainer> */}
+        <ResultDiv>
+          <Title>Partial Results</Title>
+          <UsersDiv>
+            <UserAnswers>
+              User 1
+              <div>
+                Q1 &nbsp;
+                <FontAwesomeIcon icon={faMinus} />
+              </div>
+            </UserAnswers>
+            <UserAnswers>
+              User 2
+              <div>
+                Q1 &nbsp;
+                <FontAwesomeIcon icon={faMinus} />
+              </div>
+            </UserAnswers>
+          </UsersDiv>
+        </ResultDiv>
       </Paper>
       <ContentBetween>
         <Button
@@ -92,6 +107,29 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
+`
+
+const ResultDiv = styled(Card)`
+  background: none;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  padding: 10px;
+`
+
+const Title = styled(CardTitle)`
+  color: #1a237e;
+  font-weight: 700;
+`
+
+const UsersDiv = styled.div`
+  display: flex;
+  width: 100%;
+`
+
+const UserAnswers = styled.div`
+  width: 50%;
+  color: #1a237e;
 `
 
 export default compose(
