@@ -158,7 +158,93 @@ module.exports = {
       }
     },
     get_session_result: async (parent, args, context) => {
-      return 'test'
+      try {
+        const { sessionId } = args
+        // fetch session
+        const {
+          data: {
+            session: [session]
+          }
+        } = await graphql.query(
+          gql`
+            query getSession($sessionId: uuid!) {
+              session(where: { id: { _eq: $sessionId } }) {
+                id
+                type
+                creator_id
+                session_users {
+                  user_id
+                  user {
+                    id
+                    first_name
+                    last_name
+                  }
+                }
+                session_questions {
+                  question_id
+                  question {
+                    id
+                    question
+                    answers {
+                      id
+                      answer
+                      is_correct
+                    }
+                  }
+                }
+              }
+            }
+          `,
+          {
+            sessionId
+          }
+        )
+        // fetch session activities
+        const {
+          data: {
+            user_activity: sessionActivities
+          }
+        } = await graphql.query(
+          gql`
+            query fetchUserActivities($sessionId: uuid) {
+              user_activity(where: {_and: [{topic_session_id: {_eq: $sessionId}}, {activity_type: {_eq: "answer"}}]}) {
+                id
+                answer
+                question_id
+                user_id
+                user {
+                  id
+                  first_name
+                  last_name
+                }
+              }
+            }
+          `,
+          {
+            sessionId
+          }
+        )
+        const sessionQuestions = getObjectValue(session, 'session_questions') || []
+        const results = sessionQuestions.map(questionData => {
+          return {
+            ...questionData,
+            userAnswers: sessionActivities.filter(activity => activity.question_id === questionData.question_id)
+          }
+        })
+        // restructure data so that the FE can loop through an array of questions
+        // with the correct and wrong answers along with the answer of user1 or user1 and user2
+        // stringify and return
+        console.log('Results:', results)
+        return JSON.stringify({
+          session_users: session.session_users.map(data => data.user),
+          results
+        })
+      } catch (error) {
+        console.log(error.message)
+        sentry.captureException(error)
+        sentry.captureMessage('get_session_result:', error.message)
+        throw new ApolloError(error)
+      }
     },
     get_topic_suggested_questions: async (parent, args, context) => {
       try {

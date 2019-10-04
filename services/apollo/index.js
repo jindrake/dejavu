@@ -8,7 +8,9 @@ const typeDefs = `
       sessionId: ID!,
       userId: ID!
     ): String,
-    get_session_result: String,
+    get_session_result(
+      sessionId: ID!      
+    ): String,
     get_topic_suggested_questions(
       topicId: ID,
       userId: ID
