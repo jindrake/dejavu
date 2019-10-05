@@ -82,7 +82,7 @@ const ManageUsers = ({
   const componentError =
     error || updateTopicError || whitelistError || deleteTopicUserError || deleteAllTopicUsersError
   if (componentError) {
-    console.error('error@search:1')
+    console.error('error@manageusers:1')
     globalDispatch({
       networkError: componentError.message
     })

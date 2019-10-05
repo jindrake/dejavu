@@ -93,7 +93,7 @@ const App = ({ firebase, history, location: { search } }) => {
       {loading && <OverlayLoader className='bg-transparent' />}
       {networkError && (
         <Notification>
-          <Alert color='danger'>{networkError}</Alert>
+          <Alert color='danger'>{networkError.split(':').pop().trim()}</Alert>
         </Notification>
       )}
       {operationSuccess && (

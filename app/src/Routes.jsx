@@ -29,6 +29,7 @@ import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
 import compose from 'recompose/compose'
 import ManageTopic from './pages/Topic/ManageTopic'
+import ManageAdmins from './pages/Topic/ManageAdmins'
 
 const FETCH_USER = gql`
   query fetchUser($email: String!) {
@@ -77,11 +78,6 @@ const Routes = ({ userEmail, firebase }) => {
   }
   console.warn('Routes user is:', user)
 
-  console.log(window.screen)
-  // if (window.screen.width >= 1024) {
-  //   return <LandingPage />
-  // }
-
   return (
     <>
       <Route
@@ -114,14 +110,14 @@ const Routes = ({ userEmail, firebase }) => {
             return <ManageUsers {...routeProps} user={user} />
           }}
         />
-        {/* <Route
+        <Route
           exact
-          path='/manage-users/:id'
+          path='/topic/:id/admins'
           render={(routeProps) => {
-            document.title = 'Adding/Remove Users'
-            return <AddingUsers {...routeProps} user={user} />
+            document.title = 'Manage Admins'
+            return <ManageAdmins {...routeProps} user={user} />
           }}
-        /> */}
+        />
         <Route
           exact
           path='/settings'

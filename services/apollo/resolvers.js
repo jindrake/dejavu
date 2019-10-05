@@ -699,7 +699,7 @@ module.exports = {
           }
         )
         if (!data.user || !data.user.length) {
-          throw new Error('User not found by email')
+          throw new Error(`Sorry didn't find user with email ${email}`)
         }
         // insert to admin_topic table
         await graphql.mutate(

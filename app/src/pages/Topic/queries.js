@@ -13,7 +13,9 @@ export const REMOVE_QUESTION = gql`
 
 export const DELETE_TOPIC_USER = gql`
   mutation deleteTopicUser($topicId: uuid, $email: String) {
-    delete_topic_user(where: {_and: [{topic_id: {_eq: $topicId}}, {email: {_eq: $email}}]}) {
+    delete_topic_user(
+      where: { _and: [{ topic_id: { _eq: $topicId } }, { email: { _eq: $email } }] }
+    ) {
       affected_rows
     }
   }
@@ -21,7 +23,7 @@ export const DELETE_TOPIC_USER = gql`
 
 export const DELETE_ALL_TOPIC_USERS = gql`
   mutation deleteTopicUsers($topicId: uuid) {
-    delete_topic_user(where: {topic_id: {_eq: $topicId}}) {
+    delete_topic_user(where: { topic_id: { _eq: $topicId } }) {
       affected_rows
     }
   }
@@ -52,6 +54,22 @@ export const INSERT_QUESTION = gql`
   }
 `
 
+export const INSERT_TOPIC_ADMIN = gql`
+  mutation insertTopicAdmin($email: String, $topicId: ID!) {
+    add_admin_by_email(email: $email, topicId: $topicId)
+  }
+`
+
+export const DELETE_TOPIC_ADMIN = gql`
+  mutation deleteTopicAdmin($userId: uuid, $topicId: uuid) {
+    delete_admin_topic(
+      where: { _and: [{ topic_id: { _eq: $topicId } }, { user_id: { _eq: $userId } }] }
+    ) {
+      affected_rows
+    }
+  }
+`
+
 export const INSERT_QUESTION_TOPIC_RELATIONSHIP = gql`
   mutation insertQuestionTopicRelationship($questionTopic: [question_topic_insert_input!]!) {
     insert_question_topic(objects: $questionTopic) {
@@ -76,7 +94,7 @@ export const FETCH_TOPIC = gql`
 `
 
 export const FETCH_TOPIC_WITH_USERS = gql`
-  query fetchTopicWithUsers ($id: uuid) {
+  query fetchTopicWithUsers($id: uuid) {
     topic(where: { id: { _eq: $id } }) {
       id
       is_published
@@ -89,6 +107,28 @@ export const FETCH_TOPIC_WITH_USERS = gql`
       users {
         email
         is_allowed
+      }
+    }
+  }
+`
+
+export const FETCH_TOPIC_WITH_ADMINS = gql`
+  query fetchTopicWithUsers($id: uuid) {
+    topic(where: { id: { _eq: $id } }) {
+      id
+      is_published
+      is_private
+      name
+      target_fields {
+        id
+        field
+      }
+      admins {
+        id
+        user_id
+        user {
+          email
+        }
       }
     }
   }

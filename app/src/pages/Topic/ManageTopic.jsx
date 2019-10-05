@@ -2,12 +2,7 @@ import React from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { FETCH_FULL_TOPIC, UPDATE_TOPIC } from './queries'
 import { getObjectValue, useStateValue } from '../../libs'
-import {
-  FullPageLoader,
-  HeaderText,
-  ContentCenter,
-  Button
-} from '../../components'
+import { FullPageLoader, HeaderText, ContentCenter, Button } from '../../components'
 import { Badge } from 'reactstrap'
 
 const ManageTopic = ({
@@ -73,12 +68,18 @@ const ManageTopic = ({
       </div>
       <hr />
       <Button text='See results' className='mb-2 p-4' />
-      {topic.is_private && (
-        <Button text='List of allowed users' onClick={() => {
+      <Button
+        text='List of allowed users'
+        onClick={() => {
           history.push(`/topic/${id}/users`)
-        }} className='mb-2 p-4' />
-      )}
-      <Button text='Manage admins' className='mb-2 p-4' />
+        }}
+        className='mb-2 p-4'
+      />
+      <Button text='Manage admins' className='mb-2 p-4'
+        onClick={() => {
+          history.push(`/topic/${id}/admins`)
+        }}
+      />
       <Button text='Edit details' className='mb-2 p-4' />
       <Button text='Edit questions' className='mb-2 p-4' />
       <Button text='Edit target fields' className='mb-2 p-4' />
