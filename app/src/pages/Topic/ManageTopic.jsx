@@ -74,7 +74,7 @@ const ManageTopic = ({
       <hr />
       <Button text='See results' className='mb-2 p-4' />
       {topic.is_private && (
-        <Button text='Allow / Block users from this topic' onClick={() => {
+        <Button text='List of allowed users' onClick={() => {
           history.push(`/topic/${id}/users`)
         }} className='mb-2 p-4' />
       )}

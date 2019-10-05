@@ -33,4 +33,5 @@ const Wrapper = styled.div`
   ${({ type }) => TYPE_STYLE[type]};
   /* justify-content: ${({ center }) => center ? 'center' : 'start'}; */
   justify-content: ${props => props.center ? 'center' : ''};
+  cursor: pointer;
 `

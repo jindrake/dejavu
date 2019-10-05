@@ -11,6 +11,22 @@ export const REMOVE_QUESTION = gql`
   }
 `
 
+export const DELETE_TOPIC_USER = gql`
+  mutation deleteTopicUser($topicId: uuid, $email: String) {
+    delete_topic_user(where: {_and: [{topic_id: {_eq: $topicId}}, {email: {_eq: $email}}]}) {
+      affected_rows
+    }
+  }
+`
+
+export const DELETE_ALL_TOPIC_USERS = gql`
+  mutation deleteTopicUsers($topicId: uuid) {
+    delete_topic_user(where: {topic_id: {_eq: $topicId}}) {
+      affected_rows
+    }
+  }
+`
+
 export const INSERT_QUESTION = gql`
   mutation insertQuestion(
     $questionObject: [question_insert_input!]!
@@ -183,6 +199,14 @@ export const DELETE_TOPIC_FIELD_RELATIONSHIP = gql`
 export const CREATE_TOPIC_FIELD_RELATIONSHIP = gql`
   mutation createTopicFieldRelationship($topicField: [topic_field_insert_input!]!) {
     insert_topic_field(objects: $topicField) {
+      affected_rows
+    }
+  }
+`
+
+export const INSERT_TOPIC_USER = gql`
+  mutation insertTopicUser($topicUser: [topic_user_insert_input!]!) {
+    insert_topic_user(objects: $topicUser) {
       affected_rows
     }
   }
