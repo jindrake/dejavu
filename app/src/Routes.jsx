@@ -31,6 +31,8 @@ import compose from 'recompose/compose'
 import ManageTopic from './pages/Topic/ManageTopic'
 import ManageAdmins from './pages/Topic/ManageAdmins'
 
+import { registerSubscriber } from './SubscribeWebPush'
+
 const FETCH_USER = gql`
   query fetchUser($email: String!) {
     user(where: { email: { _eq: $email } }) {
@@ -77,6 +79,31 @@ const Routes = ({ userEmail, firebase }) => {
     return <FullPageLoader />
   }
   console.warn('Routes user is:', user)
+
+  console.log(window.screen)
+  if (window.screen.width >= 1024) {
+    return <LandingPage />
+  }
+
+  // Do something with the granted permission.
+  if (user) {
+    // eslint-disable-next-line
+    Notification.requestPermission().then(function (result) {
+      console.log('RESULT:', result)
+      if (result === 'denied') {
+        console.log('Permission wasn\'t granted. Allow a retry.')
+        return
+      }
+      if (result === 'default') {
+        console.log('The permission request was dismissed.')
+      }
+    })
+
+    console.log('USER:', user)
+    if ('serviceWorker' in navigator) {
+      registerSubscriber(user.id).catch(err => console.error(err))
+    }
+  }
 
   return (
     <>
