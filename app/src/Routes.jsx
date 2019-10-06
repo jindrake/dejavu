@@ -22,7 +22,6 @@ import NotFound from './pages/NotFound'
 import ManageUsers from './pages/Topic/ManageUsers'
 import Edit from './pages/Topic/Edit'
 // import AddingUsers from './pages/Topic/AddingUsers'
-import Settings from './pages/Settings'
 import ChallengerScreen from './pages/Topic/ChallengerScreen'
 import LandingPage from './components/LandingPage'
 import { FullPageLoader } from '../src/components'
@@ -143,14 +142,6 @@ const Routes = ({ userEmail, firebase }) => {
           render={(routeProps) => {
             document.title = 'Manage Admins'
             return <ManageAdmins {...routeProps} user={user} />
-          }}
-        />
-        <Route
-          exact
-          path='/settings'
-          render={(routeProps) => {
-            document.title = 'Settings'
-            return <Settings {...routeProps} user={user} />
           }}
         />
         <Route

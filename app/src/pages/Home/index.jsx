@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
 import styled from 'styled-components'
-import { graphql } from '@apollo/react-hoc'
 import compose from 'recompose/compose'
 import withFirebase from '../../hocs/withFirebase'
 
@@ -9,47 +8,73 @@ import { Button } from 'reactstrap'
 import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS } from './queries'
 import { FullPageLoader, Icon, Placeholder } from '../../components'
 import TopicPreview from './TopicPreview'
+import { useQuery } from '@apollo/react-hooks'
 
-const Home = ({ fetchHotTopics, fetchRecentTopics, history }) => {
-  const [hotTopics, setHotTopics] = useState([])
-  const [recentTopics, setRecentTopics] = useState([])
+const Home = ({ history }) => {
   const [{ user }, globalDispatch] = useStateValue()
 
-  useEffect(() => {
-    if (fetchHotTopics.topic) {
-      setHotTopics(fetchHotTopics.topic)
+  const {
+    data: recentTopicsData,
+    loading: recentTopicsLoading,
+    error: recentTopicsError
+  } = useQuery(FETCH_RECENT_TOPICS, {
+    fetchPolicy: 'no-cache'
+  })
+  const { data: hotTopicsData, loading: hotTopicsLoading, error: hotTopicsError } = useQuery(
+    FETCH_HOT_TOPICS,
+    {
+      fetchPolicy: 'no-cache'
     }
-    if (fetchRecentTopics.topic) {
-      setRecentTopics(fetchHotTopics.topic)
-    }
-    if (fetchHotTopics.error) {
-      console.error('error@home:1')
-      globalDispatch({
-        networkError: fetchHotTopics.error.message
-      })
-    }
-    if (fetchRecentTopics.error) {
-      console.error('error@home:2')
-      globalDispatch({
-        networkError: fetchRecentTopics.error.message
-      })
-    }
-  }, [
-    fetchHotTopics.loading,
-    fetchRecentTopics.loading,
-    fetchHotTopics,
-    fetchRecentTopics,
-    globalDispatch
-  ])
+  )
+
+  // useEffect(() => {
+  //   if (fetchHotTopics.topic) {
+  //     setHotTopics(fetchHotTopics.topic)
+  //   }
+  //   if (fetchRecentTopics.topic) {
+  //     setRecentTopics(fetchHotTopics.topic || [])
+  //   }
+  //   if (fetchHotTopics.error) {
+  //     console.error('error@home:1')
+  //     globalDispatch({
+  //       networkError: fetchHotTopics.error.message
+  //     })
+  //   }
+  //   if (fetchRecentTopics.error) {
+  //     console.error('error@home:2')
+  //     globalDispatch({
+  //       networkError: fetchRecentTopics.error.message
+  //     })
+  //   }
+  // }, [
+  //   fetchHotTopics.loading,
+  //   fetchRecentTopics.loading,
+  //   fetchHotTopics,
+  //   fetchRecentTopics,
+  //   globalDispatch
+  // ])
 
   if (window.localStorage.getItem('newUser')) {
     window.localStorage.removeItem('newUser')
     history.push('/welcome')
   }
 
-  if (fetchHotTopics.loading || fetchRecentTopics.loading) {
+  const componentError = recentTopicsError || hotTopicsError
+
+  if (componentError) {
+    console.error('error@home')
+    globalDispatch({
+      networkError: componentError.message
+    })
+  }
+
+  if (recentTopicsLoading || hotTopicsLoading) {
     return <FullPageLoader />
   }
+
+  const hotTopics = hotTopicsData.topic
+  const recentTopics = recentTopicsData.topic
+  console.log(hotTopics, recentTopics)
 
   return (
     <Wrapper>
@@ -155,7 +180,7 @@ const SectionWrapper = styled.div`
 `
 
 export default compose(
-  withFirebase(),
-  graphql(FETCH_HOT_TOPICS, { name: 'fetchHotTopics', options: { fetchPolicy: 'no-cache' } }),
-  graphql(FETCH_RECENT_TOPICS, { name: 'fetchRecentTopics', options: { fetchPolicy: 'no-cache' } })
+  withFirebase()
+  // graphql(FETCH_HOT_TOPICS, { name: 'fetchHotTopics', options: { fetchPolicy: 'no-cache' } }),
+  // graphql(FETCH_RECENT_TOPICS, { name: 'fetchRecentTopics', options: { fetchPolicy: 'no-cache' } })
 )(Home)

@@ -11,6 +11,10 @@ export const FETCH_HOT_TOPICS = gql`
       name
       description
       created_at
+      target_fields {
+        id
+        field
+      }
       ratings {
         id
         type
@@ -26,6 +30,10 @@ export const FETCH_RECENT_TOPICS = gql`
       name
       description
       created_at
+      target_fields {
+        id
+        field
+      }
       ratings {
         id
         type
