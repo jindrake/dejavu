@@ -7,7 +7,6 @@ import compose from 'recompose/compose'
 import getInitializedApolloClient from './libs/getInitializedApolloClient'
 import Routes from './Routes'
 import { FullPageLoader, OverlayLoader, Notification } from '../src/components'
-import { Alert } from 'reactstrap'
 
 const App = ({ firebase, history, location: { search } }) => {
   const [authState, setAuthState] = useState({ loading: true })
@@ -92,13 +91,13 @@ const App = ({ firebase, history, location: { search } }) => {
     <ApolloProvider client={getInitializedApolloClient(authState.token)}>
       {loading && <OverlayLoader className='bg-transparent' />}
       {networkError && (
-        <Notification>
-          <Alert color='danger'>{networkError.split(':').pop().trim()}</Alert>
+        <Notification className='slideDown text-danger'>
+          {networkError.split(':').pop().trim()}
         </Notification>
       )}
       {operationSuccess && (
-        <Notification>
-          <Alert color='success'>{operationSuccess}</Alert>
+        <Notification className='slideDown text-success'>
+          {operationSuccess}
         </Notification>
       )}
       <Routes userEmail={getObjectValue(authState, 'user.email')} />

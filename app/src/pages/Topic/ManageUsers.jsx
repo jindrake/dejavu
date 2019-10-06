@@ -73,9 +73,8 @@ const ManageUsers = ({
   if (
     loading ||
     updateTopicLoading ||
-    whitelistLoading ||
     deleteTopicUserLoading ||
-    deleteAllTopicUsersLoading
+    deleteAllTopicUsersLoading || whitelistLoading
   ) {
     return <FullPageLoader />
   }
@@ -154,6 +153,9 @@ const ManageUsers = ({
                     await refetch()
                     setInputValue('')
                     setInputError(false)
+                    globalDispatch({
+                      operationSuccess: 'Whitelisted email'
+                    })
                   } else {
                     setInputError(true)
                   }
@@ -190,13 +192,17 @@ const ManageUsers = ({
               <Button
                 text='Clear whitelist'
                 className='mt-3'
-                onClick={async () => {
+                onClick={async (e) => {
+                  e.preventDefault()
                   await deleteAllTopicUsers({
                     variables: {
                       topicId: id
                     }
                   })
                   await refetch()
+                  globalDispatch({
+                    operationSuccess: 'Cleared whitelist'
+                  })
                 }}
               />
               <div className='p-2'>

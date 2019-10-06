@@ -80,6 +80,9 @@ const ManageAdmins = ({
                   await refetch()
                   setInputValue('')
                   setInputError(false)
+                  globalDispatch({
+                    operationSuccess: 'Admin added to ' + topic.name
+                  })
                 } else {
                   setInputError(true)
                 }

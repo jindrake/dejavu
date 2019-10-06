@@ -186,7 +186,7 @@ const Profile = ({ user, history }) => {
             <AvatarContainer style={{ backgroundImage: `${currentUser.avatar}` }} />
           )}
         </ProfileInfo>
-        <CenteredText className='h2'>
+        <CenteredText className='h2 text-capitalize'>
           {currentUser.first_name} {currentUser.last_name}
         </CenteredText>
         <ContentCenter className='h6'>{currentUser.email}</ContentCenter>
@@ -285,7 +285,7 @@ const Profile = ({ user, history }) => {
                     break
                 }
                 return (
-                  <DejavuCard key={index}>
+                  <DejavuCard key={index} className='mb-1'>
                     <ActivityIcon>
                       <Icon name={icon} />
                     </ActivityIcon>

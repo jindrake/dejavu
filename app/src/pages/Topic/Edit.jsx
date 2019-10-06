@@ -1,39 +1,46 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
 import compose from 'recompose/compose'
-import { FETCH_FULL_TOPIC, FETCH_FIELDS, UPDATE_TOPIC, DELETE_TOPIC_FIELD_RELATIONSHIP, CREATE_TOPIC_FIELD_RELATIONSHIP } from './queries'
+import {
+  FETCH_FULL_TOPIC,
+  FETCH_FIELDS,
+  UPDATE_TOPIC,
+  DELETE_ALL_TOPIC_FIELD_RELATIONSHIP,
+  CREATE_TOPIC_FIELD_RELATIONSHIP
+} from './queries'
 import { useQuery } from '@apollo/react-hooks'
 import { Formik } from 'formik'
 import { useStateValue, getObjectValue } from '../../libs'
 import * as yup from 'yup'
-import { OverlayLoader, FormWrapper } from '../../components'
-import { Button, FormGroup, Label, Input, CustomInput } from 'reactstrap'
+import { OverlayLoader, Button, HeaderText, StyledInput } from '../../components'
+import { FormGroup, Label } from 'reactstrap'
 import uuid from 'uuid/v4'
 import styled from 'styled-components'
-import Alert from '../../components/Alert'
 import { graphql } from '@apollo/react-hoc'
 
-const EditTopicScreen = ({ user, history, updateTopic, deleteTopicFieldRelationship, createTopicFieldRelationship }) => {
+const EditTopicScreen = ({
+  match: {
+    params: { id }
+  },
+  history,
+  updateTopic,
+  deleteTopicFieldRelationship,
+  createTopicFieldRelationship
+}) => {
   // console.log(history.location.state.topicId)
   const [, globalDispatch] = useStateValue()
-  const topicId = history.location.state.topicId
   const { data, loading, error } = useQuery(FETCH_FULL_TOPIC, {
     variables: {
-      topicId: topicId
+      topicId: id
     }
   })
 
   // for field of study
-  const {
-    data: studyFields,
-    loading: studyFieldsLoading,
-    error: studyFieldsError
-  } = useQuery(FETCH_FIELDS)
+  const { data: studyFields, loading: studyFieldsLoading, error: studyFieldsError } = useQuery(
+    FETCH_FIELDS
+  )
 
-  if (
-    loading ||
-    studyFieldsLoading
-  ) {
+  if (loading || studyFieldsLoading) {
     return <OverlayLoader />
   }
 
@@ -58,7 +65,6 @@ const EditTopicScreen = ({ user, history, updateTopic, deleteTopicFieldRelations
       initialValues={{
         name: topic.name ? topic.name : '',
         description: topic.description,
-        isPrivate: topic.is_private,
         fieldOfStudy: fieldOfStudyId.field
       }}
       validationSchema={yup.object().shape({
@@ -67,47 +73,44 @@ const EditTopicScreen = ({ user, history, updateTopic, deleteTopicFieldRelations
           .min(3, 'Enter Title at least 3 characters')
           .required('Required'),
         description: yup.string().required('Required'),
-        isPrivate: yup.boolean(),
         fieldOfStudy: yup.string().required('Required')
       })}
-      onSubmit={(values, { setSubmitting, setStatus }) => {
-        console.log(values)
-        updateTopic({
-          variables: {
-            id: topicId,
-            topic: {
-              name: values.name,
-              description: values.description,
-              is_private: values.isPrivate
-              // target_fields:
+      onSubmit={async (values, { setSubmitting, setStatus, touched }) => {
+        console.log(values, touched)
+        try {
+          await updateTopic({
+            variables: {
+              id: id,
+              topic: {
+                name: values.name,
+                description: values.description
+              }
             }
-          }
-        })
-          .then((res) => {
-            console.log('RES:', res)
-            console.log(getObjectValue(res, 'data.update_topic.returning[0].id'))
-            deleteTopicFieldRelationship({
-              variables: {
-                id: fieldOfStudyId.id
+          })
+          await deleteTopicFieldRelationship({
+            variables: {
+              topicId: id
+            }
+          })
+          await createTopicFieldRelationship({
+            variables: {
+              topicField: {
+                id: uuid(),
+                field: values.fieldOfStudy,
+                topic_id: topic.id
               }
-            })
-            return createTopicFieldRelationship({
-              variables: {
-                topicField: {
-                  id: uuid(),
-                  field: values.fieldOfStudy,
-                  topic_id: getObjectValue(res, 'data.update_topic.returning[0].id')
-                }
-              }
-            })
+            }
           })
-          .then((res) => {
-            console.log(res)
-            history.goBack()
+          globalDispatch({
+            operationSuccess: 'Topic updated'
           })
-          .catch((err) => {
-            console.log(err.message)
+        } catch (error) {
+          console.error('error@topicedit1')
+          globalDispatch({
+            networkError: error.message
           })
+        }
+        setSubmitting(false)
       }}
     >
       {({
@@ -122,9 +125,12 @@ const EditTopicScreen = ({ user, history, updateTopic, deleteTopicFieldRelations
       }) => {
         console.log('ERRORS:', errors)
         return (
-          <FormWrapper>
+          <div>
             {(isSubmitting || loading) && <OverlayLoader />}
-            <Title>Edit topic</Title>
+            <div className='d-flex'>
+              <Button text='Go back' onClick={() => history.goBack()} />
+            </div>
+            <HeaderText className='mt-3 mb-3'>Edit topic</HeaderText>
             <FormGroup>
               <Label for='name'>
                 <SubHeader>Title</SubHeader>
@@ -147,7 +153,7 @@ const EditTopicScreen = ({ user, history, updateTopic, deleteTopicFieldRelations
               <Label for='description'>
                 <SubHeader>Description</SubHeader>
               </Label>
-              <StyledInputDesc
+              <StyledInput
                 type='textarea'
                 name='description'
                 placeholder='Enter description here ..'
@@ -162,13 +168,14 @@ const EditTopicScreen = ({ user, history, updateTopic, deleteTopicFieldRelations
               <Label for='fieldOfStudy'>
                 <SubHeader>Target field</SubHeader>
               </Label>
-              <StyledInputDesc
-
+              <StyledInput
                 type='select'
                 name='fieldOfStudy'
                 data-cy='field-of-study'
                 placeholder='Select field of study'
-                onChange={(e) => { setFieldValue('fieldOfStudy', e.target.value) }}
+                onChange={(e) => {
+                  setFieldValue('fieldOfStudy', e.target.value)
+                }}
                 invalid={errors.fieldOfStudy && touched.fieldOfStudy}
                 value={values.fieldOfStudy}
               >
@@ -179,110 +186,29 @@ const EditTopicScreen = ({ user, history, updateTopic, deleteTopicFieldRelations
                       {field}
                     </option>
                   ))}
-              </StyledInputDesc>
-            </FormGroup>
-            <FormGroup>
-              <StyledCheckbox
-                defaultChecked={values.isPrivate}
-                value={values.isPrivate}
-                label='make topic private'
-                type='checkbox'
-                id='isPrivate'
-                name='isPrivate'
-                onChange={(e) => { setFieldValue('isPrivate', e.target.value) }}
-              />
+              </StyledInput>
             </FormGroup>
             <Button
-              style={{ marginBottom: '20px', backgroundColor: 'blue', height: '5vh' }}
-              data-cy='add_remove_questions'
-              onClick={() => {
-                history.push({
-                  pathname: `/topic/${topic.id}/questions`
-                })
-              }}
-            >
-              {'Add/Remove questions'}
-            </Button>
-            {status && <Alert {...status} />}
-            <Button
-              style={{ marginBottom: '10px', backgroundColor: 'green', height: '5vh' }}
               data-cy='save_topic'
               onClick={handleSubmit}
-            >
-              {'Save'}
-            </Button>
-            <Button
-              style={{ marginBottom: '10px', height: '5vh' }}
-              data-cy='back'
-              onClick={() => {
-                history.goBack()
-              }}
-            >
-              {'Back'}
-            </Button>
-          </FormWrapper>
+              className='p-3 mt-3'
+              text='Save'
+            />
+          </div>
         )
       }}
     </Formik>
   )
 }
 
-const StyledInput = styled(Input)`
-  margin-top: 6px;
-  font-size: 3vh;
-  height: 5vh;
-  width: 100%;
-  color: #1a237e;
-  padding-left: 12px;
-  padding-right: 12px;
-  background: linear-gradient(#e8eaf6, #c5cae9);
-  border-radius: 6px;
-  border: none;
-  outline: none;
-  :focus {
-    background: #e8eaf6;
-  }
-`
-const StyledInputDesc = styled(Input)`
-  margin-top: 6px;
-  font-size: 2vh;
-  height: 5vh;
-  width: 100%;
-  color: #1a237e;
-  padding-left: 12px;
-  padding-right: 12px;
-  background: linear-gradient(#e8eaf6, #c5cae9);
-  border-radius: 6px;
-  border: none;
-  outline: none;
-  :focus {
-    background: #e8eaf6;
-  }
-`
-
-const StyledCheckbox = styled(CustomInput)`
-  font-size: 2vh;
-  color: white;
-  height: 2vh;
-  padding-top: 5px;
-`
-
-const Title = styled.div`
-  font-size: 4vh;
-  margin-bottom: 20px;
-  line-height: 24px;
-  font-weight: 700;
-  color: #e8eaf6;
-`
-
 const SubHeader = styled.div`
   color: #e8eaf6;
-  font-size: 4vh;
+  font-size: 15px;
 `
 
 export default compose(
   withRouter,
   graphql(UPDATE_TOPIC, { name: 'updateTopic' }),
-  graphql(DELETE_TOPIC_FIELD_RELATIONSHIP, { name: 'deleteTopicFieldRelationship' }),
+  graphql(DELETE_ALL_TOPIC_FIELD_RELATIONSHIP, { name: 'deleteTopicFieldRelationship' }),
   graphql(CREATE_TOPIC_FIELD_RELATIONSHIP, { name: 'createTopicFieldRelationship' })
 )(EditTopicScreen)

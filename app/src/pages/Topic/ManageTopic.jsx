@@ -54,7 +54,7 @@ const ManageTopic = ({
         Description: {topic.description}
       </small>
       <div>
-        <small>Target fields:</small>
+        <small>Target field:</small>
         <br />
         {topic.target_fields && topic.target_fields.length
           ? topic.target_fields.map((field, index) => {
@@ -80,9 +80,13 @@ const ManageTopic = ({
           history.push(`/topic/${id}/admins`)
         }}
       />
-      <Button text='Edit details' className='mb-2 p-4' />
-      <Button text='Edit questions' className='mb-2 p-4' />
-      <Button text='Edit target fields' className='mb-2 p-4' />
+      <Button text='Edit details' className='mb-2 p-4' onClick={() => {
+        history.push(`/topic/${id}/edit`)
+      }} />
+      <Button text='Edit questions' className='mb-2 p-4' onClick={() => {
+        history.push(`/topic/${id}/questions`)
+      }} />
+      {/* <Button text='Edit target fields' className='mb-2 p-4' /> */}
       <hr />
       <Button
         text={topic.is_published ? 'Unpublish' : 'Publish'}

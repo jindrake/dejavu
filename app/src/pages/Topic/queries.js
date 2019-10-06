@@ -228,9 +228,9 @@ export const UPDATE_TOPIC = gql`
   }
 `
 
-export const DELETE_TOPIC_FIELD_RELATIONSHIP = gql`
-  mutation deleteTopicFieldRelationship($id: uuid!) {
-    delete_topic_field(where: { id: { _eq: $id } }) {
+export const DELETE_ALL_TOPIC_FIELD_RELATIONSHIP = gql`
+  mutation deleteTopicFieldRelationship($topicId: uuid!) {
+    delete_topic_field(where: { _and: [{topic_id: {_eq: $topicId}}] }) {
       affected_rows
     }
   }
