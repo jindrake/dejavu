@@ -1,0 +1,4 @@
+- args:
+    sql: "\n          alter table \"public\".\"user_activity\" drop constraint \"user_activity_topic_session_id_fkey\"\n
+      \     "
+  type: run_sql

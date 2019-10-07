@@ -1,0 +1,8 @@
+- args:
+    name: user
+    table:
+      name: session
+      schema: public
+    using:
+      foreign_key_constraint_on: current_user
+  type: create_object_relationship

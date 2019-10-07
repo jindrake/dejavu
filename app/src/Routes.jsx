@@ -23,7 +23,7 @@ import ManageUsers from './pages/Topic/ManageUsers'
 import Edit from './pages/Topic/Edit'
 // import AddingUsers from './pages/Topic/AddingUsers'
 import ChallengerScreen from './pages/Topic/ChallengerScreen'
-import LandingPage from './components/LandingPage'
+// import LandingPage from './components/LandingPage'
 import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
 import compose from 'recompose/compose'
@@ -51,7 +51,7 @@ const FETCH_USER = gql`
 const Routes = ({ userEmail, firebase }) => {
   const [{ user }, globalDispatch] = useStateValue()
   const { data, loading: fetchLoading, error: fetchError } = useQuery(FETCH_USER, {
-    skip: !userEmail,
+    skip: !userEmail || user,
     variables: {
       email: userEmail
     }
@@ -79,10 +79,10 @@ const Routes = ({ userEmail, firebase }) => {
   }
   console.warn('Routes user is:', user)
 
-  console.log(window.screen)
-  if (window.screen.width >= 1024) {
-    return <LandingPage />
-  }
+  // console.log(window.screen)
+  // if (window.screen.width >= 1024) {
+  //   return <LandingPage />
+  // }
 
   // Do something with the granted permission.
   if (user) {

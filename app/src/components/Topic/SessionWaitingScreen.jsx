@@ -114,7 +114,7 @@ const SessionWaitingScreen = ({
               <div className='text-center' key={index}>
                 <div className='d-flex justify-content-between px-4'>
                   <div>
-                    {userAnswers ? (
+                    {userAnswers.length ? (
                       userAnswers.every((answer) => questionCorrectAnswers.includes(answer)) ? (
                         <FontAwesomeIcon icon={faCheck} className='text-success' />
                       ) : (

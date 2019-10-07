@@ -5,8 +5,8 @@ import withFirebase from '../../hocs/withFirebase'
 
 import { useStateValue } from '../../libs'
 import { Button } from 'reactstrap'
-import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS } from './queries'
-import { FullPageLoader, Icon, Placeholder } from '../../components'
+import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS, FETCH_USER_SESSIONS } from './queries'
+import { FullPageLoader, Icon, Placeholder, CardWrapper } from '../../components'
 import TopicPreview from './TopicPreview'
 import { useQuery } from '@apollo/react-hooks'
 
@@ -20,46 +20,30 @@ const Home = ({ history }) => {
   } = useQuery(FETCH_RECENT_TOPICS, {
     fetchPolicy: 'no-cache'
   })
-  const { data: hotTopicsData, loading: hotTopicsLoading, error: hotTopicsError } = useQuery(
+  const { loading: hotTopicsLoading, error: hotTopicsError } = useQuery(
     FETCH_HOT_TOPICS,
     {
       fetchPolicy: 'no-cache'
     }
   )
-
-  // useEffect(() => {
-  //   if (fetchHotTopics.topic) {
-  //     setHotTopics(fetchHotTopics.topic)
-  //   }
-  //   if (fetchRecentTopics.topic) {
-  //     setRecentTopics(fetchHotTopics.topic || [])
-  //   }
-  //   if (fetchHotTopics.error) {
-  //     console.error('error@home:1')
-  //     globalDispatch({
-  //       networkError: fetchHotTopics.error.message
-  //     })
-  //   }
-  //   if (fetchRecentTopics.error) {
-  //     console.error('error@home:2')
-  //     globalDispatch({
-  //       networkError: fetchRecentTopics.error.message
-  //     })
-  //   }
-  // }, [
-  //   fetchHotTopics.loading,
-  //   fetchRecentTopics.loading,
-  //   fetchHotTopics,
-  //   fetchRecentTopics,
-  //   globalDispatch
-  // ])
+  const {
+    data: userSessionsData,
+    loading: userSessionsLoading,
+    error: userSessionsError
+  } = useQuery(FETCH_USER_SESSIONS, {
+    skip: !user,
+    fetchPolicy: 'no-cache',
+    variables: {
+      userId: user && user.id
+    }
+  })
 
   if (window.localStorage.getItem('newUser')) {
     window.localStorage.removeItem('newUser')
     history.push('/welcome')
   }
 
-  const componentError = recentTopicsError || hotTopicsError
+  const componentError = recentTopicsError || hotTopicsError || userSessionsError
 
   if (componentError) {
     console.error('error@home')
@@ -68,18 +52,22 @@ const Home = ({ history }) => {
     })
   }
 
-  if (recentTopicsLoading || hotTopicsLoading) {
+  if (recentTopicsLoading || hotTopicsLoading || userSessionsLoading) {
     return <FullPageLoader />
   }
 
-  const hotTopics = hotTopicsData.topic
+  // const hotTopics = hotTopicsData.topic
   const recentTopics = recentTopicsData.topic
-  console.log(hotTopics, recentTopics)
+  const userSessions =
+    userSessionsData && userSessionsData.get_user_sessions
+      ? JSON.parse(userSessionsData.get_user_sessions)
+      : []
+  console.log('User sessions:', userSessions)
 
   return (
     <Wrapper>
       <GreetingWrapper>
-        Hello, {user ? user.first_name : 'Study Buddy'}!
+        Hello, {user ? <span className='text-capitalize'>{user.first_name}</span> : 'Study Buddy'}!
         <CreateButtonContainer>
           <CreateTopicButton id='button' onClick={() => history.push('/topic/create')}>
             <AddIcon name='add' />
@@ -88,6 +76,39 @@ const Home = ({ history }) => {
         </CreateButtonContainer>
       </GreetingWrapper>
       <SectionWrapper>
+        <Title>Your sessions</Title>
+        <TopicsContainer>
+          <Belt className='w-100'>
+            {userSessions.length > 0 ? (
+              userSessions.map((session, index) => (
+                <CardWrapper key={index} onClick={() => {
+                  history.push('/session/' + session.id)
+                }}>
+                  {session.topic.name}
+                  <br />
+                  status:
+                  {session.current_user ? (
+                    session.current_user_id === user.id ? (
+                      <span className='text-warning'>Your turn!</span>
+                    ) : (
+                      <span className='text-warning'>Waiting for {session.current_user.first_name}</span>
+                    )
+                  ) : (
+                    <div>
+                      <span className='text-success'>Finished</span>
+                      <br />
+                      Click to view results
+                    </div>
+                  )}
+                </CardWrapper>
+              ))
+            ) : (
+              <Placeholder text='Start a session by tackling a topic' />
+            )}
+          </Belt>
+        </TopicsContainer>
+      </SectionWrapper>
+      {/* <SectionWrapper>
         <Title>Hot Topics</Title>
         <TopicsContainer>
           <Belt className='w-100'>
@@ -100,7 +121,7 @@ const Home = ({ history }) => {
             )}
           </Belt>
         </TopicsContainer>
-      </SectionWrapper>
+      </SectionWrapper> */}
       <SectionWrapper>
         <Title>Recent Topics</Title>
         <TopicsContainer>
