@@ -1,7 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Input, ListGroup, ListGroupItem, Button } from 'reactstrap'
+<<<<<<< HEAD
 // import Icon from '../../components/Icon'
+=======
+import Icon from '../../components/Icon'
+>>>>>>> chore: add more details in ui
 
 const users = [
   { name: 'Jethro', score: 50 },
@@ -149,11 +153,19 @@ const UserWrapper = styled.div`
   vertical-align: center;
 `
 
+<<<<<<< HEAD
 // const Avatar = styled(Icon)`
 //   width: 200px;
 //   font-size: 300px;
 //   background-size: 100% 100%;
 // `
+=======
+const Avatar = styled(Icon)`
+  width: 200px;
+  font-size: 300px;
+  background-size: 100% 100%;
+`
+>>>>>>> chore: add more details in ui
 
 const Leaderboard = styled.div`
   font-weight: bold;
