@@ -4,12 +4,13 @@ import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
+import { useQuery } from '@apollo/react-hooks'
 
-import { Button, HeaderText, ContentBetween } from '../../components'
+import { Button, HeaderText, ContentBetween, FullPageLoader, ContentCenter } from '../../components'
 import { Paper } from '../../components/Topic'
-import { Card, CardTitle } from 'reactstrap'
+import { useStateValue } from '../../libs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faMinus } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTimes, faMinus } from '@fortawesome/free-solid-svg-icons'
 
 const ANSWER_QUESTION = gql`
   mutation answerQuestion($answers: [String!]!, $questionId: ID!, $userId: ID!, $sessionId: ID!) {
@@ -22,20 +23,11 @@ const ANSWER_QUESTION = gql`
   }
 `
 
-// const PARTIAL_RESULTS = gql`
-//   query fetchUserAnswers($sessionId: uuid!) {
-//     session(where: { id: { _eq: $sessionId } }) {
-//       session_questions {
-//         question {
-//           answers {
-//             id
-//             is_correct
-//           }
-//         }
-//       }
-//     }
-//   }
-// `
+const FETCH_SESSION_ANSWERS = gql`
+  query fetchSessionAnswers($sessionId: ID!) {
+    get_session_result(sessionId: $sessionId)
+  }
+`
 
 const SessionWaitingScreen = ({
   // },
@@ -44,35 +36,111 @@ const SessionWaitingScreen = ({
   },
   history
 }) => {
+  const [{ user }, globalDispatch] = useStateValue()
+  const { data, loading, error } = useQuery(FETCH_SESSION_ANSWERS, {
+    skip: !sessionId,
+    variables: {
+      sessionId
+    }
+  })
+  if (loading) {
+    return <FullPageLoader />
+  }
+  if (error) {
+    console.error('error@sessionwaitingscreen1')
+    globalDispatch({
+      networkError: error.message
+    })
+    return null
+  }
+
+  const partialResult = JSON.parse(data.get_session_result)
+  const otherUser = partialResult.session_users.filter(
+    (sessionUser) => sessionUser.id !== user.id
+  )[0]
+
+  console.log('Data:', partialResult)
   return (
     <Wrapper>
       <Paper>
-        <QuestionContainer>
+        <ContentCenter className='mb-3 mt-3'>
           <HeaderText>
             {/* <InputGroup> */}
-            Session In-progress
-            <hr />
+            Waiting for <span className='text-capitalize'>{otherUser.first_name}</span>
           </HeaderText>
-        </QuestionContainer>
-        <ResultDiv>
-          <Title>Partial Results</Title>
-          <UsersDiv>
-            <UserAnswers>
-              User 1
-              <div>
-                Q1 &nbsp;
-                <FontAwesomeIcon icon={faMinus} />
+        </ContentCenter>
+        <div>
+          <div className='d-flex justify-content-between px-4'>
+            {/* {partialResult.session_users.map((user, index) => {
+              return (
+                <div key={index} className='text-capitalize h5'>
+                  {user.first_name}
+                </div>
+              )
+            })} */}
+            <div className='text-capitalize'>{user.first_name}</div>
+            <div className='text-capitalize'>{otherUser.first_name}</div>
+          </div>
+          <hr />
+          <ContentCenter>Turn Results</ContentCenter>
+          {partialResult.results.map((questionData, index) => {
+            // const userActivities = getObjectValue(questionData, '')
+            const questionCorrectAnswers = questionData.question.answers
+              .filter((answer) => answer.is_correct)
+              .map((answerObj) => answerObj.answer)
+            const userAnswerObject = questionData.userAnswers
+              .filter((answer) => answer.user_id === user.id)
+              .pop()
+            const otherUserAnswerObject = questionData.userAnswers
+              .filter((answer) => answer.user_id !== user.id)
+              .pop()
+            console.log('ans object:', userAnswerObject)
+            const userAnswers =
+              userAnswerObject && userAnswerObject.answer ? JSON.parse(userAnswerObject.answer) : []
+            const otherUserAnswers =
+              otherUserAnswerObject && otherUserAnswerObject.answer
+                ? JSON.parse(otherUserAnswerObject.answer)
+                : []
+            console.log('User answers:', userAnswers)
+            console.log('OtherUser answers:', otherUserAnswers)
+            console.log('questionCorrectAnswers:', questionCorrectAnswers)
+            // const isUserAnswerCorrect =
+            //   userAnswers.length ?
+            //   userAnswers.every((answer) => questionCorrectAnswers.includes(answer)) : null
+            // const isOtherUserAnswerCorrect =
+            //   otherUserAnswers.length ?
+            //   otherUserAnswers.every((answer) => questionCorrectAnswers.includes(answer)) : null
+            return (
+              <div className='text-center' key={index}>
+                <div className='d-flex justify-content-between px-4'>
+                  <div>
+                    {userAnswers ? (
+                      userAnswers.every((answer) => questionCorrectAnswers.includes(answer)) ? (
+                        <FontAwesomeIcon icon={faCheck} className='text-success' />
+                      ) : (
+                        <FontAwesomeIcon icon={faTimes} className='text-danger' />
+                      )
+                    ) : (
+                      <FontAwesomeIcon icon={faMinus} />
+                    )}
+                  </div>
+                  <div />
+                  <div>
+                    {otherUserAnswers.length ? (
+                      otherUserAnswers.every((answer) => questionCorrectAnswers.includes(answer)) ? (
+                        <FontAwesomeIcon icon={faCheck} className='text-success' />
+                      ) : (
+                        <FontAwesomeIcon icon={faTimes} className='text-danger' />
+                      )
+                    ) : (
+                      <FontAwesomeIcon icon={faMinus} />
+                    )}
+                  </div>
+                </div>
               </div>
-            </UserAnswers>
-            <UserAnswers>
-              User 2
-              <div>
-                Q1 &nbsp;
-                <FontAwesomeIcon icon={faMinus} />
-              </div>
-            </UserAnswers>
-          </UsersDiv>
-        </ResultDiv>
+            )
+          })}
+        </div>
       </Paper>
       <ContentBetween>
         <Button
@@ -94,42 +162,11 @@ const SessionWaitingScreen = ({
   )
 }
 
-const QuestionContainer = styled.div`
-  height: 40%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-`
-
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   height: 100%;
-`
-
-const ResultDiv = styled(Card)`
-  background: none;
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  padding: 10px;
-`
-
-const Title = styled(CardTitle)`
-  color: #1a237e;
-  font-weight: 700;
-`
-
-const UsersDiv = styled.div`
-  display: flex;
-  width: 100%;
-`
-
-const UserAnswers = styled.div`
-  width: 50%;
-  color: #1a237e;
 `
 
 export default compose(
