@@ -12,6 +12,9 @@ const TYPE_STYLE = {
   `,
   success: `
     background: linear-gradient(266deg, rgba(90,199,133,1) 0%, rgba(24,128,24,0.8194842406876791) 100%, rgba(252,176,69,1) 100%);
+  `,
+  action: `
+    background-color: #E0FF4F;
   `
 }
 
@@ -33,4 +36,5 @@ const Wrapper = styled.div`
   ${({ type }) => TYPE_STYLE[type]};
   /* justify-content: ${({ center }) => center ? 'center' : 'start'}; */
   justify-content: ${props => props.center ? 'center' : ''};
+  cursor: pointer;
 `

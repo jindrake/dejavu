@@ -22,13 +22,15 @@ import NotFound from './pages/NotFound'
 import ManageUsers from './pages/Topic/ManageUsers'
 import Edit from './pages/Topic/Edit'
 // import AddingUsers from './pages/Topic/AddingUsers'
-import Settings from './pages/Settings'
 import ChallengerScreen from './pages/Topic/ChallengerScreen'
 // import LandingPage from './components/LandingPage'
 import { FullPageLoader } from '../src/components'
 import { useQuery } from '@apollo/react-hooks'
 import compose from 'recompose/compose'
 import ManageTopic from './pages/Topic/ManageTopic'
+import ManageAdmins from './pages/Topic/ManageAdmins'
+
+import { registerSubscriber } from './SubscribeWebPush'
 
 const FETCH_USER = gql`
   query fetchUser($email: String!) {
@@ -49,7 +51,7 @@ const FETCH_USER = gql`
 const Routes = ({ userEmail, firebase }) => {
   const [{ user }, globalDispatch] = useStateValue()
   const { data, loading: fetchLoading, error: fetchError } = useQuery(FETCH_USER, {
-    skip: !userEmail,
+    skip: !userEmail || user,
     variables: {
       email: userEmail
     }
@@ -77,10 +79,30 @@ const Routes = ({ userEmail, firebase }) => {
   }
   console.warn('Routes user is:', user)
 
-  console.log(window.screen)
+  // console.log(window.screen)
   // if (window.screen.width >= 1024) {
   //   return <LandingPage />
   // }
+
+  // Do something with the granted permission.
+  if (user) {
+    // eslint-disable-next-line
+    Notification.requestPermission().then(function (result) {
+      console.log('RESULT:', result)
+      if (result === 'denied') {
+        console.log('Permission wasn\'t granted. Allow a retry.')
+        return
+      }
+      if (result === 'default') {
+        console.log('The permission request was dismissed.')
+      }
+    })
+
+    console.log('USER:', user)
+    if ('serviceWorker' in navigator) {
+      registerSubscriber(user.id).catch(err => console.error(err))
+    }
+  }
 
   return (
     <>
@@ -114,20 +136,12 @@ const Routes = ({ userEmail, firebase }) => {
             return <ManageUsers {...routeProps} user={user} />
           }}
         />
-        {/* <Route
-          exact
-          path='/manage-users/:id'
-          render={(routeProps) => {
-            document.title = 'Adding/Remove Users'
-            return <AddingUsers {...routeProps} user={user} />
-          }}
-        /> */}
         <Route
           exact
-          path='/settings'
+          path='/topic/:id/admins'
           render={(routeProps) => {
-            document.title = 'Settings'
-            return <Settings {...routeProps} user={user} />
+            document.title = 'Manage Admins'
+            return <ManageAdmins {...routeProps} user={user} />
           }}
         />
         <Route

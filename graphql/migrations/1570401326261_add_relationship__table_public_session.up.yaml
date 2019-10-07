@@ -1,0 +1,12 @@
+- args:
+    name: user_activities
+    table:
+      name: session
+      schema: public
+    using:
+      foreign_key_constraint_on:
+        column: topic_session_id
+        table:
+          name: user_activity
+          schema: public
+  type: create_array_relationship

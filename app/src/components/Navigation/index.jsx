@@ -8,7 +8,6 @@ import {
   faSearch,
   faUserCircle,
   faHome,
-  faCogs,
   faSignOutAlt,
   faSignInAlt,
   faUserPlus,
@@ -27,7 +26,6 @@ const Navigation = ({ user, location, history }) => {
     { icon: faEdit, route: '/topic/create', name: 'Create' },
     { icon: faUserCircle, route: '/profile', name: 'Profile' },
     { icon: faHome, route: '/', name: 'Home' },
-    { icon: faCogs, route: '/settings', name: 'Settings' },
     { icon: faSignOutAlt, route: '/exit', name: 'Sign Out' },
     { icon: faBullhorn, route: '/feedback', name: 'Feedback' }
   ]
@@ -37,7 +35,6 @@ const Navigation = ({ user, location, history }) => {
     { icon: faEdit, route: '/topic/create', name: 'Create' },
     { icon: faUserCircle, route: '/profile', name: 'Profile' },
     { icon: faHome, route: '/', name: 'Home' },
-    { icon: faCogs, route: '/settings', name: 'Settings' },
     { icon: faSignInAlt, route: '/sign-in', name: 'Sign In' },
     { icon: faUserPlus, route: '/sign-up', name: 'Sign Up' }
   ]

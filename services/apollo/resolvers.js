@@ -18,9 +18,9 @@ module.exports = {
     },
     next_session_question: async (parent, args, context) => {
       try {
-        if (!context.user) {
-          throw new ApolloError('Authentication error')
-        }
+        // if (!context.user) {
+        //   throw new ApolloError('Authentication error')
+        // }
         const { sessionId, userId } = args
         // get session
         const {
@@ -54,13 +54,18 @@ module.exports = {
         )
         // fetch user_activities of session
         const {
-          data: {
-            user_activity: sessionActivities
-          }
+          data: { user_activity: sessionActivities }
         } = await graphql.query(
           gql`
             query fetchUserActivities($sessionId: uuid) {
-              user_activity(where: {_and: [{topic_session_id: {_eq: $sessionId}}, {activity_type: {_eq: "answer"}}]}) {
+              user_activity(
+                where: {
+                  _and: [
+                    { topic_session_id: { _eq: $sessionId } }
+                    { activity_type: { _eq: "answer" } }
+                  ]
+                }
+              ) {
                 id
                 answer
                 question_id
@@ -96,7 +101,9 @@ module.exports = {
         )
         if (!sessionUser) throw new ApolloError('Authorization error')
         const sessionQuestions = getObjectValue(session, 'session_questions') || []
-        const userActivities = sessionActivities.filter(activity => activity.user_id === context.user.id)
+        const userActivities = sessionActivities.filter(
+          (activity) => activity.user_id === userId
+        )
         const userQuestionIds = userActivities.map((activity) => activity.question_id)
         // see next question that's unanswered
         let nextQuestion = null
@@ -114,13 +121,15 @@ module.exports = {
         if (session.type === 'duo') {
           // get opponents activities
           const opponentsQuestionIds = sessionActivities
-            .filter((activity) => activity.user_id !== context.user.id)
+            .filter((activity) => activity.user_id !== userId)
             .map((activity) => activity.question_id)
 
           // check if opponent is finished with the session
-          const isOpponentFinished = sessionQuestions.every(question => opponentsQuestionIds.includes(question.question_id))
+          const isOpponentFinished = sessionQuestions.every((question) =>
+            opponentsQuestionIds.includes(question.question_id)
+          )
 
-          if (session.creator_id === context.user.id) {
+          if (session.creator_id === userId) {
             if (isOpponentFinished) {
               throw new Error('Integrity Error: opponent finished before the creator')
             }
@@ -140,7 +149,7 @@ module.exports = {
                   userQuestionIds.length % 2 === 0) ||
                 (userQuestionIds.length === opponentsQuestionIds.length &&
                   opponentsQuestionIds.length % 2 === 0) ||
-                  userQuestionIds.length > opponentsQuestionIds.length
+                userQuestionIds.length > opponentsQuestionIds.length
               ) {
                 console.log('Session challenger and is waiting!')
                 return 'waiting'
@@ -201,13 +210,18 @@ module.exports = {
         )
         // fetch session activities
         const {
-          data: {
-            user_activity: sessionActivities
-          }
+          data: { user_activity: sessionActivities }
         } = await graphql.query(
           gql`
             query fetchUserActivities($sessionId: uuid) {
-              user_activity(where: {_and: [{topic_session_id: {_eq: $sessionId}}, {activity_type: {_eq: "answer"}}]}) {
+              user_activity(
+                where: {
+                  _and: [
+                    { topic_session_id: { _eq: $sessionId } }
+                    { activity_type: { _eq: "answer" } }
+                  ]
+                }
+              ) {
                 id
                 answer
                 question_id
@@ -225,10 +239,12 @@ module.exports = {
           }
         )
         const sessionQuestions = getObjectValue(session, 'session_questions') || []
-        const results = sessionQuestions.map(questionData => {
+        const results = sessionQuestions.map((questionData) => {
           return {
             ...questionData,
-            userAnswers: sessionActivities.filter(activity => activity.question_id === questionData.question_id)
+            userAnswers: sessionActivities.filter(
+              (activity) => activity.question_id === questionData.question_id
+            )
           }
         })
         // restructure data so that the FE can loop through an array of questions
@@ -236,7 +252,7 @@ module.exports = {
         // stringify and return
         console.log('Results:', results)
         return JSON.stringify({
-          session_users: session.session_users.map(data => data.user),
+          session_users: session.session_users.map((data) => data.user),
           results
         })
       } catch (error) {
@@ -309,6 +325,51 @@ module.exports = {
         console.log(error.message)
         sentry.captureException(error)
         sentry.captureMessage('get_topic_suggested_questions:', error.message)
+        throw new ApolloError(error)
+      }
+    },
+    get_user_sessions: async (parent, args, context) => {
+      try {
+        if (!context.user) {
+          throw new ApolloError('Authentication error')
+        }
+        const { userId } = args
+        // get sessions
+        const {
+          data: { session: sessions }
+        } = await graphql.query(
+          gql`
+            query getSession($userId: uuid!) {
+              session(
+                where: { session_users: { user_id: { _eq: $userId } } }
+                order_by: { created_at: desc }
+              ) {
+                id
+                type
+                creator_id
+                current_user_id
+                current_user {
+                  id
+                  first_name
+                }
+                topic {
+                  id
+                  name
+                  description
+                }
+              }
+            }
+          `,
+          {
+            userId
+          }
+        )
+        console.log('Sessions:', sessions)
+        return JSON.stringify(sessions)
+      } catch (error) {
+        console.log(error.message)
+        sentry.captureException(error)
+        sentry.captureMessage('get_user_sessions:', error.message)
         throw new ApolloError(error)
       }
     }
@@ -521,7 +582,8 @@ module.exports = {
                 id: sessionId,
                 topic_id: topicId,
                 type,
-                creator_id: userId
+                creator_id: userId,
+                current_user_id: userId
               }
             ]
           }
@@ -594,33 +656,50 @@ module.exports = {
         if (!context.user) {
           throw new ApolloError('Authentication error')
         }
-        // check if duplicate activity_type & topic_session_id & user_id
-        // const {
-        //   data: { user_activity }
-        // } = await graphql.query(
-        //   gql`
-        //     query fetchUserActivity($sessionId: uuid, $userId: uuid) {
-        //       user_activity(
-        //         where: {
-        //           _and: [
-        //             { activity_type: { _eq: "answer" } }
-        //             { topic_session_id: { _eq: $sessionId } }
-        //             { user_id: { _eq: $userId } }
-        //           ]
-        //         }
-        //       ) {
-        //         id
-        //       }
-        //     }
-        //   `,
-        //   {
-        //     sessionId,
-        //     userId: context.user.id
-        //   }
-        // )
-        // if (user_activity.length) {
-        //   throw new Error('Duplicate activity')
-        // }
+        // fetch next question
+        const { data: nextQuestionData } = await graphql.query(
+          gql`
+            query fetchNextSessionQuestion($userId: ID!, $sessionId: ID!) {
+              next_session_question(userId: $userId, sessionId: $sessionId)
+            }
+          `,
+          {
+            userId,
+            sessionId
+          }
+        )
+        console.log('Next question data:', nextQuestionData)
+        if (nextQuestionData.next_session_question === 'waiting') {
+          throw new Error('you are still waiting')
+        }
+        if (!nextQuestionData.next_session_question) {
+          throw new Error('session has finished')
+        }
+
+        // fetch session
+        const {
+          data: {
+            session: [session]
+          }
+        } = await graphql.query(
+          gql`
+            query getSession($sessionId: uuid!) {
+              session(where: { id: { _eq: $sessionId } }) {
+                id
+                type
+                creator_id
+                current_user_id
+                session_users {
+                  user_id
+                }
+              }
+            }
+          `,
+          {
+            sessionId
+          }
+        )
+
         await graphql.mutate(
           gql`
             mutation insertUserActivity($userActivity: [user_activity_insert_input!]!) {
@@ -640,6 +719,98 @@ module.exports = {
             }
           }
         )
+
+        // fetch next question again
+        const { data: nextQuestionData2 } = await graphql.query(
+          gql`
+            query fetchNextSessionQuestion($userId: ID!, $sessionId: ID!) {
+              next_session_question(userId: $userId, sessionId: $sessionId)
+            }
+          `,
+          {
+            userId,
+            sessionId
+          }
+        )
+
+        if (nextQuestionData2.next_session_question === 'waiting') {
+          // set session current user id to opponent
+          await graphql.query(
+            gql`
+              mutation updateSession($userId: uuid, $sessionId: uuid) {
+                update_session(
+                  _set: { current_user_id: $userId }
+                  where: { id: { _eq: $sessionId } }
+                ) {
+                  affected_rows
+                }
+              }
+            `,
+            {
+              sessionId,
+              userId: session.session_users.filter((user) => user.user_id !== context.user.id)[0]
+                .user_id
+            }
+          )
+        } else if (!nextQuestionData2.next_session_question) {
+          if (session.type === 'duo') {
+            if (session.creator_id !== context.user.id) {
+              await graphql.query(
+                gql`
+                  mutation updateSession($userId: uuid, $sessionId: uuid) {
+                    update_session(
+                      _set: { current_user_id: $userId }
+                      where: { id: { _eq: $sessionId } }
+                    ) {
+                      affected_rows
+                    }
+                  }
+                `,
+                {
+                  sessionId,
+                  userId: null
+                }
+              )
+            } else {
+              await graphql.query(
+                gql`
+                  mutation updateSession($userId: uuid, $sessionId: uuid) {
+                    update_session(
+                      _set: { current_user_id: $userId }
+                      where: { id: { _eq: $sessionId } }
+                    ) {
+                      affected_rows
+                    }
+                  }
+                `,
+                {
+                  sessionId,
+                  userId: session.session_users.filter(
+                    (user) => user.user_id !== context.user.id
+                  )[0].user_id
+                }
+              )
+            }
+          } else {
+            await graphql.query(
+              gql`
+                mutation updateSession($userId: uuid, $sessionId: uuid) {
+                  update_session(
+                    _set: { current_user_id: $userId }
+                    where: { id: { _eq: $sessionId } }
+                  ) {
+                    affected_rows
+                  }
+                }
+              `,
+              {
+                sessionId,
+                userId: null
+              }
+            )
+          }
+        }
+
         return 'success'
       } catch (error) {
         console.error(error)
@@ -699,7 +870,7 @@ module.exports = {
           }
         )
         if (!data.user || !data.user.length) {
-          throw new Error('User not found by email')
+          throw new Error(`Sorry didn't find user with email ${email}`)
         }
         // insert to admin_topic table
         await graphql.mutate(

@@ -73,14 +73,23 @@ export const ContentAround = styled.div`
 
 export const Notification = styled.div`
   position: fixed;
-  text-align: center;
-  width: 100%;
-  padding: 10px;
-  margin-top: 20px;
+  width: 97%;
   display: flex;
+  text-align: center;
+  padding-left: 2vh;
+  padding-right: 2vh;
+  flex-direction: column;
   justify-content: center;
-  transition: display 2s;
+  font-size: 15px;
+  left: 1vh;
+  right: 2vh;
   z-index: 2;
+  background: white;
+  color:  #9c27b0;
+  top: 1vh;
+  border-radius: 2vh;
+  height: 8%;
+  box-shadow: 0 0 5px black;
 `
 
 export const ContentBetween = styled.div`
@@ -164,12 +173,12 @@ export const Stat = styled.div`
 
 export const Icon = ({ name }) => <i className={`material-icons`}>{name}</i>
 
-export const Placeholder = () => (
+export const Placeholder = ({ text = 'No topics yet' }) => (
   <PlaceholderWrapper>
     <ContentCenter>
       <PlaceholderIcon icon={faFile} />
     </ContentCenter>
-    No topics yet
+    {text}
   </PlaceholderWrapper>
 )
 
@@ -193,4 +202,25 @@ export const Close = styled.div`
   opacity: 0.5;
   right: 0;
   top: 0;
+`
+
+export const CardWrapper = styled.div`
+  background: linear-gradient(#e8eaf6, #c5cae9);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  color: #1a237e;
+  width: 200px;
+  padding: 20px;
+  margin-left: 20px;
+  &:first-child {
+    margin-left: 40px;
+  }
+  &:last-child {
+    margin-right: 40px;
+  }
+  border-radius: 6px;
+  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
+  animation-delay: ${({ n }) => n * 100 + 'ms'};
 `

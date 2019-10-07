@@ -14,6 +14,9 @@ const typeDefs = `
     get_topic_suggested_questions(
       topicId: ID,
       userId: ID
+    ): String,
+    get_user_sessions(
+      userId: ID!
     ): String
   }
   type Mutation {

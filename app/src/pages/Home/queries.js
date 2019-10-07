@@ -11,11 +11,21 @@ export const FETCH_HOT_TOPICS = gql`
       name
       description
       created_at
+      target_fields {
+        id
+        field
+      }
       ratings {
         id
         type
       }
     }
+  }
+`
+
+export const FETCH_USER_SESSIONS = gql`
+  query getUserSessions($userId: ID!){
+    get_user_sessions (userId: $userId)
   }
 `
 
@@ -26,6 +36,10 @@ export const FETCH_RECENT_TOPICS = gql`
       name
       description
       created_at
+      target_fields {
+        id
+        field
+      }
       ratings {
         id
         type

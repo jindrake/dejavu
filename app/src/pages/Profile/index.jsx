@@ -186,7 +186,7 @@ const Profile = ({ user, history }) => {
             <AvatarContainer style={{ backgroundImage: `${currentUser.avatar}` }} />
           )}
         </ProfileInfo>
-        <CenteredText className='h2'>
+        <CenteredText className='h2 text-capitalize'>
           {currentUser.first_name} {currentUser.last_name}
         </CenteredText>
         <ContentCenter className='h6'>{currentUser.email}</ContentCenter>
@@ -201,7 +201,7 @@ const Profile = ({ user, history }) => {
               <div>
                 {userTopics.map((topic, index) => {
                   return (
-                    <DejavuCard className='justify-content-between flex-column' key={index}>
+                    <DejavuCard className='justify-content-between flex-column mb-2' key={index}>
                       <div>
                         <div className='font-weight-bold'>{topic.name}</div>
                         <div>
@@ -235,7 +235,7 @@ const Profile = ({ user, history }) => {
                       </div>
                       <div className='w-100 d-flex justify-content-end'>
                         <div className='text-right w-100 d-flex justify-content-end'>
-                          <Button text='Manage' onClick={() => {
+                          <Button type='action' text='Manage' onClick={() => {
                             history.push(`/topic/${topic.id}/manage`)
                           }} />
                         </div>
@@ -285,7 +285,7 @@ const Profile = ({ user, history }) => {
                     break
                 }
                 return (
-                  <DejavuCard key={index}>
+                  <DejavuCard key={index} className='mb-1'>
                     <ActivityIcon>
                       <Icon name={icon} />
                     </ActivityIcon>
