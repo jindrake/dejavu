@@ -11,93 +11,16 @@ import {
   INSERT_USER_ACTIVITY,
   FETCH_ACTIVITY_LOGS
 } from './queries'
-import { FullPageLoader, Placeholder, Icon, ContentCenter, Button } from '../../components'
+import { FullPageLoader, Placeholder, ContentCenter, Button } from '../../components'
 import { useStateValue, getObjectValue } from '../../libs'
-
-const AvatarContainer = styled.div`
-  border-radius: 6vh;
-  width: 12vh;
-  height: 12vh;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: #c5cae9;
-  font-size: 7vh;
-  color: #1a237e;
-`
-
-const ProfileInfo = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  font-size: 4em;
-  cursor: pointer;
-`
-
-const CenteredText = styled.div`
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  padding: 5px;
-  font-weight: 500;
-`
-
-const Container = styled.div`
-  height: 100%;
-  width: 100%;
-  margin: auto;
-  padding-top: 5vh;
-`
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  height: 30%;
-`
-
-const SectionTitle = styled.div`
-  color: #c5cae9;
-  @media (min-width: 800px) {
-    font-size: 20px;
-  }
-  @media (max-width: 1024px) {
-    font-size: 4vw;
-  }
-  margin-bottom: 4px;
-`
-
-const Author = styled.div`
-  color: #1a237e;
-  font-size: 2vh;
-`
-
-const TopicsContainer = styled.div``
-
-const DejavuCard = styled.div`
-  background: linear-gradient(#e8eaf6, #c5cae9);
-  /* justify-content: center;
-  padding: 20px;
-  width: 92%;
-  margin-bottom: 10px;
-  &:last-child {
-    margin-bottom: 60px;
-  } */
-  border-radius: 6px;
-  /* box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
-  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-  animation-delay: ${({ n }) => n * 100 + 'ms'}; */
-  display: flex;
-  justify-content: flex-start;
-  padding: 1vh;
-  color: #1a237e;
-`
-
-const ActivityIcon = styled.div`
-  font-size: 1.25em;
-  color: #1a237e;
-  margin: 1vh;
-`
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faPencilAlt,
+  faEye,
+  faTasks,
+  faThumbsUp,
+  faThumbsDown
+} from '@fortawesome/free-solid-svg-icons'
 
 const FETCH_USER = gql`
   query fetchUser($userId: uuid!) {
@@ -170,9 +93,9 @@ const Profile = ({ user, history }) => {
   }
   const userTopics = getObjectValue(userTopicsData, 'topic') || []
   const activityLogs = getObjectValue(activityLogsData, 'user_activity') || []
-  const uniqueLogs = Array.from(new Set(activityLogs.map((a) => a.topic_id))).map((id) => {
-    return activityLogs.find((a) => a.topic_id === id)
-  })
+  // const uniqueLogs = Array.from(new Set(activityLogs.map((a) => a.topic_id))).map((id) => {
+  //   return activityLogs.find((a) => a.topic_id === id)
+  // })
 
   console.log('mytopics', userTopics)
 
@@ -189,6 +112,7 @@ const Profile = ({ user, history }) => {
         <CenteredText className='h2 text-capitalize'>
           {currentUser.first_name} {currentUser.last_name}
         </CenteredText>
+        <hr />
         <ContentCenter className='h6'>{currentUser.email}</ContentCenter>
       </div>
       <div className='mt-5'>
@@ -209,35 +133,34 @@ const Profile = ({ user, history }) => {
                         </div>
                         <div className='small w-100 d-flex justify-content-between'>
                           <div>
-                            {getObjectValue(topic, 'user_activities_aggregate.aggregate.count') || '0'} takers
+                            {getObjectValue(topic, 'user_activities_aggregate.aggregate.count') ||
+                              '0'}{' '}
+                            takers
                           </div>
                           <span className='d-flex text-center justify-content-evenly'>
                             <Author>
-                              <Icon name='thumb_down_alt' />{' '}
+                              <FontAwesomeIcon icon={faThumbsDown} />{' '}
                               {topic.ratings.length > 0
                                 ? topic.ratings.filter((r) => r.type === 'downvote').length
                                 : 0}
-                            </Author>
-                            <div
-                              style={{
-                                color: '#1a237e',
-                                fontSize: '2vh',
-                                marginLeft: '10px'
-                              }}
-                            >
-                              <Icon name='thumb_up_alt' />{' '}
+                              &nbsp;&nbsp;
+                              <FontAwesomeIcon icon={faThumbsUp} />{' '}
                               {topic.ratings.length > 0
                                 ? topic.ratings.filter((r) => r.type === 'upvote').length
                                 : 0}
-                            </div>
+                            </Author>
                           </span>
                         </div>
                       </div>
                       <div className='w-100 d-flex justify-content-end'>
                         <div className='text-right w-100 d-flex justify-content-end'>
-                          <Button type='action' text='Manage' onClick={() => {
-                            history.push(`/topic/${topic.id}/manage`)
-                          }} />
+                          <Button
+                            type='action'
+                            text='Manage'
+                            onClick={() => {
+                              history.push(`/topic/${topic.id}/manage`)
+                            }}
+                          />
                         </div>
                       </div>
                     </DejavuCard>
@@ -250,34 +173,34 @@ const Profile = ({ user, history }) => {
         <br />
         <SectionTitle>Activity Logs</SectionTitle>
         <div style={{ height: '40vh', overflowY: 'scroll' }}>
-          {uniqueLogs.length === 0 ? (
+          {activityLogs.length === 0 ? (
             <div className='mt-5'>
               <ContentCenter>No Activity Yet</ContentCenter>
             </div>
           ) : (
             <div>
-              {uniqueLogs.map((log, index) => {
+              {activityLogs.map((log, index) => {
                 const date = new Date(log.created_at)
                 let icon = ''
                 let activity = ''
                 switch (log.activity_type) {
                   case 'take':
-                    icon = 'edit'
+                    icon = faPencilAlt
                     activity = 'taken'
                     break
 
                   case 'answer':
-                    icon = 'assignment_turned_in'
+                    icon = faTasks
                     activity = 'answered'
                     break
 
                   case 'view':
-                    icon = 'visibility'
+                    icon = faEye
                     activity = 'viewed'
                     break
 
                   case 'rate':
-                    icon = 'import_export'
+                    icon = faThumbsUp
                     activity = 'rated'
                     break
 
@@ -285,19 +208,16 @@ const Profile = ({ user, history }) => {
                     break
                 }
                 return (
-                  <DejavuCard key={index} className='mb-1'>
-                    <ActivityIcon>
-                      <Icon name={icon} />
-                    </ActivityIcon>
-                    <div className='mx-5'>
-                      <Author>
-                        You {activity} the topic{' '}
-                        <strong>
-                          {log.topic === null ? log.question.topics[0].topic.name : log.topic.name}
-                        </strong>
-                      </Author>
-                      <Author> on {date.toISOString().split('T')[0]}</Author>
-                    </div>
+                  <DejavuCard key={index}>
+                    <ActivityIcon icon={icon} />
+                    <Author>
+                      You {activity} the topic{' '}
+                      <strong>
+                        {log.topic === null ? log.question.topics[0].topic.name : log.topic.name}
+                      </strong>
+                      <br />
+                      on {date.toISOString().split('T')[0]}
+                    </Author>
                   </DejavuCard>
                 )
               })}
@@ -308,6 +228,99 @@ const Profile = ({ user, history }) => {
     </Container>
   )
 }
+
+const AvatarContainer = styled.div`
+  border-radius: 6vh;
+  width: 12vh;
+  height: 12vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #d0f0c0;
+  font-size: 7vh;
+  color: #015249;
+  font-family: 'Open Sans';
+  font-weight: 700;
+`
+
+const ProfileInfo = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  font-size: 3vh;
+  cursor: pointer;
+  color: #015249;
+`
+
+const CenteredText = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 5px;
+  font-weight: 500;
+  color: #015249;
+`
+
+const Container = styled.div`
+  height: 100%;
+  width: 100%;
+  margin: auto;
+  padding-top: 5vh;
+`
+
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  height: 30%;
+`
+
+const SectionTitle = styled.div`
+  color: #dae4ee;
+  @media (min-width: 800px) {
+    font-size: 20px;
+  }
+  @media (max-width: 1024px) {
+    font-size: 2.25vh;
+  }
+  margin-bottom: 4px;
+  font-family: 'Open Sans';
+  font-weight: 700;
+`
+
+const Author = styled.div`
+  color: #015249;
+  font-size: 2vh;
+`
+
+const TopicsContainer = styled.div``
+
+const DejavuCard = styled.div`
+  background: linear-gradient(0deg, #95d6dc, #addee9, #c5e6f3, #dbeffa, #f0f8ff);
+  margin-bottom: 10px;
+  &:last-child {
+    margin-bottom: 60px;
+  }
+  /* justify-content: center;
+  padding: 20px;
+  width: 92%;
+   */
+  border-radius: 6px;
+  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
+  animation-delay: ${({ n }) => n * 100 + 'ms'};
+  display: flex;
+  justify-content: flex-start;
+  padding: 1vh;
+  color: #015249;
+`
+
+const ActivityIcon = styled(FontAwesomeIcon)`
+  font-size: 3.5vh;
+  color: #015249;
+  margin: 1.5vh;
+  margin-right: 2.5vh;
+`
 
 export default compose(
   withRouter,

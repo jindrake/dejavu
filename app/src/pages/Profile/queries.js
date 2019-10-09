@@ -67,7 +67,7 @@ export const FETCH_ACTIVITY_LOGS = gql`
   query fetchUserActivity($userId: uuid!) {
     user_activity(
       order_by: { created_at: desc }
-      where: { user_id: { _eq: $userId } }
+      where: { user_id: { _eq: $userId }, activity_type: { _neq: "answer"} }
       limit: 10
     ) {
       id

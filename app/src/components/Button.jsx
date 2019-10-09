@@ -14,7 +14,7 @@ const TYPE_STYLE = {
     background: linear-gradient(266deg, rgba(90,199,133,1) 0%, rgba(24,128,24,0.8194842406876791) 100%, rgba(252,176,69,1) 100%);
   `,
   action: `
-    background-color: #E0FF4F;
+  background: linear-gradient(45deg, #003152, #00395a, #004062, #004869, #005071, #005777, #005f7d, #006682, #006e87, #00778b, #007f8e, #008790);
   `
 }
 
