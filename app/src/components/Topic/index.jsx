@@ -65,9 +65,10 @@ export const CurrentQuestionsSection = styled.div`
 
 export const QuestionCard = styled.div`
   background-color: white;
-  padding: 5px;
+  padding: 10px;
   margin: 5px;
   border-radius: 5px;
+  color: #1a237e;
 `
 
 export const CenterText = styled.div`
@@ -99,6 +100,7 @@ export const UnderlineInput = styled(Input)`
   -webkit-box-shadow: none;
   box-shadow: none;
   border-radius: 0;
+  font-size: 14px;
   color: white;
   &:focus {
     background-color: transparent;
@@ -112,7 +114,8 @@ export const UnderlineInput = styled(Input)`
 `
 
 export const RemoveButton = styled(Button)`
-  color: red;
+  /* color: red; */
+  
 `
 
 export const ChoiceItem = styled(FormGroup)`
@@ -122,4 +125,5 @@ export const ChoiceItem = styled(FormGroup)`
 export const Hint = styled.span`
   color: #ef5350;
   margin-left: 6px;
+  font-size: 14px;
 `

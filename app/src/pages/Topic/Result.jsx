@@ -6,10 +6,17 @@ import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { useStateValue, getObjectValue } from '../../libs'
-import { Button, ContentRight, FullPageLoader, Icon } from '../../components'
+import {
+  Button,
+  FullPageLoader,
+  Icon,
+  ContentBetween,
+  HeaderText
+} from '../../components'
 import { Card, CardHeader, CardBody, Input } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
+import Img from 'react-image'
 
 const FETCH_USER_ACTIVITY = gql`
   query fetchUserActivity($sessionId: uuid!) {
@@ -25,6 +32,7 @@ const FETCH_USER_ACTIVITY = gql`
       question {
         id
         question
+        img_url
         answers(where: { is_correct: { _eq: true } }) {
           id
           answer
@@ -42,22 +50,15 @@ const CREATE_TOPIC_FEEDBACK = gql`
 `
 
 const FETCH_USER_RATING = gql`
-  query fetchUserActivityRating ($sessionId: uuid!, $userId: uuid!) {
-    user_activity (where: {_and: [
-      {
-        activity_type: {
-          _eq: "rate"
-        }
-      },
-      {
-        topic_session_id: {
-          _eq: $sessionId
-        }
+  query fetchUserActivityRating($sessionId: uuid!, $userId: uuid!) {
+    user_activity(
+      where: {
+        _and: [{ activity_type: { _eq: "rate" } }, { topic_session_id: { _eq: $sessionId } }]
       }
-    ]}) {
+    ) {
       topic_id
       topic {
-        ratings (where: {user_id: {_eq: $userId}}) {
+        ratings(where: { user_id: { _eq: $userId } }) {
           type
         }
       }
@@ -83,13 +84,16 @@ const Result = ({
       sessionId
     }
   })
-  const { data: ratingData, error: ratingError, loading: ratingLoading } = useQuery(FETCH_USER_RATING, {
-    skip: !sessionId || !user.id,
-    variables: {
-      userId: user.id,
-      sessionId
+  const { data: ratingData, error: ratingError, loading: ratingLoading } = useQuery(
+    FETCH_USER_RATING,
+    {
+      skip: !sessionId || !user.id,
+      variables: {
+        userId: user.id,
+        sessionId
+      }
     }
-  })
+  )
 
   if (error) {
     console.error('error@result:1')
@@ -114,8 +118,8 @@ const Result = ({
   return (
     <Wrapper>
       {/* <Paper className='bg-transparent'> */}
-      <PageTitle>RESULTS</PageTitle>
-      <div>
+      <HeaderText>Result</HeaderText>
+      <div className='mt-5'>
         {answerActivities &&
           answerActivities.map((res, index) => {
             const userAnswers = res.answer ? JSON.parse(res.answer) : null
@@ -130,8 +134,17 @@ const Result = ({
               <Fragment key={index}>
                 <StyledCard>
                   <CardHeader className='text-center' style={{ background: 'none' }}>
-                    <Question>Q{index + 1}: {res.question.question}</Question>
+                    <Question>
+                      Q{index + 1}: {res.question.question}
+                    </Question>
                   </CardHeader>
+                  {res.question.img_url && (
+                    <Img
+                      src={[res.question.img_url, 'http://via.placeholder.com/300x300']}
+                      alt='question img'
+                      style={{ borderRadius: '5px', width: '100%', marginTop: '20px' }}
+                    />
+                  )}
                   {isCorrect ? (
                     <CardBody className='text-success d-flex justify-content-between'>
                       <FontAwesomeIcon icon={faCheck} />
@@ -183,14 +196,26 @@ const Result = ({
             <RatingButtonsContainer>
               <Button
                 text='Upvote'
-                type={!rating && previousRating !== 'upvote' ? 'warning' : rating === 'upvote' ? 'warning' : 'primary'}
+                type={
+                  !rating && previousRating !== 'upvote'
+                    ? 'warning'
+                    : rating === 'upvote'
+                      ? 'warning'
+                      : 'primary'
+                }
                 onClick={() => {
                   setRating('upvote')
                 }}
               />
               <Button
                 text='Downvote'
-                type={!rating && previousRating !== 'downvote' ? 'warning' : rating === 'downvote' ? 'warning' : 'primary'}
+                type={
+                  !rating && previousRating !== 'downvote'
+                    ? 'warning'
+                    : rating === 'downvote'
+                      ? 'warning'
+                      : 'primary'
+                }
                 onClick={() => {
                   setRating('downvote')
                 }}
@@ -198,40 +223,48 @@ const Result = ({
             </RatingButtonsContainer>
             <hr />
             <Title>Comment</Title>
-            <Input type='textarea' value={comment} onChange={(event) => {
-              setComment(event.target.value)
-            }} />
+            <Input
+              type='textarea'
+              value={comment}
+              onChange={(event) => {
+                setComment(event.target.value)
+              }}
+            />
             <hr />
-            <Button text='Submit' type='primary' onClick={async () => {
-              globalDispatch({
-                loading: true
-              })
-              try {
-                await createTopicFeedback({
-                  variables: {
-                    sessionId,
-                    rating,
-                    comment
-                  }
-                })
+            <Button
+              text='Submit'
+              type='primary'
+              onClick={async () => {
                 globalDispatch({
-                  operationSuccess: 'Feedback sent'
+                  loading: true
                 })
-                showFeedbackScreen(false)
-              } catch (error) {
-                console.error('error@result:3')
+                try {
+                  await createTopicFeedback({
+                    variables: {
+                      sessionId,
+                      rating,
+                      comment
+                    }
+                  })
+                  globalDispatch({
+                    operationSuccess: 'Feedback sent'
+                  })
+                  showFeedbackScreen(false)
+                } catch (error) {
+                  console.error('error@result:3')
+                  globalDispatch({
+                    networkError: error.message
+                  })
+                }
                 globalDispatch({
-                  networkError: error.message
+                  loading: false
                 })
-              }
-              globalDispatch({
-                loading: false
-              })
-            }} />
+              }}
+            />
           </RatingCard>
         </IconsDiv>
       )}
-      <ContentRight>
+      <ContentBetween>
         <Button text='Rate' type='primary' onClick={() => showFeedbackScreen(true)} />
         <Button
           text='Exit'
@@ -239,18 +272,10 @@ const Result = ({
             history.push('/')
           }}
         />
-      </ContentRight>
+      </ContentBetween>
     </Wrapper>
   )
 }
-
-const PageTitle = styled.div`
-  color: white;
-  text-align: center;
-  font-weight: 700;
-  margin-bottom: 15px;
-  font-size: 1.25em;
-`
 
 const Question = styled.div`
   color: #1a237e;

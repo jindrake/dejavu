@@ -15,13 +15,21 @@ export const StyledInput = styled(Input)`
   color: #1a237e;
   padding-left: 12px;
   padding-right: 12px;
-  /* background: linear-gradient(#e8eaf6, #c5cae9); */
   border-radius: 6px;
   border: none;
   outline: none;
   :focus {
     background: #e8eaf6;
   }
+`
+
+export const DejavuCard = styled.div`
+  color: #1a237e;
+  font-size: medium;
+  background-color: white;
+  padding: 20px;
+  margin: 5px;
+  border-radius: 5px;
 `
 
 export const FormWrapper = styled.div`
@@ -193,6 +201,8 @@ const PlaceholderWrapper = styled.div`
   text-align: center;
   justify-content: center;
   text-align: center;
+  padding-left: 10%;
+  padding-right: 10%;
 `
 
 export const Close = styled.div`
@@ -210,7 +220,7 @@ export const CardWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   color: #1a237e;
-  width: 200px;
+  width: 300px;
   padding: 20px;
   margin-left: 20px;
   &:first-child {

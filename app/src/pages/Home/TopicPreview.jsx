@@ -40,12 +40,14 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
     >
       <Title>{name}</Title>
       <Author>{description}</Author>
-      <Author>{date.toDateString()}</Author>
       <div>
         {topic.target_fields && topic.target_fields.length && topic.target_fields.map(({ field }, index) => (
           <Author key={index}>{field}</Author>
         ))}
       </div>
+      <Author
+        className='mt-3 mb-3'
+      >{date.toDateString()}</Author>
       <RatingContainer>
         <Ratings>
           <StyledIcon name='thumb_up' />{'  '}

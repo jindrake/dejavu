@@ -68,7 +68,7 @@ const Home = ({ history }) => {
     <Wrapper>
       <GreetingWrapper>
         Hello, {user ? <span className='text-capitalize'>{user.first_name}</span> : 'Study Buddy'}!
-        <CreateButtonContainer>
+        <CreateButtonContainer className='mt-3'>
           <CreateTopicButton id='button' onClick={() => history.push('/topic/create')}>
             <AddIcon name='add' />
             Create a Topic
@@ -84,22 +84,29 @@ const Home = ({ history }) => {
                 <CardWrapper key={index} onClick={() => {
                   history.push('/session/' + session.id)
                 }}>
-                  {session.topic.name}
+                  <CardTitle>
+                    {session.topic.name}
+                  </CardTitle>
                   <br />
-                  status:
-                  {session.current_user ? (
-                    session.current_user_id === user.id ? (
-                      <span className='text-warning'>Your turn!</span>
+                  <Author>
+                    status:
+                  </Author>
+                  <Author>
+                    {session.current_user ? (
+                      session.current_user_id === user.id ? (
+                        <span className='text-warning'>Your turn!</span>
+                      ) : (
+                        <span className='text-warning'>Waiting for {session.current_user.first_name}</span>
+                      )
                     ) : (
-                      <span className='text-warning'>Waiting for {session.current_user.first_name}</span>
-                    )
-                  ) : (
-                    <div>
-                      <span className='text-success'>Finished</span>
-                      <br />
-                      Click to view results
-                    </div>
-                  )}
+                      <div>
+                        <span className='text-success'>Finished</span>
+                      </div>
+                    )}
+                  </Author>
+                  <Author className='mt-3'>
+                    {new Date(session.updated_at).toDateString()}
+                  </Author>
                 </CardWrapper>
               ))
             ) : (
@@ -139,6 +146,25 @@ const Home = ({ history }) => {
     </Wrapper>
   )
 }
+
+const CardTitle = styled.div`
+  color: #1a237e;
+  font-size: 20px;
+  line-height: 20px;
+  font-weight: 700;
+  max-height: 60%;
+  overflow-y: scroll;
+  margin-bottom: 6px;
+  justify-content: left;
+`
+
+const Author = styled.div`
+  color: #1a237e;
+  font-size: 12px;
+  opacity: 0.8;
+  line-height: 12px;
+  margin-bottom: 6px;
+`
 
 const Wrapper = styled.div`
   position: absolute;

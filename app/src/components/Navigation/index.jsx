@@ -55,7 +55,10 @@ const Navigation = ({ user, location, history }) => {
                 route={route}
                 name={name}
                 active={location.pathname === route}
-                onClick={() => history.push(route)}
+                onClick={() => {
+                  setActive(false)
+                  history.push(route)
+                }}
               />
             ))}
             <NavigationItem icon={faTimes} onClick={() => setActive(false)} name='Close' />

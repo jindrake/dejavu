@@ -11,6 +11,14 @@ export const REMOVE_QUESTION = gql`
   }
 `
 
+export const UPDATE_QUESTION = gql`
+  mutation updateQuestion($questionId: uuid, $data: question_set_input) {
+    update_question(where: {id: {_eq: $questionId}}, _set: $data) {
+      affected_rows
+    }
+  }
+`
+
 export const DELETE_TOPIC_USER = gql`
   mutation deleteTopicUser($topicId: uuid, $email: String) {
     delete_topic_user(
@@ -79,7 +87,7 @@ export const INSERT_QUESTION_TOPIC_RELATIONSHIP = gql`
 `
 
 export const FETCH_TOPIC = gql`
-  subscription fetchTopic($id: uuid) {
+  query fetchTopic($id: uuid) {
     topic(where: { id: { _eq: $id } }) {
       id
       is_published
@@ -145,6 +153,7 @@ export const FETCH_TOPIC_QUESTIONS = gql`
           id
         }
         question
+        img_url
         id
       }
     }

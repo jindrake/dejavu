@@ -39,11 +39,15 @@ module.exports = {
                   question {
                     id
                     question
+                    img_url
                     answers {
                       id
                       answer
                     }
                   }
+                }
+                session_users {
+                  user_id
                 }
               }
             }
@@ -52,6 +56,12 @@ module.exports = {
             sessionId
           }
         )
+
+        // check if session type is duo and if other user has joined
+        if (session.type === 'duo' && session.session_users.length < 2) {
+          return 'waiting'
+        }
+
         // fetch user_activities of session
         const {
           data: { user_activity: sessionActivities }
@@ -101,13 +111,11 @@ module.exports = {
         )
         if (!sessionUser) throw new ApolloError('Authorization error')
         const sessionQuestions = getObjectValue(session, 'session_questions') || []
-        const userActivities = sessionActivities.filter(
-          (activity) => activity.user_id === userId
-        )
+        const userActivities = sessionActivities.filter((activity) => activity.user_id === userId)
         const userQuestionIds = userActivities.map((activity) => activity.question_id)
         // see next question that's unanswered
         let nextQuestion = null
-        // console.log('Session Questions:', sessionQuestions.map(x => x.question_id), userQuestionIds)
+        console.log('Session Questions:', sessionQuestions.map(x => x.question_id), userQuestionIds)
         for (let sessionQuestion of sessionQuestions) {
           if (!userQuestionIds.includes(sessionQuestion.question_id)) {
             nextQuestion = sessionQuestion.question
@@ -347,6 +355,7 @@ module.exports = {
                 id
                 type
                 creator_id
+                updated_at
                 current_user_id
                 current_user {
                   id

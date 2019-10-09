@@ -30,7 +30,6 @@ const FETCH_SESSION_ANSWERS = gql`
 `
 
 const SessionWaitingScreen = ({
-  // },
   match: {
     params: { sessionId }
   },
@@ -63,98 +62,80 @@ const SessionWaitingScreen = ({
   return (
     <Wrapper>
       <Paper>
-        <ContentCenter className='mb-3 mt-3'>
-          <HeaderText>
-            {/* <InputGroup> */}
-            Waiting for <span className='text-capitalize'>{otherUser.first_name}</span>
-          </HeaderText>
-        </ContentCenter>
-        <div>
-          <div className='d-flex justify-content-between px-4'>
-            {/* {partialResult.session_users.map((user, index) => {
-              return (
-                <div key={index} className='text-capitalize h5'>
-                  {user.first_name}
-                </div>
-              )
-            })} */}
-            <div className='text-capitalize'>{user.first_name}</div>
-            <div className='text-capitalize'>{otherUser.first_name}</div>
+        {!otherUser ? (
+          <div className='h-100 d-flex flex-column justify-content-center text-center w-100'>
+            Waiting for other user to join
           </div>
-          <hr />
-          <ContentCenter>Turn Results</ContentCenter>
-          {partialResult.results.map((questionData, index) => {
-            // const userActivities = getObjectValue(questionData, '')
-            const questionCorrectAnswers = questionData.question.answers
-              .filter((answer) => answer.is_correct)
-              .map((answerObj) => answerObj.answer)
-            const userAnswerObject = questionData.userAnswers
-              .filter((answer) => answer.user_id === user.id)
-              .pop()
-            const otherUserAnswerObject = questionData.userAnswers
-              .filter((answer) => answer.user_id !== user.id)
-              .pop()
-            console.log('ans object:', userAnswerObject)
-            const userAnswers =
-              userAnswerObject && userAnswerObject.answer ? JSON.parse(userAnswerObject.answer) : []
-            const otherUserAnswers =
-              otherUserAnswerObject && otherUserAnswerObject.answer
-                ? JSON.parse(otherUserAnswerObject.answer)
-                : []
-            console.log('User answers:', userAnswers)
-            console.log('OtherUser answers:', otherUserAnswers)
-            console.log('questionCorrectAnswers:', questionCorrectAnswers)
-            // const isUserAnswerCorrect =
-            //   userAnswers.length ?
-            //   userAnswers.every((answer) => questionCorrectAnswers.includes(answer)) : null
-            // const isOtherUserAnswerCorrect =
-            //   otherUserAnswers.length ?
-            //   otherUserAnswers.every((answer) => questionCorrectAnswers.includes(answer)) : null
-            return (
-              <div className='text-center' key={index}>
-                <div className='d-flex justify-content-between px-4'>
-                  <div>
-                    {userAnswers.length ? (
-                      userAnswers.every((answer) => questionCorrectAnswers.includes(answer)) ? (
-                        <FontAwesomeIcon icon={faCheck} className='text-success' />
-                      ) : (
-                        <FontAwesomeIcon icon={faTimes} className='text-danger' />
-                      )
-                    ) : (
-                      <FontAwesomeIcon icon={faMinus} />
-                    )}
-                  </div>
-                  <div />
-                  <div>
-                    {otherUserAnswers.length ? (
-                      otherUserAnswers.every((answer) => questionCorrectAnswers.includes(answer)) ? (
-                        <FontAwesomeIcon icon={faCheck} className='text-success' />
-                      ) : (
-                        <FontAwesomeIcon icon={faTimes} className='text-danger' />
-                      )
-                    ) : (
-                      <FontAwesomeIcon icon={faMinus} />
-                    )}
-                  </div>
-                </div>
+        ) : (
+          <>
+            <ContentCenter className='mb-3 mt-3'>
+              <HeaderText>
+                Waiting for <span className='text-capitalize'>{otherUser.first_name}</span>
+              </HeaderText>
+            </ContentCenter>
+            <div>
+              <div className='d-flex justify-content-between px-4'>
+                <div className='text-capitalize'>{user.first_name}</div>
+                <div className='text-capitalize'>{otherUser.first_name}</div>
               </div>
-            )
-          })}
-        </div>
+              <hr />
+              <ContentCenter>Turn Results</ContentCenter>
+              {partialResult.results.map((questionData, index) => {
+                const questionCorrectAnswers = questionData.question.answers
+                  .filter((answer) => answer.is_correct)
+                  .map((answerObj) => answerObj.answer)
+                const userAnswerObject = questionData.userAnswers
+                  .filter((answer) => answer.user_id === user.id)
+                  .pop()
+                const otherUserAnswerObject = questionData.userAnswers
+                  .filter((answer) => answer.user_id !== user.id)
+                  .pop()
+                console.log('ans object:', userAnswerObject)
+                const userAnswers =
+                  userAnswerObject && userAnswerObject.answer
+                    ? JSON.parse(userAnswerObject.answer)
+                    : []
+                const otherUserAnswers =
+                  otherUserAnswerObject && otherUserAnswerObject.answer
+                    ? JSON.parse(otherUserAnswerObject.answer)
+                    : []
+                return (
+                  <div className='text-center' key={index}>
+                    <div className='d-flex justify-content-between px-4'>
+                      <div>
+                        {userAnswers.length ? (
+                          userAnswers.every((answer) => questionCorrectAnswers.includes(answer)) ? (
+                            <FontAwesomeIcon icon={faCheck} className='text-success' />
+                          ) : (
+                            <FontAwesomeIcon icon={faTimes} className='text-danger' />
+                          )
+                        ) : (
+                          <FontAwesomeIcon icon={faMinus} />
+                        )}
+                      </div>
+                      <div />
+                      <div>
+                        {otherUserAnswers.length && otherUserAnswers.every((answer) => questionCorrectAnswers.includes(answer)) ? (
+                          <FontAwesomeIcon icon={faCheck} className='text-success' />
+                        ) : (
+                          <FontAwesomeIcon icon={faTimes} className='text-danger' />
+                        )
+                        }
+                        {!otherUserAnswers.length && <FontAwesomeIcon icon={faMinus} />}
+                      </div>
+                    </div>
+                  </div>
+                )
+              })}
+            </div>
+          </>
+        )}
       </Paper>
       <ContentBetween>
         <Button
           text={'Exit'}
           onClick={() => {
             history.push('/')
-          }}
-        />
-        <Button
-          text={'Proceed'}
-          type='primary'
-          onClick={() => {
-            // handleSubmit()
-            history.push('/session/' + sessionId)
           }}
         />
       </ContentBetween>
