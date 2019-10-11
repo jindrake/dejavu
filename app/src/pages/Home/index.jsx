@@ -4,9 +4,17 @@ import compose from 'recompose/compose'
 import withFirebase from '../../hocs/withFirebase'
 
 import { useStateValue } from '../../libs'
-import { Button } from '../../components/Button'
 import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS, FETCH_USER_SESSIONS } from './queries'
-import { FullPageLoader, Placeholder, CardWrapper, Header, SectionTitle } from '../../components'
+import {
+  Button,
+  FullPageLoader,
+  Placeholder,
+  CardWrapper,
+  Header,
+  SectionTitle,
+  CardTitle,
+  CardDescription
+} from '../../components'
 import TopicPreview from './TopicPreview'
 import { useQuery } from '@apollo/react-hooks'
 
@@ -20,12 +28,9 @@ const Home = ({ history }) => {
   } = useQuery(FETCH_RECENT_TOPICS, {
     fetchPolicy: 'no-cache'
   })
-  const { loading: hotTopicsLoading, error: hotTopicsError } = useQuery(
-    FETCH_HOT_TOPICS,
-    {
-      fetchPolicy: 'no-cache'
-    }
-  )
+  const { loading: hotTopicsLoading, error: hotTopicsError } = useQuery(FETCH_HOT_TOPICS, {
+    fetchPolicy: 'no-cache'
+  })
   const {
     data: userSessionsData,
     loading: userSessionsLoading,
@@ -67,43 +72,50 @@ const Home = ({ history }) => {
   return (
     <Wrapper>
       <GreetingWrapper>
-        <Header>Hello, {user ? <span className='text-capitalize'>{user.first_name}</span> : 'Study Buddy'}!</Header>
+        <Header>
+          Hello, {user ? <span className='text-capitalize'>{user.first_name}</span> : 'Study Buddy'}
+          !
+        </Header>
         <CreateButtonContainer>
-          <Button text='Create Topic' type='primary' onClick={() => history.push('/topic/create')} />
+          <Button
+            text='Create Topic'
+            type='primary'
+            onClick={() => history.push('/topic/create')}
+          />
         </CreateButtonContainer>
       </GreetingWrapper>
       <SectionWrapper>
         <SectionTitle>Your sessions</SectionTitle>
         <TopicsContainer>
-          <Belt className='w-100'>
+          <Belt>
             {userSessions.length > 0 ? (
               userSessions.map((session, index) => (
-                <CardWrapper key={index} onClick={() => {
-                  history.push('/session/' + session.id)
-                }}>
-                  <CardTitle>
-                    {session.topic.name}
-                  </CardTitle>
+                <CardWrapper
+                  key={index}
+                  onClick={() => {
+                    history.push('/session/' + session.id)
+                  }}
+                >
+                  <CardTitle>{session.topic.name}</CardTitle>
                   <br />
-                  <Author>
+                  <CardDescription>
                     status:
-                  </Author>
-                  <Author>
                     {session.current_user ? (
                       session.current_user_id === user.id ? (
                         <span className='text-warning'>Your turn!</span>
                       ) : (
-                        <span className='text-warning'>Waiting for {session.current_user.first_name}</span>
+                        <span className='text-warning'>
+                          Waiting for {session.current_user.first_name}
+                        </span>
                       )
                     ) : (
                       <div>
                         <span className='text-success'>Finished</span>
+                        <br />
+                        Click to view results
                       </div>
                     )}
-                  </Author>
-                  <Author className='mt-3'>
-                    {new Date(session.updated_at).toDateString()}
-                  </Author>
+                  </CardDescription>
                 </CardWrapper>
               ))
             ) : (
@@ -129,7 +141,7 @@ const Home = ({ history }) => {
       <SectionWrapper>
         <SectionTitle>Recent Topics</SectionTitle>
         <TopicsContainer>
-          <Belt className='w-100'>
+          <Belt>
             {recentTopics.length > 0 ? (
               recentTopics.map((topic, index) => (
                 <TopicPreview key={index} n={index} topic={topic} user={user} />
@@ -183,7 +195,7 @@ const GreetingWrapper = styled.div`
 
 const CreateButtonContainer = styled.div`
   justify-content: left;
-  width: 17vh;
+  width: 16.5vh;
   margin-top: 5px;
 `
 

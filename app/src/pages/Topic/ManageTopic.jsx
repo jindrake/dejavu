@@ -2,7 +2,7 @@ import React from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { FETCH_FULL_TOPIC, UPDATE_TOPIC } from './queries'
 import { getObjectValue, useStateValue } from '../../libs'
-import { FullPageLoader, HeaderText, ContentCenter, Button } from '../../components'
+import { FullPageLoader, Header, ContentCenter, Button, Label } from '../../components'
 import { Badge } from 'reactstrap'
 
 const ManageTopic = ({
@@ -43,49 +43,65 @@ const ManageTopic = ({
   return (
     <div className='mb-5'>
       <div className='d-flex'>
-        <Button text='Go back' onClick={() => history.push('/profile')} />
+        <Button text='Back' type='action' onClick={() => history.push('/profile')} />
       </div>
       <ContentCenter className='mt-3'>
-        <HeaderText className='font-weight-bold'>Manage Topic</HeaderText>
+        <Header>Manage Topic</Header>
       </ContentCenter>
-      <small>
-        Title: {topic.name}
+      <Label>
+        Title: <strong>{topic.name}</strong>
         <br />
-        Description: {topic.description}
-      </small>
-      <div>
-        <small>Target field:</small>
+        Description: <strong>{topic.description}</strong>
+      </Label>
+      <Label>
+        Target field:
         <br />
         {topic.target_fields && topic.target_fields.length
           ? topic.target_fields.map((field, index) => {
             return (
-              <Badge color='secondary' key={index} className='mx-3'>
-                {field.field}
-              </Badge>
+              <h3 key={index}>
+                <Badge color='info' key={index} className='mx-3'>
+                  {field.field}
+                </Badge>
+              </h3>
             )
           })
           : null}
-      </div>
+      </Label>
       <hr />
-      <Button text='See results' className='mb-2 p-4' />
+      <Button text='See results' type='action' className='mb-2 p-4' />
       <Button
         text='List of allowed users'
+        type='action'
         onClick={() => {
           history.push(`/topic/${id}/users`)
         }}
         className='mb-2 p-4'
       />
-      <Button text='Manage admins' className='mb-2 p-4'
+      <Button
+        text='Manage admins'
+        type='action'
+        className='mb-2 p-4'
         onClick={() => {
           history.push(`/topic/${id}/admins`)
         }}
       />
-      <Button text='Edit details' className='mb-2 p-4' onClick={() => {
-        history.push(`/topic/${id}/edit`)
-      }} />
-      <Button text='Edit questions' className='mb-2 p-4' onClick={() => {
-        history.push(`/topic/${id}/questions`)
-      }} />
+      <Button
+        text='Edit details'
+        type='action'
+        className='mb-2 p-4'
+        onClick={() => {
+          history.push(`/topic/${id}/edit`)
+        }}
+      />
+      <Button
+        text='Edit questions'
+        type='action'
+        className='mb-2 p-4'
+        onClick={() => {
+          history.push(`/topic/${id}/questions`)
+        }}
+      />
       {/* <Button text='Edit target fields' className='mb-2 p-4' /> */}
       <hr />
       <Button

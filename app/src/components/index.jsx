@@ -71,6 +71,7 @@ export const ContentCenter = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
+  color: #015249;
 `
 
 export const ContentAround = styled.div`
@@ -110,6 +111,7 @@ export const StyledCheckbox = styled(CustomInput)`
   font-size: 2vh;
   height: 10px;
   padding-top: 5px;
+  color: #015249;
 `
 
 export const Pill = styled.div`
@@ -239,25 +241,23 @@ export const Header = styled.div`
   font-family: 'Open Sans';
   font-weight: 800;
   font-size: 3vh;
-  color: #dae4ee;
+  color: #005761;
 `
 
 export const SectionTitle = styled.div`
   font-family: 'Open Sans';
   font-weight: 600;
   font-size: 2.25vh;
-  color: #dae4ee;
+  color: #005761;
 `
 
 export const CardTitle = styled.div`
-  font-family: 'Montserrat';
-  font-weight: 600;
+  font-weight: 800;
   font-size: 2.75vh;
 `
 
 export const CardDescription = styled.div`
-  font-family: 'Montserrat';
-  font-weight: 500;
+  font-weight: 600;
   font-size: 2vh;
 `
 

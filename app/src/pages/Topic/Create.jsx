@@ -1,18 +1,11 @@
 import React from 'react'
-import styled from 'styled-components'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { FormGroup, Label } from 'reactstrap'
+import { FormGroup } from 'reactstrap'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import uuid from 'uuid/v4'
-import {
-  StyledInput,
-  Title,
-  OverlayLoader,
-  FormWrapper,
-  Button
-} from '../../components'
+import { StyledInput, StyledCheckbox, OverlayLoader, FormWrapper, Label, Header, Button } from '../../components'
 import Alert from '../../components/Alert'
 import { getObjectValue, useStateValue } from '../../libs'
 import compose from 'recompose/compose'
@@ -126,10 +119,10 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
         return (
           <FormWrapper>
             {(isSubmitting || loading) && <OverlayLoader />}
-            <Title>Create a topic</Title>
-            <FormGroup>
-              <Label for='name'>
-                <SubHeader>Title</SubHeader>
+            <Header>Create a topic</Header>
+            <FormGroup className='mt-2'>
+              <Label>
+                Title
               </Label>
               <StyledInput
                 type='text'
@@ -143,8 +136,8 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
               />
             </FormGroup>
             <FormGroup>
-              <Label for='description'>
-                <SubHeader>Description</SubHeader>
+              <Label>
+                Description
               </Label>
               <StyledInput
                 type='textarea'
@@ -156,8 +149,8 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
               />
             </FormGroup>
             <FormGroup>
-              <Label for='fieldOfStudy'>
-                <SubHeader>Target field</SubHeader>
+              <Label>
+                Target field
               </Label>
               <StyledInput
                 type='select'
@@ -177,18 +170,13 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
               </StyledInput>
             </FormGroup>
             {status && <Alert {...status} />}
-            <Button data-cy='submit' onClick={handleSubmit} text='Proceed' />
+            <Button type='action' text='Proceed' onClick={handleSubmit} />
           </FormWrapper>
         )
       }}
     </Formik>
   )
 }
-
-const SubHeader = styled.div`
-  color: #e8eaf6;
-  font-size: 12;
-`
 
 export default compose(
   withRouter,

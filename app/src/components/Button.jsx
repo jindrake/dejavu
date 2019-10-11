@@ -11,7 +11,7 @@ const TYPE_STYLE = {
     background: linear-gradient(45deg, #b22222, #bd2426, #c8252a, #d3272f, #de2833, #e43339, #eb3d40, #f14646, #f45751, #f6655b, #f87367, #fa8072);
   `,
   success: `
-    background: linear-gradient(45deg, #56b079, #5eb579, #67ba78, #70bf78, #79c477, #81c876, #8acd76, #93d175, #9dd674, #a7da73, #b1df73, #bce372);
+    background: linear-gradient(45deg, #015249, #05584d, #0b5e50, #116553, #186b56, #1e7159, #24775b, #2a7d5d, #32845f, #398a61, #429163, #4a9764);
   `,
   action: `
     background: linear-gradient(45deg, #003152, #00395a, #004062, #004869, #005071, #005777, #005f7d, #006682, #006e87, #00778b, #007f8e, #008790);
@@ -37,4 +37,5 @@ const Wrapper = styled.div`
   /* justify-content: ${({ center }) => center ? 'center' : 'start'}; */
   justify-content: ${props => props.center ? 'center' : ''};
   cursor: pointer;
+  font-weight: 500;
 `

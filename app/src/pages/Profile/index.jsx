@@ -11,7 +11,15 @@ import {
   INSERT_USER_ACTIVITY,
   FETCH_ACTIVITY_LOGS
 } from './queries'
-import { FullPageLoader, Placeholder, ContentCenter, Button, SectionTitle, CardDescription } from '../../components'
+import {
+  FullPageLoader,
+  Placeholder,
+  ContentCenter,
+  Button,
+  SectionTitle,
+  CardTitle,
+  CardDescription
+} from '../../components'
 import { useStateValue, getObjectValue } from '../../libs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -115,7 +123,7 @@ const Profile = ({ user, history }) => {
         <hr />
         <ContentCenter className='h6'>{currentUser.email}</ContentCenter>
       </div>
-      <div className='mt-5'>
+      <div className='mt-3'>
         <Wrapper>
           <SectionTitle>Your created topics</SectionTitle>
           <TopicsContainer>
@@ -127,18 +135,16 @@ const Profile = ({ user, history }) => {
                   return (
                     <DejavuCard className='justify-content-between flex-column mb-2' key={index}>
                       <div>
-                        <div className='font-weight-bold'>{topic.name}</div>
-                        <div>
-                          <small>{topic.description}</small>
-                        </div>
-                        <div className='small w-100 d-flex justify-content-between'>
+                        <CardTitle>{topic.name}</CardTitle>
+                        <CardDescription>{topic.description}</CardDescription>
+                        <CardDescription className='small w-100 d-flex justify-content-between'>
                           <div>
                             {getObjectValue(topic, 'user_activities_aggregate.aggregate.count') ||
                               '0'}{' '}
                             takers
                           </div>
                           <span className='d-flex text-center justify-content-evenly'>
-                            <Author>
+                            <CardDescription>
                               <FontAwesomeIcon icon={faThumbsDown} />{' '}
                               {topic.ratings.length > 0
                                 ? topic.ratings.filter((r) => r.type === 'downvote').length
@@ -148,9 +154,9 @@ const Profile = ({ user, history }) => {
                               {topic.ratings.length > 0
                                 ? topic.ratings.filter((r) => r.type === 'upvote').length
                                 : 0}
-                            </Author>
+                            </CardDescription>
                           </span>
-                        </div>
+                        </CardDescription>
                       </div>
                       <div className='w-100 d-flex justify-content-end'>
                         <div className='text-right w-100 d-flex justify-content-end'>
@@ -172,9 +178,9 @@ const Profile = ({ user, history }) => {
         </Wrapper>
         <br />
         <SectionTitle>Activity Logs</SectionTitle>
-        <div style={{ height: '40vh', overflowY: 'scroll' }}>
+        <div style={{ height: '32vh', overflowY: 'scroll' }}>
           {activityLogs.length === 0 ? (
-            <div className='mt-5'>
+            <div className='mt-2'>
               <ContentCenter>No Activity Yet</ContentCenter>
             </div>
           ) : (
@@ -258,7 +264,7 @@ const CenteredText = styled.div`
   display: flex;
   justify-content: center;
   padding: 5px;
-  font-weight: 500;
+  font-weight: 600;
   color: #015249;
 `
 
@@ -266,32 +272,22 @@ const Container = styled.div`
   height: 100%;
   width: 100%;
   margin: auto;
-  padding-top: 5vh;
+  padding-top: 3vh;
 `
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
-  height: 30%;
+  height: 25vh;
 `
 
-const Author = styled.div`
-  color: #015249;
-  font-size: 2vh;
+const TopicsContainer = styled.div`
+  overflow-y: scroll;
 `
-
-const TopicsContainer = styled.div``
 
 const DejavuCard = styled.div`
   background: linear-gradient(0deg, #95d6dc, #addee9, #c5e6f3, #dbeffa, #f0f8ff);
   margin-bottom: 10px;
-  &:last-child {
-    margin-bottom: 60px;
-  }
-  /* justify-content: center;
-  padding: 20px;
-  width: 92%;
-   */
   border-radius: 6px;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;

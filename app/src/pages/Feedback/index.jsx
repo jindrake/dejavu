@@ -9,7 +9,7 @@ import uuid from 'uuid/v4'
 import styled from 'styled-components'
 
 import Alert from '../../components/Alert'
-import { Button, Icon } from '../../components'
+import { Button, Icon, Header, Label } from '../../components'
 
 const CREATE_FEEDBACK = gql`
   mutation createFeedback($feedback: [feedback_insert_input!]!) {
@@ -66,13 +66,13 @@ const Feedback = ({ createFeedback, user, history }) => {
       }) => {
         return (
           <Form>
-            <FeedbackTitle>FEEDBACK</FeedbackTitle>
+            <Header className='text-center'>FEEDBACK</Header>
             <FeedbackClose onClick={() => history.push('/')}>
               <Icon name='close' />
             </FeedbackClose>
             <hr />
             <FormGroup>
-              <FeedbackLabel>How would you rate your experience?</FeedbackLabel>
+              <Label>How would you rate your experience?</Label>
               <FeedbackButtonContainer>
                 <FeedbackNewButton
                   onClick={() => {
@@ -86,6 +86,7 @@ const Feedback = ({ createFeedback, user, history }) => {
                   onClick={() => {
                     values.rating = 'Bad'
                   }}
+                  type='action'
                   text='It needs improvement'
                 />
               </FeedbackButtonContainer>
@@ -93,7 +94,7 @@ const Feedback = ({ createFeedback, user, history }) => {
             <hr />
             {/* <ErrorText text={errors.rating && touched.rating} /> */}
             <FormGroup>
-              <FeedbackLabel>Tell us more on how we can improve the app</FeedbackLabel>
+              <Label>Tell us more on how we can improve the app</Label>
               <FeedbackText
                 name='message'
                 id='message'
@@ -109,7 +110,7 @@ const Feedback = ({ createFeedback, user, history }) => {
             <FeedbackSubmitDiv>
               <FeedbackNewButton
                 text={isSubmitting ? 'Submitting...' : 'Submit'}
-                type='primary'
+                type='action'
                 onClick={handleSubmit}
               />
             </FeedbackSubmitDiv>
@@ -119,13 +120,6 @@ const Feedback = ({ createFeedback, user, history }) => {
     />
   )
 }
-
-const FeedbackTitle = styled.div`
-  color: #e8eaf6;
-  font-size: 1.25em;
-  font-weight: 700;
-  text-align: center;
-`
 
 const FeedbackNewButton = styled(Button)`
   margin-bottom: 20px;
@@ -150,19 +144,12 @@ const FeedbackClose = styled.div`
 `
 
 const FeedbackText = styled(Input)`
-  background: linear-gradient(#e8eaf6, #c5cae9);
+  background: linear-gradient(0deg, #95d6dc, #addee9, #c5e6f3, #dbeffa, #f0f8ff);
 `
 
 const FeedbackSubmitDiv = styled(FormGroup)`
   display: flex;
   justify-content: center;
-`
-
-const FeedbackLabel = styled.div`
-  color: #e8eaf6;
-  font-size: .75em;
-  text-align: center;
-  margin-bottom: 10px;
 `
 
 export default compose(
