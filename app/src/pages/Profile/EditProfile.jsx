@@ -13,67 +13,14 @@ import gql from 'graphql-tag'
 import {
   StyledInput,
   FormWrapper,
-  Title,
   StyledCheckbox,
   OverlayLoader,
   Button,
   FullPageLoader,
-  Icon
+  Icon,
+  Label,
+  Header
 } from '../../components'
-
-const Close = styled.div`
-  position: absolute;
-  font-size: 20px;
-  color: #e8eaf6;
-  opacity: 0.5;
-  right: 0;
-  top: 0;
-`
-
-const Label = styled.div`
-  color: #e8eaf6;
-  font-size: 2vh;
-`
-
-const Hint = styled.span`
-  color: #ef5350;
-  margin-left: 6px;
-`
-
-const FormItem = styled.div`
-  margin-top: 10px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`
-
-const TwinItems = styled(FormItem)`
-  flex-direction: row;
-  margin-top: -10px;
-  div:first-child input {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-  }
-  div:last-child input {
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-  }
-`
-
-const ButtonGroup = styled.div`
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-end;
-  div:first-child {
-    margin-right: 10px;
-  }
-`
-
-const Form = styled.form`
-  position: relative;
-  opacity: ${({ isSubmitting }) => (isSubmitting ? 0.5 : 1)};
-  transition: 300ms;
-`
 
 const FETCH_FIELDS = gql`
   query fetchFields {
@@ -261,8 +208,8 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
               <Close onClick={() => history.push('/profile')}>
                 <Icon name='close' />
               </Close>
-              <Title>Edit Profile Settings</Title>
-              <TwinItems>
+              <Header>Edit Profile Settings</Header>
+              <TwinItems className='mt-2'>
                 <FormItem>
                   <Label>
                     First name
@@ -375,7 +322,7 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
                 />
               </FormItem> */}
               <ButtonGroup>
-                <Button onClick={() => history.goBack()} text='Cancel' />
+                <Button onClick={() => history.goBack()} text='Cancel' type='action' />
                 <Button
                   data-cy='submit-button'
                   onClick={handleSubmit}
@@ -390,6 +337,55 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
     </Formik>
   )
 }
+
+const Close = styled.div`
+  position: absolute;
+  font-size: 20px;
+  color: #e8eaf6;
+  opacity: 0.5;
+  right: 0;
+  top: 0;
+`
+
+const Hint = styled.span`
+  color: #ef5350;
+  margin-left: 6px;
+`
+
+const FormItem = styled.div`
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`
+
+const TwinItems = styled(FormItem)`
+  flex-direction: row;
+  margin-top: -10px;
+  div:first-child input {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+  div:last-child input {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+  }
+`
+
+const ButtonGroup = styled.div`
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  div:first-child {
+    margin-right: 10px;
+  }
+`
+
+const Form = styled.form`
+  position: relative;
+  opacity: ${({ isSubmitting }) => (isSubmitting ? 0.5 : 1)};
+  transition: 300ms;
+`
 
 export default compose(
   withRouter,

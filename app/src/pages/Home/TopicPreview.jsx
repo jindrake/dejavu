@@ -5,7 +5,9 @@ import uuid from 'uuid/v4'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { INSERT_USER_ACTIVITY } from './queries'
-import { Icon, CardWrapper, CardTitle, CardDescription } from '../../components'
+import { CardWrapper, CardTitle, CardDescription } from '../../components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
 
 const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const {
@@ -48,11 +50,11 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
       </div>
       <RatingContainer>
         <Ratings>
-          <StyledIcon name='thumb_up' />{'  '}
+          <StyledIcon icon={faThumbsUp} />{'   '}
           {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
         </Ratings>
         <Ratings>
-          <StyledIcon name='thumb_down' />{'  '}
+          <StyledIcon icon={faThumbsDown} />{'   '}
           {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
         </Ratings>
       </RatingContainer>
@@ -67,18 +69,20 @@ const RatingContainer = styled.div`
   bottom: 1vh;
 `
 
-const StyledIcon = styled(Icon)`
+const StyledIcon = styled(FontAwesomeIcon)`
   width: 100%;
   justify-content: right;
+  color: #015249;
 `
 
 const Ratings = styled.div`
-  color: #1a237e;
+  color: #015249;
   font-size: 14px;
   opacity: 0.8;
   line-height: 12px;
   margin-bottom: 6px;
   margin-right: 7px;
+  font-weight: 600;
 `
 
 export default compose(
