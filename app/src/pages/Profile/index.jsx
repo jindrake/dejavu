@@ -11,7 +11,7 @@ import {
   INSERT_USER_ACTIVITY,
   FETCH_ACTIVITY_LOGS
 } from './queries'
-import { FullPageLoader, Placeholder, ContentCenter, Button } from '../../components'
+import { FullPageLoader, Placeholder, ContentCenter, Button, SectionTitle, CardDescription } from '../../components'
 import { useStateValue, getObjectValue } from '../../libs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -210,14 +210,14 @@ const Profile = ({ user, history }) => {
                 return (
                   <DejavuCard key={index}>
                     <ActivityIcon icon={icon} />
-                    <Author>
+                    <CardDescription>
                       You {activity} the topic{' '}
                       <strong>
                         {log.topic === null ? log.question.topics[0].topic.name : log.topic.name}
                       </strong>
                       <br />
                       on {date.toISOString().split('T')[0]}
-                    </Author>
+                    </CardDescription>
                   </DejavuCard>
                 )
               })}
@@ -273,19 +273,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 30%;
-`
-
-const SectionTitle = styled.div`
-  color: #dae4ee;
-  @media (min-width: 800px) {
-    font-size: 20px;
-  }
-  @media (max-width: 1024px) {
-    font-size: 2.25vh;
-  }
-  margin-bottom: 4px;
-  font-family: 'Open Sans';
-  font-weight: 700;
 `
 
 const Author = styled.div`

@@ -11,12 +11,13 @@ import Alert from '../components/Alert'
 import {
   StyledInput,
   FormWrapper,
-  Title,
   StyledCheckbox,
   OverlayLoader,
   Button,
   FullPageLoader,
-  Icon
+  Icon,
+  Label,
+  Header
 } from '../components'
 import { useStateValue } from '../libs'
 import uuid from 'uuid/v4'
@@ -189,16 +190,16 @@ const SignUp = ({ firebase, history }) => {
       }) => {
         return (
           <FormWrapper>
-            {(isSubmitting) && <OverlayLoader />}
+            {isSubmitting && <OverlayLoader />}
             <Form isSubmitting={isSubmitting}>
               <Close onClick={() => history.push('/')}>
                 <Icon name='close' />
               </Close>
-              <Title>
+              <Header>
                 Let's be
                 <br />
                 study buddies!
-              </Title>
+              </Header>
               {status && <Alert {...status} />}
               <TwinItems>
                 <FormItem>
@@ -308,7 +309,11 @@ const SignUp = ({ firebase, history }) => {
                 />
               </FormItem>
               <ButtonGroup>
-                <Button onClick={() => history.push('/sign-in')} text='Have an account? Sign in.' />
+                <Button
+                  onClick={() => history.push('/sign-in')}
+                  text='Have an account? Sign in.'
+                  type='action'
+                />
                 <Button
                   data-cy='submit-button'
                   onClick={handleSubmit}
@@ -333,11 +338,6 @@ const Close = styled.div`
   top: 0;
 `
 
-const Label = styled.div`
-  color: #e8eaf6;
-  font-size: 12px;
-`
-
 const Hint = styled.span`
   color: #ef5350;
   margin-left: 6px;
@@ -352,7 +352,7 @@ const FormItem = styled.div`
 
 const TwinItems = styled(FormItem)`
   flex-direction: row;
-  margin-top: -10px;
+  margin-top: 5px;
   div:first-child input {
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;

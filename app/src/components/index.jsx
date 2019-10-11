@@ -215,12 +215,12 @@ export const Close = styled.div`
 `
 
 export const CardWrapper = styled.div`
-  background: linear-gradient(#e8eaf6, #c5cae9);
+  background: linear-gradient(0deg, #95d6dc, #addee9, #c5e6f3, #dbeffa, #f0f8ff);
   display: flex;
   flex-direction: column;
   justify-content: center;
-  color: #1a237e;
-  width: 300px;
+  color: #015249;
+  width: 200px;
   padding: 20px;
   margin-left: 20px;
   &:first-child {
@@ -233,4 +233,37 @@ export const CardWrapper = styled.div`
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   animation-delay: ${({ n }) => n * 100 + 'ms'};
+`
+
+export const Header = styled.div`
+  font-family: 'Open Sans';
+  font-weight: 800;
+  font-size: 3vh;
+  color: #dae4ee;
+`
+
+export const SectionTitle = styled.div`
+  font-family: 'Open Sans';
+  font-weight: 600;
+  font-size: 2.25vh;
+  color: #dae4ee;
+`
+
+export const CardTitle = styled.div`
+  font-family: 'Montserrat';
+  font-weight: 600;
+  font-size: 2.75vh;
+`
+
+export const CardDescription = styled.div`
+  font-family: 'Montserrat';
+  font-weight: 500;
+  font-size: 2vh;
+`
+
+export const Label = styled.div`
+  font-family: 'Open Sans';
+  font-weight: 600;
+  font-size: 2.15vh;
+  color: #015249;
 `
