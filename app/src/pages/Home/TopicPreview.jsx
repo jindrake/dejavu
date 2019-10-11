@@ -5,7 +5,7 @@ import uuid from 'uuid/v4'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { INSERT_USER_ACTIVITY } from './queries'
-import { Icon } from '../../components'
+import { Icon, CardWrapper, CardTitle, CardDescription } from '../../components'
 
 const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const {
@@ -20,7 +20,7 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const date = new Date(createdAt)
 
   return (
-    <Wrapper
+    <CardWrapper
       n={n}
       onClick={() => {
         if (user) {
@@ -38,12 +38,12 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
         history.push(`topic/${id}`)
       }}
     >
-      <Title>{name}</Title>
-      <Author>{description}</Author>
-      <Author>{date.toDateString()}</Author>
+      <CardTitle>{name}</CardTitle>
+      <CardDescription>{description}</CardDescription>
+      <CardDescription>{date.toDateString()}</CardDescription>
       <div>
         {topic.target_fields && topic.target_fields.length && topic.target_fields.map(({ field }, index) => (
-          <Author key={index}>{field}</Author>
+          <CardDescription key={index}>{field}</CardDescription>
         ))}
       </div>
       <RatingContainer>
@@ -56,7 +56,7 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
           {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
         </Ratings>
       </RatingContainer>
-    </Wrapper>
+    </CardWrapper>
   )
 }
 
@@ -65,25 +65,6 @@ const RatingContainer = styled.div`
   width: 100%;
   position: absolute;
   bottom: 1vh;
-`
-
-const Title = styled.div`
-  color: #1a237e;
-  font-size: 20px;
-  line-height: 20px;
-  font-weight: 700;
-  max-height: 60%;
-  overflow-y: scroll;
-  margin-bottom: 6px;
-  justify-content: left;
-`
-
-const Author = styled.div`
-  color: #1a237e;
-  font-size: 12px;
-  opacity: 0.8;
-  line-height: 12px;
-  margin-bottom: 6px;
 `
 
 const StyledIcon = styled(Icon)`
@@ -98,26 +79,6 @@ const Ratings = styled.div`
   line-height: 12px;
   margin-bottom: 6px;
   margin-right: 7px;
-`
-
-const Wrapper = styled.div`
-  background: linear-gradient(#e8eaf6, #c5cae9);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 200px;
-  padding: 20px;
-  margin-left: 20px;
-  &:first-child {
-    margin-left: 40px;
-  }
-  &:last-child {
-    margin-right: 40px;
-  }
-  border-radius: 6px;
-  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
-  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-  animation-delay: ${({ n }) => n * 100 + 'ms'};
 `
 
 export default compose(

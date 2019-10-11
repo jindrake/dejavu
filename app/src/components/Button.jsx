@@ -5,16 +5,16 @@ export const Button = ({ text, ...props }) => <Wrapper {...props}>{text}</Wrappe
 
 const TYPE_STYLE = {
   primary: `
-    background: linear-gradient(45deg, #7b1fa2, #d500f9);
+  background: linear-gradient(45deg, #198dd3, #0792d3, #0096d2, #009bd1, #009fcf, #00a2cd, #00a6cb, #00a9c9, #00acc6, #00afc2, #00b2bd, #00b5b8);
   `,
   warning: `
-    background: linear-gradient(#FFA726, #FF9800);
+    background: linear-gradient(45deg, #b22222, #bd2426, #c8252a, #d3272f, #de2833, #e43339, #eb3d40, #f14646, #f45751, #f6655b, #f87367, #fa8072);
   `,
   success: `
-    background: linear-gradient(266deg, rgba(90,199,133,1) 0%, rgba(24,128,24,0.8194842406876791) 100%, rgba(252,176,69,1) 100%);
+    background: linear-gradient(45deg, #56b079, #5eb579, #67ba78, #70bf78, #79c477, #81c876, #8acd76, #93d175, #9dd674, #a7da73, #b1df73, #bce372);
   `,
   action: `
-  background: linear-gradient(45deg, #003152, #00395a, #004062, #004869, #005071, #005777, #005f7d, #006682, #006e87, #00778b, #007f8e, #008790);
+    background: linear-gradient(45deg, #003152, #00395a, #004062, #004869, #005071, #005777, #005f7d, #006682, #006e87, #00778b, #007f8e, #008790);
   `
 }
 
@@ -25,8 +25,8 @@ const Wrapper = styled.div`
   align-items: center;
   color: #e8eaf6;
   padding: 2vh;
-  padding-left: 3vh;
-  padding-right: 3vh;
+  /* padding-left: 3vh;
+  padding-right: 3vh; */
   /* padding: 3vh; */
   border-radius: 1vh;
   height: 36px;

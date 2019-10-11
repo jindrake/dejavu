@@ -4,9 +4,9 @@ import compose from 'recompose/compose'
 import withFirebase from '../../hocs/withFirebase'
 
 import { useStateValue } from '../../libs'
-import { Button } from 'reactstrap'
+import { Button } from '../../components/Button'
 import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS, FETCH_USER_SESSIONS } from './queries'
-import { FullPageLoader, Icon, Placeholder, CardWrapper } from '../../components'
+import { FullPageLoader, Placeholder, CardWrapper, Header, SectionTitle } from '../../components'
 import TopicPreview from './TopicPreview'
 import { useQuery } from '@apollo/react-hooks'
 
@@ -67,16 +67,13 @@ const Home = ({ history }) => {
   return (
     <Wrapper>
       <GreetingWrapper>
-        Hello, {user ? <span className='text-capitalize'>{user.first_name}</span> : 'Study Buddy'}!
+        <Header>Hello, {user ? <span className='text-capitalize'>{user.first_name}</span> : 'Study Buddy'}!</Header>
         <CreateButtonContainer>
-          <CreateTopicButton id='button' onClick={() => history.push('/topic/create')}>
-            <AddIcon name='add' />
-            Create a Topic
-          </CreateTopicButton>
+          <Button text='Create Topic' type='primary' onClick={() => history.push('/topic/create')} />
         </CreateButtonContainer>
       </GreetingWrapper>
       <SectionWrapper>
-        <Title>Your sessions</Title>
+        <SectionTitle>Your sessions</SectionTitle>
         <TopicsContainer>
           <Belt className='w-100'>
             {userSessions.length > 0 ? (
@@ -123,7 +120,7 @@ const Home = ({ history }) => {
         </TopicsContainer>
       </SectionWrapper> */}
       <SectionWrapper>
-        <Title>Recent Topics</Title>
+        <SectionTitle>Recent Topics</SectionTitle>
         <TopicsContainer>
           <Belt className='w-100'>
             {recentTopics.length > 0 ? (
@@ -160,16 +157,8 @@ const GreetingWrapper = styled.div`
 
 const CreateButtonContainer = styled.div`
   justify-content: left;
-`
-
-const CreateTopicButton = styled(Button)`
-  background: linear-gradient(#ffa726, #ff9800);
-  font-size: 12px;
-  border: none;
-`
-
-const AddIcon = styled(Icon)`
-  width: 30%;
+  width: 17vh;
+  margin-top: 5px;
 `
 
 const Belt = styled.div`
@@ -185,12 +174,6 @@ const TopicsContainer = styled.div`
   height: 100%;
   margin-left: -40px;
   margin-right: -40px;
-`
-
-const Title = styled.div`
-  color: #c5cae9;
-  font-size: 12px;
-  margin-bottom: 4px;
 `
 
 const SectionWrapper = styled.div`

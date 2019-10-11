@@ -6,7 +6,7 @@ import * as yup from 'yup'
 import { withFirebase } from '../hocs'
 import { withRouter } from 'react-router-dom'
 import Alert from '../components/Alert'
-import { StyledInput, FormWrapper, Title, OverlayLoader, Button, Icon } from '../components'
+import { StyledInput, FormWrapper, OverlayLoader, Button, Icon, Label, Header } from '../components'
 
 const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
   return (
@@ -50,11 +50,11 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
               <Close onClick={() => history.push('/')}>
                 <Icon name='close' />
               </Close>
-              <Title>
+              <Header>
                 Welcome back,
                 <br />
-                study buddy!
-              </Title>
+                Study Buddy!
+              </Header>
               {status ? <Alert {...status} data-cy='alert' /> : null}
               <FormItem>
                 <Label>
@@ -94,6 +94,7 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
                     history.push('/sign-up' + search)
                   }
                   text='No account? Sign up!'
+                  type='action'
                 />
                 <Button data-cy='submit' onClick={handleSubmit} text='Sign in' type='primary' />
               </ButtonGroup>
@@ -112,11 +113,6 @@ const Close = styled.div`
   opacity: 0.5;
   right: 0;
   top: 0;
-`
-
-const Label = styled.div`
-  color: #e8eaf6;
-  font-size: 12px;
 `
 
 const Hint = styled.span`
