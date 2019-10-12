@@ -67,7 +67,9 @@ const ManageTopic = ({
           : null}
       </div>
       <hr />
-      <Button text='See results' className='mb-2 p-4' />
+      <Button text='See results' className='mb-2 p-4' onClick={() => {
+        history.push(`/topic/${id}/analytics`)
+      }} />
       <Button
         text='List of allowed users'
         onClick={() => {

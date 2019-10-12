@@ -44,8 +44,8 @@ const FETCH_USER_ACTIVITY = gql`
 `
 
 const CREATE_TOPIC_FEEDBACK = gql`
-  mutation createTopicFeedback($sessionId: ID!, $rating: String, $comment: String) {
-    create_topic_feedback(sessionId: $sessionId, rating: $rating, comment: $comment)
+  mutation createTopicFeedback($topicId: ID!, $rating: String, $comment: String) {
+    create_topic_feedback(topicId: $topicId, rating: $rating, comment: $comment)
   }
 `
 
@@ -62,6 +62,15 @@ const FETCH_USER_RATING = gql`
           type
         }
       }
+    }
+  }
+`
+
+const FETCH_SESSION = gql`
+  query fetchSession($sessionId: uuid!) {
+    session(where: {id: {_eq: $sessionId}}) {
+      topic_id
+      id
     }
   }
 `
@@ -94,27 +103,31 @@ const Result = ({
       }
     }
   )
+  const { data: sessionData, error: sessionError, loading: sessionLoading } = useQuery(
+    FETCH_SESSION,
+    {
+      skip: !sessionId,
+      variables: {
+        sessionId
+      }
+    }
+  )
 
-  if (error) {
+  const componentError = error || ratingError || sessionError
+  if (componentError) {
     console.error('error@result:1')
     globalDispatch({
-      networkError: error.message
+      networkError: componentError.message
     })
     return null
   }
-  if (ratingError) {
-    console.error('error@result:2')
-    globalDispatch({
-      networkError: ratingError.message
-    })
-    return null
-  }
-  if (loading || ratingLoading) {
+  if (loading || ratingLoading || sessionLoading) {
     return <FullPageLoader />
   }
   const answerActivities = data.user_activity
   console.log('answerActivities:', answerActivities, rating)
   const previousRating = getObjectValue(ratingData, 'user_activity[0].topic.ratings[0].type')
+  const session = getObjectValue(sessionData, 'session[0]')
   return (
     <Wrapper>
       {/* <Paper className='bg-transparent'> */}
@@ -241,7 +254,7 @@ const Result = ({
                 try {
                   await createTopicFeedback({
                     variables: {
-                      sessionId,
+                      topicId: session.topic_id,
                       rating,
                       comment
                     }

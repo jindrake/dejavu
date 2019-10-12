@@ -1,0 +1,24 @@
+- args:
+    role: user
+    table:
+      name: topic_comment
+      schema: public
+  type: drop_insert_permission
+- args:
+    permission:
+      check: {}
+      columns:
+      - content
+      - id
+      - parent_comment_id
+      - topic_id
+      - user_id
+      localPresets:
+      - key: ""
+        value: ""
+      set: {}
+    role: user
+    table:
+      name: topic_comment
+      schema: public
+  type: create_insert_permission

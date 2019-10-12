@@ -61,7 +61,7 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
       initialValues={{
         name: '',
         description: '',
-        isPrivate: true,
+        isPrivate: false,
         fieldOfStudy: user.fields.length ? user.fields[0].field : ''
       }}
       validationSchema={yup.object().shape({

@@ -285,7 +285,7 @@ const Routes = ({ userEmail, firebase }) => {
         />
         <Route
           exact
-          path='/analytics'
+          path='/topic/:id/analytics'
           render={(routeProps) => {
             document.title = 'Topic Analytics'
             return user ? <Analytics {...routeProps} user={user} /> : <Redirect to='/' />

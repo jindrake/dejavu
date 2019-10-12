@@ -1,0 +1,18 @@
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - content
+      - created_at
+      - id
+      - parent_comment_id
+      - topic_id
+      - updated_at
+      - user_id
+      filter: {}
+      limit: null
+    role: user
+    table:
+      name: topic_comment
+      schema: public
+  type: create_select_permission

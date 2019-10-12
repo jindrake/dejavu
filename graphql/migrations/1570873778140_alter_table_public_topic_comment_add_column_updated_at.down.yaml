@@ -1,0 +1,5 @@
+- args:
+    sql: |-
+      DROP TRIGGER IF EXISTS "set_public_topic_comment_updated_at" ON "public"."topic_comment";
+      ALTER TABLE "public"."topic_comment" DROP COLUMN "updated_at";
+  type: run_sql

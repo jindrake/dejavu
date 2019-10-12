@@ -1,0 +1,6 @@
+- args:
+    relationship: parent_comment
+    table:
+      name: topic_comment
+      schema: public
+  type: drop_relationship

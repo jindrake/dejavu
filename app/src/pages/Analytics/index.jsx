@@ -9,86 +9,54 @@ const users = [
   { name: 'Angel', score: 10 },
   { name: 'Nica', score: 70 },
   { name: 'Joel', score: 40 }
-
 ]
 
-const Analytics = () => (
+const Analytics = ({
+  match: {
+    params: { id }
+  }
+}) => (
   <Wrapper>
     <TopicInfoWrapper>
       <Title>Topic Title</Title>
-      <AverageScore>
-        80
-      </AverageScore>
-      <AverageScoreText>
-        Average Score
-      </AverageScoreText>
+      <AverageScore>80</AverageScore>
+      <AverageScoreText>Average Score</AverageScoreText>
       <StatisticsWrapper>
         <StatisticsContainer>
           <StatisticText>
-            <StatisticalData>
-              90
-            </StatisticalData>
-            <Label>
-              Users took the exam
-            </Label>
+            <StatisticalData>90</StatisticalData>
+            <Label>Users took the exam</Label>
           </StatisticText>
         </StatisticsContainer>
         <StatisticsContainer>
           <StatisticText>
-            <StatisticalData>
-              90%
-            </StatisticalData>
-            <Label>
-              Users finished answering
-            </Label>
+            <StatisticalData>90%</StatisticalData>
+            <Label>Users finished answering</Label>
           </StatisticText>
         </StatisticsContainer>
         <StatisticsContainer>
           <StatisticText>
-            <StatisticalData>
-              90%
-            </StatisticalData>
-            <Label>
-              exceeded from 50%
-            </Label>
+            <StatisticalData>90%</StatisticalData>
+            <Label>exceeded from 50%</Label>
           </StatisticText>
         </StatisticsContainer>
       </StatisticsWrapper>
     </TopicInfoWrapper>
     <TableWrapper>
-      <Leaderboard>
-        Leaderboard
-      </Leaderboard>
-      <Search
-        type='text'
-        name='search'
-        id='search'
-        placeholder='Search user...'
-      />
+      <Leaderboard>Leaderboard</Leaderboard>
+      <Search type='text' name='search' id='search' placeholder='Search user...' />
       <ButtonWrapper>
-        <SortText>
-          Sort by:
-        </SortText>
-        <StyledButton>
-          Name
-        </StyledButton>
-        <StyledButton>
-          Rank
-        </StyledButton>
-        <StyledButton>
-          Items Answered
-        </StyledButton>
+        <SortText>Sort by:</SortText>
+        <StyledButton>Name</StyledButton>
+        <StyledButton>Rank</StyledButton>
+        <StyledButton>Items Answered</StyledButton>
       </ButtonWrapper>
       <ResultsWrapper>
         {users.map((user, index) => (
           <ListGroup>
             <ListGroupItem>
-              <Rank>
-                1
-              </Rank>
-              <Score>
-                {user.score}
-              </Score>
+              <Rank>1</Rank>
+              <Score>{user.score}</Score>
               <UserWrapper>
                 {/* <Avatar name='user' /> */}
                 <Name>{user.name}</Name>
@@ -136,12 +104,11 @@ const ResultsWrapper = styled.div`
 const StatisticsWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  textAlign: center;
+  textalign: center;
   margin-top: 10;
 `
 
-const Search = styled(Input)`
-`
+const Search = styled(Input)``
 
 const UserWrapper = styled.div`
   justify-content: space-between;
@@ -198,12 +165,12 @@ const Title = styled.div`
   font-size: 20px;
   text-align: center;
   font-weight: bold;
-  color: #FFFFFF;
+  color: #ffffff;
   margin-bottom: 3vh;
 `
 
 const AverageScoreText = styled.div`
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 15px;
   text-align: center;
   justify-content: center;
@@ -219,16 +186,16 @@ const StatisticsContainer = styled.div`
 `
 
 const StatisticalData = styled.div`
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 18px;
 `
 
 const Label = styled.div`
-  font-size: 12px;       
+  font-size: 12px;
 `
 
 const StatisticText = styled.div`
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 12px;
   display: inline;
   text-align: center;
@@ -238,7 +205,7 @@ const StatisticText = styled.div`
 const AverageScore = styled.div`
   text-align: center;
   justify-content: center;
-  color: #FFFFFF;
+  color: #ffffff;
   font-size: 60px;
 `
 
@@ -248,7 +215,7 @@ const TopicInfoWrapper = styled.div`
 `
 
 const TableWrapper = styled.div`
-  background-color: #FFFFFF;
+  background-color: #ffffff;
   border-radius: 20px 20px 0px 0px;
   width: 100%;
   height: 50vh;

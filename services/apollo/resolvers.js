@@ -115,7 +115,11 @@ module.exports = {
         const userQuestionIds = userActivities.map((activity) => activity.question_id)
         // see next question that's unanswered
         let nextQuestion = null
-        console.log('Session Questions:', sessionQuestions.map(x => x.question_id), userQuestionIds)
+        console.log(
+          'Session Questions:',
+          sessionQuestions.map((x) => x.question_id),
+          userQuestionIds
+        )
         for (let sessionQuestion of sessionQuestions) {
           if (!userQuestionIds.includes(sessionQuestion.question_id)) {
             nextQuestion = sessionQuestion.question
@@ -381,6 +385,20 @@ module.exports = {
         sentry.captureMessage('get_user_sessions:', error.message)
         throw new ApolloError(error)
       }
+    },
+    get_average_score: async (parent, args, context) => {
+      try {
+        // const { topicId } = args
+        if (!context.user) {
+          throw new ApolloError('Authentication error')
+        }
+        // fetch topic
+      } catch (error) {
+        console.log(error.message)
+        sentry.captureException(error)
+        sentry.captureMessage('get_average_score:', error.message)
+        throw new ApolloError(error)
+      }
     }
   },
   Mutation: {
@@ -389,37 +407,37 @@ module.exports = {
         if (!context.user) {
           throw new ApolloError('Authentication error')
         }
-        const { sessionId, rating, comment } = args
+        const { rating, comment, topicId } = args
         console.log(args, context.user)
         if (!rating && !comment) {
           throw new ApolloError('At least a rating or a comment is required')
         }
         // get session with topic
-        const {
-          data: {
-            session: [session]
-          }
-        } = await graphql.query(
-          gql`
-            query getSession($sessionId: uuid!, $userId: uuid!) {
-              session(
-                where: {
-                  _and: [
-                    { id: { _eq: $sessionId } }
-                    { session_users: { user_id: { _eq: $userId } } }
-                  ]
-                }
-              ) {
-                id
-                topic_id
-              }
-            }
-          `,
-          {
-            sessionId,
-            userId: context.user.id
-          }
-        )
+        // const {
+        //   data: {
+        //     session: [session]
+        //   }
+        // } = await graphql.query(
+        //   gql`
+        //     query getSession($sessionId: uuid!, $userId: uuid!) {
+        //       session(
+        //         where: {
+        //           _and: [
+        //             { id: { _eq: $sessionId } }
+        //             { session_users: { user_id: { _eq: $userId } } }
+        //           ]
+        //         }
+        //       ) {
+        //         id
+        //         topic_id
+        //       }
+        //     }
+        //   `,
+        //   {
+        //     sessionId,
+        //     userId: context.user.id
+        //   }
+        // )
         if (rating) {
           await graphql.mutate(
             gql`
@@ -432,7 +450,7 @@ module.exports = {
               }
             `,
             {
-              topicId: session.topic_id,
+              topicId,
               userId: context.user.id
             }
           )
@@ -448,7 +466,7 @@ module.exports = {
               rating: {
                 id: uuid(),
                 user_id: context.user.id,
-                topic_id: session.topic_id,
+                topic_id: topicId,
                 type: rating
               }
             }
@@ -469,9 +487,8 @@ module.exports = {
             {
               comment: {
                 id: commentId,
-                topic_id: session.topic_id,
+                topic_id: topicId,
                 content: comment,
-                session_id: sessionId,
                 user_id: context.user.id
               }
             }
@@ -491,16 +508,15 @@ module.exports = {
               id: uuid(),
               activity_type: rating ? 'rate' : comment ? 'comment' : 'rate',
               user_id: context.user.id,
-              topic_id: session.topic_id,
-              topic_comment_id: comment ? commentId : null,
-              topic_session_id: sessionId
+              topic_id: topicId,
+              topic_comment_id: comment ? commentId : null
             }
           }
         )
       } catch (error) {
         console.log(error.message)
         sentry.captureException(error)
-        sentry.captureMessage('crate_topic_feedback:', error.message)
+        sentry.captureMessage('create_topic_feedback:', error.message)
         throw new ApolloError(error)
       }
     },
@@ -701,6 +717,7 @@ module.exports = {
                 session_users {
                   user_id
                 }
+                topic_id
               }
             }
           `,
@@ -724,7 +741,8 @@ module.exports = {
               answer: JSON.stringify(answers),
               user_id: userId,
               question_id: questionId,
-              activity_type: 'answer'
+              activity_type: 'answer',
+              topic_id: session.topic_id
             }
           }
         )

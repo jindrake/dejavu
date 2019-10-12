@@ -1,0 +1,3 @@
+- args:
+    sql: DROP TABLE "public"."topic_comment_like"
+  type: run_sql
