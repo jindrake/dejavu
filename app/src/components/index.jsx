@@ -15,13 +15,21 @@ export const StyledInput = styled(Input)`
   color: #1a237e;
   padding-left: 12px;
   padding-right: 12px;
-  /* background: linear-gradient(#e8eaf6, #c5cae9); */
   border-radius: 6px;
   border: none;
   outline: none;
   :focus {
     background: #e8eaf6;
   }
+`
+
+export const DejavuCard = styled.div`
+  color: #1a237e;
+  font-size: medium;
+  background-color: white;
+  padding: 20px;
+  margin: 5px;
+  border-radius: 5px;
 `
 
 export const FormWrapper = styled.div`
@@ -195,6 +203,8 @@ const PlaceholderWrapper = styled.div`
   text-align: center;
   justify-content: center;
   text-align: center;
+  padding-left: 10%;
+  padding-right: 10%;
 `
 
 export const Close = styled.div`
@@ -207,11 +217,9 @@ export const Close = styled.div`
 `
 
 export const CardWrapper = styled.div`
-  background: linear-gradient(0deg, #95d6dc, #addee9, #c5e6f3, #dbeffa, #f0f8ff);
-  display: flex;
-  flex-direction: column;
+  background: linear-gradient(45deg, #7851a9, #815abc, #8964cf, #916ee3, #9878f8);
   justify-content: center;
-  color: #015249;
+  color: #ffffff;
   width: 200px;
   padding: 20px;
   margin-left: 20px;
@@ -231,14 +239,14 @@ export const Header = styled.div`
   font-family: 'Open Sans';
   font-weight: 800;
   font-size: 3vh;
-  color: #005761;
+  color: #412a7a;
 `
 
 export const SectionTitle = styled.div`
   font-family: 'Open Sans';
   font-weight: 600;
   font-size: 2.25vh;
-  color: #005761;
+  color: #412a7a;
 `
 
 export const CardTitle = styled.div`
@@ -255,5 +263,5 @@ export const Label = styled.div`
   font-family: 'Open Sans';
   font-weight: 600;
   font-size: 2.15vh;
-  color: #015249;
+  color: #412a7a;
 `

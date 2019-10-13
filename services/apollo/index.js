@@ -17,6 +17,9 @@ const typeDefs = `
     ): String,
     get_user_sessions(
       userId: ID!
+    ): String,
+    get_average_score(
+      topicId: ID
     ): String
   }
   type Mutation {
@@ -32,7 +35,7 @@ const typeDefs = `
       userId: ID!
     ): String,
     create_topic_feedback(
-      sessionId: ID!,
+      topicId: ID!,
       rating: String,
       comment: String
     ): String,

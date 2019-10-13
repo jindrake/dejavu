@@ -6,7 +6,7 @@ const Body = styled.div`
   font-family: 'Montserrat', 'Open Sans';
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background: linear-gradient(45deg, #01796f, #008875, #009779, #18a67b, #30b57b, #42c07d, #52ca7f, #63d580, #71de86, #7ee88c, #8bf192, #98fb98);
+  background: white;
   background-size: 200% 200%;
   position: absolute;
   overflow: hidden;

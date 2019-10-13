@@ -100,17 +100,18 @@ const Home = ({ history }) => {
                   <br />
                   <CardDescription>
                     status:
+                    <br />
                     {session.current_user ? (
                       session.current_user_id === user.id ? (
-                        <span className='text-warning'>Your turn!</span>
+                        <CardStatus type='warning'>Your turn!</CardStatus>
                       ) : (
-                        <span className='text-warning'>
+                        <CardStatus type='warning'>
                           Waiting for {session.current_user.first_name}
-                        </span>
+                        </CardStatus>
                       )
                     ) : (
                       <div>
-                        <span className='text-success'>Finished</span>
+                        <CardStatus type='success'>Finished</CardStatus>
                         <br />
                         Click to view results
                       </div>
@@ -155,6 +156,10 @@ const Home = ({ history }) => {
     </Wrapper>
   )
 }
+
+const CardStatus = styled.span`
+  color: ${(props) => props.type === 'success' ? '#8cff9e' : '#fff700'};
+`
 
 const Wrapper = styled.div`
   position: absolute;

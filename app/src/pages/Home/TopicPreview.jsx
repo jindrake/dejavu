@@ -48,6 +48,9 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
           <CardDescription key={index}>{field}</CardDescription>
         ))}
       </div>
+      <CardDescription
+        className='mt-3 mb-3'
+      >{date.toDateString()}</CardDescription>
       <RatingContainer>
         <Ratings>
           <StyledIcon icon={faThumbsUp} />{'   '}
@@ -72,11 +75,11 @@ const RatingContainer = styled.div`
 const StyledIcon = styled(FontAwesomeIcon)`
   width: 100%;
   justify-content: right;
-  color: #015249;
+  color: #ffffff;
 `
 
 const Ratings = styled.div`
-  color: #015249;
+  color: #ffffff;
   font-size: 14px;
   opacity: 0.8;
   line-height: 12px;

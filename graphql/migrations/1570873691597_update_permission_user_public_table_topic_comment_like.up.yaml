@@ -1,0 +1,14 @@
+- args:
+    permission:
+      allow_aggregations: false
+      columns:
+      - rating
+      - topic_comment_id
+      - user_id
+      filter: {}
+      limit: null
+    role: user
+    table:
+      name: topic_comment_like
+      schema: public
+  type: create_select_permission

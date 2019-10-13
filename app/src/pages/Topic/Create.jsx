@@ -1,14 +1,19 @@
 import React from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup'
-import { FormGroup } from 'reactstrap'
+import { FormGroup, Label } from 'reactstrap'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import uuid from 'uuid/v4'
-import { StyledInput, StyledCheckbox, OverlayLoader, FormWrapper, Label, Header, Button } from '../../components'
+import {
+  StyledInput,
+  OverlayLoader,
+  FormWrapper,
+  Button,
+  Header
+} from '../../components'
 import Alert from '../../components/Alert'
 import { getObjectValue, useStateValue } from '../../libs'
-// import ErrorText from '../../components/ErrorText'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
@@ -63,10 +68,9 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
           .string()
           .min(3, 'Enter Title at least 3 characters')
           .required('Required'),
-        description: yup.string().required('Required'),
+        description: yup.string(),
         isPrivate: yup.boolean(),
         fieldOfStudy: yup.string().required('Required')
-        // uri: yup.string().required('Required')
       })}
       onSubmit={(values, { setSubmitting, setStatus }) => {
         setSubmitting(true)
@@ -78,14 +82,7 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
               creator_id: user.id,
               description: values.description,
               id: topicId,
-              // uri: values.uri,
               is_private: values.isPrivate
-              // target_fields: {
-              //   data: {
-              //     field: values.fieldOfStudy,
-              //     id: uuid()
-              //   }
-              // }
             }
           }
         })
@@ -143,7 +140,6 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
                 }}
                 invalid={errors.name && touched.name}
               />
-              {/* <ErrorText text={touched.name && errors.name} /> */}
             </FormGroup>
             <FormGroup>
               <Label>
@@ -157,7 +153,6 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
                 onChange={handleChange}
                 invalid={errors.description && touched.description}
               />
-              {/* <ErrorText text={touched.description && errors.description} /> */}
             </FormGroup>
             <FormGroup>
               <Label>
@@ -179,18 +174,6 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
                     </option>
                   ))}
               </StyledInput>
-            </FormGroup>
-            <FormGroup>
-              <StyledCheckbox
-                label='make topic private'
-                type='checkbox'
-                id='isPrivate'
-                name='isPrivate'
-                onChange={(event) => {
-                  setFieldValue('isPrivate', event.target.checked)
-                }}
-                value={!!values.isPrivate}
-              />
             </FormGroup>
             {status && <Alert {...status} />}
             <Button type='action' text='Proceed' onClick={handleSubmit} />

@@ -1,12 +1,17 @@
 import React, { useState } from 'react'
 import { Formik, FieldArray } from 'formik'
 import { withRouter } from 'react-router-dom'
-import { Button, Input, FormText, CustomInput, Alert } from 'reactstrap'
+import {
+  Input,
+  FormText,
+  Alert,
+  Label
+} from 'reactstrap'
 import compose from 'recompose/compose'
 import { useQuery, useMutation, useSubscription } from '@apollo/react-hooks'
 import uuid from 'uuid/v4'
 import { getObjectValue, useStateValue } from '../../libs'
-import styled from 'styled-components'
+import Img from 'react-image'
 import {
   REMOVE_QUESTION,
   INSERT_QUESTION,
@@ -14,27 +19,37 @@ import {
   FETCH_TOPIC_QUESTIONS,
   FETCH_USER_PREVIOUS_QUESTIONS,
   INSERT_QUESTION_TOPIC_RELATIONSHIP,
-  PUBLISH_TOPIC
+  PUBLISH_TOPIC,
+  UPDATE_QUESTION
 } from './queries'
-import { Title, OverlayLoader, SubText } from '../../components'
+import { Title, OverlayLoader, SubText, Button, DejavuCard } from '../../components'
+import Dropzone from '../../components/Dropzone'
+
 import {
   CurrentQuestionsSection,
   CenterText,
   StyledForm,
-  RightText,
   UnderlineInput,
   RemoveButton,
   ChoiceItem,
-  Hint,
-  QuestionCard
+  Hint
 } from '../../components/Topic'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import {
+  faTimesCircle,
+  faCheckCircle,
+  faArrowRight
+} from '@fortawesome/free-solid-svg-icons'
+import { withFirebase } from '../../hocs'
 
 const AddQuestions = ({
   match: {
     params: { id }
   },
-  user
+  user,
+  firebase
 }) => {
+  const [currentQuestionPhoto, setCurrentQuestionPhoto] = useState(null)
   const [, globalDispatch] = useStateValue()
   const [numberOfQuestions, setNumberOfQuestions] = useState(0)
   const [field, setField] = useState(null)
@@ -72,85 +87,67 @@ const AddQuestions = ({
   const [addQuestion, { loading: addQuestionLoading, error: addQuestionError }] = useMutation(
     INSERT_QUESTION_TOPIC_RELATIONSHIP
   )
+  const [
+    updateQuestion,
+    { loading: updateQuestionLoading, error: updateQuestionError }
+  ] = useMutation(UPDATE_QUESTION)
   const {
     data: fetchTopicData,
     error: fetchTopicError,
-    loading: fetchTopicLoading
-  } = useSubscription(FETCH_TOPIC, {
+    loading: fetchTopicLoading,
+    refetch: refetchTopic
+  } = useQuery(FETCH_TOPIC, {
     skip: !id,
     variables: {
       id: id
     }
   })
 
+  console.log(
+    fetchTopicLoading,
+    insertQuestionLoading,
+    publishTopicLoading,
+    topicQuestionsLoading,
+    removeQuestionLoading,
+    userQuestionsLoading,
+    addQuestionLoading
+  )
+
+  const componentError =
+    fetchTopicError ||
+    insertQuestionError ||
+    publishTopicError ||
+    topicQuestionsError ||
+    removeQuestionError ||
+    userQuestionsError ||
+    addQuestionError ||
+    updateQuestionError
+
+  if (componentError) {
+    console.error('error@questions:1')
+    globalDispatch({
+      networkError: componentError.message
+    })
+    return null
+  }
+
   if (
     fetchTopicLoading ||
     insertQuestionLoading ||
     publishTopicLoading ||
-    topicQuestionsLoading ||
+    // topicQuestionsLoading ||
     removeQuestionLoading ||
     userQuestionsLoading ||
-    addQuestionLoading
+    addQuestionLoading ||
+    updateQuestionLoading
   ) {
     return <OverlayLoader />
-  }
-
-  if (fetchTopicError) {
-    console.error('error@questions:1')
-    globalDispatch({
-      networkError: fetchTopicError.message
-    })
-    return null
-  }
-
-  if (insertQuestionError) {
-    console.error('error@questions:2')
-    globalDispatch({
-      networkError: insertQuestionError.message
-    })
-    return null
-  }
-
-  if (publishTopicError) {
-    console.error('error@questions:3')
-    globalDispatch({
-      networkError: publishTopicError.message
-    })
-    return null
-  }
-  if (topicQuestionsError) {
-    console.error('error@questions:4')
-    globalDispatch({
-      networkError: topicQuestionsError.message
-    })
-    return null
-  }
-  if (removeQuestionError) {
-    console.error('error@questions:5')
-    globalDispatch({
-      networkError: removeQuestionError.message
-    })
-    return null
-  }
-  if (userQuestionsError) {
-    console.error('error@questions:6')
-    globalDispatch({
-      networkError: userQuestionsError.message
-    })
-    return null
-  }
-  if (addQuestionError) {
-    console.error('error@questions:7')
-    globalDispatch({
-      networkError: addQuestionError.message
-    })
-    return null
   }
   if (userQuestionsData && userQuestionsData.get_topic_suggested_questions && !previousQuestions) {
     setPreviousQuestions(JSON.parse(userQuestionsData.get_topic_suggested_questions) || [])
   }
 
-  const topicQuestions = topicQuestionsData.question_topic
+  const topicQuestions = topicQuestionsData ? topicQuestionsData.question_topic : []
   if (topicQuestions.length !== numberOfQuestions) {
     setNumberOfQuestions(topicQuestions.length)
   }
@@ -168,7 +165,8 @@ const AddQuestions = ({
         initialValues={{
           question: '',
           choices: [],
-          correctAnswers: []
+          correctAnswers: [],
+          newChoiceValue: ''
         }}
         validate={(values) => {
           let errors = {}
@@ -186,49 +184,93 @@ const AddQuestions = ({
           }
           return errors
         }}
-        onSubmit={(values, { setSubmitting, setStatus }) => {
-          setSubmitting(true)
-          const questionId = uuid()
-          let correctAnswers = values.choices.filter((_, index) => !!values.correctAnswers[index])
-          let dummyAnswers = values.choices.filter((_, index) => !values.correctAnswers[index])
-          insertQuestion({
-            variables: {
-              questionObject: {
-                question: values.question,
-                creator_id: user.id,
-                type: 'multiple_choice',
-                id: questionId,
-                answers: {
-                  data: [
-                    ...correctAnswers.map((answer) => ({
-                      answer,
-                      id: uuid(),
-                      is_correct: true
-                    })),
-                    ...dummyAnswers.map((answer) => ({
-                      answer,
-                      id: uuid()
-                    }))
-                  ]
-                }
-              },
-              questionTopic: {
-                id: uuid(),
-                question_id: questionId,
-                topic_id: topic.id
-              }
-            }
+        onSubmit={async (values) => {
+          globalDispatch({
+            loading: true
           })
-            .then(() => {
-              setSubmitting(false)
+          try {
+            const questionId = uuid()
+            let correctAnswers = values.choices.filter((_, index) => !!values.correctAnswers[index])
+            let dummyAnswers = values.choices.filter((_, index) => !values.correctAnswers[index])
+            console.log('IMG:', currentQuestionPhoto)
+            await insertQuestion({
+              variables: {
+                questionObject: {
+                  question: values.question,
+                  creator_id: user.id,
+                  type: 'multiple_choice',
+                  id: questionId,
+                  answers: {
+                    data: [
+                      ...correctAnswers.map((answer) => ({
+                        answer,
+                        id: uuid(),
+                        is_correct: true
+                      })),
+                      ...dummyAnswers.map((answer) => ({
+                        answer,
+                        id: uuid()
+                      }))
+                    ]
+                  }
+                },
+                questionTopic: {
+                  id: uuid(),
+                  question_id: questionId,
+                  topic_id: topic.id
+                }
+              }
             })
-            .catch((error) => {
-              setSubmitting(false)
-              console.error('error@questions:8')
+            if (currentQuestionPhoto) {
+              const uploadTask = firebase.storage
+                .ref(`images/${user.id}/${new Date()}-${currentQuestionPhoto.name}`)
+                .put(currentQuestionPhoto, {
+                  contentType: currentQuestionPhoto.type
+                })
+              uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                  console.log(snapshot.bytesTransferred, snapshot.totalBytes)
+                  if (snapshot.bytesTransferred === snapshot.totalBytes) {
+                    setCurrentQuestionPhoto(null)
+                    globalDispatch({
+                      loading: false
+                    })
+                  }
+                },
+                (error) => {
+                  console.log(error)
+                  throw error
+                },
+                async () => {
+                  const url = await firebase.storage
+                    .ref(`images/${user.id}`)
+                    .child(currentQuestionPhoto.name)
+                    .getDownloadURL()
+                  console.log(url)
+                  await updateQuestion({
+                    variables: {
+                      questionId: questionId,
+                      data: {
+                        img_url: url
+                      }
+                    }
+                  })
+                }
+              )
+            } else {
+              console.log('setsubmit false in else')
               globalDispatch({
-                networkError: error.message
+                loading: false
               })
+            }
+          } catch (error) {
+            console.error('error@questions:8:', error.message)
+            globalDispatch({
+              networkError: error.message,
+              loading: false
             })
+          }
         }}
         render={({
           values,
@@ -237,30 +279,55 @@ const AddQuestions = ({
           errors,
           touched,
           handleSubmit,
-          isSubmitting
+          setTouched
         }) => {
           return (
             <>
               <Title>Add Question </Title>
               {touched.question && errors.question && <Hint>{errors.question}</Hint>}
-              <Input
-                type='text'
-                id={`question`}
-                name={`question`}
-                value={values.question}
-                onChange={handleChange}
-                invalid={errors.question && touched.question}
-              />
-
+              <div className='d-flex'>
+                <Input
+                  type='textarea'
+                  id={`question`}
+                  name={`question`}
+                  value={values.question}
+                  onChange={handleChange}
+                  invalid={errors.question && touched.question}
+                  className='mb-1'
+                />
+              </div>
+              <div className='mb-3'>
+                <Label>Add an image to this question</Label>
+                {currentQuestionPhoto && (
+                  <div className='d-flex flex-column justify-content-center'>
+                    <div>
+                      <img
+                        src={currentQuestionPhoto && URL.createObjectURL(currentQuestionPhoto)}
+                        style={{ borderRadius: '5px', width: '100%' }}
+                      />
+                    </div>
+                  </div>
+                )}
+                <Dropzone
+                  className='w-100 p-1 bg-secondary btn'
+                  text={'Add question image'}
+                  centered
+                  onUpload={(files) => {
+                    if (!files[0]) return
+                    setCurrentQuestionPhoto(files[0])
+                  }}
+                  accept='image/*'
+                  max={1}
+                  onRemove={() => {
+                    setCurrentQuestionPhoto(null)
+                  }}
+                />
+              </div>
+              <Label>Add choices</Label>
               <FieldArray
                 name='choices'
                 render={(arrayHelpers) => (
                   <div>
-                    <CenterText>
-                      <Button type='button' color='link' onClick={() => arrayHelpers.push('')}>
-                        + add choice
-                      </Button>
-                    </CenterText>
                     {errors.choices && touched.choices ? (
                       <CenterText>
                         <Hint>{errors.choices}</Hint>
@@ -270,39 +337,54 @@ const AddQuestions = ({
                         <Hint>{errors.correctAnswers}</Hint>
                       </CenterText>
                     ) : null}
+                    <div className='d-flex px-3 mb-3'>
+                      <UnderlineInput
+                        type='text'
+                        name={'newChoiceValue'}
+                        value={values.newChoiceValue}
+                        bsSize='sm'
+                        onChange={handleChange}
+                        autoFocus
+                      />
+                      <FontAwesomeIcon
+                        icon={faArrowRight}
+                        className='ml-2 text-white'
+                        onClick={() => {
+                          if (values.newChoiceValue) {
+                            arrayHelpers.push(values.newChoiceValue)
+                            setFieldValue('newChoiceValue', '')
+                          }
+                        }}
+                      />
+                    </div>
+                    {1 && console.log(values)}
                     {values.choices && values.choices.length > 0 ? (
                       values.choices.map((_, index) => (
                         <div key={index}>
-                          <ChoiceItem className='pl-3'>
-                            <CustomInput
-                              type='checkbox'
-                              id={`isCorrect:${index}`}
-                              name={`isCorrect:${index}`}
-                              checked={!!values.correctAnswers[index]}
-                              onChange={(event) => {
+                          <ChoiceItem className='px-3 text-white'>
+                            <FontAwesomeIcon
+                              icon={faCheckCircle}
+                              className={'pt-1 '.concat(
+                                values.correctAnswers[index] ? 'text-success' : ''
+                              )}
+                              onClick={(event) => {
                                 const correctAnswers = values.correctAnswers
-                                correctAnswers[index] = event.target.checked
+                                correctAnswers[index] = !correctAnswers[index]
                                 setFieldValue('correctAnswers', correctAnswers)
                               }}
                             />
-
-                            <UnderlineInput
-                              type='text'
-                              id={`choices.${index}`}
-                              name={`choices.${index}`}
-                              value={values.choices[index]}
-                              bsSize='sm'
-                              onChange={handleChange}
-                            />
-                            <RemoveButton
-                              size='sm'
-                              color='link'
+                            <div className='w-100 text-center'>{values.choices[index]}</div>
+                            <FontAwesomeIcon
+                              icon={faTimesCircle}
+                              className='pt-1'
                               onClick={() => {
+                                const correctAnswers = values.correctAnswers
+                                correctAnswers.splice(index, 1)
+                                setFieldValue('correctAnswers', correctAnswers)
                                 arrayHelpers.remove(index)
+                                setTouched('choices', false)
                               }}
-                            >
-                              remove
-                            </RemoveButton>
+                            />
                           </ChoiceItem>
                         </div>
                       ))
@@ -323,11 +405,9 @@ const AddQuestions = ({
                   </div>
                 )}
               />
-              <RightText>
-                <Button color='success' onClick={handleSubmit} size='sm'>
-                  {isSubmitting || insertQuestionLoading ? 'Saving' : 'Add'}
-                </Button>
-              </RightText>
+              <div className='w-100 mt-3'>
+                <Button type='success' onClick={handleSubmit} text='Add question' />
+              </div>
             </>
           )
         }}
@@ -337,18 +417,18 @@ const AddQuestions = ({
         <>
           <Button
             className='form-control'
-            color={topic.is_published ? 'warning' : 'success'}
-            onClick={() => {
-              publishTopic({
+            type={topic.is_published ? 'warning' : 'success'}
+            onClick={async () => {
+              await publishTopic({
                 variables: {
                   topicId: topic.id,
                   isPublished: !topic.is_published
                 }
               })
+              await refetchTopic()
             }}
-          >
-            {topic.is_published ? 'Unpublish' : 'Publish'}
-          </Button>
+            text={topic.is_published ? 'Unpublish' : 'Publish'}
+          />
           <hr />
         </>
       ) : (
@@ -359,7 +439,7 @@ const AddQuestions = ({
         </Alert>
       )}
       <CurrentQuestionsSection>
-        <Title>Topic Questions: {numberOfQuestions}</Title>
+        <Title>{numberOfQuestions} Questions</Title>
         {topicQuestions.map(({ question, id }, index) => {
           const dummyAnswers = question.answers
             .filter((answer) => !answer.is_correct)
@@ -370,7 +450,7 @@ const AddQuestions = ({
             .map((answer) => answer.answer)
             .join(', ')
           return (
-            <QuestionCard key={`questions:${index}`}>
+            <DejavuCard key={`questions:${index}`}>
               <RemoveButton
                 close
                 onClick={() => {
@@ -381,71 +461,64 @@ const AddQuestions = ({
                   })
                 }}
               />
-              <CenterText>{question.question}</CenterText>
-              <AnswerDiv>
-                answers: {correctAnswers}
-              </AnswerDiv>
-              <DummyDiv>
-                wrong answers: {dummyAnswers}
-              </DummyDiv>
-            </QuestionCard>
+              {question.img_url && (
+                <Img
+                  src={[question.img_url, 'http://via.placeholder.com/300x300']}
+                  alt='question img'
+                  style={{ borderRadius: '5px', width: '100%' }}
+                />
+              )}
+              <strong>{question.question}</strong>
+              <div>answers: {correctAnswers}</div>
+              <div>wrong answers: {dummyAnswers}</div>
+            </DejavuCard>
           )
         })}
       </CurrentQuestionsSection>
       {field && (
         <CurrentQuestionsSection>
           <Title>Select from your previous questions</Title>
-          {previousQuestions && previousQuestions.map((question, index) => {
-            const dummyAnswers = question.answers
-              .filter((answer) => !answer.is_correct)
-              .map((answer) => answer.answer)
-              .join(', ')
-            const correctAnswers = question.answers
-              .filter((answer) => answer.is_correct)
-              .map((answer) => answer.answer)
-              .join(', ')
-            return (
-              <QuestionCard
-                key={`questions:${index}`}
-                onClick={async () => {
-                  await addQuestion({
-                    variables: {
-                      questionTopic: {
-                        id: uuid(),
-                        topic_id: topicId,
-                        question_id: question.id
+          {previousQuestions &&
+            previousQuestions.map((question, index) => {
+              const dummyAnswers = question.answers
+                .filter((answer) => !answer.is_correct)
+                .map((answer) => answer.answer)
+                .join(', ')
+              const correctAnswers = question.answers
+                .filter((answer) => answer.is_correct)
+                .map((answer) => answer.answer)
+                .join(', ')
+              return (
+                <DejavuCard
+                  key={`questions:${index}`}
+                  onClick={async () => {
+                    await addQuestion({
+                      variables: {
+                        questionTopic: {
+                          id: uuid(),
+                          topic_id: topicId,
+                          question_id: question.id
+                        }
                       }
-                    }
-                  })
-                  const questions = Object.assign([], previousQuestions)
-                  questions.splice(index, 1)
-                  setPreviousQuestions(questions)
-                }}
-              >
-                <CenterText>{question.question}</CenterText>
-                <AnswerDiv>
-                  answers: {correctAnswers}
-                </AnswerDiv>
-                <DummyDiv>
-                  dummy answers: {dummyAnswers}
-                </DummyDiv>
-              </QuestionCard>
-            )
-          })}
+                    })
+                    const questions = Object.assign([], previousQuestions)
+                    questions.splice(index, 1)
+                    setPreviousQuestions(questions)
+                  }}
+                >
+                  <strong>{question.question}</strong>
+                  <div>answers: {correctAnswers}</div>
+                  <div>dummy answers: {dummyAnswers}</div>
+                </DejavuCard>
+              )
+            })}
         </CurrentQuestionsSection>
       )}
     </StyledForm>
   )
 }
 
-const AnswerDiv = styled.div`
-  font-size: 2vh;
-  color: green;
-`
-
-const DummyDiv = styled.div`
-  font-size: 2vh;
-  color: red;
-`
-
-export default compose(withRouter)(AddQuestions)
+export default compose(
+  withRouter,
+  withFirebase()
+)(AddQuestions)

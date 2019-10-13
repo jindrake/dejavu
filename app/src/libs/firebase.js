@@ -2,6 +2,7 @@ import React from 'react'
 import app from 'firebase/app'
 import 'firebase/database'
 import 'firebase/auth'
+import 'firebase/storage'
 
 const firebaseConfig = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -19,6 +20,7 @@ class Firebase {
     app.initializeApp(firebaseConfig)
 
     this.auth = app.auth()
+    this.storage = app.storage()
     this.database = app.database
     this.doCreateUserWithEmailAndPassword = this.doCreateUserWithEmailAndPassword.bind(this)
     this.doSignInWithEmailAndPassword = this.doSignInWithEmailAndPassword.bind(this)

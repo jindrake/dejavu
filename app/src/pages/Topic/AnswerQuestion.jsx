@@ -7,9 +7,10 @@ import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
 
 import { useStateValue } from '../../libs'
-import { Button, HeaderText, ContentBetween, OverlayLoader } from '../../components'
+import { Button, HeaderText, ContentBetween, OverlayLoader, ContentCenter } from '../../components'
 import { Paper } from '../../components/Topic'
 import SessionWaitingScreen from '../../components/Topic/SessionWaitingScreen'
+import Img from 'react-image'
 
 const ANSWER_QUESTION = gql`
   mutation answerQuestion($answers: [String!]!, $questionId: ID!, $userId: ID!, $sessionId: ID!) {
@@ -80,6 +81,7 @@ const AnswerQuestion = ({
   }
 
   const question = data.next_session_question ? JSON.parse(data.next_session_question) : null
+  console.log('Data question: ', data.next_session_question)
   if (!loading && !error && !question) {
     history.push(`/result/${sessionId}`)
   }
@@ -104,6 +106,8 @@ const AnswerQuestion = ({
         networkError: error.message
       })
     }
+    setAnswers([])
+    setTimer(10)
     globalDispatch({
       loading: false
     })
@@ -126,33 +130,77 @@ const AnswerQuestion = ({
   return (
     <Wrapper>
       <Paper loadingPercentage={timer * 10}>
-        <QuestionContainer>
-          <HeaderText>
-            <Question>{question.question}</Question>
-          </HeaderText>
-        </QuestionContainer>
-        <ChoicesContainer>
-          {choices &&
-            choices.map((choice, index) => {
-              return (
-                <Choice
-                  key={index}
-                  selected={answers.includes(choice.answer)}
-                  onClick={() => {
-                    if (timer) {
-                      if (!answers.includes(choice.answer)) {
-                        setAnswers(answers.concat(choice.answer))
-                      } else {
-                        setAnswers(answers.filter((answer) => answer !== choice.answer))
-                      }
-                    }
-                  }}
-                >
-                  {choice.answer}
-                </Choice>
-              )
-            })}
-        </ChoicesContainer>
+        {question.img_url ? (
+          <div>
+            <Img
+              src={[question.img_url, 'http://via.placeholder.com/300x300']}
+              alt='question img'
+              style={{ borderRadius: '5px', width: '100%', marginTop: '20px' }}
+            />
+            <ContentCenter className='mt-3 mb-3'>
+              <HeaderText>{question.question}</HeaderText>
+            </ContentCenter>
+            <div>
+              {choices &&
+                choices.map((choice, index) => {
+                  return (
+                    <Choice
+                      key={index}
+                      selected={answers.includes(choice.answer)}
+                      onClick={() => {
+                        if (timer) {
+                          if (!answers.includes(choice.answer)) {
+                            setAnswers(answers.concat(choice.answer))
+                          } else {
+                            setAnswers(answers.filter((answer) => answer !== choice.answer))
+                          }
+                        }
+                      }}
+                    >
+                      {choice.answer}
+                    </Choice>
+                  )
+                })}
+            </div>
+          </div>
+        ) : (
+          <>
+            <QuestionContainer>
+              {/* {question.img_url && (
+            <img
+              src={question.img_url}
+              alt='question img'
+              style={{ borderRadius: '5px', width: '100%', marginTop: '20px' }}
+            />
+          )} */}
+              <HeaderText>
+                <Question>{question.question}</Question>
+              </HeaderText>
+            </QuestionContainer>
+            <ChoicesContainer>
+              {choices &&
+                choices.map((choice, index) => {
+                  return (
+                    <Choice
+                      key={index}
+                      selected={answers.includes(choice.answer)}
+                      onClick={() => {
+                        if (timer) {
+                          if (!answers.includes(choice.answer)) {
+                            setAnswers(answers.concat(choice.answer))
+                          } else {
+                            setAnswers(answers.filter((answer) => answer !== choice.answer))
+                          }
+                        }
+                      }}
+                    >
+                      {choice.answer}
+                    </Choice>
+                  )
+                })}
+            </ChoicesContainer>
+          </>
+        )}
       </Paper>
       <ContentBetween>
         <Button
@@ -192,17 +240,20 @@ const ChoicesContainer = styled.div`
 `
 
 const Choice = styled.div`
-  padding-top: 5%;
+  /* padding-top: 5%; */
   margin-bottom: 15px;
   background: ${(props) =>
     props.selected ? 'linear-gradient(#FFA726, #FF9800)' : 'linear-gradient(#9c27b0, #7B1FA2)'};
   color: white;
-  font-weight: ${(props) => props.selected ? '700' : 'normal'};
+  font-weight: ${(props) => (props.selected ? '700' : 'normal')};
   width: 100%;
   height: 20%;
   border-radius: 1vh;
   border: ${(props) => (props.selected ? '2px solid #FF9800' : '1px solid #7B1FA2')};
   text-align: center;
+  display: flex;
+  padding: 3%;
+  flex-direction: column;
   justify-content: center;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
@@ -213,6 +264,7 @@ const QuestionContainer = styled.div`
   flex-direction: column;
   justify-content: center;
   text-align: center;
+  padding-top: 10%;
 `
 
 const Wrapper = styled.div`

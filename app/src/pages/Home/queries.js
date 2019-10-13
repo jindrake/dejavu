@@ -24,14 +24,18 @@ export const FETCH_HOT_TOPICS = gql`
 `
 
 export const FETCH_USER_SESSIONS = gql`
-  query getUserSessions($userId: ID!){
-    get_user_sessions (userId: $userId)
+  query getUserSessions($userId: ID!) {
+    get_user_sessions(userId: $userId)
   }
 `
 
 export const FETCH_RECENT_TOPICS = gql`
   query fetchRecentTopics {
-    topic(order_by: { created_at: desc }, limit: 10, where: { is_private: { _eq: false } }) {
+    topic(
+      order_by: { created_at: desc }
+      limit: 10
+      where: { _and: [{ is_private: { _eq: false } }, { is_published: { _eq: true } }] }
+    ) {
       id
       name
       description

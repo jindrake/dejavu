@@ -291,36 +291,6 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
                   />
                 )}
               </FormItem>
-              {/* <FormItem>
-                <Label>
-                  Password
-                  {touched.password && errors.password && <Hint>{errors.password}</Hint>}
-                </Label>
-                <StyledInput
-                  type='password'
-                  name='password'
-                  data-cy='password'
-                  onChange={handleChange}
-                  invalid={errors.password && touched.password}
-                  value={values.password}
-                />
-              </FormItem> */}
-              {/* <FormItem>
-                <Label>
-                  Confirm password
-                  {touched.passwordConfirmation && errors.passwordConfirmation && (
-                    <Hint data-cy='confirm-password-error'>{errors.passwordConfirmation}</Hint>
-                  )}
-                </Label>
-                <StyledInput
-                  type='password'
-                  name='passwordConfirmation'
-                  data-cy='password-confirmation'
-                  onChange={handleChange}
-                  invalid={errors.passwordConfirmation && touched.passwordConfirmation}
-                  value={values.passwordConfirmation}
-                />
-              </FormItem> */}
               <ButtonGroup>
                 <Button onClick={() => history.goBack()} text='Cancel' type='action' />
                 <Button

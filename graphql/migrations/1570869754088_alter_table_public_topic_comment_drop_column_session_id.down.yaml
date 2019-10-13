@@ -1,0 +1,6 @@
+- args:
+    sql: ALTER TABLE "public"."topic_comment" ADD COLUMN "session_id" uuid
+  type: run_sql
+- args:
+    sql: ALTER TABLE "public"."topic_comment" ALTER COLUMN "session_id" DROP NOT NULL
+  type: run_sql

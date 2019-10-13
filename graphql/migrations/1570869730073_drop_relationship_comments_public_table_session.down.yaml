@@ -1,0 +1,12 @@
+- args:
+    name: comments
+    table:
+      name: session
+      schema: public
+    using:
+      foreign_key_constraint_on:
+        column: session_id
+        table:
+          name: topic_comment
+          schema: public
+  type: create_array_relationship
