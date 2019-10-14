@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Input, ListGroup, ListGroupItem, Button } from 'reactstrap'
-// import Icon from '../../components/Icon'
+import { ListGroup, ListGroupItem, Button } from 'reactstrap'
+import { Title, ContentCenter, StyledInput, SubText } from '../../components'
 
 const users = [
   { name: 'Jethro', score: 50 },
@@ -15,60 +15,73 @@ const Analytics = ({
   match: {
     params: { id }
   }
-}) => (
-  <Wrapper>
-    <TopicInfoWrapper>
+}) => (<Wrapper>
+  <TopicInfoWrapper>
+    <ContentCenter>
       <Title>Topic Title</Title>
-      <AverageScore>80</AverageScore>
-      <AverageScoreText>Average Score</AverageScoreText>
-      <StatisticsWrapper>
-        <StatisticsContainer>
-          <StatisticText>
-            <StatisticalData>90</StatisticalData>
-            <Label>Users took the exam</Label>
-          </StatisticText>
-        </StatisticsContainer>
-        <StatisticsContainer>
-          <StatisticText>
-            <StatisticalData>90%</StatisticalData>
-            <Label>Users finished answering</Label>
-          </StatisticText>
-        </StatisticsContainer>
-        <StatisticsContainer>
-          <StatisticText>
-            <StatisticalData>90%</StatisticalData>
-            <Label>exceeded from 50%</Label>
-          </StatisticText>
-        </StatisticsContainer>
-      </StatisticsWrapper>
-    </TopicInfoWrapper>
-    <TableWrapper>
-      <Leaderboard>Leaderboard</Leaderboard>
-      <Search type='text' name='search' id='search' placeholder='Search user...' />
-      <ButtonWrapper>
-        <SortText>Sort by:</SortText>
-        <StyledButton>Name</StyledButton>
-        <StyledButton>Rank</StyledButton>
-        <StyledButton>Items Answered</StyledButton>
-      </ButtonWrapper>
-      <ResultsWrapper>
-        {users.map((user, index) => (
-          <ListGroup>
-            <ListGroupItem>
-              <Rank>1</Rank>
-              <Score>{user.score}</Score>
-              <UserWrapper>
-                {/* <Avatar name='user' /> */}
-                <Name>{user.name}</Name>
-                <NumberOfItemsAnswered>45 items answered</NumberOfItemsAnswered>
-                <NumberOfItemsAnswered>out of 50</NumberOfItemsAnswered>
-              </UserWrapper>
-            </ListGroupItem>
-          </ListGroup>
-        ))}
-      </ResultsWrapper>
-    </TableWrapper>
-  </Wrapper>
+    </ContentCenter>
+    <ContentCenter>
+      <Title>80</Title>
+    </ContentCenter>
+    <ContentCenter>
+      <SubText>
+      Average Score
+      </SubText>
+    </ContentCenter>
+    <StatisticsWrapper>
+      <StatisticsContainer>
+        <StatisticText>
+          <Title>90</Title>
+          <SubText>Users took the exam</SubText>
+        </StatisticText>
+      </StatisticsContainer>
+      <StatisticsContainer>
+        <StatisticText>
+          <Title>90%</Title>
+          <SubText>Users finished answering</SubText>
+        </StatisticText>
+      </StatisticsContainer>
+      <StatisticsContainer>
+        <StatisticText>
+          <Title>90%</Title>
+          <SubText>exceeded from 50%</SubText>
+        </StatisticText>
+      </StatisticsContainer>
+    </StatisticsWrapper>
+  </TopicInfoWrapper>
+  <TableWrapper>
+    <ContentCenter>
+      <Title>Leaderboard</Title>
+    </ContentCenter>
+    <StyledInput
+      type='text'
+      name='search'
+      id='search'
+      placeholder='Search user...'
+    />
+    <ButtonWrapper>
+      <SortText>Sort by:</SortText>
+      <StyledButton>Name</StyledButton>
+      <StyledButton>Rank</StyledButton>
+      <StyledButton>Items Answered</StyledButton>
+    </ButtonWrapper>
+    <ResultsWrapper>
+      {users.map((user, index) => (
+        <ListGroup>
+          <ListGroupItem>
+            <Rank>1</Rank>
+            <Score>{user.score}</Score>
+            <UserWrapper>
+              <Title>{user.name}</Title>
+              <SubText>45 items answered</SubText>
+              <SubText>out of 50</SubText>
+            </UserWrapper>
+          </ListGroupItem>
+        </ListGroup>
+      ))}
+    </ResultsWrapper>
+  </TableWrapper>
+</Wrapper>
 )
 
 const ButtonWrapper = styled.div`
@@ -97,7 +110,7 @@ const ResultsWrapper = styled.div`
   overflow: auto;
   display: flex;
   flex-direction: column;
-  height: 55%;
+  height: 70%;
   width: 100%;
 `
 
@@ -108,24 +121,10 @@ const StatisticsWrapper = styled.div`
   margin-top: 10;
 `
 
-const Search = styled(Input)``
-
 const UserWrapper = styled.div`
   justify-content: space-between;
   float: left;
   vertical-align: center;
-`
-
-// const Avatar = styled(Icon)`
-//   width: 200px;
-//   font-size: 300px;
-//   background-size: 100% 100%;
-// `
-
-const Leaderboard = styled.div`
-  font-weight: bold;
-  text-align: center;
-  margin: 5px;
 `
 
 const Rank = styled.div`
@@ -137,11 +136,6 @@ const Rank = styled.div`
   justify-content: space-between;
 `
 
-const Name = styled.div`
-  font-size: 20px;
-  font-weight: bold;
-`
-
 const Score = styled.div`
   font-size: 20px;
   width: 20%
@@ -150,31 +144,11 @@ const Score = styled.div`
   vertical-align: center;
 `
 
-const NumberOfItemsAnswered = styled.div`
-  font-size: 12px;
-`
-
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
   justify-content: center;
   display: flex;
-`
-
-const Title = styled.div`
-  font-size: 20px;
-  text-align: center;
-  font-weight: bold;
-  color: #ffffff;
-  margin-bottom: 3vh;
-`
-
-const AverageScoreText = styled.div`
-  color: #ffffff;
-  font-size: 15px;
-  text-align: center;
-  justify-content: center;
-  margin-bottom: 1vh;
 `
 
 const StatisticsContainer = styled.div`
@@ -185,15 +159,6 @@ const StatisticsContainer = styled.div`
   margin-bottom: 5vh;
 `
 
-const StatisticalData = styled.div`
-  color: #ffffff;
-  font-size: 18px;
-`
-
-const Label = styled.div`
-  font-size: 12px;
-`
-
 const StatisticText = styled.div`
   color: #ffffff;
   font-size: 12px;
@@ -202,27 +167,18 @@ const StatisticText = styled.div`
   justify-content: center;
 `
 
-const AverageScore = styled.div`
-  text-align: center;
-  justify-content: center;
-  color: #ffffff;
-  font-size: 60px;
-`
-
 const TopicInfoWrapper = styled.div`
-  margin-bottom: 40
-  background-color:  'red'
+
 `
 
 const TableWrapper = styled.div`
   background-color: #ffffff;
   border-radius: 20px 20px 0px 0px;
   width: 100%;
-  height: 50vh;
+  height: 80vh;
   position: absolute;
   justify-content: center;
-  bottom: 0;
-  margin: 5;
+  top: 40%;
   padding: 5px;
 `
 
