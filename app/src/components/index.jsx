@@ -67,6 +67,7 @@ export const TopSection = styled.div`
 `
 
 export const StyledInput = styled(Input)`
+  border: ${props => props.border ? '1px solid grey' : 'none'};
   margin-top: 6px;
   font-size: 2vh;
   height: 5vh;
@@ -75,7 +76,6 @@ export const StyledInput = styled(Input)`
   padding-left: 12px;
   padding-right: 12px;
   border-radius: 6px;
-  border: none;
   outline: none;
   /* :focus {
     background: #353434;

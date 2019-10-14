@@ -167,6 +167,7 @@ const Discussion = ({
               }
               <div>
                 <StyledInput
+                  border='true'
                   type='text'
                   name='comment'
                   placeholder='Write a comment...'
