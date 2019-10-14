@@ -58,14 +58,14 @@ const ManageTopic = ({
         <br />
         {topic.target_fields && topic.target_fields.length
           ? topic.target_fields.map((field, index) => {
-              return (
-                <h3 key={index}>
-                  <Badge color='info' key={index} className='mx-3'>
-                    {field.field}
-                  </Badge>
-                </h3>
-              )
-            })
+            return (
+              <h3 key={index}>
+                <Badge color='info' key={index} className='mx-3'>
+                  {field.field}
+                </Badge>
+              </h3>
+            )
+          })
           : null}
       </Label>
       <hr />

@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import {
   Input,
   FormText,
-  Alert,
+  Alert
 } from 'reactstrap'
 import compose from 'recompose/compose'
 import { useQuery, useMutation, useSubscription } from '@apollo/react-hooks'
@@ -21,7 +21,7 @@ import {
   PUBLISH_TOPIC,
   UPDATE_QUESTION
 } from './queries'
-import { Title, OverlayLoader, SubText, Button, DejavuCard, Header, Label } from '../../components'
+import { OverlayLoader, SubText, Button, DejavuCard, Header, Label } from '../../components'
 import Dropzone from '../../components/Dropzone'
 
 import {
