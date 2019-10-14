@@ -7,6 +7,65 @@ import { faFile } from '@fortawesome/free-regular-svg-icons'
 export * from './Button'
 export * from './Alert'
 
+export const FaIcon = ({ icon }) => <FontAwesomeIcon icon={icon} style={{ width: '1em' }} />
+
+export const CommentDiv = styled.div`
+  background: #d9dae0;
+  padding: 10px;
+  border-radius: 5px;
+  color: black;
+  margin-bottom: 5px;
+  font-size: 2vh;
+`
+
+export const BasicFontSize = styled.div`
+  font-size: 1.5vh;
+  padding: 1px;
+`
+
+export const ReplyDiv = styled.div`
+  margin-right: 15px;
+  margin-left: 15px;
+  font-size: 2vh;
+  border-radius: 5px;
+  ${''}
+  padding: 2px;
+  margin-bottom: 2px;
+  background: #eaebed;
+  ${''}
+`
+
+export const FlexWrapper = styled.div`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow-y: scroll;
+`
+
+export const TopicWrapper = styled.div`
+  color: #1a237e;
+  font-size: medium;
+  background-color: white;
+  padding: 20px;
+  margin: 5px;
+  border-radius: 5px;
+`
+
+export const IconsDiv = styled.div`
+  margin-right: 10px;
+  align-self: flex-end;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+export const TopSection = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  justify-content: space-between;
+`
+
 export const StyledInput = styled(Input)`
   margin-top: 6px;
   font-size: 2vh;
@@ -80,7 +139,6 @@ export const ContentAround = styled.div`
 `
 
 export const Notification = styled.div`
-  position: fixed;
   width: 97%;
   display: flex;
   text-align: center;
@@ -153,7 +211,14 @@ export const FullPageLoader = () => (
 )
 
 export const HeaderText = styled.div`
-  font-size: 4vh;
+  font-size: 3vh;
+`
+export const DescriptionText = styled.div`
+  font-size: 2vh;
+`
+export const UserNameText = styled.div`
+  font-size: 2vh;
+  color: grey;
 `
 
 export const OverlayLoader = () => (
@@ -173,6 +238,7 @@ export const Stat = styled.div`
   white-space: nowrap;
   overflow: hidden;
   margin-bottom: 2px;
+  font-size: 2vh;
   text-overflow: ellipsis;
   font-size: ${(props) => (props.size ? props.size : null)} i {
     margin-right: 6px;
@@ -213,6 +279,31 @@ export const Close = styled.div`
   right: 0;
   top: 0;
 `
+export const TopicsContainer = styled.div`
+  position: relative;
+  overflow-x: scroll;
+  height: 100%;
+  margin-left: -40px;
+  margin-right: -40px;
+  ${''}
+  display: flex;
+`
+
+export const Belt = styled.div`
+  position: absolute;
+  top: 6px;
+  display: flex;
+  ${''}
+`
+export const Author = styled.div`
+  color: #1a237e;
+  font-size: 2vh;
+  opacity: 0.8;
+  display: flex;
+  @media screen and (min-width: 800px) {
+    margin-bottom: 20px;
+  }
+`
 
 export const CardWrapper = styled.div`
   background: linear-gradient(#353434, #c5cae9);
@@ -220,8 +311,12 @@ export const CardWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   color: #1a237e;
-  width: 300px;
-  padding: 20px;
+  width: 50vw;
+  height: 23vh;
+  @media screen and (min-width: 800px) {
+    height: 30vw;
+  }
+  padding-left: 20px;
   margin-left: 20px;
   &:first-child {
     margin-left: 40px;

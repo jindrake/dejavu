@@ -194,6 +194,9 @@ export const FETCH_FULL_TOPIC = gql`
         id
         type
       }
+      comments {
+        id
+      }
       creator {
         id
         first_name

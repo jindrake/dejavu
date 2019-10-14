@@ -20,6 +20,7 @@ import Result from './pages/Topic/Result'
 import EditProfile from './pages/Profile/EditProfile'
 import NotFound from './pages/NotFound'
 import ManageUsers from './pages/Topic/ManageUsers'
+import Discussion from './pages/Discussion/'
 import Edit from './pages/Topic/Edit'
 // import AddingUsers from './pages/Topic/AddingUsers'
 import ChallengerScreen from './pages/Topic/ChallengerScreen'
@@ -119,6 +120,14 @@ const Routes = ({ userEmail, firebase }) => {
           render={() => {
             document.title = 'Welcome to Dejavu!'
             return <Welcome user={user} />
+          }}
+        />
+        <Route
+          exact
+          path='/topic/:id/discussions'
+          render={() => {
+            document.title = 'Discussions'
+            return <Discussion user={user} />
           }}
         />
         <Route

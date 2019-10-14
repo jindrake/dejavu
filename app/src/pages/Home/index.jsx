@@ -6,7 +6,7 @@ import withFirebase from '../../hocs/withFirebase'
 import { useStateValue } from '../../libs'
 import { Button } from 'reactstrap'
 import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS, FETCH_USER_SESSIONS } from './queries'
-import { FullPageLoader, Icon, Placeholder, CardWrapper } from '../../components'
+import { FullPageLoader, Icon, Placeholder, CardWrapper, Belt, TopicsContainer, Author } from '../../components'
 import TopicPreview from './TopicPreview'
 import { useQuery } from '@apollo/react-hooks'
 
@@ -78,7 +78,7 @@ const Home = ({ history }) => {
       <SectionWrapper>
         <Title>Your sessions</Title>
         <TopicsContainer>
-          <Belt className='w-100'>
+          <Belt>
             {userSessions.length > 0 ? (
               userSessions.map((session, index) => (
                 <CardWrapper key={index} onClick={() => {
@@ -89,12 +89,10 @@ const Home = ({ history }) => {
                   </CardTitle>
                   <br />
                   <Author>
-                    status:
-                  </Author>
-                  <Author>
+                    status:&nbsp;
                     {session.current_user ? (
                       session.current_user_id === user.id ? (
-                        <span className='text-warning'>Your turn!</span>
+                        <span className='text-danger'>Your turn!</span>
                       ) : (
                         <span className='text-warning'>Waiting for {session.current_user.first_name}</span>
                       )
@@ -132,7 +130,7 @@ const Home = ({ history }) => {
       <SectionWrapper>
         <Title>Recent Topics</Title>
         <TopicsContainer>
-          <Belt className='w-100'>
+          <Belt>
             {recentTopics.length > 0 ? (
               recentTopics.map((topic, index) => (
                 <TopicPreview key={index} n={index} topic={topic} user={user} />
@@ -149,22 +147,21 @@ const Home = ({ history }) => {
 
 const CardTitle = styled.div`
   color: #1a237e;
-  font-size: 20px;
-  line-height: 20px;
+  font-size: 2vh;
   font-weight: 700;
   max-height: 60%;
   overflow-y: scroll;
-  margin-bottom: 6px;
   justify-content: left;
 `
 
-const Author = styled.div`
-  color: #1a237e;
-  font-size: 12px;
-  opacity: 0.8;
-  line-height: 12px;
-  margin-bottom: 6px;
-`
+// const Author = styled.div`
+//   color: #1a237e;
+//   font-size: 2vh;
+//   opacity: 0.8;
+//   @media screen and (min-width: 900px) {
+//     margin-bottom: 20px;
+//   }
+// `
 
 const Wrapper = styled.div`
   position: absolute;
@@ -178,7 +175,7 @@ const Wrapper = styled.div`
 `
 
 const GreetingWrapper = styled.div`
-  font-size: 20px;
+  font-size: 2vh;
   font-weight: 700;
   color: #e8eaf6;
   text-align: left;
@@ -190,7 +187,7 @@ const CreateButtonContainer = styled.div`
 
 const CreateTopicButton = styled(Button)`
   background: linear-gradient(#ffa726, #ff9800);
-  font-size: 12px;
+  font-size: 2vh;
   border: none;
 `
 
@@ -198,25 +195,27 @@ const AddIcon = styled(Icon)`
   width: 30%;
 `
 
-const Belt = styled.div`
-  position: absolute;
-  top: 6px;
-  bottom: 6px;
-  display: flex;
-`
+// const Belt = styled.div`
+//   position: absolute;
+//   top: 6px;
+//   bottom: 6px;
+//   display: flex;
+//   border: 2px solid red;
+// `
 
-const TopicsContainer = styled.div`
-  position: relative;
-  overflow-x: scroll;
-  height: 100%;
-  margin-left: -40px;
-  margin-right: -40px;
-`
+// const TopicsContainer = styled.div`
+//   position: relative;
+//   overflow-x: scroll;
+//   height: 100%;
+//   margin-left: -40px;
+//   margin-right: -40px;
+//   border: 2px solid black;
+//   display: flex;
+// `
 
 const Title = styled.div`
   color: #c5cae9;
-  font-size: 12px;
-  margin-bottom: 4px;
+  font-size: 2vh;
 `
 
 const SectionWrapper = styled.div`

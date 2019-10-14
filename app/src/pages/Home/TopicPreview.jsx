@@ -5,7 +5,7 @@ import uuid from 'uuid/v4'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { INSERT_USER_ACTIVITY } from './queries'
-import { Icon } from '../../components'
+import { Icon, CardWrapper, Author } from '../../components'
 
 const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const {
@@ -20,7 +20,7 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const date = new Date(createdAt)
 
   return (
-    <Wrapper
+    <CardWrapper
       n={n}
       onClick={() => {
         if (user) {
@@ -45,10 +45,8 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
           <Author key={index}>{field}</Author>
         ))}
       </div>
-      <Author
-        className='mt-3 mb-3'
-      >{date.toDateString()}</Author>
-      <RatingContainer>
+      <Author>{date.toDateString()}</Author>
+      <RatingContainer className='mt-20'>
         <Ratings>
           <StyledIcon name='thumb_up' />{'  '}
           {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
@@ -58,35 +56,37 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
           {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
         </Ratings>
       </RatingContainer>
-    </Wrapper>
+    </CardWrapper>
   )
 }
 
 const RatingContainer = styled.div`
   display: flex;
-  width: 100%;
-  position: absolute;
-  bottom: 1vh;
+  margin: 5px;
+  @media screen and (min-width: 800px) {
+    margin: 10px;
+  }
 `
 
 const Title = styled.div`
   color: #1a237e;
-  font-size: 20px;
-  line-height: 20px;
+  font-size: 2vh;
   font-weight: 700;
-  max-height: 60%;
   overflow-y: scroll;
-  margin-bottom: 6px;
   justify-content: left;
+  @media screen and (min-width: 800px) {
+    margin: 5px;
+  }
 `
 
-const Author = styled.div`
-  color: #1a237e;
-  font-size: 12px;
-  opacity: 0.8;
-  line-height: 12px;
-  margin-bottom: 6px;
-`
+// const Author = styled.div`
+//   color: #1a237e;
+//   font-size: 2vh;
+//   opacity: 0.8;
+//   @media screen and (min-width: 900px) {
+//     margin-bottom: 20px;
+//   }
+// `
 
 const StyledIcon = styled(Icon)`
   width: 100%;
@@ -95,32 +95,31 @@ const StyledIcon = styled(Icon)`
 
 const Ratings = styled.div`
   color: #1a237e;
-  font-size: 14px;
+  font-size: 2vh;
   opacity: 0.8;
-  line-height: 12px;
   margin-bottom: 6px;
   margin-right: 7px;
 `
 
-const Wrapper = styled.div`
-  background: linear-gradient(#e8eaf6, #c5cae9);
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  width: 200px;
-  padding: 20px;
-  margin-left: 20px;
-  &:first-child {
-    margin-left: 40px;
-  }
-  &:last-child {
-    margin-right: 40px;
-  }
-  border-radius: 6px;
-  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
-  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-  animation-delay: ${({ n }) => n * 100 + 'ms'};
-`
+// const Wrapper = styled.div`
+//   background: linear-gradient(#e8eaf6, #c5cae9);
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   width: 200px;
+//   padding: 20px;
+//   margin-left: 20px;
+//   &:first-child {
+//     margin-left: 40px;
+//   }
+//   &:last-child {
+//     margin-right: 40px;
+//   }
+//   border-radius: 6px;
+//   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+//   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
+//   animation-delay: ${({ n }) => n * 100 + 'ms'};
+// `
 
 export default compose(
   withRouter,
