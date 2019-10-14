@@ -24,7 +24,7 @@ import { useStateValue, getObjectValue } from '../../libs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPencilAlt,
-  faEye,
+  faSearchPlus,
   faTasks,
   faThumbsUp,
   faThumbsDown
@@ -201,7 +201,7 @@ const Profile = ({ user, history }) => {
                     break
 
                   case 'view':
-                    icon = faEye
+                    icon = faSearchPlus
                     activity = 'viewed'
                     break
 
@@ -242,9 +242,9 @@ const AvatarContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #d0f0c0;
+  background: #E7C3FF;
   font-size: 7vh;
-  color: #015249;
+  color: #412a7a;
   font-family: 'Open Sans';
   font-weight: 700;
 `
@@ -256,7 +256,7 @@ const ProfileInfo = styled.div`
   text-align: center;
   font-size: 3vh;
   cursor: pointer;
-  color: #015249;
+  color: #412a7a;
 `
 
 const CenteredText = styled.div`
@@ -265,7 +265,7 @@ const CenteredText = styled.div`
   justify-content: center;
   padding: 5px;
   font-weight: 600;
-  color: #015249;
+  color: #412a7a;
 `
 
 const Container = styled.div`
@@ -286,7 +286,7 @@ const TopicsContainer = styled.div`
 `
 
 const DejavuCard = styled.div`
-  background: linear-gradient(0deg, #95d6dc, #addee9, #c5e6f3, #dbeffa, #f0f8ff);
+  background: linear-gradient(45deg, #7851a9, #815abc, #8964cf, #916ee3, #9878f8);
   margin-bottom: 10px;
   border-radius: 6px;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
@@ -295,12 +295,12 @@ const DejavuCard = styled.div`
   display: flex;
   justify-content: flex-start;
   padding: 1vh;
-  color: #015249;
+  color: #ffffff;
 `
 
 const ActivityIcon = styled(FontAwesomeIcon)`
   font-size: 3.5vh;
-  color: #015249;
+  color: #fff700;
   margin: 1.5vh;
   margin-right: 2.5vh;
 `

@@ -24,7 +24,8 @@ export const StyledInput = styled(Input)`
 `
 
 export const DejavuCard = styled.div`
-  color: #1a237e;
+  background: linear-gradient(45deg, #7851a9, #815abc, #8964cf, #916ee3, #9878f8);
+  color: #ffffff;
   font-size: medium;
   background-color: white;
   padding: 20px;
@@ -71,7 +72,7 @@ export const ContentCenter = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  color: #015249;
+  color: #412a7a;
 `
 
 export const ContentAround = styled.div`

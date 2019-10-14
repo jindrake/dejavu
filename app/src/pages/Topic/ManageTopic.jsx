@@ -43,7 +43,7 @@ const ManageTopic = ({
   return (
     <div className='mb-5'>
       <div className='d-flex'>
-        <Button text='Back' type='action' onClick={() => history.push('/profile')} />
+        <Button text='Back' type='primary' onClick={() => history.push('/profile')} />
       </div>
       <ContentCenter className='mt-3'>
         <Header>Manage Topic</Header>
@@ -58,21 +58,28 @@ const ManageTopic = ({
         <br />
         {topic.target_fields && topic.target_fields.length
           ? topic.target_fields.map((field, index) => {
-            return (
-              <h3 key={index}>
-                <Badge color='info' key={index} className='mx-3'>
-                  {field.field}
-                </Badge>
-              </h3>
-            )
-          })
+              return (
+                <h3 key={index}>
+                  <Badge color='info' key={index} className='mx-3'>
+                    {field.field}
+                  </Badge>
+                </h3>
+              )
+            })
           : null}
       </Label>
       <hr />
-      <Button text='See results' type='action' className='mb-2 p-4' />
+      <Button
+        text='See results'
+        type='primary'
+        className='mb-2 p-4'
+        onClick={() => {
+          history.push(`/topic/${id}/analytics`)
+        }}
+      />
       <Button
         text='List of allowed users'
-        type='action'
+        type='primary'
         onClick={() => {
           history.push(`/topic/${id}/users`)
         }}
@@ -80,7 +87,7 @@ const ManageTopic = ({
       />
       <Button
         text='Manage admins'
-        type='action'
+        type='primary'
         className='mb-2 p-4'
         onClick={() => {
           history.push(`/topic/${id}/admins`)
@@ -88,7 +95,7 @@ const ManageTopic = ({
       />
       <Button
         text='Edit details'
-        type='action'
+        type='primary'
         className='mb-2 p-4'
         onClick={() => {
           history.push(`/topic/${id}/edit`)
@@ -96,7 +103,7 @@ const ManageTopic = ({
       />
       <Button
         text='Edit questions'
-        type='action'
+        type='primary'
         className='mb-2 p-4'
         onClick={() => {
           history.push(`/topic/${id}/questions`)

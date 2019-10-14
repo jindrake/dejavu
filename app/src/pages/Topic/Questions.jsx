@@ -5,7 +5,6 @@ import {
   Input,
   FormText,
   Alert,
-  Label
 } from 'reactstrap'
 import compose from 'recompose/compose'
 import { useQuery, useMutation, useSubscription } from '@apollo/react-hooks'
@@ -22,7 +21,7 @@ import {
   PUBLISH_TOPIC,
   UPDATE_QUESTION
 } from './queries'
-import { Title, OverlayLoader, SubText, Button, DejavuCard } from '../../components'
+import { Title, OverlayLoader, SubText, Button, DejavuCard, Header, Label } from '../../components'
 import Dropzone from '../../components/Dropzone'
 
 import {
@@ -283,7 +282,7 @@ const AddQuestions = ({
         }) => {
           return (
             <>
-              <Title>Add Question </Title>
+              <Header>Add Question </Header>
               {touched.question && errors.question && <Hint>{errors.question}</Hint>}
               <div className='d-flex'>
                 <Input
@@ -439,7 +438,7 @@ const AddQuestions = ({
         </Alert>
       )}
       <CurrentQuestionsSection>
-        <Title>{numberOfQuestions} Questions</Title>
+        <Header>{numberOfQuestions} Questions</Header>
         {topicQuestions.map(({ question, id }, index) => {
           const dummyAnswers = question.answers
             .filter((answer) => !answer.is_correct)
@@ -477,7 +476,7 @@ const AddQuestions = ({
       </CurrentQuestionsSection>
       {field && (
         <CurrentQuestionsSection>
-          <Title>Select from your previous questions</Title>
+          <Header>Select from your previous questions</Header>
           {previousQuestions &&
             previousQuestions.map((question, index) => {
               const dummyAnswers = question.answers
