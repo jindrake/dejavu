@@ -77,6 +77,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
             }
           })
           // setclickedReply(false)
+          setshowedReplies(true)
         } catch (error) {
           console.error('error@topicedit1')
           globalDispatch({
@@ -246,25 +247,31 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
               {/* <div className='dejavu-small-text font-weight-bold text-secondary'>Hide replies</div>
               <div className='dejavu-small-text font-weight-bold text-secondary'>Hide replies</div> */}
               {
-                showedReplies
-                  ? <div
-                    onClick={() => {
-                      setshowedReplies(false)
-                      setclickedReply(false)
-                    }}
-                    className='dejavu-small-text font-weight-bold text-secondary'
-                  >
-                    Hide replies
+                replies.length > 0 && (
+                  <div>
+                  {
+                    showedReplies
+                      ? <div
+                        onClick={() => {
+                          setshowedReplies(false)
+                          setclickedReply(false)
+                        }}
+                        className='dejavu-small-text font-weight-bold text-secondary'
+                      >
+                        Hide replies
+                      </div>
+                      : <div
+                        onClick={() => {
+                          setshowedReplies(true)
+                          setclickedReply(true)
+                        }}
+                        className='dejavu-small-text font-weight-bold text-secondary'
+                      >
+                        Show replies
+                      </div>
+                    }
                   </div>
-                  : <div
-                    onClick={() => {
-                      setshowedReplies(true)
-                      setclickedReply(true)
-                    }}
-                    className='dejavu-small-text font-weight-bold text-secondary'
-                  >
-                    Show replies
-                  </div>
+                )
               }
               {
                 showedReplies && replies.map(r => (
@@ -407,8 +414,9 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
               }
               {
                 clickedReply && (
-                  <div>
+                  <div className='mt-1 ml-3 mr-3'>
                     <StyledInput
+                      border='true'
                       type='text'
                       name='reply'
                       placeholder='Write a reply...'

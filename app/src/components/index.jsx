@@ -74,10 +74,12 @@ export const StyledInput = styled(Input)`
   padding-right: 12px;
   border-radius: 6px; */
   outline: none;
+  ${'' /* need in discussion styled input with border */}
+  border: ${props => props.border ? '1px solid grey' : 'none !important'};
 
   outline: 0;
   background-color: transparent !important;
-  border: none !important;
+  ${'' /* border: none !important; */}
   border-bottom: 1px solid black !important;
   /* :focus {
     background: #353434;
