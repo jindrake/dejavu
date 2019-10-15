@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ListGroup, Button, Col, Row } from 'reactstrap'
-import { Title, ContentCenter, StyledInput, SubText, FullPageLoader, DejavuCard } from '../components'
+import { Title, ContentCenter, StyledInput, FullPageLoader, DejavuCard } from '../components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeft, faAward } from '@fortawesome/free-solid-svg-icons'
 import { useQuery } from '@apollo/react-hooks'
@@ -88,28 +88,28 @@ const Analytics = ({
             <h1 className='display-4 text-white font-weight-bold'>{analyticsData.get_topic_average_score}%</h1>
           </ContentCenter>
           <ContentCenter>
-            <SubText className='text-white mb-3'>Average Score</SubText>
+            <div className='text-white mb-3'>Average Score</div>
           </ContentCenter>
         </div>
         <div className='justify-content-center'>
           <Row className='justify-content-center m-3'>
             <Col xs='4' sm='4' md='4' lg='4' xl='4' className='p-2 text-center text-wrap'>
               <Title className='mb-2 dejavu-large-text'>{analyticsData.get_topic_takers_count}</Title>
-              <SubText className='dejavu-small-text'>Users tackled the topic</SubText>
+              <div className='dejavu-small-text'>Users tackled the topic</div>
             </Col>
             <Col xs='4' sm='4' md='4' lg='4' xl='4' className='p-2 text-center text-wrap'>
               <Title className='mb-2 dejavu-large-text'>{analyticsData.solo_takers}</Title>
-              <SubText className='dejavu-small-text'>Times tackled alone</SubText>
+              <div className='dejavu-small-text'>Times tackled alone</div>
             </Col>
             <Col xs='4' sm='4' md='4' lg='4' xl='4' className='p-2 text-center text-wrap'>
               <Title className='mb-2 dejavu-large-text'>{analyticsData.duo_takers}</Title>
-              <SubText className='dejavu-small-text'>Times tackled with a friend</SubText>
+              <div className='dejavu-small-text'>Times tackled with a friend</div>
             </Col>
           </Row>
           <Row className='justify-content-center ml-3 mr-3 mt-3 pb-3'>
             <Col xs='4' sm='4' md='4' lg='4' xl='4' className='p-2 text-center text-wrap'>
               <Title className='mb-2 dejavu-large-text'>{analyticsData.get_topic_comments_count}</Title>
-              <SubText className='dejavu-small-text'>Comments</SubText>
+              <div className='dejavu-small-text'>Comments</div>
             </Col>
             <Col xs='4' sm='4' md='4' lg='4' xl='4' className='p-2 text-center text-wrap'>
               <Title className='mb-2 dejavu-large-text'>
@@ -117,7 +117,7 @@ const Analytics = ({
                   ? topic.ratings.filter((r) => r.type === 'upvote').length
                   : 0}
               </Title>
-              <SubText className='dejavu-small-text'>Upvotes</SubText>
+              <div className='dejavu-small-text'>Upvotes</div>
             </Col>
             <Col xs='4' sm='4' md='4' lg='4' xl='4' className='p-2 text-center text-wrap'>
               <Title className='mb-2 dejavu-large-text'>
@@ -125,7 +125,7 @@ const Analytics = ({
                   ? topic.ratings.filter((r) => r.type === 'downvote').length
                   : 0}
               </Title>
-              <SubText className='dejavu-small-text'>Downvotes</SubText>
+              <div className='dejavu-small-text'>Downvotes</div>
             </Col>
           </Row>
         </div>
@@ -146,7 +146,7 @@ const Analytics = ({
             placeholder='Search user...'
           />
           <div className='m-3 d-inline'>
-            <SubText className='mr-2 d-inline dejavu-small-text'>Sort by:</SubText>
+            <div className='mr-2 d-inline dejavu-small-text'>Sort by:</div>
             <Button
               className='dejavu-small-text text-dark m-1 border-0 rounded-pill text-wrap text-sm  bg-light'
               active={sortBy === 'average'}
@@ -195,8 +195,8 @@ const Analytics = ({
                           {rankingData.userInfo.first_name} {rankingData.userInfo.last_name}
                         </Title>
                         <div className='m-0'>
-                          <SubText className='dejavu-small-text'>{rankingData.questionIdsSeen.length} items answered</SubText>
-                          <SubText className='dejavu-small-text'>out of {topic.questions.length}</SubText>
+                          <div className='dejavu-small-text'>{rankingData.questionIdsSeen.length} items answered</div>
+                          <div className='dejavu-small-text'>out of {topic.questions.length}</div>
                         </div>
                       </Col>
                       <Col xs='4' sm='4' md='4' lg='4' xl='4' className='text-center'>
@@ -205,7 +205,7 @@ const Analytics = ({
                             (rankingData.numberOfCorrect / rankingData.totalTimesAnswered) * 100
                           ).toFixed(1)}
                         </Title>
-                        <SubText className='dejavu-small-text m-0'>Score</SubText>
+                        <div className='dejavu-small-text m-0'>Score</div>
                       </Col>
                     </Row>
                   </DejavuCard>

@@ -1,12 +1,7 @@
 import React, { useState } from 'react'
 import { Formik, FieldArray } from 'formik'
 import { withRouter } from 'react-router-dom'
-import {
-  FormText,
-  Alert,
-  FormGroup,
-  Label
-} from 'reactstrap'
+import { FormText, FormGroup, Label, Button, InputGroup, InputGroupAddon } from 'reactstrap'
 import compose from 'recompose/compose'
 import { useQuery, useMutation, useSubscription } from '@apollo/react-hooks'
 import uuid from 'uuid/v4'
@@ -22,24 +17,24 @@ import {
   PUBLISH_TOPIC,
   UPDATE_QUESTION
 } from './queries'
-import { OverlayLoader, SubText, Button, DejavuCard, HeaderText, StyledInput, ContentCenter } from '../../components'
+import {
+  OverlayLoader,
+  DejavuCard,
+  HeaderText,
+  StyledInput,
+  ContentCenter,
+  PageLabel
+} from '../../components'
 import Dropzone from '../../components/Dropzone'
 
 import {
   CurrentQuestionsSection,
   CenterText,
   StyledForm,
-  UnderlineInput,
-  RemoveButton,
-  ChoiceItem,
-  Hint
+  RemoveButton
 } from '../../components/Topic'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faTimesCircle,
-  faCheckCircle,
-  faArrowRight
-} from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faTimes } from '@fortawesome/free-solid-svg-icons'
 import { withFirebase } from '../../hocs'
 
 const AddQuestions = ({
@@ -159,6 +154,8 @@ const AddQuestions = ({
     setTopicId(topic.id)
   }
 
+  console.log(topicQuestions)
+
   return (
     <StyledForm>
       <Formik
@@ -222,8 +219,9 @@ const AddQuestions = ({
               }
             })
             if (currentQuestionPhoto) {
+              const photoId = uuid()
               const uploadTask = firebase.storage
-                .ref(`images/${user.id}/${new Date()}-${currentQuestionPhoto.name}`)
+                .ref(`images/${user.id}/${currentQuestionPhoto.name}-${photoId}`)
                 .put(currentQuestionPhoto, {
                   contentType: currentQuestionPhoto.type
                 })
@@ -245,7 +243,7 @@ const AddQuestions = ({
                 async () => {
                   const url = await firebase.storage
                     .ref(`images/${user.id}`)
-                    .child(currentQuestionPhoto.name)
+                    .child(`${currentQuestionPhoto.name}-${photoId}`)
                     .getDownloadURL()
                   console.log(url)
                   await updateQuestion({
@@ -286,11 +284,8 @@ const AddQuestions = ({
               <ContentCenter>
                 <HeaderText>Add Question </HeaderText>
               </ContentCenter>
-              {touched.question && errors.question && <Hint>{errors.question}</Hint>}
               <FormGroup>
-                <Label>
-                  Question
-                </Label>
+                <Label>Question</Label>
                 <StyledInput
                   type='textarea'
                   id={`question`}
@@ -300,6 +295,11 @@ const AddQuestions = ({
                   invalid={errors.question && touched.question}
                   className='mb-1'
                 />
+                {touched.question && errors.question && (
+                  <FormText color='danger'>
+                    <Label className='text-danger'>{errors.question}</Label>
+                  </FormText>
+                )}
               </FormGroup>
               <div className='mb-3'>
                 <Label>Add an image to this question</Label>
@@ -314,7 +314,7 @@ const AddQuestions = ({
                   </div>
                 )}
                 <Dropzone
-                  className='w-100 p-1 bg-secondary btn'
+                  className='w-100 p-1 btn btn-primary'
                   text={'Add question image'}
                   centered
                   onUpload={(files) => {
@@ -333,17 +333,8 @@ const AddQuestions = ({
                 name='choices'
                 render={(arrayHelpers) => (
                   <div>
-                    {errors.choices && touched.choices ? (
-                      <CenterText>
-                        <Hint>{errors.choices}</Hint>
-                      </CenterText>
-                    ) : errors.correctAnswers && touched.correctAnswers ? (
-                      <CenterText>
-                        <Hint>{errors.correctAnswers}</Hint>
-                      </CenterText>
-                    ) : null}
-                    <div className='d-flex px-3 mb-3'>
-                      <UnderlineInput
+                    <InputGroup className='mb-2'>
+                      <StyledInput
                         type='text'
                         name={'newChoiceValue'}
                         value={values.newChoiceValue}
@@ -351,26 +342,41 @@ const AddQuestions = ({
                         onChange={handleChange}
                         autoFocus
                       />
-                      <FontAwesomeIcon
-                        icon={faArrowRight}
-                        className='ml-2 text-white'
-                        onClick={() => {
-                          if (values.newChoiceValue) {
-                            arrayHelpers.push(values.newChoiceValue)
-                            setFieldValue('newChoiceValue', '')
-                          }
-                        }}
-                      />
-                    </div>
+                      <InputGroupAddon>
+                        <Button
+                          color='link'
+                          bsSize='sm'
+                          size='sm'
+                          onClick={() => {
+                            if (values.newChoiceValue) {
+                              arrayHelpers.push(values.newChoiceValue)
+                              setFieldValue('newChoiceValue', '')
+                            }
+                          }}
+                        >
+                          ADD
+                        </Button>
+                      </InputGroupAddon>
+                    </InputGroup>
+                    {touched.choices && errors.choices && (
+                      <FormText color='danger'>
+                        <Label className='text-danger'>{errors.choices}</Label>
+                      </FormText>
+                    )}
+                    {touched.correctAnswers && errors.correctAnswers && (
+                      <FormText color='danger'>
+                        <Label className='text-danger'>{errors.correctAnswers}</Label>
+                      </FormText>
+                    )}
                     {1 && console.log(values)}
                     {values.choices && values.choices.length > 0 ? (
                       values.choices.map((_, index) => (
                         <div key={index}>
-                          <ChoiceItem className='px-3 text-white'>
+                          <FormGroup className='px-3 d-flex'>
                             <FontAwesomeIcon
                               icon={faCheckCircle}
                               className={'pt-1 '.concat(
-                                values.correctAnswers[index] ? 'text-success' : ''
+                                values.correctAnswers[index] ? 'text-success' : 'text-warning'
                               )}
                               onClick={(event) => {
                                 const correctAnswers = values.correctAnswers
@@ -378,10 +384,10 @@ const AddQuestions = ({
                                 setFieldValue('correctAnswers', correctAnswers)
                               }}
                             />
-                            <div className='w-100 text-center'>{values.choices[index]}</div>
+                            <div className='w-100 ml-3'>{values.choices[index]}</div>
                             <FontAwesomeIcon
-                              icon={faTimesCircle}
-                              className='pt-1'
+                              icon={faTimes}
+                              className='pt-1 text-info'
                               onClick={() => {
                                 const correctAnswers = values.correctAnswers
                                 correctAnswers.splice(index, 1)
@@ -390,29 +396,35 @@ const AddQuestions = ({
                                 setTouched('choices', false)
                               }}
                             />
-                          </ChoiceItem>
+                          </FormGroup>
                         </div>
                       ))
                     ) : (
                       <CenterText className='px-4'>
-                        <FormText color='white'>
+                        <Label>
                           No Choices added yet. At least 2 choices are required for a question
-                        </FormText>
+                        </Label>
                       </CenterText>
                     )}
                     {values.choices.length ? (
                       <CenterText>
-                        <FormText color='white' className='px-4'>
+                        <Label className='px-4'>
+                          <FontAwesomeIcon
+                            icon={faCheckCircle}
+                            className={'pt-1 '.concat('text-success')}
+                          />
                           Tick the checkbox of the correct choices
-                        </FormText>
+                        </Label>
                       </CenterText>
                     ) : null}
                   </div>
                 )}
               />
-              <div className='w-100 mt-3'>
-                <Button type='success' onClick={handleSubmit} text='Add question' />
-              </div>
+              <Button color='primary' onClick={handleSubmit} className='w-100' size='lg'>
+                Add Question
+              </Button>
+              {/* <div className='w-100 mt-3'>
+              </div> */}
             </>
           )
         }}
@@ -437,14 +449,12 @@ const AddQuestions = ({
           <hr />
         </>
       ) : (
-        <Alert color='warning'>
-          <SubText>
-            In order to publish a topic, it must at least have <strong>10 questions</strong> first
-          </SubText>
-        </Alert>
+        <Label>
+          In order to publish a topic, it must at least have <strong>10 questions</strong> first
+        </Label>
       )}
       <CurrentQuestionsSection>
-        <HeaderText>{numberOfQuestions} Questions</HeaderText>
+        <PageLabel>{numberOfQuestions} Questions</PageLabel>
         {topicQuestions.map(({ question, id }, index) => {
           const dummyAnswers = question.answers
             .filter((answer) => !answer.is_correct)
@@ -474,15 +484,21 @@ const AddQuestions = ({
                 />
               )}
               <strong>{question.question}</strong>
-              <div>answers: {correctAnswers}</div>
-              <div>wrong answers: {dummyAnswers}</div>
+              <br />
+              <Label>correct answers</Label>
+              <br />
+              {correctAnswers}
+              <br />
+              <Label>wrong answers</Label>
+              <br />
+              {dummyAnswers}
             </DejavuCard>
           )
         })}
       </CurrentQuestionsSection>
       {field && (
         <CurrentQuestionsSection>
-          <HeaderText>Select from your previous questions</HeaderText>
+          <PageLabel>Select from your previous questions</PageLabel>
           {previousQuestions &&
             previousQuestions.map((question, index) => {
               const dummyAnswers = question.answers
@@ -512,8 +528,14 @@ const AddQuestions = ({
                   }}
                 >
                   <strong>{question.question}</strong>
-                  <div>answers: {correctAnswers}</div>
-                  <div>dummy answers: {dummyAnswers}</div>
+                  <br />
+                  <Label>correct answers</Label>
+                  <br />
+                  {correctAnswers}
+                  <br />
+                  <Label>wrong answers</Label>
+                  <br />
+                  {dummyAnswers}
                 </DejavuCard>
               )
             })}

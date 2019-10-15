@@ -74,16 +74,16 @@ export const StyledInput = styled(Input)`
   padding-right: 12px;
   border-radius: 6px; */
   outline: none;
-  ${''}
   border: ${props => props.border ? '1px solid grey' : 'none !important'};
-
-  outline: 0;
+  /* outline: 0; */
   background-color: transparent !important;
-  ${''}
   border-bottom: 1px solid black !important;
-  /* :focus {
-    background: #353434;
-  } */
+  :focus {
+    outline: none !important;
+    outline-style:none;
+    box-shadow:none;
+    border-color:transparent;
+  }
 `
 
 export const DejavuCard = styled.div`
@@ -181,10 +181,6 @@ export const Pill = styled.div`
   background: linear-gradient(#353434, #c5cae9);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   margin-bottom: 1vh;
-`
-
-export const SubText = styled.div`
-  /* font-size: 12px; */
 `
 
 export const OverlayLoaderContainer = styled.div`
