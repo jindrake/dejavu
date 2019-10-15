@@ -98,7 +98,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
             <CommentDiv key={comment.id}>
               <div>
                 <UserNameText>{`${comment.user.first_name} ${comment.user.last_name}`}</UserNameText>
-                {comment.content}
+                <div className='pl-2'>{comment.content}</div>
               </div>
               <div className='d-inline-flex p-2 col-example'>
                 <Stat>
@@ -178,7 +178,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                   >
                     <FaIcon icon={faThumbsDown} />
                   </div>
-                  {`${comment.topic_comment_ratings && comment.topic_comment_ratings.filter(t => t.rating === 'downvote').length}`}
+                  &nbsp;{`${comment.topic_comment_ratings && comment.topic_comment_ratings.filter(t => t.rating === 'downvote').length}`}
                   {/* &nbsp;{`${2}`} */}
                 </Stat>
               &nbsp;
@@ -197,7 +197,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                   <div key={r.id}>
                     <ReplyDiv>
                       <UserNameText>{`${comment.user.first_name} ${comment.user.last_name}`}</UserNameText>
-                      <div className='pl-10'>
+                      <div className='pl-2'>
                         {r.content}
                       </div>
                     </ReplyDiv>
@@ -238,7 +238,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                         >
                           <FaIcon icon={faThumbsUp} />
                         </div>
-                        {`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'upvote').length}`}
+                        &nbsp;{`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'upvote').length}`}
                       </Stat>
                     &nbsp;
                       <Stat>
@@ -277,7 +277,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                         >
                           <FaIcon icon={faThumbsDown} />
                         </div>
-                        {`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'downvote').length}`}
+                        &nbsp;{`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'downvote').length}`}
                       </Stat>
                     </div>
                   </div>

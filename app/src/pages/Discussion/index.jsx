@@ -137,7 +137,7 @@ const Discussion = ({
                 <HeaderText>{topic.name}</HeaderText>
               </Stat>
               <div className='text-center'>
-                <DescriptionText>{topic.description}</DescriptionText>
+                <DescriptionText className='pl-2'>{topic.description}</DescriptionText>
               </div>
               <IconsDiv>
                 <Stat>
