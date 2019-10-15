@@ -2,12 +2,13 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import compose from 'recompose/compose'
 import { useQuery, useSubscription } from '@apollo/react-hooks'
-import { faUserCircle, faComments, faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
+import { faUserCircle, faComments, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import { Badge } from 'reactstrap'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import uuid from 'uuid/v4'
 import { graphql } from '@apollo/react-hoc'
+import moment from 'moment'
 
 import { getObjectValue, useStateValue } from '../../libs'
 import { FETCH_TOPIC, INSERT_TOPIC_COMMENT, FETCH_TOPIC_COMMENTS, INSERT_TOPIC_COMMENT_RATING } from './queries'
@@ -18,7 +19,7 @@ import {
   FaIcon,
   Stat,
   HeaderText,
-  DescriptionText,
+  // DescriptionText,
   Button,
   TopSection,
   IconsDiv,
@@ -119,9 +120,9 @@ const Discussion = ({
             <DejavuCard>
               <Stat>
                 <FaIcon icon={faUserCircle} />
-                &nbsp;{`${topic.creator.first_name} ${topic.creator.last_name}`}
+                <div className='dejavu-small-text text-primary text-center mt-2'>&nbsp;{`${topic.creator.first_name} ${topic.creator.last_name}`}</div>
                 &nbsp;
-                <div className='text-center text-md-right'>
+                <div className='dejavu-small-text text-center text-md-right'>
                   {topic.target_fields && topic.target_fields.length
                     ? topic.target_fields.map((field, index) => {
                       return (
@@ -133,31 +134,35 @@ const Discussion = ({
                     : null}
                 </div>
               </Stat>
-              <Stat>
+              <div className='mt-2'>
                 <HeaderText>{topic.name}</HeaderText>
-              </Stat>
-              <div className='text-center'>
-                <DescriptionText className='pl-2'>{topic.description}</DescriptionText>
+              </div>
+              <div className='dejavu-small-text'>
+                {topic.description}
+              </div>
+              <div className='dejavu-small-text text-primary'>
+                {moment(new Date(topic.created_at)).fromNow()}
               </div>
               <IconsDiv>
-                <Stat>
-                  <FaIcon icon={faComments} />
-                  &nbsp;{`${topic.comments.length}`}
-                </Stat>
                 <div className='d-inline-flex p-2 col-example'>
-                  <Stat>
+                  <div className='dejavu-small-text'>
                     <FaIcon icon={faThumbsUp} />
                     &nbsp;{`${topic.ratings && topic.ratings.filter(t => t.type === 'upvote').length}`}
-                  </Stat>
+                  </div>
                   &nbsp;
-                  <Stat>
+                  {/* <div className='dejavu-small-text'>
                     <FaIcon icon={faThumbsDown} />
                     &nbsp;{`${topic.ratings && topic.ratings.filter(t => t.type === 'downvote').length}`}
-                  </Stat>
+                  </div>
+                  &nbsp; */}
+                  <div className='dejavu-small-text'>
+                    <FaIcon icon={faComments} />
+                    &nbsp;{`${topic.comments.length}`}
+                  </div>
                 </div>
               </IconsDiv>
             </DejavuCard>
-            <DejavuCard>
+            <div className='bg-light p-2'>
               {
                 comments.map(comment => {
                   return (
@@ -183,7 +188,7 @@ const Discussion = ({
                   <BasicFontSize>submit</BasicFontSize>
                 </Badge>
               </div>
-            </DejavuCard>
+            </div>
           </FlexWrapper>
         )
       }}

@@ -5,6 +5,7 @@ export const FETCH_TOPIC = gql`
     topic(where: { id: { _eq: $topicId } }) {
       description
       name
+      created_at
       comments {
         id
       }

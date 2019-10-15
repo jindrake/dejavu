@@ -8,6 +8,7 @@ import { useStateValue } from '../../libs'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import uuid from 'uuid/v4'
+import moment from 'moment'
 
 import {
   FETCH_COMMENT_REPLY,
@@ -17,15 +18,16 @@ import {
   FaIcon,
   Stat,
   StyledInput,
-  CommentDiv,
-  BasicFontSize,
-  UserNameText,
+  // CommentDiv,
+  // BasicFontSize,
+  // UserNameText,
   ReplyDiv,
   FullPageLoader
 } from '../../components'
 
 const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRating, insertTopicComment, user }) => {
   const [clickedReply, setclickedReply] = useState(false)
+  const [showedReplies, setshowedReplies] = useState(false)
   const [, globalDispatch] = useStateValue()
   const { data, loading, error } = useSubscription(FETCH_COMMENT_REPLY, {
     variables: {
@@ -74,6 +76,8 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
               }
             }
           })
+          // setclickedReply(false)
+          setshowedReplies(true)
         } catch (error) {
           console.error('error@topicedit1')
           globalDispatch({
@@ -95,22 +99,46 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
           isSubmitting
         }) => {
           return (
-            <CommentDiv key={comment.id}>
+            <div key={comment.id} className='mb-2 p-2'>
               <div>
-                <UserNameText>{`${comment.user.first_name} ${comment.user.last_name}`}</UserNameText>
-                <div className='pl-2'>{comment.content}</div>
+                <div className='d-flex text-center justify-content-evenly dejavu-small-text mt-1'>
+                  <div className='font-weight-bold'>{`${comment.user.first_name} ${comment.user.last_name}`}</div>
+                  &nbsp;<div className='text-primary'>{moment(new Date(comment.created_at)).fromNow()}</div>
+                </div>
+                <div className='dejavu-small-text pl-2'>{comment.content}</div>
               </div>
-              <div className='d-inline-flex p-2 col-example'>
+              <div className='d-flex text-center justify-content-end dejavu-small-text border-bottom border-primary'>
                 <Stat>
                   <div
                     onClick={async () => {
                       console.log('ahshs')
                       // console.log('ratings:', comment.topic_comment_ratings)
-                      const userIdRatings = comment.topic_comment_ratings.map(cr => cr.user_id)
-                      console.log('IDS', userIdRatings)
+                      // const userIdRatings = comment.topic_comment_ratings.map(cr => cr.user_id)
+                      // console.log('IDS', userIdRatings)
+                      console.log('ggg', comment.topic_comment_ratings)
+                      const filterRating = comment.topic_comment_ratings.filter(trating => trating.user_id === user.id)
+                      console.log('xxxxxx', filterRating)
                       try {
-                        if (userIdRatings.includes(user.id)) {
+                        if (filterRating.length > 0 && filterRating[0].rating === 'downvote') {
                           console.log('DELETE!')
+                          await deleteCommentRating({
+                            variables: {
+                              topicCommentId: comment.id,
+                              userId: user.id
+                            }
+                          })
+                            .then(async () => {
+                              await insertTopicCommentRating({
+                                variables: {
+                                  commentRatingObject: {
+                                    topic_comment_id: comment.id,
+                                    rating: 'upvote',
+                                    user_id: user.id
+                                  }
+                                }
+                              })
+                            })
+                        } else if (filterRating.length > 0 && filterRating[0].rating === 'upvote') {
                           await deleteCommentRating({
                             variables: {
                               topicCommentId: comment.id,
@@ -136,21 +164,45 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                       }
                     }}
                   >
+                    {/* <div className='dejavu-small-text'> */}
                     <FaIcon icon={faThumbsUp} />
+                    {/* </div> */}
                   </div>
-                  {`${comment.topic_comment_ratings && comment.topic_comment_ratings.filter(t => t.rating === 'upvote').length}`}
+                  &nbsp;{`${comment.topic_comment_ratings && comment.topic_comment_ratings.filter(t => t.rating === 'upvote').length}`}
                   {/* &nbsp;{`${12}`} */}
                 </Stat>
-              &nbsp;
+                &nbsp;
+                &nbsp;
                 <Stat>
                   <div
                     onClick={async () => {
-                      const userIdRatings = comment.topic_comment_ratings.map(cr => cr.user_id)
-                      console.log('IDS', userIdRatings)
-                      console.log('click')
+                      // const userIdRatings = comment.topic_comment_ratings.map(cr => cr.user_id)
+                      // console.log('IDS', userIdRatings)
+                      // console.log('click')
+                      console.log('ggg', comment.topic_comment_ratings)
+                      const filterRating = comment.topic_comment_ratings.filter(trating => trating.user_id === user.id)
+                      console.log('xxxxxx', filterRating)
                       try {
-                        if (userIdRatings.includes(user.id)) {
+                        if (filterRating.length > 0 && filterRating[0].rating === 'upvote') {
                           console.log('DELETE!')
+                          await deleteCommentRating({
+                            variables: {
+                              topicCommentId: comment.id,
+                              userId: user.id
+                            }
+                          })
+                            .then(async () => {
+                              await insertTopicCommentRating({
+                                variables: {
+                                  commentRatingObject: {
+                                    topic_comment_id: comment.id,
+                                    rating: 'downvote',
+                                    user_id: user.id
+                                  }
+                                }
+                              })
+                            })
+                        } else if (filterRating.length > 0 && filterRating[0].rating === 'downvote') {
                           await deleteCommentRating({
                             variables: {
                               topicCommentId: comment.id,
@@ -192,101 +244,179 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                 Reply
                 </div>
               </div>
+              {/* <div className='dejavu-small-text font-weight-bold text-secondary'>Hide replies</div>
+              <div className='dejavu-small-text font-weight-bold text-secondary'>Hide replies</div> */}
               {
-                replies && replies.map(r => (
-                  <div key={r.id}>
+                replies.length > 0 && (
+                  <div>
+                    {
+                      showedReplies
+                        ? <div
+                          onClick={() => {
+                            setshowedReplies(false)
+                            setclickedReply(false)
+                          }}
+                          className='dejavu-small-text font-weight-bold text-secondary'
+                        >
+                        Hide replies
+                        </div>
+                        : <div
+                          onClick={() => {
+                            setshowedReplies(true)
+                            setclickedReply(true)
+                          }}
+                          className='dejavu-small-text font-weight-bold text-secondary'
+                        >
+                        Show replies
+                        </div>
+                    }
+                  </div>
+                )
+              }
+              {
+                showedReplies && replies.map(r => (
+                  <div key={r.id} className='p-1'>
                     <ReplyDiv>
-                      <UserNameText>{`${comment.user.first_name} ${comment.user.last_name}`}</UserNameText>
-                      <div className='pl-2'>
+                      {/* <div className='dejavu-small-text'>{`${comment.user.first_name} ${comment.user.last_name}`}</div> */}
+                      <div className='d-flex text-center justify-content-evenly dejavu-small-text'>
+                        <div className='dejavu-small-text'>{`${r.user.first_name} ${r.user.last_name}`}</div>
+                        &nbsp;<div className='text-primary'>{moment(new Date(r.created_at)).fromNow()}</div>
+                      </div>
+                      <div className='pl-2 dejavu-small-text'>
                         {r.content}
                       </div>
-                    </ReplyDiv>
-                    <div className='d-inline-flex pl-3 col-example'>
-                      <Stat>
-                        <div
-                          onClick={async () => {
-                            const userIdRatings = r.topic_comment_ratings.map(cr => cr.user_id)
-                            console.log('IDS', userIdRatings)
-                            console.log('ahshs')
-                            try {
-                              if (userIdRatings.includes(user.id)) {
-                                console.log('DELETE!')
-                                await deleteCommentRating({
-                                  variables: {
-                                    topicCommentId: r.id,
-                                    userId: user.id
-                                  }
-                                })
-                              } else {
-                                await insertTopicCommentRating({
-                                  variables: {
-                                    commentRatingObject: {
-                                      topic_comment_id: r.id,
-                                      rating: 'upvote',
-                                      user_id: user.id
+                      <div className='d-flex text-center justify-content-end dejavu-small-text'>
+                        <Stat>
+                          <div
+                            onClick={async () => {
+                            // const userIdRatings = r.topic_comment_ratings.map(cr => cr.user_id)
+                            // console.log('IDS', userIdRatings)
+                            // console.log('ahshs')
+
+                              console.log('ggg', r.topic_comment_ratings)
+                              const filterRating = r.topic_comment_ratings.filter(trating => trating.user_id === user.id)
+                              console.log('xxxxxx', filterRating)
+                              try {
+                                if (filterRating.length > 0 && filterRating[0].rating === 'downvote') {
+                                  console.log('DELETE!')
+                                  await deleteCommentRating({
+                                    variables: {
+                                      topicCommentId: r.id,
+                                      userId: user.id
                                     }
-                                  }
+                                  })
+                                    .then(async () => {
+                                      await insertTopicCommentRating({
+                                        variables: {
+                                          commentRatingObject: {
+                                            topic_comment_id: r.id,
+                                            rating: 'upvote',
+                                            user_id: user.id
+                                          }
+                                        }
+                                      })
+                                    })
+                                } else if (filterRating.length > 0 && filterRating[0].rating === 'upvote') {
+                                  await deleteCommentRating({
+                                    variables: {
+                                      topicCommentId: r.id,
+                                      userId: user.id
+                                    }
+                                  })
+                                } else {
+                                  await insertTopicCommentRating({
+                                    variables: {
+                                      commentRatingObject: {
+                                        topic_comment_id: r.id,
+                                        rating: 'upvote',
+                                        user_id: user.id
+                                      }
+                                    }
+                                  })
+                                }
+                              } catch (error) {
+                                console.log(error)
+                                globalDispatch({
+                                  networkError: error.message
                                 })
                               }
-                            } catch (error) {
-                              console.log(error)
-                              globalDispatch({
-                                networkError: error.message
-                              })
-                            }
-                          }}
-                        >
-                          <FaIcon icon={faThumbsUp} />
-                        </div>
-                        &nbsp;{`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'upvote').length}`}
-                      </Stat>
+                            }}
+                          >
+                            <FaIcon icon={faThumbsUp} />
+                          </div>
+                          {`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'upvote').length}`}
+                        </Stat>
                     &nbsp;
-                      <Stat>
-                        <div
-                          onClick={async () => {
-                            const userIdRatings = r.topic_comment_ratings.map(cr => cr.user_id)
-                            console.log('IDS', userIdRatings)
-                            console.log('ahshs')
-                            try {
-                              if (userIdRatings.includes(user.id)) {
-                                console.log('DELETE!')
-                                await deleteCommentRating({
-                                  variables: {
-                                    topicCommentId: r.id,
-                                    userId: user.id
-                                  }
-                                })
-                              } else {
-                                await insertTopicCommentRating({
-                                  variables: {
-                                    commentRatingObject: {
-                                      topic_comment_id: r.id,
-                                      rating: 'downvote',
-                                      user_id: user.id
+                        <Stat>
+                          <div
+                            onClick={async () => {
+                            // const userIdRatings = r.topic_comment_ratings.map(cr => cr.user_id)
+                            // console.log('IDS', userIdRatings)
+                            // console.log('ahshs')
+
+                              console.log('ggg', r.topic_comment_ratings)
+                              const filterRating = r.topic_comment_ratings.filter(trating => trating.user_id === user.id)
+                              console.log('xxxxxx', filterRating)
+                              try {
+                                if (filterRating.length > 0 && filterRating[0].rating === 'upvote') {
+                                  console.log('DELETE!')
+                                  await deleteCommentRating({
+                                    variables: {
+                                      topicCommentId: r.id,
+                                      userId: user.id
                                     }
-                                  }
+                                  })
+                                    .then(async () => {
+                                      await insertTopicCommentRating({
+                                        variables: {
+                                          commentRatingObject: {
+                                            topic_comment_id: r.id,
+                                            rating: 'downvote',
+                                            user_id: user.id
+                                          }
+                                        }
+                                      })
+                                    })
+                                } else if (filterRating.length > 0 && filterRating[0].rating === 'downvote') {
+                                  await deleteCommentRating({
+                                    variables: {
+                                      topicCommentId: r.id,
+                                      userId: user.id
+                                    }
+                                  })
+                                } else {
+                                  await insertTopicCommentRating({
+                                    variables: {
+                                      commentRatingObject: {
+                                        topic_comment_id: r.id,
+                                        rating: 'downvote',
+                                        user_id: user.id
+                                      }
+                                    }
+                                  })
+                                }
+                              } catch (error) {
+                                console.log(error)
+                                globalDispatch({
+                                  networkError: error.message
                                 })
                               }
-                            } catch (error) {
-                              console.log(error)
-                              globalDispatch({
-                                networkError: error.message
-                              })
-                            }
-                          }}
-                        >
-                          <FaIcon icon={faThumbsDown} />
-                        </div>
-                        &nbsp;{`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'downvote').length}`}
-                      </Stat>
-                    </div>
+                            }}
+                          >
+                            <FaIcon icon={faThumbsDown} />
+                          </div>
+                          {`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'downvote').length}`}
+                        </Stat>
+                      </div>
+                    </ReplyDiv>
                   </div>
                 ))
               }
               {
                 clickedReply && (
-                  <div>
+                  <div className='mt-1 ml-3 mr-3'>
                     <StyledInput
+                      border='true'
                       type='text'
                       name='reply'
                       placeholder='Write a reply...'
@@ -299,12 +429,12 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                     <Badge
                       onClick={handleSubmit}
                     >
-                      <BasicFontSize>reply</BasicFontSize>
+                      <div>reply</div>
                     </Badge>
                   </div>
                 )
               }
-            </CommentDiv>
+            </div>
           )
         }
       }

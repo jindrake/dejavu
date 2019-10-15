@@ -10,8 +10,8 @@ export * from './Alert'
 export const FaIcon = ({ icon }) => <FontAwesomeIcon icon={icon} style={{ width: '1em' }} />
 
 export const CommentDiv = styled.div`
-  background: #d9dae0;
-  padding: 10px;
+  ${''}
+  padding: 5px;
   border-radius: 5px;
   margin-bottom: 5px;
   /* font-size: 2vh; */
@@ -23,12 +23,12 @@ export const BasicFontSize = styled.div`
 `
 
 export const ReplyDiv = styled.div`
-  margin-right: 15px;
-  margin-left: 15px;
+  margin-right: 10px;
+  margin-left: 10px;
   /* font-size: 2vh; */
   border-radius: 5px;
   ${''}
-  padding: 2px;
+  padding: 5px;
   margin-bottom: 2px;
   background: #eaebed;
   ${''}
@@ -51,9 +51,9 @@ export const TopicWrapper = styled.div`
 
 export const IconsDiv = styled.div`
   margin-right: 10px;
-  align-self: flex-end;
+  align-self: flex-start;
   display: flex;
-  justify-content: space-between;
+  ${''}
   align-items: center;
 `
 
@@ -74,10 +74,12 @@ export const StyledInput = styled(Input)`
   padding-right: 12px;
   border-radius: 6px; */
   outline: none;
+  ${''}
+  border: ${props => props.border ? '1px solid grey' : 'none !important'};
 
   outline: 0;
   background-color: transparent !important;
-  border: none !important;
+  ${''}
   border-bottom: 1px solid black !important;
   /* :focus {
     background: #353434;
