@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { ListGroup, ListGroupItem, Button } from 'reactstrap'
+import { ListGroup, ListGroupItem, Button, Row, Col } from 'reactstrap'
 import { Title, ContentCenter, StyledInput, SubText, FullPageLoader } from '../components'
 import { useQuery } from '@apollo/react-hooks'
 import { FETCH_TOPIC } from './Topic/queries'
@@ -78,64 +78,52 @@ const Analytics = ({
     <Wrapper>
       <div className='mb-3'>
         <ContentCenter className='mt-5'>
-          <Title className='text-capitalize'>{topic.name} Analytics</Title>
+          <Title className='text-capitalize mb-5'>{topic.name} Analytics</Title>
         </ContentCenter>
         <ContentCenter>
-          <Title>{analyticsData.get_topic_average_score} %</Title>
+          <h1 className='display-4 font-weight-bold'>{analyticsData.get_topic_average_score}%</h1>
         </ContentCenter>
         <ContentCenter>
           <SubText>Average Score</SubText>
         </ContentCenter>
-        <StatisticsWrapper className='mb-3'>
-          <StatisticsContainer>
-            <StatisticText>
-              <Title>{analyticsData.get_topic_takers_count}</Title>
-              <SubText>Users tackled the topic</SubText>
-            </StatisticText>
-          </StatisticsContainer>
-          <StatisticsContainer>
-            <StatisticText>
-              <Title>{analyticsData.solo_takers}</Title>
-              <SubText>Times tackled alone</SubText>
-            </StatisticText>
-          </StatisticsContainer>
-          <StatisticsContainer>
-            <StatisticText>
-              <Title>{analyticsData.duo_takers}</Title>
-              <SubText>Times tackled with a friend</SubText>
-            </StatisticText>
-          </StatisticsContainer>
-        </StatisticsWrapper>
-        <StatisticsWrapper className='mb-3'>
-          <StatisticsContainer>
-            <StatisticText>
-              <Title>{analyticsData.get_topic_comments_count}</Title>
-              <SubText>Comments</SubText>
-            </StatisticText>
-          </StatisticsContainer>
-          <StatisticsContainer>
-            <StatisticText>
-              <Title>
-                {topic.ratings.length > 0
-                  ? topic.ratings.filter((r) => r.type === 'upvote').length
-                  : 0}
-              </Title>
-              <SubText>Upvotes</SubText>
-            </StatisticText>
-          </StatisticsContainer>
-          <StatisticsContainer>
-            <StatisticText>
-              <Title>
-                {topic.ratings.length > 0
-                  ? topic.ratings.filter((r) => r.type === 'downvote').length
-                  : 0}
-              </Title>
-              <SubText>Downvotes</SubText>
-            </StatisticText>
-          </StatisticsContainer>
-        </StatisticsWrapper>
+        <div className='d-flex justify-content-around mt-3'>
+          <div className='p-10 col text-center mt-4 mb-3'>
+            <Title>{analyticsData.get_topic_takers_count}</Title>
+            <SubText>Users tackled the topic</SubText>
+          </div>
+          <div className='p-10 col text-center mt-4 mb-3'>
+            <Title>{analyticsData.solo_takers}</Title>
+            <SubText>Times tackled alone</SubText>
+          </div>
+          <div className='p-10 col text-center mt-4 mb-3'>
+            <Title>{analyticsData.duo_takers}</Title>
+            <SubText>Times tackled with a friend</SubText>
+          </div>
+        </div>
+        <div className='d-flex justify-content-around mt-3'>
+          <div className='p-10 col text-center mt-4 mb-3'>
+            <Title>{analyticsData.get_topic_comments_count}</Title>
+            <SubText>Comments</SubText>
+          </div>
+          <div className='p-10 col text-center mt-4 mb-3'>
+            <Title>
+              {topic.ratings.length > 0
+                ? topic.ratings.filter((r) => r.type === 'upvote').length
+                : 0}
+            </Title>
+            <SubText>Upvotes</SubText>
+          </div>
+          <div className='p-10 col text-center mt-4 mb-3'>
+            <Title>
+              {topic.ratings.length > 0
+                ? topic.ratings.filter((r) => r.type === 'downvote').length
+                : 0}
+            </Title>
+            <SubText>Downvotes</SubText>
+          </div>
+        </div>
       </div>
-      <TableWrapper>
+      <Row className='p-3 bg-white'>
         <ContentCenter className='mt-3'>
           <Title>Users</Title>
         </ContentCenter>
@@ -149,84 +137,74 @@ const Analytics = ({
           }}
           placeholder='Search user...'
         />
-        <ButtonWrapper>
-          <SortText className='mr-2'>Sort by:</SortText>
-          <StyledButton
+        <div className='m-3 d-inline'>
+          <SubText className='mr-2 d-inline'>Sort by:</SubText>
+          <Button
+            className='m-1 border-0 rounded-pill text-wrap text-sm  bg-light text-dark'
             active={sortBy === 'average'}
             onClick={() => {
               setSortBy('average')
             }}
           >
             Rank
-          </StyledButton>
-          <StyledButton
+          </Button>
+          <Button
+            className='m-1 rounded-pill text-wrap text-sm border-0 bg-light text-dark'
             active={sortBy === 'name'}
             onClick={() => {
               setSortBy('name')
             }}
           >
             Name
-          </StyledButton>
-          <StyledButton
+          </Button>
+          <Button
+            className='m-1 rounded-pill text-wrap text-sm border-0 bg-light text-dark'
             active={sortBy === 'coverage'}
             onClick={() => {
               setSortBy('coverage')
             }}
           >
             Items Answered
-          </StyledButton>
-        </ButtonWrapper>
+          </Button>
+        </div>
         <ResultsWrapper>
           {rankings
             .filter(
               ({ userInfo: { first_name: firstName, last_name: lastName } }) =>
                 firstName.includes(search) || lastName.includes(search)
             )
-            .map((rankingData, index) => (
-              <ListGroup key={index}>
-                <ListGroupItem>
-                  {/* <Rank>{index + 1}</Rank> */}
-                  <Score>
-                    {Number(
-                      (rankingData.numberOfCorrect / rankingData.totalTimesAnswered) * 100
-                    ).toFixed(2)}<br />
-                  </Score>
-                  <UserWrapper>
-                    <Title className='text-capitalize'>
-                      {rankingData.userInfo.first_name} {rankingData.userInfo.last_name}
-                    </Title>
-                    <SubText>{rankingData.questionIdsSeen.length} items answered</SubText>
-                    <SubText>out of {topic.questions.length}</SubText>
-                  </UserWrapper>
-                </ListGroupItem>
-              </ListGroup>
-            ))}
+            .map((rankingData, index) => {
+              return (
+                <ListGroup key={index}>
+                  <ListGroupItem>
+                    <Row>
+                      <Col className='justify-content-between' xs='9'>
+                        <Title className='m-0 text-capitalize'>
+                          {rankingData.userInfo.first_name} {rankingData.userInfo.last_name}
+                        </Title>
+                        <div className='m-0'>
+                          <SubText>{rankingData.questionIdsSeen.length} items answered</SubText>
+                          <SubText>out of {topic.questions.length}</SubText>
+                        </div>
+                      </Col>
+                      <Col className='text-center' xs='3'>
+                        <Title className='font-weight-bold m-0'>
+                          {Number(
+                            (rankingData.numberOfCorrect / rankingData.totalTimesAnswered) * 100
+                          ).toFixed(2)}
+                        </Title>
+                        <SubText className='m-0'>Score</SubText>
+                      </Col>
+                    </Row>
+                  </ListGroupItem>
+                </ListGroup>
+              )
+            })}
         </ResultsWrapper>
-      </TableWrapper>
+      </Row>
     </Wrapper>
   )
 }
-
-const ButtonWrapper = styled.div`
-  margin: 5px;
-`
-
-const SortText = styled.div`
-  /* font-size: 15px; */
-  display: inline;
-  
-`
-
-const StyledButton = styled(Button)`
-  border-radius: 18px;
-  margin: 2px;
-  /* font-size: 15px; */
-  display: inline;
-  padding: 10px;
-  border: none;
-  background: #d4d4d4;
-  
-`
 
 const ResultsWrapper = styled.div`
   margin-bottom: 10px;
@@ -237,57 +215,10 @@ const ResultsWrapper = styled.div`
   width: 100%;
 `
 
-const StatisticsWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-`
-
-const UserWrapper = styled.div`
-  justify-content: space-between;
-  float: left;
-  vertical-align: center;
-`
-
-const Score = styled.div`
-  /* font-size: 20px; */
-  width: 20%;
-  font-weight: bold;
-  float: right;
-  vertical-align: center;
-`
-
 const Wrapper = styled.div`
   width: 100%;
   height: 100%;
-  /* justify-content: center; */
-  /* display: flex; */
-  
-`
-
-const StatisticsContainer = styled.div`
-  padding: 10px;
-  width: 50%;
-  text-align: center;
-  margin-top: 5vh;
-  margin-bottom: 5vh;
-`
-
-const StatisticText = styled.div`
-  /* font-size: 15px; */
-  display: inline;
-  text-align: center;
-  justify-content: center;
-`
-
-const TableWrapper = styled.div`
-  background-color: #ffffff;
-  border-radius: 20px 20px 0px 0px;
-  width: 100%;
-  height: 80vh;
-  /* position: absolute; */
-  justify-content: center;
-  /* top: 50%; */
-  padding: 5px;
+  color: black !important;
 `
 
 export default Analytics
