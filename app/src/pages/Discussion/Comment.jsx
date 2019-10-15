@@ -249,26 +249,26 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
               {
                 replies.length > 0 && (
                   <div>
-                  {
-                    showedReplies
-                      ? <div
-                        onClick={() => {
-                          setshowedReplies(false)
-                          setclickedReply(false)
-                        }}
-                        className='dejavu-small-text font-weight-bold text-secondary'
-                      >
+                    {
+                      showedReplies
+                        ? <div
+                          onClick={() => {
+                            setshowedReplies(false)
+                            setclickedReply(false)
+                          }}
+                          className='dejavu-small-text font-weight-bold text-secondary'
+                        >
                         Hide replies
-                      </div>
-                      : <div
-                        onClick={() => {
-                          setshowedReplies(true)
-                          setclickedReply(true)
-                        }}
-                        className='dejavu-small-text font-weight-bold text-secondary'
-                      >
+                        </div>
+                        : <div
+                          onClick={() => {
+                            setshowedReplies(true)
+                            setclickedReply(true)
+                          }}
+                          className='dejavu-small-text font-weight-bold text-secondary'
+                        >
                         Show replies
-                      </div>
+                        </div>
                     }
                   </div>
                 )
