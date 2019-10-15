@@ -6,7 +6,7 @@ import * as yup from 'yup'
 import { withFirebase } from '../hocs'
 import { withRouter } from 'react-router-dom'
 import Alert from '../components/Alert'
-import { StyledInput, FormWrapper, OverlayLoader, Button, Icon, Label, Header } from '../components'
+import { StyledInput, FormWrapper, OverlayLoader, Button, Icon, Header } from '../components'
 
 const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
   return (
@@ -57,12 +57,12 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
               </Header>
               {status ? <Alert {...status} data-cy='alert' /> : null}
               <FormItem>
-                <Label>
+                <div>
                   Email{' '}
                   {touched.signInEmail && errors.signInEmail && (
                     <Hint data-cy='sign-in-email-error'>{errors.signInEmail}</Hint>
                   )}
-                </Label>
+                </div>
                 <StyledInput
                   type='email'
                   name='signInEmail'
@@ -73,12 +73,12 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
                 />
               </FormItem>
               <FormItem>
-                <Label>
+                <div>
                   Password{' '}
                   {touched.signInPassword && errors.signInPassword && (
                     <Hint data-cy='sign-in-password-error'>{errors.signInPassword}</Hint>
                   )}
-                </Label>
+                </div>
                 <StyledInput
                   type='password'
                   name='signInPassword'
@@ -108,15 +108,12 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
 
 const Close = styled.div`
   position: absolute;
-  font-size: 20px;
-  color: #e8eaf6;
   opacity: 0.5;
   right: 0;
   top: 0;
 `
 
 const Hint = styled.span`
-  color: #ef5350;
   margin-left: 6px;
 `
 

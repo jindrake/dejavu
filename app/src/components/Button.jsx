@@ -23,7 +23,7 @@ const Wrapper = styled.div`
   background: linear-gradient(45deg, #212121, #424242);
   box-shadow: 0 4px 0 0 rgba(0, 0, 0, 0.2);
   align-items: center;
-  color: #ffffff;
+  
   padding: 2vh;
   /* padding-left: 3vh;
   padding-right: 3vh; */
@@ -31,7 +31,7 @@ const Wrapper = styled.div`
   border-radius: 1vh;
   height: 36px;
   /* font-size: 12px; */
-  font-size: 2vh;
+  /* font-size: 2vh; */
   white-space: nowrap;
   ${({ type }) => TYPE_STYLE[type]};
   /* justify-content: ${({ center }) => center ? 'center' : 'start'}; */

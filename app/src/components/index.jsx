@@ -13,20 +13,19 @@ export const CommentDiv = styled.div`
   background: #d9dae0;
   padding: 10px;
   border-radius: 5px;
-  color: black;
   margin-bottom: 5px;
-  font-size: 2vh;
+  /* font-size: 2vh; */
 `
 
 export const BasicFontSize = styled.div`
-  font-size: 1.5vh;
+  /* font-size: 1.5vh; */
   padding: 1px;
 `
 
 export const ReplyDiv = styled.div`
   margin-right: 15px;
   margin-left: 15px;
-  font-size: 2vh;
+  /* font-size: 2vh; */
   border-radius: 5px;
   ${''}
   padding: 2px;
@@ -43,8 +42,7 @@ export const FlexWrapper = styled.div`
 `
 
 export const TopicWrapper = styled.div`
-  color: #1a237e;
-  font-size: medium;
+  /* font-size: medium; */
   background-color: white;
   padding: 20px;
   margin: 5px;
@@ -69,10 +67,9 @@ export const TopSection = styled.div`
 export const StyledInput = styled(Input)`
   border: ${props => props.border ? '1px solid grey' : 'none'};
   margin-top: 6px;
-  font-size: 2vh;
+  /* font-size: 2vh; */
   height: 5vh;
   width: 100%;
-  color: #1a237e;
   padding-left: 12px;
   padding-right: 12px;
   border-radius: 6px;
@@ -83,13 +80,12 @@ export const StyledInput = styled(Input)`
 `
 
 export const DejavuCard = styled.div`
-  background: linear-gradient(45deg, #7851a9, #815abc, #8964cf, #916ee3, #9878f8);
-  color: #ffffff;
-  font-size: medium;
+  /* font-size: medium; */
   background-color: white;
   padding: 20px;
   margin: 5px;
-  border-radius: 5px;
+  box-shadow: 0 4px 4px -2px gray;
+  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
 `
 
 export const FormWrapper = styled.div`
@@ -107,18 +103,16 @@ export const LoaderContainer = styled.div`
   position: absolute;
   justify-content: center;
   align-items: center;
-  color: #353434;
-  font-size: 12px;
+  /* font-size: 12px; */
   height: 100%;
   width: 100%;
 `
 
 export const Title = styled.div`
-  font-size: 24px;
+  /* font-size: 24px; */
   margin-bottom: 20px;
   line-height: 24px;
   font-weight: 700;
-  color: #353434;
 `
 
 export const ContentRight = styled.div`
@@ -148,12 +142,11 @@ export const Notification = styled.div`
   padding-right: 2vh;
   flex-direction: column;
   justify-content: center;
-  font-size: 15px;
+  /* font-size: 15px; */
   left: 1vh;
   right: 2vh;
   z-index: 2;
   background: white;
-  color:  #9c27b0;
   top: 1vh;
   border-radius: 2vh;
   height: 8%;
@@ -167,7 +160,7 @@ export const ContentBetween = styled.div`
 `
 
 export const StyledCheckbox = styled(CustomInput)`
-  font-size: 2vh;
+  /* font-size: 2vh; */
   height: 10px;
   padding-top: 5px;
   color: #015249;
@@ -180,12 +173,11 @@ export const Pill = styled.div`
   padding: 1vh;
   background: linear-gradient(#353434, #c5cae9);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-  color: #1a237e;
   margin-bottom: 1vh;
 `
 
 export const SubText = styled.div`
-  font-size: 12px;
+  /* font-size: 12px; */
 `
 
 export const OverlayLoaderContainer = styled.div`
@@ -215,13 +207,18 @@ export const FullPageLoader = () => (
 
 export const HeaderText = styled.div`
   font-size: 3vh;
+  font-family: 'Proximanova bold';
 `
+
+export const PageLabel = styled.div`
+  font-size: 3vh;
+`
+
 export const DescriptionText = styled.div`
-  font-size: 2vh;
+  /* font-size: 2vh; */
 `
 export const UserNameText = styled.div`
-  font-size: 2vh;
-  color: grey;
+  /* font-size: 2vh; */
 `
 
 export const OverlayLoader = () => (
@@ -241,11 +238,11 @@ export const Stat = styled.div`
   white-space: nowrap;
   overflow: hidden;
   margin-bottom: 2px;
-  font-size: 2vh;
+  /* font-size: 2vh; */
   text-overflow: ellipsis;
-  font-size: ${(props) => (props.size ? props.size : null)} i {
+  /* font-size: ${(props) => (props.size ? props.size : null)} i {
     margin-right: 6px;
-  }
+  } */
 `
 
 export const Icon = ({ name }) => <i className={`material-icons`}>{name}</i>
@@ -260,7 +257,7 @@ export const Placeholder = ({ text = 'No topics yet' }) => (
 )
 
 const PlaceholderIcon = styled(FontAwesomeIcon)`
-  font-size: 60px;
+  /* font-size: 60px; */
 `
 
 const PlaceholderWrapper = styled.div`
@@ -276,8 +273,7 @@ const PlaceholderWrapper = styled.div`
 
 export const Close = styled.div`
   position: absolute;
-  font-size: 20px;
-  color: #353434;
+  /* font-size: 20px; */
   opacity: 0.5;
   right: 0;
   top: 0;
@@ -288,7 +284,6 @@ export const TopicsContainer = styled.div`
   height: 100%;
   margin-left: -40px;
   margin-right: -40px;
-  ${''}
   display: flex;
 `
 
@@ -299,8 +294,7 @@ export const Belt = styled.div`
   ${''}
 `
 export const Author = styled.div`
-  color: #1a237e;
-  font-size: 2vh;
+  /* font-size: 2vh; */
   opacity: 0.8;
   display: flex;
   @media screen and (min-width: 800px) {
@@ -308,12 +302,20 @@ export const Author = styled.div`
   }
 `
 
-export const CardWrapper = styled.div`
-  background: linear-gradient(45deg, #7851a9, #815abc, #8964cf, #916ee3, #9878f8);
+export const HomeCardWrapper = styled.div`
+  /* background: linear-gradient(white, #5EB2FB); */
+  display: flex;
+  flex-direction: column;
   justify-content: center;
-  color: #ffffff;
-  width: 200px;
-  padding: 20px;
+  background-color: #5EB2FB;
+  /* color: #1a237e; */
+  color: white;
+  width: 50vw;
+  height: 23vh;
+  /* @media screen and (min-width: 800px) {
+    height: 30vw;
+  } */
+  padding-left: 20px;
   margin-left: 20px;
   &:first-child {
     margin-left: 40px;
@@ -321,8 +323,8 @@ export const CardWrapper = styled.div`
   &:last-child {
     margin-right: 40px;
   }
-  border-radius: 6px;
-  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+  /* border-radius: 6px; */
+  box-shadow: 0 4px 2px -2px gray;
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   animation-delay: ${({ n }) => n * 100 + 'ms'};
 `

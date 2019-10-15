@@ -58,7 +58,7 @@ const Stat = styled.div`
 
 // const Tag = styled.div`
 //   background: #5C6BC0;
-//   color: #E8EAF6;
+//
 //   padding-left: 10px;
 //   padding-right: 10px;
 //   margin-right: 6px;
@@ -73,7 +73,7 @@ const Stat = styled.div`
 
 const StatsWrap = styled.div`
   height: 40%;
-  font-size: 14px;
+  /* font-size: 14px; */
   display: flex;
   flex-direction: column;
 `
@@ -91,8 +91,8 @@ const Wrapper = styled.div`
 `
 
 const Title = styled.div`
-  color: #1a237e;
-  font-size: 24px;
+  
+  /* font-size: 24px; */
   line-height: 24px;
   font-weight: 700;
   height: 30%;
@@ -102,8 +102,8 @@ const Title = styled.div`
 `
 
 const Description = styled.div`
-  color: #1a237e;
-  font-size: 18px;
+  
+  /* font-size: 18px; */
   line-height: 18px;
   font-weight: 500;
   height: 30%;
@@ -113,7 +113,7 @@ const Description = styled.div`
 `
 
 const TopWrap = styled.div`
-  font-size: 14px;
+  /* font-size: 14px; */
   height: 5%;
   display: flex;
   line-height: 14px;

@@ -147,9 +147,9 @@ const Result = ({
               <Fragment key={index}>
                 <StyledCard>
                   <CardHeader className='text-center' style={{ background: 'none' }}>
-                    <Question>
+                    <div>
                       Q{index + 1}: {res.question.question}
-                    </Question>
+                    </div>
                   </CardHeader>
                   {res.question.img_url && (
                     <Img
@@ -204,7 +204,7 @@ const Result = ({
             <Icon name='close' />
           </Close>
           <RatingCard>
-            <Title>How was the topic?</Title>
+            <div>How was the topic?</div>
             <hr />
             <RatingButtonsContainer>
               <Button
@@ -235,7 +235,7 @@ const Result = ({
               />
             </RatingButtonsContainer>
             <hr />
-            <Title>Comment</Title>
+            <div>Comment</div>
             <Input
               type='textarea'
               value={comment}
@@ -290,27 +290,9 @@ const Result = ({
   )
 }
 
-const Question = styled.div`
-  color: #1a237e;
-  font-size: 25px;
-  font-weight: 700;
-`
-
 const RatingButtonsContainer = styled.div`
   display: flex;
   justify-content: space-around;
-`
-
-const Title = styled.div`
-  color: #1a237e;
-  @media (min-width: 900) {
-    font-size: 20px;
-  }
-
-  @media (max-width: 900) {
-    font-size: 4vw;
-  }
-  font-weight: 700;
 `
 
 const RatingCard = styled.div`
@@ -330,8 +312,6 @@ const RatingCard = styled.div`
 
 const Close = styled.div`
   position: absolute;
-  font-size: 2em;
-  color: #e8eaf6;
   opacity: 0.5;
   right: 0;
   top: 0;
@@ -355,8 +335,9 @@ const IconsDiv = styled.div`
 const StyledCard = styled(Card)`
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   padding: 1vh;
-  border-radius: 1vh;
-  background: linear-gradient(#e8eaf6, #c5cae9);
+  box-shadow: 0 4px 4px -2px gray;
+  /* border-radius: 1vh; */
+  /* background: linear-gradient(#e8eaf6, #c5cae9); */
 `
 
 const Wrapper = styled.div`

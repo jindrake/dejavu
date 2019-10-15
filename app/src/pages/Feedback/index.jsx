@@ -125,8 +125,8 @@ const Feedback = ({ createFeedback, user, history }) => {
 }
 
 const FeedbackTitle = styled.div`
-  color: #e8eaf6;
-  font-size: 1.25em;
+  
+  /* font-size: 1.25em; */
   font-weight: 700;
   text-align: center;
 `
@@ -146,8 +146,8 @@ const FeedbackButtonContainer = styled.div`
 
 const FeedbackClose = styled.div`
   position: absolute;
-  font-size: 20px;
-  color: #e8eaf6;
+  /* font-size: 20px; */
+  
   opacity: 0.5;
   right: .25em;
   top: .25em;
@@ -161,6 +161,12 @@ const FeedbackSubmitDiv = styled(FormGroup)`
   display: flex;
   justify-content: center;
 `
+
+// const FeedbackLabel = styled.div`
+//   /* font-size: .75em; */
+//   text-align: center;
+//   margin-bottom: 10px;
+// `
 
 export default compose(
   withRouter,

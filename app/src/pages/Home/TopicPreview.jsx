@@ -5,9 +5,7 @@ import uuid from 'uuid/v4'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { INSERT_USER_ACTIVITY } from './queries'
-import { CardWrapper, CardTitle, CardDescription } from '../../components'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
+import { Icon, HomeCardWrapper } from '../../components'
 
 const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const {
@@ -22,7 +20,7 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const date = new Date(createdAt)
 
   return (
-    <CardWrapper
+    <HomeCardWrapper
       n={n}
       onClick={() => {
         if (user) {
@@ -40,53 +38,53 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
         history.push(`topic/${id}`)
       }}
     >
-      <CardTitle>{name}</CardTitle>
-      <CardDescription>{description}</CardDescription>
-      <CardDescription>{date.toDateString()}</CardDescription>
+      <div>{name}</div>
+      <div>{description}</div>
       <div>
         {topic.target_fields && topic.target_fields.length && topic.target_fields.map(({ field }, index) => (
-          <CardDescription key={index}>{field}</CardDescription>
+          <div key={index}>{field}</div>
         ))}
       </div>
-      <CardDescription
-        className='mt-3 mb-3'
-      >{date.toDateString()}</CardDescription>
-      <RatingContainer>
-        <Ratings>
-          <StyledIcon icon={faThumbsUp} />{'   '}
+      <div>{date.toDateString()}</div>
+      <div>
+        <div>
+          <StyledIcon name='thumb_up' />{'  '}
           {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
-        </Ratings>
-        <Ratings>
-          <StyledIcon icon={faThumbsDown} />{'   '}
+        </div>
+        <div>
+          <StyledIcon name='thumb_down' />{'  '}
           {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
-        </Ratings>
-      </RatingContainer>
-    </CardWrapper>
+        </div>
+      </div>
+    </HomeCardWrapper>
   )
 }
 
-const RatingContainer = styled.div`
-  display: flex;
-  margin: 5px;
-  @media screen and (min-width: 800px) {
-    margin: 10px;
-  }
-`
-
-const StyledIcon = styled(FontAwesomeIcon)`
+const StyledIcon = styled(Icon)`
   width: 100%;
   justify-content: right;
   color: #ffffff;
 `
 
-const Ratings = styled.div`
-  color: #ffffff;
-  font-size: 14px;
-  opacity: 0.8;
-  margin-bottom: 6px;
-  margin-right: 7px;
-  font-weight: 600;
-`
+// const Wrapper = styled.div`
+//   background: linear-gradient(#e8eaf6, #c5cae9);
+//   display: flex;
+//   flex-direction: column;
+//   justify-content: center;
+//   width: 200px;
+//   padding: 20px;
+//   margin-left: 20px;
+//   &:first-child {
+//     margin-left: 40px;
+//   }
+//   &:last-child {
+//     margin-right: 40px;
+//   }
+//   border-radius: 6px;
+//   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+//   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
+//   animation-delay: ${({ n }) => n * 100 + 'ms'};
+// `
 
 export default compose(
   withRouter,

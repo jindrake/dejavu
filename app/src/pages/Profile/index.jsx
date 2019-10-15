@@ -11,10 +11,10 @@ import {
   INSERT_USER_ACTIVITY,
   FETCH_ACTIVITY_LOGS
 } from './queries'
-import { FullPageLoader, Placeholder, ContentCenter, CardDescription, SectionTitle } from '../../components'
+import { FullPageLoader, Placeholder, ContentCenter, DejavuCard } from '../../components'
 import { useStateValue, getObjectValue } from '../../libs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPencilAlt, faSearchPlus, faTasks, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { faPencilAlt, faSearch, faTasks, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import TopicManagementCard from './TopicManagementCard'
 
 const FETCH_USER = gql`
@@ -91,7 +91,7 @@ const Profile = ({ user, history }) => {
 
   return (
     <Container>
-      <div>
+      <ProfileTopBar className='p-4 pt-5 pb-4 mb-3'>
         <ProfileInfo>
           {currentUser.avatar === undefined ? (
             <AvatarContainer>{initials.toUpperCase()}</AvatarContainer>
@@ -99,15 +99,14 @@ const Profile = ({ user, history }) => {
             <AvatarContainer style={{ backgroundImage: `${currentUser.avatar}` }} />
           )}
         </ProfileInfo>
-        <CenteredText className='h2 text-capitalize'>
+        <CenteredText className='text-capitalize'>
           {currentUser.first_name} {currentUser.last_name}
         </CenteredText>
-        <hr />
         <ContentCenter className='h6'>{currentUser.email}</ContentCenter>
-      </div>
-      <div className='mt-3'>
+      </ProfileTopBar>
+      <div className='mt-5'>
         <Wrapper>
-          <SectionTitle>Your created topics</SectionTitle>
+          <div className='ml-3'>Your created topics</div>
           <TopicsContainer>
             {userTopics.length === 0 ? (
               <Placeholder />
@@ -121,63 +120,74 @@ const Profile = ({ user, history }) => {
           </TopicsContainer>
         </Wrapper>
         <br />
-        <SectionTitle>Activity Logs</SectionTitle>
-        <div style={{ height: '32vh', overflowY: 'scroll' }}>
-          {activityLogs.length === 0 ? (
-            <div className='mt-2'>
-              <ContentCenter>No Activity Yet</ContentCenter>
-            </div>
-          ) : (
-            <div>
-              {activityLogs.map((log, index) => {
-                const date = new Date(log.created_at)
-                let icon = ''
-                let activity = ''
-                switch (log.activity_type) {
-                  case 'take':
-                    icon = faPencilAlt
-                    activity = 'taken'
-                    break
+        <Wrapper>
+          <div className='ml-3'>Activity Logs</div>
+          <TopicsContainer>
+            {activityLogs.length === 0 ? (
+              <div className='mt-5'>
+                <ContentCenter>No Activity Yet</ContentCenter>
+              </div>
+            ) : (
+              <div>
+                {activityLogs.map((log, index) => {
+                  const date = new Date(log.created_at)
+                  let icon = ''
+                  let activity = ''
+                  switch (log.activity_type) {
+                    case 'take':
+                      icon = faPencilAlt
+                      activity = 'took'
+                      break
 
-                  case 'answer':
-                    icon = faTasks
-                    activity = 'answered'
-                    break
+                    case 'answer':
+                      icon = faTasks
+                      activity = 'answered'
+                      break
 
-                  case 'view':
-                    icon = faSearchPlus
-                    activity = 'viewed'
-                    break
+                    case 'view':
+                      icon = faSearch
+                      activity = 'viewed'
+                      break
 
-                  case 'rate':
-                    icon = faThumbsUp
-                    activity = 'rated'
-                    break
+                    case 'rate':
+                      icon = faThumbsUp
+                      activity = 'rated'
+                      break
 
-                  default:
-                    break
-                }
-                return (
-                  <DejavuCard key={index}>
-                    <ActivityIcon icon={icon} />
-                    <CardDescription>
-                      You {activity} the topic{' '}
-                      <strong>
-                        {log.topic === null ? log.question.topics[0].topic.name : log.topic.name}
-                      </strong>
-                      <br />
-                      on {date.toISOString().split('T')[0]}
-                    </CardDescription>
-                  </DejavuCard>
-                )
-              })}
-            </div>
-          )}
-        </div>
+                    default:
+                      break
+                  }
+                  return (
+                    <DejavuCard key={index} className='d-flex flex-row justify-content-start dejavu-small-text'>
+                      <ActivityIcon icon={icon} />
+                      <Author className='d-flex flex-column justify-content-center'>
+                        <div>
+                          You {activity} the topic{' '}
+                          <strong>
+                            {log.topic === null
+                              ? log.question.topics[0].topic.name
+                              : log.topic.name}
+                          </strong>
+                          {'  '} on {date.toISOString().split('T')[0]}
+                        </div>
+                      </Author>
+                    </DejavuCard>
+                  )
+                })}
+              </div>
+            )}
+          </TopicsContainer>
+        </Wrapper>
       </div>
     </Container>
   )
 }
+
+const ProfileTopBar = styled.div`
+  background-color: #5eb2fb;
+  width: 100%;
+  color: white;
+`
 
 const AvatarContainer = styled.div`
   border-radius: 6vh;
@@ -188,7 +198,6 @@ const AvatarContainer = styled.div`
   align-items: center;
   background: #E7C3FF;
   font-size: 7vh;
-  color: #412a7a;
   font-family: 'Open Sans';
   font-weight: 700;
 `
@@ -198,9 +207,8 @@ const ProfileInfo = styled.div`
   display: flex;
   justify-content: center;
   text-align: center;
-  font-size: 3vh;
+  /* font-size: 3vh; */
   cursor: pointer;
-  color: #412a7a;
 `
 
 const CenteredText = styled.div`
@@ -208,15 +216,16 @@ const CenteredText = styled.div`
   display: flex;
   justify-content: center;
   padding: 5px;
-  font-weight: 600;
-  color: #412a7a;
+  font-weight: 500;
 `
 
 const Container = styled.div`
   height: 100%;
   width: 100%;
   margin: auto;
-  padding-top: 3vh;
+  position: absolute;
+  top: 0;
+  left: 0;
 `
 
 const Wrapper = styled.div`
@@ -225,26 +234,42 @@ const Wrapper = styled.div`
   height: 25vh;
 `
 
-const TopicsContainer = styled.div`
-  overflow-y: scroll;
+// const SectionTitle = styled.div`
+//   @media (min-width: 800px) {
+//     font-size: 20px;
+//   }
+//   @media (max-width: 1024px) {
+//     font-size: 2.25vh;
+//   }
+//   margin-bottom: 4px;
+//   font-family: 'Open Sans';
+//   font-weight: 700;
+// `
+
+const Author = styled.div`
+  /* font-size: 2vh; */
 `
 
-const DejavuCard = styled.div`
-  background: linear-gradient(45deg, #7851a9, #815abc, #8964cf, #916ee3, #9878f8);
-  margin-bottom: 10px;
-  border-radius: 6px;
-  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
-  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-  animation-delay: ${({ n }) => n * 100 + 'ms'};
-  display: flex;
-  justify-content: flex-start;
-  padding: 1vh;
-  color: #ffffff;
-`
+const TopicsContainer = styled.div``
+
+// const DejavuCard = styled.div`
+//   background: linear-gradient(0deg, #95d6dc, #addee9, #c5e6f3, #dbeffa, #f0f8ff);
+//   margin-bottom: 10px;
+//   &:last-child {
+//     margin-bottom: 60px;
+//   }
+//   border-radius: 6px;
+//   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+//   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
+//   animation-delay: ${({ n }) => n * 100 + 'ms'};
+//   display: flex;
+//   justify-content: flex-start;
+//   padding: 1vh;
+
+// `
 
 const ActivityIcon = styled(FontAwesomeIcon)`
-  font-size: 3.5vh;
-  color: #fff700;
+  /* font-size: 3.5vh; */
   margin: 1.5vh;
   margin-right: 2.5vh;
 `

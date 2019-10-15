@@ -174,7 +174,7 @@ const AnswerQuestion = ({
             />
           )} */}
               <HeaderText>
-                <Question>{question.question}</Question>
+                <div>{question.question}</div>
               </HeaderText>
             </QuestionContainer>
             <ChoicesContainer>
@@ -221,12 +221,6 @@ const AnswerQuestion = ({
   )
 }
 
-const Question = styled.div`
-  color: #1a237e;
-  font-size: 1.25em;
-  font-weight: 700;
-`
-
 const ChoicesContainer = styled.div`
   width: 100%;
   position: absolute;
@@ -244,7 +238,7 @@ const Choice = styled.div`
   margin-bottom: 15px;
   background: ${(props) =>
     props.selected ? 'linear-gradient(#FFA726, #FF9800)' : 'linear-gradient(#9c27b0, #7B1FA2)'};
-  color: white;
+  
   font-weight: ${(props) => (props.selected ? '700' : 'normal')};
   width: 100%;
   height: 20%;

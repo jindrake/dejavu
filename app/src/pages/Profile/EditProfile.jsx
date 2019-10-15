@@ -22,6 +22,54 @@ import {
   Header
 } from '../../components'
 
+const Close = styled.div`
+  position: absolute;
+  /* font-size: 20px; */
+  
+  opacity: 0.5;
+  right: 0;
+  top: 0;
+`
+
+const Hint = styled.span`
+  margin-left: 6px;
+`
+
+const FormItem = styled.div`
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+`
+
+const TwinItems = styled(FormItem)`
+  flex-direction: row;
+  margin-top: -10px;
+  div:first-child input {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+  div:last-child input {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+  }
+`
+
+const ButtonGroup = styled.div`
+  margin-top: 20px;
+  display: flex;
+  justify-content: flex-end;
+  div:first-child {
+    margin-right: 10px;
+  }
+`
+
+const Form = styled.form`
+  position: relative;
+  opacity: ${({ isSubmitting }) => (isSubmitting ? 0.5 : 1)};
+  transition: 300ms;
+`
+
 const FETCH_FIELDS = gql`
   query fetchFields {
     enum_field(order_by: { field: asc }) {
@@ -307,55 +355,6 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
     </Formik>
   )
 }
-
-const Close = styled.div`
-  position: absolute;
-  font-size: 20px;
-  color: #e8eaf6;
-  opacity: 0.5;
-  right: 0;
-  top: 0;
-`
-
-const Hint = styled.span`
-  color: #ef5350;
-  margin-left: 6px;
-`
-
-const FormItem = styled.div`
-  margin-top: 10px;
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-`
-
-const TwinItems = styled(FormItem)`
-  flex-direction: row;
-  margin-top: -10px;
-  div:first-child input {
-    border-top-right-radius: 0px;
-    border-bottom-right-radius: 0px;
-  }
-  div:last-child input {
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-  }
-`
-
-const ButtonGroup = styled.div`
-  margin-top: 20px;
-  display: flex;
-  justify-content: flex-end;
-  div:first-child {
-    margin-right: 10px;
-  }
-`
-
-const Form = styled.form`
-  position: relative;
-  opacity: ${({ isSubmitting }) => (isSubmitting ? 0.5 : 1)};
-  transition: 300ms;
-`
 
 export default compose(
   withRouter,

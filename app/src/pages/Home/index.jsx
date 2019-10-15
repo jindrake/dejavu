@@ -6,17 +6,17 @@ import withFirebase from '../../hocs/withFirebase'
 import { useStateValue } from '../../libs'
 import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS, FETCH_USER_SESSIONS } from './queries'
 import {
-  Button,
   FullPageLoader,
+  Icon,
   Placeholder,
-  CardWrapper,
-  Header,
-  SectionTitle,
-  CardTitle,
-  CardDescription
+  HomeCardWrapper,
+  Belt,
+  TopicsContainer,
+  PageLabel,
+  HeaderText
 } from '../../components'
-import TopicPreview from './TopicPreview'
 import { useQuery } from '@apollo/react-hooks'
+import { Button } from 'reactstrap'
 
 const Home = ({ history }) => {
   const [{ user }, globalDispatch] = useStateValue()
@@ -71,52 +71,54 @@ const Home = ({ history }) => {
 
   return (
     <Wrapper>
-      <GreetingWrapper>
-        <Header>
+      <div>
+        <HeaderText>
           Hello, {user ? <span className='text-capitalize'>{user.first_name}</span> : 'Study Buddy'}
           !
-        </Header>
-        <CreateButtonContainer>
-          <Button
-            text='Create Topic'
-            type='primary'
-            onClick={() => history.push('/topic/create')}
-          />
+        </HeaderText>
+        <CreateButtonContainer className='mt-3'>
+          <CreateTopicButton id='button' onClick={() => history.push('/topic/create')}>
+            <AddIcon name='add' />
+            Create a Topic
+          </CreateTopicButton>
         </CreateButtonContainer>
-      </GreetingWrapper>
+      </div>
       <SectionWrapper>
-        <SectionTitle>Your sessions</SectionTitle>
+        <PageLabel>Your sessions</PageLabel>
         <TopicsContainer>
           <Belt>
             {userSessions.length > 0 ? (
               userSessions.map((session, index) => (
-                <CardWrapper
+                <HomeCardWrapper
                   key={index}
                   onClick={() => {
                     history.push('/session/' + session.id)
                   }}
                 >
-                  <CardTitle>{session.topic.name}</CardTitle>
+                  <div>{session.topic.name}</div>
                   <br />
-                  <CardDescription>
+                  <div>
                     status:&nbsp;
                     {session.current_user ? (
                       session.current_user_id === user.id ? (
                         <span className='text-danger'>Your turn!</span>
                       ) : (
-                        <CardStatus type='warning'>
+                        <span className='text-warning'>
                           Waiting for {session.current_user.first_name}
-                        </CardStatus>
+                        </span>
                       )
                     ) : (
                       <div>
-                        <CardStatus type='success'>Finished</CardStatus>
+                        <span className='text-success'>Finished</span>
                         <br />
                         Click to view results
                       </div>
                     )}
-                  </CardDescription>
-                </CardWrapper>
+                    <div className='mt-3 dejavu-small-text'>
+                      {new Date(session.updated_at).toDateString()}
+                    </div>
+                  </div>
+                </HomeCardWrapper>
               ))
             ) : (
               <Placeholder text='Start a session by tackling a topic' />
@@ -124,27 +126,51 @@ const Home = ({ history }) => {
           </Belt>
         </TopicsContainer>
       </SectionWrapper>
-      {/* <SectionWrapper>
-        <Title>Hot Topics</Title>
-        <TopicsContainer>
-          <Belt className='w-100'>
-            {hotTopics.length > 0 ? (
-              hotTopics.map((topic, index) => (
-                <TopicPreview key={index} n={index} topic={topic} user={user} />
-              ))
-            ) : (
-              <Placeholder />
-            )}
-          </Belt>
-        </TopicsContainer>
-      </SectionWrapper> */}
       <SectionWrapper>
-        <SectionTitle>Recent Topics</SectionTitle>
+        <PageLabel>Recent Topics</PageLabel>
         <TopicsContainer>
           <Belt>
             {recentTopics.length > 0 ? (
               recentTopics.map((topic, index) => (
-                <TopicPreview key={index} n={index} topic={topic} user={user} />
+                <HomeCardWrapper
+                  key={index}
+                  onClick={() => {
+                    // if (user) {
+                    //   insertUserActivity({
+                    //     variables: {
+                    //       userActivity: {
+                    //         id: uuid(),
+                    //         activity_type: 'view',
+                    //         user_id: user.id,
+                    //         topic_id: topic.id
+                    //       }
+                    //     }
+                    //   })
+                    // }
+                    history.push(`topic/${topic.id}`)
+                  }}
+                >
+                  <div>{topic.name}</div>
+                  <div className='dejavu-small-text'>{topic.description}</div>
+                  <div>
+                    {topic.target_fields &&
+                      topic.target_fields.length &&
+                      topic.target_fields.map(({ field }, index) => <div key={index}>{field}</div>)}
+                  </div>
+                  <div>{new Date(topic.created_at).toDateString()}</div>
+                  <div>
+                    <div>
+                      <Icon name='thumb_up' />
+                      {'  '}
+                      {topic.ratings.length > 0 ? topic.ratings.filter((r) => r.type === 'upvote').length : 0}
+                    </div>
+                    <div>
+                      <Icon name='thumb_down' />
+                      {'  '}
+                      {topic.ratings.length > 0 ? topic.ratings.filter((r) => r.type === 'downvote').length : 0}
+                    </div>
+                  </div>
+                </HomeCardWrapper>
               ))
             ) : (
               <Placeholder />
@@ -156,9 +182,14 @@ const Home = ({ history }) => {
   )
 }
 
-const CardStatus = styled.span`
-  color: ${(props) => props.type === 'success' ? '#8cff9e' : '#fff700'};
-`
+// const Author = styled.div`
+//
+//   font-size: 2vh;
+//   opacity: 0.8;
+//   @media screen and (min-width: 900px) {
+//     margin-bottom: 20px;
+//   }
+// `
 
 const Wrapper = styled.div`
   position: absolute;
@@ -171,36 +202,39 @@ const Wrapper = styled.div`
   padding-bottom: 0;
 `
 
-const GreetingWrapper = styled.div`
-  font-size: 2vh;
-  font-weight: 700;
-  color: #e8eaf6;
-  text-align: left;
-`
-
 const CreateButtonContainer = styled.div`
   justify-content: left;
   width: 16.5vh;
   margin-top: 5px;
 `
 
-const Belt = styled.div`
-  position: absolute;
-  top: 6px;
-  bottom: 6px;
-  display: flex;
-  border: 2px solid red;
+const CreateTopicButton = styled(Button)`
+  background: linear-gradient(#ffa726, #ff9800);
+  /* font-size: 2vh; */
+  border: none;
 `
 
-const TopicsContainer = styled.div`
-  position: relative;
-  overflow-x: scroll;
-  height: 100%;
-  margin-left: -40px;
-  margin-right: -40px;
-  border: 2px solid black;
-  display: flex;
+const AddIcon = styled(Icon)`
+  width: 30%;
 `
+
+// const Belt = styled.div`
+//   position: absolute;
+//   top: 6px;
+//   bottom: 6px;
+//   display: flex;
+//   border: 2px solid red;
+// `
+
+// const TopicsContainer = styled.div`
+//   position: relative;
+//   overflow-x: scroll;
+//   height: 100%;
+//   margin-left: -40px;
+//   margin-right: -40px;
+//   border: 2px solid black;
+//   display: flex;
+// `
 
 const SectionWrapper = styled.div`
   display: flex;

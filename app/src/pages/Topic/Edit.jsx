@@ -15,7 +15,6 @@ import * as yup from 'yup'
 import { OverlayLoader, Button, HeaderText, StyledInput } from '../../components'
 import { FormGroup, Label } from 'reactstrap'
 import uuid from 'uuid/v4'
-import styled from 'styled-components'
 import { graphql } from '@apollo/react-hoc'
 
 const EditTopicScreen = ({
@@ -133,7 +132,7 @@ const EditTopicScreen = ({
             <HeaderText className='mt-3 mb-3'>Edit topic</HeaderText>
             <FormGroup>
               <Label for='name'>
-                <SubHeader>Title</SubHeader>
+                <div>Title</div>
               </Label>
               <StyledInput
                 type='text'
@@ -151,7 +150,7 @@ const EditTopicScreen = ({
             </FormGroup>
             <FormGroup>
               <Label for='description'>
-                <SubHeader>Description</SubHeader>
+                <div>Description</div>
               </Label>
               <StyledInput
                 type='textarea'
@@ -166,7 +165,7 @@ const EditTopicScreen = ({
             </FormGroup>
             <FormGroup>
               <Label for='fieldOfStudy'>
-                <SubHeader>Target field</SubHeader>
+                <div>Target field</div>
               </Label>
               <StyledInput
                 type='select'
@@ -200,11 +199,6 @@ const EditTopicScreen = ({
     </Formik>
   )
 }
-
-const SubHeader = styled.div`
-  color: #e8eaf6;
-  font-size: 15px;
-`
 
 export default compose(
   withRouter,

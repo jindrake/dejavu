@@ -10,7 +10,7 @@ import {
   OverlayLoader,
   FormWrapper,
   Button,
-  Header,
+  Title,
   Label
 } from '../../components'
 import Alert from '../../components/Alert'
@@ -18,7 +18,6 @@ import { getObjectValue, useStateValue } from '../../libs'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
-import styled from 'styled-components'
 
 const FETCH_FIELDS = gql`
   query fetchFields {
@@ -126,77 +125,65 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
       }) => {
         return (
           <FormWrapper>
-            <div className='d-flex'>
-              <Button text='Back' type='primary' onClick={() => history.push('/')} />
-            </div>
-            <Card className='mt-3'>
-              {(isSubmitting || loading) && <OverlayLoader />}
-              <Header>Create a topic</Header>
-              <FormGroup className='mt-2'>
-                <Label>Title</Label>
-                <StyledInput
-                  type='text'
-                  name='name'
-                  placeholder='Enter title here ..'
-                  value={values.name}
-                  onChange={(e) => {
-                    setFieldValue('name', e.target.value)
-                  }}
-                  invalid={errors.name && touched.name}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label>Description</Label>
-                <StyledInput
-                  type='textarea'
-                  name='description'
-                  placeholder='Enter description here ..'
-                  values={values.description}
-                  onChange={handleChange}
-                  invalid={errors.description && touched.description}
-                />
-              </FormGroup>
-              <FormGroup>
-                <Label>Target field</Label>
-                <StyledInput
-                  type='select'
-                  name='fieldOfStudy'
-                  data-cy='field-of-study'
-                  onChange={handleChange}
-                  invalid={errors.fieldOfStudy && touched.fieldOfStudy}
-                  value={values.fieldOfStudy}
-                >
-                  <option value='' />
-                  {data.enum_field &&
-                    data.enum_field.map(({ field }) => (
-                      <option value={field} key={field}>
-                        {field}
-                      </option>
-                    ))}
-                </StyledInput>
-              </FormGroup>
-              {status && <Alert {...status} />}
-              <div className='d-flex justify-content-center'>
-                <Button type='action' text='Proceed' onClick={handleSubmit} />
-              </div>
-            </Card>
+            {(isSubmitting || loading) && <OverlayLoader />}
+            <Title>Create a topic</Title>
+            <FormGroup>
+              <Label for='name'>
+                <div>Title</div>
+              </Label>
+              <StyledInput
+                type='text'
+                name='name'
+                placeholder='Enter title here ..'
+                value={values.name}
+                onChange={(e) => {
+                  setFieldValue('name', e.target.value)
+                }}
+                invalid={errors.name && touched.name}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for='description'>
+                <div>Description</div>
+              </Label>
+              <StyledInput
+                type='textarea'
+                name='description'
+                placeholder='Enter description here ..'
+                values={values.description}
+                onChange={handleChange}
+                invalid={errors.description && touched.description}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for='fieldOfStudy'>
+                <div>Target field</div>
+              </Label>
+              <StyledInput
+                type='select'
+                name='fieldOfStudy'
+                data-cy='field-of-study'
+                onChange={handleChange}
+                invalid={errors.fieldOfStudy && touched.fieldOfStudy}
+                value={values.fieldOfStudy}
+              >
+                <option value='' />
+                {data.enum_field &&
+                  data.enum_field.map(({ field }) => (
+                    <option value={field} key={field}>
+                      {field}
+                    </option>
+                  ))}
+              </StyledInput>
+            </FormGroup>
+            {status && <Alert {...status} />}
+            <Button data-cy='submit' onClick={handleSubmit} text='Proceed' />
           </FormWrapper>
         )
       }}
     </Formik>
   )
 }
-
-const Card = styled.div`
-  background: linear-gradient(45deg, #7851a9, #815abc, #8964cf, #916ee3, #9878f8);
-  margin-bottom: 10px;
-  border-radius: 6px;
-  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
-  animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-  animation-delay: ${({ n }) => n * 100 + 'ms'};
-  padding: 3vh;
-  color: #ffffff;
-`
 
 export default compose(
   withRouter,
