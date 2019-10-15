@@ -158,6 +158,11 @@
 	font-size: 5vh;
 }
 
+label {
+	font-size: 2vh;
+	color: #707070;
+}
+
 .material-icons {
   font-family: 'Material Icons Round';
   font-weight: normal;

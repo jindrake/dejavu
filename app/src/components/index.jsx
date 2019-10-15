@@ -65,15 +65,20 @@ export const TopSection = styled.div`
 `
 
 export const StyledInput = styled(Input)`
-  border: ${props => props.border ? '1px solid grey' : 'none'};
+  /* border: ${props => props.border ? '1px solid grey' : 'none'}; */
   margin-top: 6px;
   /* font-size: 2vh; */
-  height: 5vh;
+  /* height: 5vh; */
   width: 100%;
-  padding-left: 12px;
+  /* padding-left: 12px;
   padding-right: 12px;
-  border-radius: 6px;
+  border-radius: 6px; */
   outline: none;
+
+  outline: 0;
+  background-color: transparent !important;
+  border: none !important;
+  border-bottom: 1px solid black !important;
   /* :focus {
     background: #353434;
   } */
@@ -204,8 +209,7 @@ export const FullPageLoader = () => (
 )
 
 export const HeaderText = styled.div`
-  font-size: 3vh;
-  font-family: 'Proximanova bold';
+  font-size: 4vh;
 `
 
 export const PageLabel = styled.div`
@@ -290,6 +294,7 @@ export const Belt = styled.div`
   top: 6px;
   display: flex;
 `
+
 export const Author = styled.div`
   /* font-size: 2vh; */
   opacity: 0.8;
