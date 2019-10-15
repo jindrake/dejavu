@@ -2,12 +2,15 @@ import React from 'react'
 import styled from 'styled-components'
 import compose from 'recompose/compose'
 import withFirebase from '../../hocs/withFirebase'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faPlus, faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import moment from 'moment'
 
 import { useStateValue } from '../../libs'
 import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS, FETCH_USER_SESSIONS } from './queries'
 import {
   FullPageLoader,
-  Icon,
+  // Icon,
   Placeholder,
   HomeCardWrapper,
   Belt,
@@ -20,7 +23,8 @@ import { Button } from 'reactstrap'
 
 const Home = ({ history }) => {
   const [{ user }, globalDispatch] = useStateValue()
-
+  // const date = moment()
+  // console.log()
   const {
     data: recentTopicsData,
     loading: recentTopicsLoading,
@@ -77,10 +81,11 @@ const Home = ({ history }) => {
           !
         </HeaderText>
         <CreateButtonContainer className='mt-3'>
-          <CreateTopicButton id='button' onClick={() => history.push('/topic/create')}>
-            <AddIcon name='add' />
+          <Button color='primary' id='button' onClick={() => history.push('/topic/create')}>
+            {/* <AddIcon name='add' /> */}
+            <FontAwesomeIcon icon={faPlus} />{' '}
             Create a Topic
-          </CreateTopicButton>
+          </Button>
         </CreateButtonContainer>
       </div>
       <SectionWrapper>
@@ -95,9 +100,8 @@ const Home = ({ history }) => {
                     history.push('/session/' + session.id)
                   }}
                 >
-                  <div>{session.topic.name}</div>
-                  <br />
-                  <div>
+                  <div className='font-weight-bold'>{session.topic.name}</div>
+                  <div className='dejavu-small-text'>
                     status:&nbsp;
                     {session.current_user ? (
                       session.current_user_id === user.id ? (
@@ -108,14 +112,15 @@ const Home = ({ history }) => {
                         </span>
                       )
                     ) : (
-                      <div>
-                        <span className='text-success'>Finished</span>
-                        <br />
-                        Click to view results
-                      </div>
+                      <span className='text-success'>Finished</span>
                     )}
-                    <div className='mt-3 dejavu-small-text'>
+                    <div className='mt-2 dejavu-small-text'>
                       {new Date(session.updated_at).toDateString()}
+                    </div>
+                    <div className='mt-3 dejavu-small-text'>
+                      {
+                        moment(new Date(session.updated_at)).fromNow()
+                      }
                     </div>
                   </div>
                 </HomeCardWrapper>
@@ -150,23 +155,33 @@ const Home = ({ history }) => {
                     history.push(`topic/${topic.id}`)
                   }}
                 >
-                  <div>{topic.name}</div>
-                  <div className='dejavu-small-text'>{topic.description}</div>
+                  <div className='font-weight-bold'>{topic.name}</div>
                   <div>
-                    {topic.target_fields &&
-                      topic.target_fields.length &&
-                      topic.target_fields.map(({ field }, index) => <div key={index}>{field}</div>)}
+                    <small>{topic.description}</small>
                   </div>
-                  <div>{new Date(topic.created_at).toDateString()}</div>
                   <div>
+                    <small>
+                      {topic.target_fields &&
+                        topic.target_fields.length &&
+                        topic.target_fields.map(({ field }, index) => <div key={index}>{field}</div>)}
+                    </small>
+                  </div>
+                  <div>
+                    <div className='dejavu-small-text'>
+                      {/* {new Date(topic.created_at).toDateString()} */}
+                      {moment(new Date(topic.created_at)).fromNow()}
+                    </div>
+                  </div>
+                  <div className='d-flex flex-row justify-content-end text-center mr-3 dejavu-small-text'>
                     <div>
-                      <Icon name='thumb_up' />
-                      {'  '}
+                      <FontAwesomeIcon icon={faThumbsUp} />{' '}
+                      &nbsp;
                       {topic.ratings.length > 0 ? topic.ratings.filter((r) => r.type === 'upvote').length : 0}
                     </div>
+                    &nbsp;
                     <div>
-                      <Icon name='thumb_down' />
-                      {'  '}
+                      <FontAwesomeIcon icon={faThumbsDown} />{' '}
+                      &nbsp;
                       {topic.ratings.length > 0 ? topic.ratings.filter((r) => r.type === 'downvote').length : 0}
                     </div>
                   </div>
@@ -208,15 +223,15 @@ const CreateButtonContainer = styled.div`
   margin-top: 5px;
 `
 
-const CreateTopicButton = styled(Button)`
-  background: linear-gradient(#ffa726, #ff9800);
-  /* font-size: 2vh; */
-  border: none;
-`
+// const CreateTopicButton = styled(Button)`
+//   background: linear-gradient(#ffa726, #ff9800);
+//   /* font-size: 2vh; */
+//   border: none;
+// `
 
-const AddIcon = styled(Icon)`
-  width: 30%;
-`
+// const AddIcon = styled(Icon)`
+//   width: 30%;
+// `
 
 // const Belt = styled.div`
 //   position: absolute;

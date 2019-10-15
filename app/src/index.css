@@ -143,7 +143,7 @@
 }
 
 .btn {
-  
+  color: white;
 }
 
 .btn-link {
@@ -156,6 +156,11 @@
 
 .dejavu-large-text {
 	font-size: 5vh;
+}
+
+label {
+	font-size: 2vh;
+	color: #707070;
 }
 
 .material-icons {
