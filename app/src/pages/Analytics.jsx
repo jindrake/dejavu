@@ -203,7 +203,7 @@ const Analytics = ({
                         <Title className='text-capitalize font-weight-bold m-0'>
                           {Number(
                             (rankingData.numberOfCorrect / rankingData.totalTimesAnswered) * 100
-                          ).toFixed(2)}
+                          ).toFixed(1)}
                         </Title>
                         <SubText className='dejavu-small-text m-0'>Score</SubText>
                       </Col>
