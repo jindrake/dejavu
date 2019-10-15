@@ -150,6 +150,10 @@
   color: #5574F7 !important;
 }
 
+.btn-primary {
+	background-color: #5eb2fb !important;
+}
+
 .dejavu-small-text {
 	font-size: 2.5vh;
 }

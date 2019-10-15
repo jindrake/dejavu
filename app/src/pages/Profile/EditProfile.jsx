@@ -18,9 +18,9 @@ import {
   Button,
   FullPageLoader,
   Icon,
-  Label,
-  Header
+  HeaderText
 } from '../../components'
+import { Label } from 'reactstrap'
 
 const Close = styled.div`
   position: absolute;
@@ -245,8 +245,6 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
         handleChange,
         handleSubmit,
         isSubmitting,
-        status,
-        setStatus,
         setFieldValue
       }) => {
         return (
@@ -256,7 +254,7 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
               <Close onClick={() => history.push('/profile')}>
                 <Icon name='close' />
               </Close>
-              <Header>Edit Profile Settings</Header>
+              <HeaderText>Edit Profile Settings</HeaderText>
               <TwinItems className='mt-2'>
                 <FormItem>
                   <Label>

@@ -439,7 +439,7 @@ module.exports = {
           }
           totalAttempts++
         })
-        return Number((numberOfCorrect / totalAttempts) * 100).toFixed(2)
+        return numberOfCorrect ? Number((numberOfCorrect / totalAttempts) * 100).toFixed(2) : 0
       } catch (error) {
         console.log(error.message)
         sentry.captureException(error)

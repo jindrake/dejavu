@@ -1,5 +1,5 @@
 import React from 'react'
-import { Input, Form, FormGroup } from 'reactstrap'
+import { Input, Form, FormGroup, Label } from 'reactstrap'
 import { Formik } from 'formik'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
@@ -9,7 +9,7 @@ import uuid from 'uuid/v4'
 import styled from 'styled-components'
 
 import Alert from '../../components/Alert'
-import { Button, Icon, TopSection, Label } from '../../components'
+import { Button, Icon, TopSection } from '../../components'
 
 const CREATE_FEEDBACK = gql`
   mutation createFeedback($feedback: [feedback_insert_input!]!) {

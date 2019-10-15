@@ -2,9 +2,10 @@ import React, { useState } from 'react'
 import { Formik, FieldArray } from 'formik'
 import { withRouter } from 'react-router-dom'
 import {
-  Input,
   FormText,
-  Alert
+  Alert,
+  FormGroup,
+  Label
 } from 'reactstrap'
 import compose from 'recompose/compose'
 import { useQuery, useMutation, useSubscription } from '@apollo/react-hooks'
@@ -21,7 +22,7 @@ import {
   PUBLISH_TOPIC,
   UPDATE_QUESTION
 } from './queries'
-import { OverlayLoader, SubText, Button, DejavuCard, Header, Label } from '../../components'
+import { OverlayLoader, SubText, Button, DejavuCard, HeaderText, StyledInput, ContentCenter } from '../../components'
 import Dropzone from '../../components/Dropzone'
 
 import {
@@ -282,10 +283,15 @@ const AddQuestions = ({
         }) => {
           return (
             <>
-              <Header>Add Question </Header>
+              <ContentCenter>
+                <HeaderText>Add Question </HeaderText>
+              </ContentCenter>
               {touched.question && errors.question && <Hint>{errors.question}</Hint>}
-              <div className='d-flex'>
-                <Input
+              <FormGroup>
+                <Label>
+                  Question
+                </Label>
+                <StyledInput
                   type='textarea'
                   id={`question`}
                   name={`question`}
@@ -294,7 +300,7 @@ const AddQuestions = ({
                   invalid={errors.question && touched.question}
                   className='mb-1'
                 />
-              </div>
+              </FormGroup>
               <div className='mb-3'>
                 <Label>Add an image to this question</Label>
                 {currentQuestionPhoto && (
@@ -438,7 +444,7 @@ const AddQuestions = ({
         </Alert>
       )}
       <CurrentQuestionsSection>
-        <Header>{numberOfQuestions} Questions</Header>
+        <HeaderText>{numberOfQuestions} Questions</HeaderText>
         {topicQuestions.map(({ question, id }, index) => {
           const dummyAnswers = question.answers
             .filter((answer) => !answer.is_correct)
@@ -476,7 +482,7 @@ const AddQuestions = ({
       </CurrentQuestionsSection>
       {field && (
         <CurrentQuestionsSection>
-          <Header>Select from your previous questions</Header>
+          <HeaderText>Select from your previous questions</HeaderText>
           {previousQuestions &&
             previousQuestions.map((question, index) => {
               const dummyAnswers = question.answers

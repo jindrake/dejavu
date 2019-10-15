@@ -16,11 +16,11 @@ import {
   Button,
   FullPageLoader,
   Icon,
-  Label,
-  Header
+  HeaderText
 } from '../components'
 import { useStateValue } from '../libs'
 import uuid from 'uuid/v4'
+import { Label } from 'reactstrap'
 
 const CREATE_USER = gql`
   mutation createUser($user: [user_insert_input!]!) {
@@ -195,11 +195,11 @@ const SignUp = ({ firebase, history }) => {
               <Close onClick={() => history.push('/')}>
                 <Icon name='close' />
               </Close>
-              <Header>
+              <HeaderText>
                 Let's be
                 <br />
                 study buddies!
-              </Header>
+              </HeaderText>
               {status && <Alert {...status} />}
               <TwinItems>
                 <FormItem>

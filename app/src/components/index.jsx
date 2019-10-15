@@ -335,19 +335,19 @@ export const HomeCardWrapper = styled.div`
   animation-delay: ${({ n }) => n * 100 + 'ms'};
 `
 
-export const Header = styled.div`
-  font-family: 'Open Sans';
-  font-weight: 800;
-  font-size: 3vh;
-  color: #412a7a;
-`
+// export const Header = styled.div`
+//   /* font-family: 'Open Sans'; */
+//   /* font-weight: 800;
+//   font-size: 3vh;
+//   color: #412a7a; */
+// `
 
-export const SectionTitle = styled.div`
-  font-family: 'Open Sans';
-  font-weight: 600;
-  font-size: 2.25vh;
-  color: #412a7a;
-`
+// export const SectionTitle = styled.div`
+//   /* font-family: 'Open Sans'; */
+//   /* font-weight: 600;
+//   font-size: 2.25vh;
+//   color: #412a7a; */
+// `
 
 export const CardTitle = styled.div`
   font-weight: 800;
@@ -359,9 +359,9 @@ export const CardDescription = styled.div`
   font-size: 2vh;
 `
 
-export const Label = styled.div`
-  font-family: 'Open Sans';
-  font-weight: 600;
-  font-size: 2.15vh;
-  color: #412a7a;
-`
+// export const Label = styled.div`
+/* font-family: 'Open Sans'; */
+/* font-weight: 600;
+  font-size: 2.15vh; */
+/* color: #412a7a; */
+// `

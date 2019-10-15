@@ -6,7 +6,7 @@ import * as yup from 'yup'
 import { withFirebase } from '../hocs'
 import { withRouter } from 'react-router-dom'
 import Alert from '../components/Alert'
-import { StyledInput, FormWrapper, OverlayLoader, Button, Icon, Header } from '../components'
+import { StyledInput, FormWrapper, OverlayLoader, Button, Icon, HeaderText } from '../components'
 
 const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
   return (
@@ -50,11 +50,11 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
               <Close onClick={() => history.push('/')}>
                 <Icon name='close' />
               </Close>
-              <Header>
+              <HeaderText>
                 Welcome back,
                 <br />
                 Study Buddy!
-              </Header>
+              </HeaderText>
               {status ? <Alert {...status} data-cy='alert' /> : null}
               <FormItem>
                 <div>

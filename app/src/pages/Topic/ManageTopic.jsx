@@ -2,8 +2,8 @@ import React from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { FETCH_FULL_TOPIC, UPDATE_TOPIC } from './queries'
 import { getObjectValue, useStateValue } from '../../libs'
-import { FullPageLoader, Header, ContentCenter, Button, Label } from '../../components'
-import { Badge } from 'reactstrap'
+import { FullPageLoader, ContentCenter, Button, HeaderText } from '../../components'
+import { Badge, Label } from 'reactstrap'
 
 const ManageTopic = ({
   match: {
@@ -46,7 +46,7 @@ const ManageTopic = ({
         <Button text='Back' type='primary' onClick={() => history.push('/profile')} />
       </div>
       <ContentCenter className='mt-3'>
-        <Header>Manage Topic</Header>
+        <HeaderText>Manage Topic</HeaderText>
       </ContentCenter>
       <Label>
         Title: <strong>{topic.name}</strong>
