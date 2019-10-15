@@ -8,8 +8,9 @@ import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import uuid from 'uuid/v4'
 import { useStateValue } from '../../libs'
-import { StyledInput, FullPageLoader } from '../../components/'
-import { Icon } from '../../components'
+import { StyledInput, FullPageLoader, CardTitle, CardDescription } from '../../components/'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faThumbsUp, faThumbsDown, faCalendarAlt } from '@fortawesome/free-solid-svg-icons'
 
 const FETCH_TOPIC = gql`
   query fetchTopic($query: topic_bool_exp, $orderBy: [topic_order_by!]) {
@@ -193,27 +194,26 @@ const Search = ({ user, history, insertUserActivity }) => {
                         })
                       }}
                     >
-                      <Title>{topic.name}</Title>
-                      <Description>{topic.description}</Description>
-                      <Description>
-                        <Icon name='date_range' />
+                      <CardTitle>{topic.name}</CardTitle>
+                      <CardDescription>{topic.description}</CardDescription>
+                      <CardDescription>
+                        <RatingIcon icon={faCalendarAlt} />
                         &nbsp;&nbsp;{`${date.toDateString()}`}
-                      </Description>
+                      </CardDescription>
                       <RatingsDiv>
-                        <Description>
-                          <Icon name='thumb_up' />
+                        <CardDescription>
+                          <RatingIcon icon={faThumbsUp} />
                           &nbsp;&nbsp;
                           {topic.ratings.length > 0
                             ? topic.ratings.filter((r) => r.type === 'upvote').length
                             : 0}
-                        </Description>
-                        <Description>
-                          <Icon name='thumb_down' />
+                          &nbsp;&nbsp;&nbsp;
+                          <RatingIcon icon={faThumbsDown} />
                           &nbsp;&nbsp;
                           {topic.ratings.length > 0
                             ? topic.ratings.filter((r) => r.type === 'downvote').length
                             : 0}
-                        </Description>
+                        </CardDescription>
                       </RatingsDiv>
                     </Wrapper>
                   )
@@ -232,9 +232,8 @@ const MainDiv = styled.div`
 `
 
 const StyledNoResultDiv = styled.div`
-  font-family: Helvetica;
   font-weight: bold;
-  color: #1a237e;
+  color: #412a7a;
   font-size: 3vh;
   margin-top: 10px;
 `
@@ -253,8 +252,6 @@ const SortingDiv = styled.div`
 `
 const InnerSortingDiv = styled.div`
   font-size: 2vh;
-  font-family: Helvetica;
-  font-weight: bold;
   display: flex;
   color: ${(props) => (props.clicked ? '#a5a4a4' : '#FFF')};
 `
@@ -266,34 +263,15 @@ const RatingsDiv = styled.div`
   margin-right: 10px;
 `
 
-const Title = styled.div`
-  color: #1a237e;
-  font-weight: 700;
-  max-height: 60%;
-  font-family: Helvetica;
-  font-size: 3vh;
-  padding-left: 10px;
-  margin: 2px;
-`
-const Description = styled.div`
-  color: #1a237e;
-  opacity: 0.8;
-  line-height: 20px;
-  max-height: 60%;
-  font-family: Helvetica;
-  font-size: 2vh;
-  padding-left: 15px;
-  margin: 2px;
-`
-
 const StyledDiv = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
   overflow-y: auto;
 `
+
 const Wrapper = styled.div`
-  background: linear-gradient(#e8eaf6, #c5cae9);
+  background: linear-gradient(45deg, #7851a9, #815abc, #8964cf, #916ee3, #9878f8);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -307,8 +285,12 @@ const Wrapper = styled.div`
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   animation-delay: ${({ n }) => n * 100 + 'ms'};
   z-index: -1;
+  color: #ffffff;
 `
 
+const RatingIcon = styled(FontAwesomeIcon)`
+
+`
 // const StyledInput = styled.input`
 //   background-color: white;
 //   width: 90vw;
