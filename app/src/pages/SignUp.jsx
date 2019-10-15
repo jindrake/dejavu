@@ -326,20 +326,20 @@ const SignUp = ({ firebase, history }) => {
 
 const Close = styled.div`
   position: absolute;
-  font-size: 20px;
-  color: #e8eaf6;
+  /* font-size: 20px; */
+  
   opacity: 0.5;
   right: 0;
   top: 0;
 `
 
 const Label = styled.div`
-  color: #e8eaf6;
-  font-size: 12px;
+  
+  /* font-size: 12px; */
 `
 
 const Hint = styled.span`
-  color: #ef5350;
+  
   margin-left: 6px;
 `
 

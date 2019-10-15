@@ -157,9 +157,9 @@ const Search = ({ user, history, insertUserActivity }) => {
                   clicked={sortByDateAsc}
                 >
                   Date
-                  <StyledIcon clicked={sortByDateAsc} className={`material-icons`}>
+                  <i clicked={sortByDateAsc} className={`material-icons`}>
                     {'unfold_more'}
-                  </StyledIcon>
+                  </i>
                 </InnerSortingDiv>
               </SortingDiv>
               {data.topic &&
@@ -232,16 +232,10 @@ const MainDiv = styled.div`
 `
 
 const StyledNoResultDiv = styled.div`
-  font-family: Helvetica;
+  /* font-family: Helvetica; */
   font-weight: bold;
-  color: #1a237e;
-  font-size: 3vh;
+  /* font-size: 3vh; */
   margin-top: 10px;
-`
-
-const StyledIcon = styled.i`
-  font-size: 2.5vh;
-  color: ${(props) => (props.clicked ? '#a5a4a4' : '#FFF')};
 `
 
 const SortingDiv = styled.div`
@@ -252,11 +246,11 @@ const SortingDiv = styled.div`
   margin-top: 10px;
 `
 const InnerSortingDiv = styled.div`
-  font-size: 2vh;
-  font-family: Helvetica;
+  /* font-size: 2vh; */
+  /* font-family: Helvetica; */
   font-weight: bold;
   display: flex;
-  color: ${(props) => (props.clicked ? '#a5a4a4' : '#FFF')};
+  
 `
 
 const RatingsDiv = styled.div`
@@ -267,21 +261,21 @@ const RatingsDiv = styled.div`
 `
 
 const Title = styled.div`
-  color: #1a237e;
+  
   font-weight: 700;
   max-height: 60%;
-  font-family: Helvetica;
-  font-size: 3vh;
+  /* font-family: Helvetica; */
+  /* font-size: 3vh; */
   padding-left: 10px;
   margin: 2px;
 `
 const Description = styled.div`
-  color: #1a237e;
+  
   opacity: 0.8;
   line-height: 20px;
   max-height: 60%;
-  font-family: Helvetica;
-  font-size: 2vh;
+  /* font-family: Helvetica; */
+  /* font-size: 2vh; */
   padding-left: 15px;
   margin: 2px;
 `

@@ -5,7 +5,7 @@ import uuid from 'uuid/v4'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { INSERT_USER_ACTIVITY } from './queries'
-import { Icon, CardWrapper, Author } from '../../components'
+import { Icon, HomeCardWrapper } from '../../components'
 
 const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const {
@@ -20,7 +20,7 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
   const date = new Date(createdAt)
 
   return (
-    <CardWrapper
+    <HomeCardWrapper
       n={n}
       onClick={() => {
         if (user) {
@@ -38,67 +38,31 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
         history.push(`topic/${id}`)
       }}
     >
-      <Title>{name}</Title>
-      <Author>{description}</Author>
+      <div>{name}</div>
+      <div>{description}</div>
       <div>
         {topic.target_fields && topic.target_fields.length && topic.target_fields.map(({ field }, index) => (
-          <Author key={index}>{field}</Author>
+          <div key={index}>{field}</div>
         ))}
       </div>
-      <Author>{date.toDateString()}</Author>
-      <RatingContainer className='mt-20'>
-        <Ratings>
+      <div>{date.toDateString()}</div>
+      <div>
+        <div>
           <StyledIcon name='thumb_up' />{'  '}
           {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
-        </Ratings>
-        <Ratings>
+        </div>
+        <div>
           <StyledIcon name='thumb_down' />{'  '}
           {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
-        </Ratings>
-      </RatingContainer>
-    </CardWrapper>
+        </div>
+      </div>
+    </HomeCardWrapper>
   )
 }
-
-const RatingContainer = styled.div`
-  display: flex;
-  margin: 5px;
-  @media screen and (min-width: 800px) {
-    margin: 10px;
-  }
-`
-
-const Title = styled.div`
-  color: #1a237e;
-  font-size: 2vh;
-  font-weight: 700;
-  overflow-y: scroll;
-  justify-content: left;
-  @media screen and (min-width: 800px) {
-    margin: 5px;
-  }
-`
-
-// const Author = styled.div`
-//   color: #1a237e;
-//   font-size: 2vh;
-//   opacity: 0.8;
-//   @media screen and (min-width: 900px) {
-//     margin-bottom: 20px;
-//   }
-// `
 
 const StyledIcon = styled(Icon)`
   width: 100%;
   justify-content: right;
-`
-
-const Ratings = styled.div`
-  color: #1a237e;
-  font-size: 2vh;
-  opacity: 0.8;
-  margin-bottom: 6px;
-  margin-right: 7px;
 `
 
 // const Wrapper = styled.div`

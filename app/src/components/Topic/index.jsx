@@ -19,9 +19,9 @@ export const PaperWrapper = styled.div`
   height: 100%;
   margin-bottom: 1vh;
   overflow-y: scroll;
-  color: #1a237e;
+  
   /* border-top-style: solid;
-  border-top-color: red;
+  border-top-
   border-top-width: 10px; */
   /* background: linear-gradient(#e8eaf6, #c5cae9); */
 `
@@ -68,14 +68,14 @@ export const QuestionCard = styled.div`
   padding: 10px;
   margin: 5px;
   border-radius: 5px;
-  color: #1a237e;
+  
 `
 
 export const CenterText = styled.div`
   display: flex;
   justify-content: center;
   width: 100%;
-  font-size: 2.5vh;
+  /* font-size: 2.5vh; */
 `
 
 export const StyledForm = styled(Form)`
@@ -100,8 +100,8 @@ export const UnderlineInput = styled(Input)`
   -webkit-box-shadow: none;
   box-shadow: none;
   border-radius: 0;
-  font-size: 14px;
-  color: white;
+  /* font-size: 14px; */
+  
   &:focus {
     background-color: transparent;
     border: none;
@@ -109,12 +109,11 @@ export const UnderlineInput = styled(Input)`
     -webkit-box-shadow: none;
     box-shadow: none;
     border-radius: 0;
-    color: white;
+    
   }
 `
 
 export const RemoveButton = styled(Button)`
-  /* color: red; */
   
 `
 
@@ -123,7 +122,6 @@ export const ChoiceItem = styled(FormGroup)`
 `
 
 export const Hint = styled.span`
-  color: #ef5350;
   margin-left: 6px;
-  font-size: 14px;
+  /* font-size: 14px; */
 `

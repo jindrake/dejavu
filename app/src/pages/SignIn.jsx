@@ -57,12 +57,12 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
               </Title>
               {status ? <Alert {...status} data-cy='alert' /> : null}
               <FormItem>
-                <Label>
+                <div>
                   Email{' '}
                   {touched.signInEmail && errors.signInEmail && (
                     <Hint data-cy='sign-in-email-error'>{errors.signInEmail}</Hint>
                   )}
-                </Label>
+                </div>
                 <StyledInput
                   type='email'
                   name='signInEmail'
@@ -73,12 +73,12 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
                 />
               </FormItem>
               <FormItem>
-                <Label>
+                <div>
                   Password{' '}
                   {touched.signInPassword && errors.signInPassword && (
                     <Hint data-cy='sign-in-password-error'>{errors.signInPassword}</Hint>
                   )}
-                </Label>
+                </div>
                 <StyledInput
                   type='password'
                   name='signInPassword'
@@ -107,20 +107,12 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
 
 const Close = styled.div`
   position: absolute;
-  font-size: 20px;
-  color: #e8eaf6;
   opacity: 0.5;
   right: 0;
   top: 0;
 `
 
-const Label = styled.div`
-  color: #e8eaf6;
-  font-size: 12px;
-`
-
 const Hint = styled.span`
-  color: #ef5350;
   margin-left: 6px;
 `
 

@@ -1,5 +1,4 @@
 import React from 'react'
-import styled from 'styled-components'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import { FormGroup, Label } from 'reactstrap'
@@ -129,7 +128,7 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
             <Title>Create a topic</Title>
             <FormGroup>
               <Label for='name'>
-                <SubHeader>Title</SubHeader>
+                <div>Title</div>
               </Label>
               <StyledInput
                 type='text'
@@ -144,7 +143,7 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
             </FormGroup>
             <FormGroup>
               <Label for='description'>
-                <SubHeader>Description</SubHeader>
+                <div>Description</div>
               </Label>
               <StyledInput
                 type='textarea'
@@ -157,7 +156,7 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
             </FormGroup>
             <FormGroup>
               <Label for='fieldOfStudy'>
-                <SubHeader>Target field</SubHeader>
+                <div>Target field</div>
               </Label>
               <StyledInput
                 type='select'
@@ -184,11 +183,6 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
     </Formik>
   )
 }
-
-const SubHeader = styled.div`
-  color: #e8eaf6;
-  font-size: 12;
-`
 
 export default compose(
   withRouter,

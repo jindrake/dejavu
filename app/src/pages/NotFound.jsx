@@ -39,14 +39,14 @@ const IconContainer = styled.div`
   flex-direction: row;
   justify-content: center;
   align-items: center;
-  font-size: 18vh;
-  color: #e8eaf6;
+  /* font-size: 18vh; */
+  
   font-weight: bold;
 `
 
 const TextContainer = styled.div`
-  font-size: 3vh;
-  color: linear-gradient(#FFA726, #FF9800);
+  /* font-size: 3vh; */
+  
   font-weight: bold;
   display: flex;
   flex-direction: row;

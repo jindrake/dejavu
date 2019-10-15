@@ -82,10 +82,9 @@ const IconsDiv = styled.div`
 `
 
 const StyledIcon = styled(FontAwesomeIcon)`
-  font-size: 8vh;
+  /* font-size: 8vh; */
   width: 1em;
   height: 1em;
-  color: #e8eaf6;
   bottom: 0;
   right: 0;
   margin-right: 10px;

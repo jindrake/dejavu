@@ -6,16 +6,85 @@
   100% { transform: translateY(0); opacity: 1; }
 }
 
-@keyframes BorealisEffect {
-  0% {
-    background-position: 0% 50%;
-  }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
-  }
+
+@font-face {
+  font-family: 'Proximanova black';
+  src: url('./assets/fonts/PROXIMANOVA-BLACK_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanova bold it';
+  src: url('./assets/fonts/PROXIMANOVA-BOLDIT_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanova bold';
+  src: url('./assets/fonts/PROXIMANOVA-BOLD_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanova extra bold';
+  src: url('./assets/fonts/PROXIMANOVA-EXTRABOLD_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanova light italic';
+  src: url('./assets/fonts/PROXIMANOVA-LIGHTITALIC_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanova light';
+  src: url('./assets/fonts/PROXIMANOVA-LIGHT_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanova regular italic';
+  src: url('./assets/fonts/PROXIMANOVA-REGULARITALIC_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanova regular';
+  src: url('./assets/fonts/PROXIMANOVA-REGULAR_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanova semi bold italic';
+  src: url('./assets/fonts/PROXIMANOVA-SEMIBOLDITALIC_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanova semi bold';
+  src: url('./assets/fonts/PROXIMANOVA-SEMIBOLD_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanovacond light it';
+  src: url('./assets/fonts/PROXIMANOVACOND-LIGHTIT_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanovacond light';
+  src: url('./assets/fonts/PROXIMANOVACOND-LIGHT_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanovacond regular it';
+  src: url('./assets/fonts/PROXIMANOVACOND-REGULARIT_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanovacond regular';
+  src: url('./assets/fonts/PROXIMANOVACOND-REGULAR_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanovacond semi bold it';
+  src: url('./assets/fonts/PROXIMANOVACOND-SEMIBOLDIT_0.OTF') format('opentype');
+}
+
+@font-face {
+  font-family: 'Proximanovacond semi bold';
+  src: url('./assets/fonts/PROXIMANOVACOND-SEMIBOLD_0.OTF') format('opentype');
 }
 
 .slideDown{
@@ -71,6 +140,18 @@
 	100% {
 		-webkit-transform: translateY(0%);
 	}	
+}
+
+.btn, .btn-link {
+  color: #5574F7 !important;
+}
+
+.dejavu-small-text {
+	font-size: 2.5vh;
+}
+
+.dejavu-large-text {
+	font-size: 5vh;
 }
 
 .material-icons {

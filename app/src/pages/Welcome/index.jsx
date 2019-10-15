@@ -79,19 +79,15 @@ const Icons = styled.div`
   align-items: flex-end;
   display: flex;
   justify-content: center;
-  font-size: 12px;
-  color: #e8eaf6;
   i {
     margin: 2px;
   }
 `
 
 const Content = styled.div`
-  color: #e8eaf6;
   height: 100%;
   display: flex;
   align-items: center;
-  font-size: 14px;
   text-align: center;
 `
 

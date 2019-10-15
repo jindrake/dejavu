@@ -212,20 +212,20 @@ const ButtonWrapper = styled.div`
 `
 
 const SortText = styled.div`
-  font-size: 15px;
+  /* font-size: 15px; */
   display: inline;
-  color: #4d4d4d;
+  
 `
 
 const StyledButton = styled(Button)`
   border-radius: 18px;
   margin: 2px;
-  font-size: 15px;
+  /* font-size: 15px; */
   display: inline;
   padding: 10px;
   border: none;
   background: #d4d4d4;
-  color: #4d4d4d;
+  
 `
 
 const ResultsWrapper = styled.div`
@@ -249,7 +249,7 @@ const UserWrapper = styled.div`
 `
 
 const Score = styled.div`
-  font-size: 20px;
+  /* font-size: 20px; */
   width: 20%;
   font-weight: bold;
   float: right;
@@ -261,7 +261,7 @@ const Wrapper = styled.div`
   height: 100%;
   /* justify-content: center; */
   /* display: flex; */
-  color: black !important;
+  
 `
 
 const StatisticsContainer = styled.div`
@@ -273,8 +273,7 @@ const StatisticsContainer = styled.div`
 `
 
 const StatisticText = styled.div`
-  /* color: #ffffff; */
-  font-size: 15px;
+  /* font-size: 15px; */
   display: inline;
   text-align: center;
   justify-content: center;

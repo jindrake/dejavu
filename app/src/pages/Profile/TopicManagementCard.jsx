@@ -1,11 +1,11 @@
 import React from 'react'
 import { useQuery } from '@apollo/react-hooks'
-import { DejavuCard, Button, FullPageLoader } from '../../components'
+import { DejavuCard, FullPageLoader } from '../../components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faThumbsDown, faThumbsUp } from '@fortawesome/free-regular-svg-icons'
-import styled from 'styled-components'
 import gql from 'graphql-tag'
 import { useStateValue } from '../../libs'
+import { Button } from 'reactstrap'
 
 const FETCH_TOPIC_TAKERS = gql`
   query fetchTopicTakers ($id: ID) {
@@ -43,11 +43,11 @@ const TopicManagementCard = ({ topic, history }) => {
           <small>{topic.description}</small>
         </div>
         <div className='small w-100 d-flex justify-content-between'>
-          <div>
+          <div className='pt-2'>
             {data.get_topic_takers_count} takers
           </div>
           <span className='d-flex text-center justify-content-evenly'>
-            <Author>
+            <div>
               <FontAwesomeIcon icon={faThumbsDown} />{' '}
               {topic.ratings.length > 0
                 ? topic.ratings.filter((r) => r.type === 'downvote').length
@@ -57,28 +57,20 @@ const TopicManagementCard = ({ topic, history }) => {
               {topic.ratings.length > 0
                 ? topic.ratings.filter((r) => r.type === 'upvote').length
                 : 0}
-            </Author>
+              <Button
+                color='link'
+                onClick={() => {
+                  history.push(`/topic/${topic.id}/manage`)
+                }}
+              >
+                manage
+              </Button>
+            </div>
           </span>
-        </div>
-      </div>
-      <div className='w-100 d-flex justify-content-end'>
-        <div className='text-right w-100 d-flex justify-content-end'>
-          <Button
-            type='action'
-            text='Manage'
-            onClick={() => {
-              history.push(`/topic/${topic.id}/manage`)
-            }}
-          />
         </div>
       </div>
     </DejavuCard>
   )
 }
-
-const Author = styled.div`
-  color: #015249;
-  font-size: 2vh;
-`
 
 export default TopicManagementCard
