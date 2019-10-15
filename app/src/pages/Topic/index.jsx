@@ -4,13 +4,18 @@ import { withRouter } from 'react-router-dom'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
-import { faComments, faEnvelope, faUserCircle } from '@fortawesome/free-solid-svg-icons'
+import {
+  faComments,
+  faEnvelope,
+  faUserCircle,
+  faArrowLeft
+} from '@fortawesome/free-solid-svg-icons'
 
 import { FETCH_FULL_TOPIC, CREATE_SESSION } from './queries'
 import { getObjectValue, useStateValue, shuffleArray } from '../../libs'
-import { HeaderText, Stat, Button, FullPageLoader, FaIcon, TopSection } from '../../components'
+import { HeaderText, Stat, FullPageLoader, FaIcon, TopSection } from '../../components'
 import { Paper } from '../../components/Topic'
-import { Badge } from 'reactstrap'
+import { Badge, Button } from 'reactstrap'
 
 const Topic = ({
   history,
@@ -86,18 +91,21 @@ const Topic = ({
   return (
     <Wrapper>
       <TopSection>
-        <Button text='Back' type='action' onClick={() => history.goBack()} />
+        <div onClick={() => history.goBack()}>
+          <FaIcon icon={faArrowLeft} />
+        </div>
         {user.id === creatorId && (
           <EditButton
-            text='Edit Topic'
-            type='primary'
+            color='primary'
             onClick={() => {
               history.push({
                 pathname: `/topic/${topic.id}/edit`,
                 state: { topicId: topic.id }
               })
             }}
-          />
+          >
+            Edit Topic
+          </EditButton>
         )}
       </TopSection>
       <Paper>
@@ -115,12 +123,12 @@ const Topic = ({
         <StyledDiv>
           <div>
             <TitleDiv>
-              <HeaderText className='flex-grow-1'>{`Title: ${topic.name}`}</HeaderText>
+              <HeaderText className='flex-grow-1 dejavu-large-text'>{`${topic.name}`}</HeaderText>
             </TitleDiv>
-            <DescDiv>{`Description: ${topic.description}`}</DescDiv>
+            <DescDiv className='dejavu-small-text'>{`${topic.description}`}</DescDiv>
           </div>
           <Stat>{`${halfSubset.length} items`}</Stat>
-          <div>
+          <div className='dejavu-small-text'>
             <Stat>
               <FaIcon icon={faUserCircle} />
               &nbsp;{`${topic.creator.first_name} ${topic.creator.last_name}`}
@@ -143,23 +151,34 @@ const Topic = ({
               created on: &nbsp;{new Date(topic.created_at).toISOString().split('T')[0]}
             </Stat>
           </div>
+          <div>
+            <Button
+              className='float-right'
+              color='link'
+              onClick={() => history.push('/topic/' + topic.id + '/discussions')}
+            >
+              View Discussion
+            </Button>
+          </div>
         </StyledDiv>
       </Paper>
       <BottomSection>
         <Button
-          text='Tackle with a friend'
-          type='primary'
+          color='primary'
           onClick={() => {
             tackleWithAFriend()
           }}
-        />
+        >
+          Tackle with a friend
+        </Button>
         <Button
-          text='Tackle'
-          type='primary'
+          color='primary'
           onClick={() => {
             tackleAlone()
           }}
-        />
+        >
+          Tackle
+        </Button>
       </BottomSection>
     </Wrapper>
   )
@@ -170,7 +189,6 @@ const EditButton = styled(Button)`
 `
 
 const DescDiv = styled.div`
-  font-weight: 700;
   word-break: break-word;
   display: flex;
   flex-direction: row;

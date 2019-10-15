@@ -142,7 +142,11 @@
 	}	
 }
 
-.btn, .btn-link {
+.btn {
+  
+}
+
+.btn-link {
   color: #5574F7 !important;
 }
 

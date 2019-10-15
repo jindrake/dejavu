@@ -6,16 +6,9 @@ import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { useStateValue, getObjectValue } from '../../libs'
-import {
-  Button,
-  FullPageLoader,
-  Icon,
-  ContentBetween,
-  HeaderText
-} from '../../components'
-import { Card, CardHeader, CardBody, Input } from 'reactstrap'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheck, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { FullPageLoader, FaIcon, ContentBetween, HeaderText } from '../../components'
+import { Card, CardHeader, CardBody, Input, Button } from 'reactstrap'
+import { faCheck, faTimes, faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
 import Img from 'react-image'
 
 const FETCH_USER_ACTIVITY = gql`
@@ -68,7 +61,7 @@ const FETCH_USER_RATING = gql`
 
 const FETCH_SESSION = gql`
   query fetchSession($sessionId: uuid!) {
-    session(where: {id: {_eq: $sessionId}}) {
+    session(where: { id: { _eq: $sessionId } }) {
       topic_id
       id
     }
@@ -131,8 +124,8 @@ const Result = ({
   return (
     <Wrapper>
       {/* <Paper className='bg-transparent'> */}
-      <HeaderText>Result</HeaderText>
-      <div className='mt-5'>
+      <HeaderText className='dejavu-large-text'>Result</HeaderText>
+      <div className='mt-3'>
         {answerActivities &&
           answerActivities.map((res, index) => {
             const userAnswers = res.answer ? JSON.parse(res.answer) : null
@@ -160,7 +153,7 @@ const Result = ({
                   )}
                   {isCorrect ? (
                     <CardBody className='text-success d-flex justify-content-between'>
-                      <FontAwesomeIcon icon={faCheck} />
+                      <FaIcon icon={faCheck} />
                       <div />
                       <div>
                         {res.question.answers.map((answerObject, index) => (
@@ -172,7 +165,7 @@ const Result = ({
                     <>
                       {userAnswers && (
                         <CardBody className='text-danger d-flex justify-content-between'>
-                          <FontAwesomeIcon icon={faTimes} />
+                          <FaIcon icon={faTimes} />
                           <div />
                           <div>
                             {userAnswers.map((answer, index) => (
@@ -182,7 +175,7 @@ const Result = ({
                         </CardBody>
                       )}
                       <CardBody className='text-warning d-flex justify-content-between'>
-                        <FontAwesomeIcon icon={faCheck} />
+                        <FaIcon icon={faCheck} />
                         <div />
                         <div>
                           {res.question.answers.map((answerObject, index) => (
@@ -200,16 +193,13 @@ const Result = ({
       </div>
       {isFeedbackScreenShown && (
         <IconsDiv>
-          <Close onClick={() => history.push('/')}>
-            <Icon name='close' />
-          </Close>
           <RatingCard>
-            <div>How was the topic?</div>
+            <div className='dejavu-small-text'>How was the topic?</div>
             <hr />
             <RatingButtonsContainer>
               <Button
                 text='Upvote'
-                type={
+                color={
                   !rating && previousRating === 'upvote'
                     ? 'warning'
                     : rating === 'upvote'
@@ -219,10 +209,12 @@ const Result = ({
                 onClick={() => {
                   setRating('upvote')
                 }}
-              />
+              >
+                <FaIcon icon={faThumbsUp} />&nbsp;
+                Upvote
+              </Button>
               <Button
-                text='Downvote'
-                type={
+                color={
                   !rating && previousRating === 'downvote'
                     ? 'warning'
                     : rating === 'downvote'
@@ -232,10 +224,13 @@ const Result = ({
                 onClick={() => {
                   setRating('downvote')
                 }}
-              />
+              >
+                <FaIcon icon={faThumbsDown} />&nbsp;
+                Downvote
+              </Button>
             </RatingButtonsContainer>
             <hr />
-            <div>Comment</div>
+            <div className='dejavu-small-text'>Comment</div>
             <Input
               type='textarea'
               value={comment}
@@ -244,47 +239,55 @@ const Result = ({
               }}
             />
             <hr />
-            <Button
-              text='Submit'
-              type='primary'
-              onClick={async () => {
-                globalDispatch({
-                  loading: true
-                })
-                try {
-                  await createTopicFeedback({
-                    variables: {
-                      topicId: session.topic_id,
-                      rating,
-                      comment
-                    }
-                  })
+            <div className='d-flex justify-content-center'>
+              <Button
+                color='primary'
+                onClick={async () => {
                   globalDispatch({
-                    operationSuccess: 'Feedback sent'
+                    loading: true
                   })
-                  showFeedbackScreen(false)
-                } catch (error) {
-                  console.error('error@result:3')
+                  try {
+                    await createTopicFeedback({
+                      variables: {
+                        topicId: session.topic_id,
+                        rating,
+                        comment
+                      }
+                    })
+                    showFeedbackScreen(false)
+                    globalDispatch({
+                      operationSuccess: 'Feedback sent'
+                    })
+                  } catch (error) {
+                    console.error('error@result:3')
+                    globalDispatch({
+                      networkError: error.message
+                    })
+                  }
                   globalDispatch({
-                    networkError: error.message
+                    loading: false
                   })
-                }
-                globalDispatch({
-                  loading: false
-                })
-              }}
-            />
+                }}
+              >
+                Submit
+              </Button>
+              <Button className='ml-3' color='secondary' onClick={() => showFeedbackScreen(false)}>Cancel</Button>
+            </div>
           </RatingCard>
         </IconsDiv>
       )}
       <ContentBetween>
-        <Button text='Rate' type='primary' onClick={() => showFeedbackScreen(true)} />
+        <Button color='primary' onClick={() => showFeedbackScreen(true)}>
+          Rate
+        </Button>
         <Button
-          text='Exit'
+          color='secondary'
           onClick={() => {
             history.push('/')
           }}
-        />
+        >
+          Exit
+        </Button>
       </ContentBetween>
     </Wrapper>
   )
@@ -296,7 +299,7 @@ const RatingButtonsContainer = styled.div`
 `
 
 const RatingCard = styled.div`
-  background: linear-gradient(#e8eaf6, #c5cae9);
+  background: white;
   justify-content: center;
   padding: 20px;
   width: 92%;
@@ -308,13 +311,6 @@ const RatingCard = styled.div`
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   animation-delay: ${({ n }) => n * 100 + 'ms'};
-`
-
-const Close = styled.div`
-  position: absolute;
-  opacity: 0.5;
-  right: 0;
-  top: 0;
 `
 
 const IconsDiv = styled.div`

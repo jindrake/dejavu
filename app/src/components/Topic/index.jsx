@@ -3,22 +3,19 @@ import styled from 'styled-components'
 import { Button, Form, Input, FormGroup } from 'reactstrap'
 
 export const PaperBody = styled.div`
-  background: linear-gradient(#e8eaf6, #c5cae9);
+  background: white;
   padding: 1vh;
   display: flex;
   flex-direction: column;
   width: 100%;
   height: 100%;
-  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
-  border-radius: 1vh;
+  box-shadow: 0 4px 4px -2px gray;
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
-  overflow-y: scroll;
 `
 
 export const PaperWrapper = styled.div`
   height: 100%;
   margin-bottom: 1vh;
-  overflow-y: scroll;
   
   /* border-top-style: solid;
   border-top-

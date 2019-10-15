@@ -7,10 +7,11 @@ import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
 
 import { useStateValue } from '../../libs'
-import { Button, HeaderText, ContentBetween, OverlayLoader, ContentCenter } from '../../components'
+import { HeaderText, ContentBetween, OverlayLoader, ContentCenter } from '../../components'
 import { Paper } from '../../components/Topic'
 import SessionWaitingScreen from '../../components/Topic/SessionWaitingScreen'
 import Img from 'react-image'
+import { Button } from 'reactstrap'
 
 const ANSWER_QUESTION = gql`
   mutation answerQuestion($answers: [String!]!, $questionId: ID!, $userId: ID!, $sessionId: ID!) {
@@ -173,7 +174,7 @@ const AnswerQuestion = ({
               style={{ borderRadius: '5px', width: '100%', marginTop: '20px' }}
             />
           )} */}
-              <HeaderText>
+              <HeaderText className='dejavu-large-text'>
                 <div>{question.question}</div>
               </HeaderText>
             </QuestionContainer>
@@ -204,18 +205,17 @@ const AnswerQuestion = ({
       </Paper>
       <ContentBetween>
         <Button
-          text={'Exit'}
+          color='primary'
           onClick={() => {
             history.push('/')
           }}
-        />
+        >Exit</Button>
         <Button
-          text={timer < 1 ? 'Skip' : 'Submit'}
-          type='primary'
+          color='primary'
           onClick={() => {
             handleSubmit()
           }}
-        />
+        >{timer < 1 ? 'Skip' : 'Submit'}</Button>
       </ContentBetween>
     </Wrapper>
   )
@@ -237,13 +237,13 @@ const Choice = styled.div`
   /* padding-top: 5%; */
   margin-bottom: 15px;
   background: ${(props) =>
-    props.selected ? 'linear-gradient(#FFA726, #FF9800)' : 'linear-gradient(#9c27b0, #7B1FA2)'};
+    props.selected ? 'linear-gradient(#FFA726, #FF9800)' : '#5574F7'};
   
-  font-weight: ${(props) => (props.selected ? '700' : 'normal')};
+  font-weight: ${(props) => (props.selected ? 'bold' : 'normal')};
   width: 100%;
   height: 20%;
   border-radius: 1vh;
-  border: ${(props) => (props.selected ? '2px solid #FF9800' : '1px solid #7B1FA2')};
+  /*border: ${(props) => (props.selected ? '2px solid #FF9800' : '1px solid #7B1FA2')}; */
   text-align: center;
   display: flex;
   padding: 3%;
@@ -251,7 +251,9 @@ const Choice = styled.div`
   justify-content: center;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
+  color: white;
 `
+
 const QuestionContainer = styled.div`
   height: 40%;
   display: flex;
