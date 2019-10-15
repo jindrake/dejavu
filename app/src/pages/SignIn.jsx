@@ -6,7 +6,8 @@ import * as yup from 'yup'
 import { withFirebase } from '../hocs'
 import { withRouter } from 'react-router-dom'
 import Alert from '../components/Alert'
-import { StyledInput, FormWrapper, OverlayLoader, Button, Icon, HeaderText } from '../components'
+import { StyledInput, FormWrapper, OverlayLoader, Icon, HeaderText } from '../components'
+import { Button, Label } from 'reactstrap'
 
 const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
   return (
@@ -57,12 +58,14 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
               </HeaderText>
               {status ? <Alert {...status} data-cy='alert' /> : null}
               <FormItem>
-                <div>
-                  Email{' '}
-                  {touched.signInEmail && errors.signInEmail && (
-                    <Hint data-cy='sign-in-email-error'>{errors.signInEmail}</Hint>
-                  )}
-                </div>
+                <Label>
+                  <div>
+                    Email{' '}
+                    {touched.signInEmail && errors.signInEmail && (
+                      <Hint data-cy='sign-in-email-error'>{errors.signInEmail}</Hint>
+                    )}
+                  </div>
+                </Label>
                 <StyledInput
                   type='email'
                   name='signInEmail'
@@ -73,12 +76,14 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
                 />
               </FormItem>
               <FormItem>
-                <div>
-                  Password{' '}
-                  {touched.signInPassword && errors.signInPassword && (
-                    <Hint data-cy='sign-in-password-error'>{errors.signInPassword}</Hint>
-                  )}
-                </div>
+                <Label>
+                  <div>
+                    Password{' '}
+                    {touched.signInPassword && errors.signInPassword && (
+                      <Hint data-cy='sign-in-password-error'>{errors.signInPassword}</Hint>
+                    )}
+                  </div>
+                </Label>
                 <StyledInput
                   type='password'
                   name='signInPassword'
@@ -90,13 +95,15 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
               </FormItem>
               <ButtonGroup>
                 <Button
-                  onClick={() =>
-                    history.push('/sign-up' + search)
-                  }
-                  text='No account? Sign up!'
-                  type='action'
-                />
-                <Button data-cy='submit' onClick={handleSubmit} text='Sign in' type='primary' />
+                  className='mr-2'
+                  onClick={() => history.push('/sign-up' + search)}
+                  color='secondary'
+                >
+                  No account? Sign up
+                </Button>
+                <Button data-cy='submit' onClick={handleSubmit} color='primary'>
+                  Sign in
+                </Button>
               </ButtonGroup>
             </Form>
           </FormWrapper>

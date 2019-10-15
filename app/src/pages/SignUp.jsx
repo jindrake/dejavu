@@ -13,14 +13,13 @@ import {
   FormWrapper,
   StyledCheckbox,
   OverlayLoader,
-  Button,
   FullPageLoader,
   Icon,
   HeaderText
 } from '../components'
 import { useStateValue } from '../libs'
 import uuid from 'uuid/v4'
-import { Label } from 'reactstrap'
+import { Button, Label } from 'reactstrap'
 
 const CREATE_USER = gql`
   mutation createUser($user: [user_insert_input!]!) {
@@ -203,8 +202,8 @@ const SignUp = ({ firebase, history }) => {
               {status && <Alert {...status} />}
               <TwinItems>
                 <FormItem>
-                  <Label>
-                    First name{' '}
+                  <Label for='firstName'>
+                    <div>First name</div>
                     {touched.firstName && errors.firstName && <Hint>{errors.firstName}</Hint>}
                   </Label>
                   <StyledInput
@@ -217,8 +216,8 @@ const SignUp = ({ firebase, history }) => {
                   />
                 </FormItem>
                 <FormItem>
-                  <Label>
-                    Last name{' '}
+                  <Label for='lastName'>
+                    <div>Last name</div>
                     {touched.lastName && errors.lastName && <Hint>{errors.lastName}</Hint>}
                   </Label>
                   <StyledInput
@@ -232,7 +231,10 @@ const SignUp = ({ firebase, history }) => {
                 </FormItem>
               </TwinItems>
               <FormItem>
-                <Label>Email {touched.email && errors.email && <Hint>{errors.email}</Hint>}</Label>
+                <Label for='email'>
+                  <div>Email</div>
+                  {touched.email && errors.email && <Hint>{errors.email}</Hint>}
+                </Label>
                 <StyledInput
                   type='email'
                   name='email'
@@ -243,8 +245,8 @@ const SignUp = ({ firebase, history }) => {
                 />
               </FormItem>
               <FormItem>
-                <Label>
-                  Field of study{' '}
+                <Label for='fieldOfStudy'>
+                  <div>Field of study</div>
                   {touched.fieldOfStudy && errors.fieldOfStudy && (
                     <Hint data-cy='confirm-password-error'>{errors.fieldOfStudy}</Hint>
                   )}
@@ -280,8 +282,9 @@ const SignUp = ({ firebase, history }) => {
                 )}
               </FormItem>
               <FormItem>
-                <Label>
-                  Password {touched.password && errors.password && <Hint>{errors.password}</Hint>}
+                <Label for='password'>
+                  <div>Password</div>
+                  {touched.password && errors.password && <Hint>{errors.password}</Hint>}
                 </Label>
                 <StyledInput
                   type='password'
@@ -293,7 +296,7 @@ const SignUp = ({ firebase, history }) => {
                 />
               </FormItem>
               <FormItem>
-                <Label>
+                <Label for='passwordConfirmation'>
                   Confirm password{' '}
                   {touched.passwordConfirmation && errors.passwordConfirmation && (
                     <Hint data-cy='confirm-password-error'>{errors.passwordConfirmation}</Hint>
@@ -309,17 +312,12 @@ const SignUp = ({ firebase, history }) => {
                 />
               </FormItem>
               <ButtonGroup>
-                <Button
-                  onClick={() => history.push('/sign-in')}
-                  text='Have an account? Sign in.'
-                  type='action'
-                />
-                <Button
-                  data-cy='submit-button'
-                  onClick={handleSubmit}
-                  text='Sign up'
-                  type='primary'
-                />
+                <Button className='mr-2' onClick={() => history.push('/sign-in')} color='secondary'>
+                  Have an account? Sign in
+                </Button>
+                <Button data-cy='submit-button' onClick={handleSubmit} color='primary'>
+                  Register
+                </Button>
               </ButtonGroup>
             </Form>
           </FormWrapper>
@@ -331,15 +329,12 @@ const SignUp = ({ firebase, history }) => {
 
 const Close = styled.div`
   position: absolute;
-  /* font-size: 20px; */
-  
   opacity: 0.5;
   right: 0;
   top: 0;
 `
 
 const Hint = styled.span`
-  
   margin-left: 6px;
 `
 
