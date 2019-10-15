@@ -9,7 +9,7 @@ import uuid from 'uuid/v4'
 import styled from 'styled-components'
 
 import Alert from '../../components/Alert'
-import { Button, Icon, Header, Label } from '../../components'
+import { Button, Icon, TopSection, Label } from '../../components'
 
 const CREATE_FEEDBACK = gql`
   mutation createFeedback($feedback: [feedback_insert_input!]!) {
@@ -66,7 +66,10 @@ const Feedback = ({ createFeedback, user, history }) => {
       }) => {
         return (
           <Form>
-            <Header className='text-center'>FEEDBACK</Header>
+            <TopSection>
+              <Button text='Back' onClick={() => history.goBack()} />
+            </TopSection>
+            <FeedbackTitle>FEEDBACK</FeedbackTitle>
             <FeedbackClose onClick={() => history.push('/')}>
               <Icon name='close' />
             </FeedbackClose>
@@ -120,6 +123,13 @@ const Feedback = ({ createFeedback, user, history }) => {
     />
   )
 }
+
+const FeedbackTitle = styled.div`
+  color: #e8eaf6;
+  font-size: 1.25em;
+  font-weight: 700;
+  text-align: center;
+`
 
 const FeedbackNewButton = styled(Button)`
   margin-bottom: 20px;

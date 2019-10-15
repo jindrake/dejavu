@@ -115,13 +115,15 @@ const SessionWaitingScreen = ({
                       </div>
                       <div />
                       <div>
-                        {otherUserAnswers.length && otherUserAnswers.every((answer) => questionCorrectAnswers.includes(answer)) ? (
-                          <FontAwesomeIcon icon={faCheck} className='text-success' />
+                        {otherUserAnswers.length ? (
+                          otherUserAnswers.every((answer) => questionCorrectAnswers.includes(answer)) ? (
+                            <FontAwesomeIcon icon={faCheck} className='text-success' />
+                          ) : (
+                            <FontAwesomeIcon icon={faTimes} className='text-danger' />
+                          )
                         ) : (
-                          <FontAwesomeIcon icon={faTimes} className='text-danger' />
-                        )
-                        }
-                        {!otherUserAnswers.length && <FontAwesomeIcon icon={faMinus} />}
+                          <FontAwesomeIcon icon={faMinus} />
+                        )}
                       </div>
                     </div>
                   </div>

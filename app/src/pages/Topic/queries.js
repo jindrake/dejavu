@@ -93,6 +93,13 @@ export const FETCH_TOPIC = gql`
       is_published
       is_private
       name
+      ratings {
+        id
+        type
+      }
+      questions {
+        id
+      }
       target_fields {
         id
         field
@@ -186,6 +193,9 @@ export const FETCH_FULL_TOPIC = gql`
       ratings {
         id
         type
+      }
+      comments {
+        id
       }
       creator {
         id

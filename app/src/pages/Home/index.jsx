@@ -99,11 +99,10 @@ const Home = ({ history }) => {
                   <CardTitle>{session.topic.name}</CardTitle>
                   <br />
                   <CardDescription>
-                    status:
-                    <br />
+                    status:&nbsp;
                     {session.current_user ? (
                       session.current_user_id === user.id ? (
-                        <CardStatus type='warning'>Your turn!</CardStatus>
+                        <span className='text-danger'>Your turn!</span>
                       ) : (
                         <CardStatus type='warning'>
                           Waiting for {session.current_user.first_name}
@@ -173,7 +172,7 @@ const Wrapper = styled.div`
 `
 
 const GreetingWrapper = styled.div`
-  font-size: 20px;
+  font-size: 2vh;
   font-weight: 700;
   color: #e8eaf6;
   text-align: left;
@@ -190,6 +189,7 @@ const Belt = styled.div`
   top: 6px;
   bottom: 6px;
   display: flex;
+  border: 2px solid red;
 `
 
 const TopicsContainer = styled.div`
@@ -198,6 +198,8 @@ const TopicsContainer = styled.div`
   height: 100%;
   margin-left: -40px;
   margin-right: -40px;
+  border: 2px solid black;
+  display: flex;
 `
 
 const SectionWrapper = styled.div`

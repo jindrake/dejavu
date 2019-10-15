@@ -4,9 +4,11 @@ import { withRouter } from 'react-router-dom'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
+import { faComments, faEnvelope, faUserCircle } from '@fortawesome/free-solid-svg-icons'
+
 import { FETCH_FULL_TOPIC, CREATE_SESSION } from './queries'
 import { getObjectValue, useStateValue, shuffleArray } from '../../libs'
-import { HeaderText, Stat, Button, FullPageLoader, Icon } from '../../components'
+import { HeaderText, Stat, Button, FullPageLoader, FaIcon, TopSection } from '../../components'
 import { Paper } from '../../components/Topic'
 import { Badge } from 'reactstrap'
 
@@ -120,12 +122,22 @@ const Topic = ({
           <Stat>{`${halfSubset.length} items`}</Stat>
           <div>
             <Stat>
-              <Icon name='account_circle' />
+              <FaIcon icon={faUserCircle} />
               &nbsp;{`${topic.creator.first_name} ${topic.creator.last_name}`}
             </Stat>
             <Stat>
-              <Icon name='account_circle' />
+              <FaIcon icon={faEnvelope} />
               &nbsp;{`${topic.creator.email}`}
+            </Stat>
+            <Stat>
+              <div
+                onClick={() => {
+                  history.push('/topic/' + topic.id + '/discussions')
+                }}
+              >
+                <FaIcon icon={faComments} />
+                &nbsp;{`${topic.comments.length}`}
+              </div>
             </Stat>
             <Stat size='4vmin'>
               created on: &nbsp;{new Date(topic.created_at).toISOString().split('T')[0]}
@@ -196,13 +208,6 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 100%;
-`
-
-const TopSection = styled.div`
-  display: flex;
-  align-items: center;
-  height: 100px;
-  justify-content: space-between;
 `
 
 const BottomSection = styled.div`

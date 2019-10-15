@@ -67,9 +67,10 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
 
 const RatingContainer = styled.div`
   display: flex;
-  width: 100%;
-  position: absolute;
-  bottom: 1vh;
+  margin: 5px;
+  @media screen and (min-width: 800px) {
+    margin: 10px;
+  }
 `
 
 const StyledIcon = styled(FontAwesomeIcon)`
@@ -82,7 +83,6 @@ const Ratings = styled.div`
   color: #ffffff;
   font-size: 14px;
   opacity: 0.8;
-  line-height: 12px;
   margin-bottom: 6px;
   margin-right: 7px;
   font-weight: 600;

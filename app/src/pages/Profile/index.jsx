@@ -11,24 +11,11 @@ import {
   INSERT_USER_ACTIVITY,
   FETCH_ACTIVITY_LOGS
 } from './queries'
-import {
-  FullPageLoader,
-  Placeholder,
-  ContentCenter,
-  Button,
-  SectionTitle,
-  CardTitle,
-  CardDescription
-} from '../../components'
+import { FullPageLoader, Placeholder, ContentCenter, CardDescription, SectionTitle } from '../../components'
 import { useStateValue, getObjectValue } from '../../libs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faPencilAlt,
-  faSearchPlus,
-  faTasks,
-  faThumbsUp,
-  faThumbsDown
-} from '@fortawesome/free-solid-svg-icons'
+import { faPencilAlt, faSearchPlus, faTasks, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import TopicManagementCard from './TopicManagementCard'
 
 const FETCH_USER = gql`
   query fetchUser($userId: uuid!) {
@@ -101,11 +88,6 @@ const Profile = ({ user, history }) => {
   }
   const userTopics = getObjectValue(userTopicsData, 'topic') || []
   const activityLogs = getObjectValue(activityLogsData, 'user_activity') || []
-  // const uniqueLogs = Array.from(new Set(activityLogs.map((a) => a.topic_id))).map((id) => {
-  //   return activityLogs.find((a) => a.topic_id === id)
-  // })
-
-  console.log('mytopics', userTopics)
 
   return (
     <Container>
@@ -132,45 +114,7 @@ const Profile = ({ user, history }) => {
             ) : (
               <div>
                 {userTopics.map((topic, index) => {
-                  return (
-                    <DejavuCard className='justify-content-between flex-column mb-2' key={index}>
-                      <div>
-                        <CardTitle>{topic.name}</CardTitle>
-                        <CardDescription>{topic.description}</CardDescription>
-                        <CardDescription className='small w-100 d-flex justify-content-between'>
-                          <div>
-                            {getObjectValue(topic, 'user_activities_aggregate.aggregate.count') ||
-                              '0'}{' '}
-                            takers
-                          </div>
-                          <span className='d-flex text-center justify-content-evenly'>
-                            <CardDescription>
-                              <FontAwesomeIcon icon={faThumbsDown} />{' '}
-                              {topic.ratings.length > 0
-                                ? topic.ratings.filter((r) => r.type === 'downvote').length
-                                : 0}
-                              &nbsp;&nbsp;
-                              <FontAwesomeIcon icon={faThumbsUp} />{' '}
-                              {topic.ratings.length > 0
-                                ? topic.ratings.filter((r) => r.type === 'upvote').length
-                                : 0}
-                            </CardDescription>
-                          </span>
-                        </CardDescription>
-                      </div>
-                      <div className='w-100 d-flex justify-content-end'>
-                        <div className='text-right w-100 d-flex justify-content-end'>
-                          <Button
-                            type='action'
-                            text='Manage'
-                            onClick={() => {
-                              history.push(`/topic/${topic.id}/manage`)
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </DejavuCard>
-                  )
+                  return <TopicManagementCard topic={topic} key={index} history={history} />
                 })}
               </div>
             )}
