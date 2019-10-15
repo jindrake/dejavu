@@ -289,7 +289,6 @@ export const Belt = styled.div`
   position: absolute;
   top: 6px;
   display: flex;
-  ${''}
 `
 export const Author = styled.div`
   /* font-size: 2vh; */
