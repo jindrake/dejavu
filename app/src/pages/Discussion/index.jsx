@@ -2,31 +2,31 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import compose from 'recompose/compose'
 import { useQuery, useSubscription } from '@apollo/react-hooks'
-import { faUserCircle, faComments, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
-import { Badge } from 'reactstrap'
+import { faComments, faThumbsUp, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import uuid from 'uuid/v4'
 import { graphql } from '@apollo/react-hoc'
-import moment from 'moment'
 
 import { getObjectValue, useStateValue } from '../../libs'
-import { FETCH_TOPIC, INSERT_TOPIC_COMMENT, FETCH_TOPIC_COMMENTS, INSERT_TOPIC_COMMENT_RATING } from './queries'
 import {
-  FlexWrapper,
+  FETCH_TOPIC,
+  INSERT_TOPIC_COMMENT,
+  FETCH_TOPIC_COMMENTS,
+  INSERT_TOPIC_COMMENT_RATING
+} from './queries'
+import {
   FullPageLoader,
   DejavuCard,
   FaIcon,
   Stat,
   HeaderText,
-  // DescriptionText,
-  Button,
-  TopSection,
   IconsDiv,
-  StyledInput,
-  BasicFontSize
+  StyledInput
 } from '../../components'
+import { Button, Label, InputGroup, InputGroupAddon, Badge } from 'reactstrap'
 import Comment from './Comment'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Discussion = ({
   user,
@@ -45,18 +45,22 @@ const Discussion = ({
     }
   })
 
-  const { data: topicCommentData, loading: topicCommentDataLoading, error: topicCommentDataError } = useSubscription(FETCH_TOPIC_COMMENTS, {
+  const {
+    data: topicCommentData,
+    loading: topicCommentDataLoading,
+    error: topicCommentDataError
+  } = useSubscription(FETCH_TOPIC_COMMENTS, {
     variables: {
       topicId: id
     }
   })
 
   // console.log('DATA:', topicCommentData)
-
-  if (error || topicCommentDataError) {
-    console.error('error@topic:2')
+  const componentError = error || topicCommentDataError
+  if (componentError) {
+    console.error('error@discussion')
     globalDispatch({
-      networkError: error.message
+      networkError: componentError.message
     })
     return null
   }
@@ -65,7 +69,7 @@ const Discussion = ({
   const topic = getObjectValue(data, 'topic[0]')
   const comments = topicCommentData.topic_comment
   console.log(topic)
-  console.log(comments)
+  console.log('Comments:', comments)
 
   return (
     <Formik
@@ -73,8 +77,7 @@ const Discussion = ({
         comment: ''
       }}
       validationSchema={yup.object().shape({
-        comment: yup
-          .string()
+        comment: yup.string()
         // .min(1, 'Enter Title at least 1 character')
         // .required('Required'),
       })}
@@ -113,15 +116,15 @@ const Discussion = ({
         isSubmitting
       }) => {
         return (
-          <FlexWrapper>
-            <TopSection>
-              <Button text='Back' onClick={() => history.goBack()} />
-            </TopSection>
+          <div>
+            <div>
+              <FontAwesomeIcon icon={faArrowLeft} onClick={() => history.goBack()} />
+            </div>
             <DejavuCard>
               <Stat>
-                <FaIcon icon={faUserCircle} />
+                {/* <FaIcon icon={faUserCircle} />
                 <div className='dejavu-small-text text-primary text-center mt-2'>&nbsp;{`${topic.creator.first_name} ${topic.creator.last_name}`}</div>
-                &nbsp;
+                &nbsp; */}
                 <div className='dejavu-small-text text-center text-md-right'>
                   {topic.target_fields && topic.target_fields.length
                     ? topic.target_fields.map((field, index) => {
@@ -137,17 +140,20 @@ const Discussion = ({
               <div className='mt-2'>
                 <HeaderText>{topic.name}</HeaderText>
               </div>
-              <div className='dejavu-small-text'>
-                {topic.description}
+              <div className='dejavu-small-text'>{topic.description}</div>
+              <div>
+                <Label>By</Label>
+                <div className='text-capitalize'>{`${topic.creator.first_name} ${topic.creator.last_name}`}</div>
               </div>
-              <div className='dejavu-small-text text-primary'>
+              {/* <div className='dejavu-small-text text-primary'>
                 {moment(new Date(topic.created_at)).fromNow()}
-              </div>
+              </div> */}
               <IconsDiv>
                 <div className='d-inline-flex p-2 col-example'>
                   <div className='dejavu-small-text'>
                     <FaIcon icon={faThumbsUp} />
-                    &nbsp;{`${topic.ratings && topic.ratings.filter(t => t.type === 'upvote').length}`}
+                    &nbsp;
+                    {`${topic.ratings && topic.ratings.filter((t) => t.type === 'upvote').length}`}
                   </div>
                   &nbsp;
                   {/* <div className='dejavu-small-text'>
@@ -162,34 +168,43 @@ const Discussion = ({
                 </div>
               </IconsDiv>
             </DejavuCard>
-            <div className='bg-light p-2'>
-              {
-                comments.map(comment => {
-                  return (
-                    <Comment topicId={id} insertTopicComment={insertTopicComment} key={comment.id} user={user} comment={comment} insertTopicCommentRating={insertTopicCommentRating} />
-                  )
-                })
-              }
-              <div>
+            <div>
+              <InputGroup className='mb-2'>
                 <StyledInput
-                  border='true'
                   type='text'
                   name='comment'
                   placeholder='Write a comment...'
                   value={values.comment}
                   onChange={(e) => {
+                    console.log('CHANGING:', e.target.value)
                     setFieldValue('comment', e.target.value)
                   }}
                   invalid={errors.name && touched.name}
                 />
-                <Badge
-                  onClick={handleSubmit}
-                >
-                  <BasicFontSize>submit</BasicFontSize>
-                </Badge>
-              </div>
+                <InputGroupAddon>
+                  <Button
+                    color='primary'
+                    onClick={handleSubmit}
+                    // size='lg'
+                  >
+                    SUBMIT
+                  </Button>
+                </InputGroupAddon>
+              </InputGroup>
+              {comments.map((comment) => {
+                return (
+                  <Comment
+                    topicId={id}
+                    insertTopicComment={insertTopicComment}
+                    key={comment.id}
+                    user={user}
+                    comment={comment}
+                    insertTopicCommentRating={insertTopicCommentRating}
+                  />
+                )
+              })}
             </div>
-          </FlexWrapper>
+          </div>
         )
       }}
     </Formik>

@@ -34,13 +34,6 @@ export const ReplyDiv = styled.div`
   ${''}
 `
 
-export const FlexWrapper = styled.div`
-  display: flex;
-  height: 100%;
-  flex-direction: column;
-  overflow-y: scroll;
-`
-
 export const TopicWrapper = styled.div`
   /* font-size: medium; */
   background-color: white;
@@ -53,7 +46,6 @@ export const IconsDiv = styled.div`
   margin-right: 10px;
   align-self: flex-start;
   display: flex;
-  ${''}
   align-items: center;
 `
 
@@ -73,11 +65,13 @@ export const StyledInput = styled(Input)`
   /* padding-left: 12px;
   padding-right: 12px;
   border-radius: 6px; */
-  outline: none;
-  border: ${props => props.border ? '1px solid grey' : 'none !important'};
+  outline: none !important;
+  /* border: ${props => props.border ? '1px solid grey' : 'none !important'}; */
   /* outline: 0; */
   background-color: transparent !important;
   border-bottom: 1px solid black !important;
+  outline-style:none;
+  border-color: transparent;
   :focus {
     outline: none !important;
     outline-style:none;
