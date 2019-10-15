@@ -205,7 +205,7 @@ const AnswerQuestion = ({
       </Paper>
       <ContentBetween>
         <Button
-          color='primary'
+          color='secondary'
           onClick={() => {
             history.push('/')
           }}

@@ -10,6 +10,7 @@ import {
   faUserCircle,
   faArrowLeft
 } from '@fortawesome/free-solid-svg-icons'
+import moment from 'moment'
 
 import { FETCH_FULL_TOPIC, CREATE_SESSION } from './queries'
 import { getObjectValue, useStateValue, shuffleArray } from '../../libs'
@@ -148,7 +149,7 @@ const Topic = ({
               </div>
             </Stat>
             <Stat size='4vmin'>
-              created on: &nbsp;{new Date(topic.created_at).toISOString().split('T')[0]}
+              created {moment(new Date(topic.created_at)).fromNow()}
             </Stat>
           </div>
           <div>
