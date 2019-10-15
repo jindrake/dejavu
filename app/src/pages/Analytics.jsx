@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import { ListGroup, Button, Col, Row } from 'reactstrap'
 import { Title, ContentCenter, StyledInput, SubText, FullPageLoader, DejavuCard } from '../components'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft, faAward } from '@fortawesome/free-solid-svg-icons'
 import { useQuery } from '@apollo/react-hooks'
 import { FETCH_TOPIC } from './Topic/queries'
 import { useStateValue, getObjectValue } from '../libs'
@@ -26,7 +28,7 @@ const FETCH_TOPIC_RESULTS = gql`
 const Analytics = ({
   match: {
     params: { id }
-  }
+  }, history
 }) => {
   const [, globalDispatch] = useStateValue()
   const [search, setSearch] = useState('')
@@ -77,15 +79,16 @@ const Analytics = ({
   return (
     <Wrapper>
       <Statistics className='justify-content-center'>
+        <FontAwesomeIcon className='m-3' icon={faArrowLeft} onClick={() => history.goBack()} />
         <div className='justify-content-center'>
           <ContentCenter>
-            <Title className='text-capitalize mt-5 mb-4'>{topic.name} Analytics</Title>
+            <Title className='text-white text-capitalize mt-1 mb-4'>{topic.name} Analytics</Title>
           </ContentCenter>
           <ContentCenter>
-            <h1 className='display-4 font-weight-bold'>{analyticsData.get_topic_average_score}%</h1>
+            <h1 className='display-4 text-white font-weight-bold'>{analyticsData.get_topic_average_score}%</h1>
           </ContentCenter>
           <ContentCenter>
-            <SubText className='mb-3'>Average Score</SubText>
+            <SubText className='text-white mb-3'>Average Score</SubText>
           </ContentCenter>
         </div>
         <div className='justify-content-center'>
@@ -127,49 +130,51 @@ const Analytics = ({
           </Row>
         </div>
       </Statistics>
-      <div className='overflow-auto p-3 bg-white'>
-        <ContentCenter className='mt-2'>
-          <Title>Users</Title>
-        </ContentCenter>
-        <StyledInput
-          type='text'
-          name='search'
-          id='search'
-          value={search}
-          onChange={(e) => {
-            setSearch(e.target.value)
-          }}
-          placeholder='Search user...'
-        />
-        <div className='m-3 d-inline'>
-          <SubText className='mr-2 d-inline dejavu-small-text'>Sort by:</SubText>
-          <Button
-            className='dejavu-small-text m-1 border-0 rounded-pill text-wrap text-sm  bg-light'
-            active={sortBy === 'average'}
-            onClick={() => {
-              setSortBy('average')
+      <div className='p-3 bg-white'>
+        <div className='overflow-auto sticky-top bg-white'>
+          <ContentCenter className='mt-2'>
+            <Title className='text-dark'>Leaderboard</Title>
+          </ContentCenter>
+          <StyledInput
+            type='text'
+            name='search'
+            id='search'
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value)
             }}
-          >
-            Rank
-          </Button>
-          <Button
-            className='dejavu-small-text m-1 rounded-pill text-wrap text-sm border-0 bg-light'
-            active={sortBy === 'name'}
-            onClick={() => {
-              setSortBy('name')
-            }}
-          >
-            Name
-          </Button>
-          <Button
-            className='dejavu-small-text m-1 rounded-pill text-wrap text-sm border-0 bg-light'
-            active={sortBy === 'coverage'}
-            onClick={() => {
-              setSortBy('coverage')
-            }}
-          >
-            Items Answered
-          </Button>
+            placeholder='Search user...'
+          />
+          <div className='m-3 d-inline'>
+            <SubText className='mr-2 d-inline dejavu-small-text'>Sort by:</SubText>
+            <Button
+              className='dejavu-small-text text-dark m-1 border-0 rounded-pill text-wrap text-sm  bg-light'
+              active={sortBy === 'average'}
+              onClick={() => {
+                setSortBy('average')
+              }}
+            >
+              Rank
+            </Button>
+            <Button
+              className='dejavu-small-text text-dark m-1 rounded-pill text-wrap text-sm border-0 bg-light'
+              active={sortBy === 'name'}
+              onClick={() => {
+                setSortBy('name')
+              }}
+            >
+              Name
+            </Button>
+            <Button
+              className='dejavu-small-text text-dark m-1 rounded-pill text-wrap text-sm border-0 bg-light'
+              active={sortBy === 'coverage'}
+              onClick={() => {
+                setSortBy('coverage')
+              }}
+            >
+              Items Answered
+            </Button>
+          </div>
         </div>
         <div>
           {rankings
@@ -178,12 +183,14 @@ const Analytics = ({
                 firstName.includes(search) || lastName.includes(search)
             )
             .map((rankingData, index) => {
-              console.log('thernkingdata', rankingData)
               return (
-                <ListGroup key={index}>
+                <ListGroup className='overflow-auto' key={index}>
                   <DejavuCard>
                     <Row>
-                      <Col xs='8' sm='8' md='8' lg='8' xl='8' className='justify-content-between'>
+                      <Col xs='1' sm='1' md='1' lg='1' xl='1' className='align-middle dejavu-large-text justify-content-between'>
+                        {index + 1 === 1 ? (<FontAwesomeIcon className='' icon={faAward} />) : (index + 1)}
+                      </Col>
+                      <Col xs='6' sm='7' md='7' lg='7' xl='7' className='justify-content-between'>
                         <Title className='m-0 text-capitalize'>
                           {rankingData.userInfo.first_name} {rankingData.userInfo.last_name}
                         </Title>
@@ -223,6 +230,7 @@ const Wrapper = styled.div`
   position: absolute;
   top: 0;
   left: 0;
+  overflow: auto;
 `
 
 export default Analytics
