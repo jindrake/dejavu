@@ -18,9 +18,9 @@ export const StyledInput = styled(Input)`
   border-radius: 6px;
   border: none;
   outline: none;
-  :focus {
-    background: #e8eaf6;
-  }
+  /* :focus {
+    background: #353434;
+  } */
 `
 
 export const DejavuCard = styled.div`
@@ -47,7 +47,7 @@ export const LoaderContainer = styled.div`
   position: absolute;
   justify-content: center;
   align-items: center;
-  color: #e8eaf6;
+  color: #353434;
   font-size: 12px;
   height: 100%;
   width: 100%;
@@ -58,7 +58,7 @@ export const Title = styled.div`
   margin-bottom: 20px;
   line-height: 24px;
   font-weight: 700;
-  color: #e8eaf6;
+  color: #353434;
 `
 
 export const ContentRight = styled.div`
@@ -97,7 +97,7 @@ export const Notification = styled.div`
   top: 1vh;
   border-radius: 2vh;
   height: 8%;
-  box-shadow: 0 0 5px black;
+  box-shadow: 0 0 5px #353434;
 `
 
 export const ContentBetween = styled.div`
@@ -117,7 +117,7 @@ export const Pill = styled.div`
   border-radius: 1vh;
   border: 1px solid violet;
   padding: 1vh;
-  background: linear-gradient(#e8eaf6, #c5cae9);
+  background: linear-gradient(#353434, #c5cae9);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   color: #1a237e;
   margin-bottom: 1vh;
@@ -208,14 +208,14 @@ const PlaceholderWrapper = styled.div`
 export const Close = styled.div`
   position: absolute;
   font-size: 20px;
-  color: #e8eaf6;
+  color: #353434;
   opacity: 0.5;
   right: 0;
   top: 0;
 `
 
 export const CardWrapper = styled.div`
-  background: linear-gradient(#e8eaf6, #c5cae9);
+  background: linear-gradient(#353434, #c5cae9);
   display: flex;
   flex-direction: column;
   justify-content: center;

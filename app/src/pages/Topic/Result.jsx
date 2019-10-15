@@ -210,7 +210,7 @@ const Result = ({
               <Button
                 text='Upvote'
                 type={
-                  !rating && previousRating !== 'upvote'
+                  !rating && previousRating === 'upvote'
                     ? 'warning'
                     : rating === 'upvote'
                       ? 'warning'
@@ -223,7 +223,7 @@ const Result = ({
               <Button
                 text='Downvote'
                 type={
-                  !rating && previousRating !== 'downvote'
+                  !rating && previousRating === 'downvote'
                     ? 'warning'
                     : rating === 'downvote'
                       ? 'warning'

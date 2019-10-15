@@ -386,17 +386,316 @@ module.exports = {
         throw new ApolloError(error)
       }
     },
-    get_average_score: async (parent, args, context) => {
+    get_topic_average_score: async (parent, args, context) => {
       try {
-        // const { topicId } = args
+        const { topicId } = args
         if (!context.user) {
           throw new ApolloError('Authentication error')
         }
         // fetch topic
+        const {
+          data: {
+            topic: [topic]
+          }
+        } = await graphql.query(
+          gql`
+            query fetchTopic($topicId: uuid!) {
+              topic(where: { id: { _eq: $topicId } }) {
+                id
+                questions {
+                  question_id
+                }
+                user_activities(where: { activity_type: { _eq: "answer" } }) {
+                  activity_type
+                  answer
+                  id
+                  question {
+                    id
+                    answers {
+                      answer
+                      is_correct
+                    }
+                  }
+                }
+              }
+            }
+          `,
+          {
+            topicId
+          }
+        )
+        // get % of correct / wrong
+        let numberOfCorrect = 0
+        let totalAttempts = 0
+        topic.user_activities.map((activity) => {
+          const answers = activity.answer ? JSON.parse(activity.answer) : []
+          const questionCorrectAnswers = activity.question.answers
+            .filter((answerData) => answerData.is_correct)
+            .map((answerData) => answerData.answer)
+          const isCorrect =
+            answers.length && answers.every((answer) => questionCorrectAnswers.includes(answer))
+          if (isCorrect) {
+            numberOfCorrect++
+          }
+          totalAttempts++
+        })
+        return Number((numberOfCorrect / totalAttempts) * 100).toFixed(2)
       } catch (error) {
         console.log(error.message)
         sentry.captureException(error)
         sentry.captureMessage('get_average_score:', error.message)
+        throw new ApolloError(error)
+      }
+    },
+    get_topic_rankings: async (parent, args, context) => {
+      try {
+        const { topicId, sortBy = 'average', search = '' } = args
+        if (!context.user) {
+          throw new ApolloError('Authentication error')
+        }
+        // fetch topic
+        const {
+          data: {
+            topic: [topic]
+          }
+        } = await graphql.query(
+          gql`
+            query fetchTopic($topicId: uuid!, $search: String) {
+              topic(where: { id: { _eq: $topicId } }) {
+                id
+                sessions {
+                  id
+                  type
+                  user_activities(
+                    where: {
+                      _and: [
+                        { activity_type: { _eq: "answer" } }
+                        {
+                          _or: [
+                            { user: { first_name: { _ilike: $search } } }
+                            { user: { last_name: { _ilike: $search } } }
+                          ]
+                        }
+                      ]
+                    }
+                  ) {
+                    created_at
+                    activity_type
+                    answer
+                    id
+                    user_id
+                    user {
+                      id
+                      first_name
+                      last_name
+                    }
+                    question_id
+                    question {
+                      id
+                      answers {
+                        answer
+                        is_correct
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          `,
+          {
+            topicId,
+            search: search + '%'
+          }
+        )
+
+        // create Map
+        const users = new Map()
+
+        // map out session activities to each user
+        // keep their average score, coverage, date last took, types
+        topic.sessions.map((session) => {
+          session.user_activities.map((activity) => {
+            if (!users.get(activity.user_id)) {
+              users.set(activity.user_id, {
+                userId: activity.user_id,
+                userInfo: activity.user,
+                numberOfCorrect: 0,
+                totalTimesAnswered: 0,
+                questionIdsSeen: [],
+                dateLastTook: null,
+                timesTackledAlone: Number(session.type === 'solo'),
+                timesTackledWithAFriend: Number(session.type === 'duo'),
+                lastSessionId: session.id
+              })
+            }
+
+            let userData = users.get(activity.user_id)
+            // userData.questionIdsSeen.push(activity.question_id)
+            userData.questionIdsSeen = [
+              ...new Set(userData.questionIdsSeen).add(activity.question_id)
+            ]
+            userData.dateLastTook =
+              new Date(activity.created_at) > new Date(userData.dateLastTook)
+                ? activity.created_at
+                : userData.dateLastTook
+            if (session.id !== userData.lastSessionId) {
+              userData.lastSessionId = session.id
+              if (session.type === 'solo') {
+                userData.timesTackledAlone++
+              } else {
+                userData.timesTackledWithAFriend++
+              }
+            }
+
+            const answers = activity.answer ? JSON.parse(activity.answer) : []
+            const questionCorrectAnswers = activity.question.answers
+              .filter((answerData) => answerData.is_correct)
+              .map((answerData) => answerData.answer)
+            const isCorrect =
+              answers.length && answers.every((answer) => questionCorrectAnswers.includes(answer))
+
+            if (isCorrect) {
+              userData.numberOfCorrect++
+            }
+            userData.totalTimesAnswered++
+
+            users.set(activity.user_id, userData)
+          })
+        })
+
+        const resultArray = [...users.values()]
+        if (sortBy === 'average') {
+          resultArray.sort(
+            (a, b) =>
+              b.numberOfCorrect / b.totalTimesAnswered - a.numberOfCorrect / a.totalTimesAnswered
+          )
+        } else if (sortBy === 'name') {
+          resultArray.sort(
+            (a, b) =>
+              `${b.userInfo.first_name} ${b.userInfo.last_name}` >
+              `${a.userInfo.first_name} ${a.userInfo.last_name}`
+          )
+        } else {
+          resultArray.sort((a, b) => b.questionIdsSeen.length - a.questionIdsSeen.length)
+        }
+        console.log(resultArray)
+        return JSON.stringify(resultArray)
+      } catch (error) {
+        console.log(error.message)
+        sentry.captureException(error)
+        sentry.captureMessage('get_average_score:', error.message)
+        throw new ApolloError(error)
+      }
+    },
+    get_topic_takers_count: async (parent, args, context) => {
+      try {
+        const { topicId } = args
+        if (!context.user) {
+          throw new ApolloError('Authentication error')
+        }
+        // fetch topic
+        const {
+          data: {
+            topic: [topic]
+          }
+        } = await graphql.query(
+          gql`
+            query fetchTopic($topicId: uuid!) {
+              topic(where: { id: { _eq: $topicId } }) {
+                id
+                user_activities_aggregate(where: { activity_type: { _eq: "take" } }) {
+                  aggregate {
+                    count
+                  }
+                }
+              }
+            }
+          `,
+          {
+            topicId
+          }
+        )
+
+        return ~~getObjectValue(topic, 'user_activities_aggregate.aggregate.count')
+      } catch (error) {
+        console.log(error.message)
+        sentry.captureException(error)
+        sentry.captureMessage('get_topic_takers_count:', error.message)
+        throw new ApolloError(error)
+      }
+    },
+    get_topic_tackle_type_count: async (parent, args, context) => {
+      try {
+        const { topicId, type } = args
+        if (!context.user) {
+          throw new ApolloError('Authentication error')
+        }
+        // fetch topic
+        const {
+          data: {
+            topic: [topic]
+          }
+        } = await graphql.query(
+          gql`
+            query fetchTopic($topicId: uuid!, $type: String) {
+              topic(where: { id: { _eq: $topicId } }) {
+                id
+                sessions_aggregate(where: { type: { _eq: $type } }) {
+                  aggregate {
+                    count
+                  }
+                }
+              }
+            }
+          `,
+          {
+            topicId,
+            type
+          }
+        )
+
+        return ~~getObjectValue(topic, 'sessions_aggregate.aggregate.count')
+      } catch (error) {
+        console.log(error.message)
+        sentry.captureException(error)
+        sentry.captureMessage('get_topic_tackle_type_count:', error.message)
+        throw new ApolloError(error)
+      }
+    },
+    get_topic_comments_count: async (parent, args, context) => {
+      try {
+        const { topicId } = args
+        if (!context.user) {
+          throw new ApolloError('Authentication error')
+        }
+        // fetch topic
+        const {
+          data: {
+            topic: [topic]
+          }
+        } = await graphql.query(
+          gql`
+            query fetchTopic($topicId: uuid!) {
+              topic(where: { id: { _eq: $topicId } }) {
+                id
+                comments_aggregate {
+                  aggregate {
+                    count
+                  }
+                }
+              }
+            }
+          `,
+          {
+            topicId
+          }
+        )
+
+        return ~~getObjectValue(topic, 'comments_aggregate.aggregate.count')
+      } catch (error) {
+        console.log(error.message)
+        sentry.captureException(error)
+        sentry.captureMessage('get_topic_comments_count:', error.message)
         throw new ApolloError(error)
       }
     }

@@ -18,9 +18,24 @@ const typeDefs = `
     get_user_sessions(
       userId: ID!
     ): String,
-    get_average_score(
+    get_topic_average_score(
       topicId: ID
-    ): String
+    ): Float,
+    get_topic_rankings (
+      topicId: ID,
+      sortBy: String,
+      search: String
+    ): String,
+    get_topic_takers_count (
+      topicId: ID
+    ): Int,
+    get_topic_tackle_type_count (
+      topicId: ID,
+      type: String
+    ): Int,
+    get_topic_comments_count (
+      topicId: ID
+    ): Int
   }
   type Mutation {
     create_session(

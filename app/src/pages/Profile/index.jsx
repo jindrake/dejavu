@@ -11,16 +11,11 @@ import {
   INSERT_USER_ACTIVITY,
   FETCH_ACTIVITY_LOGS
 } from './queries'
-import { FullPageLoader, Placeholder, ContentCenter, Button } from '../../components'
+import { FullPageLoader, Placeholder, ContentCenter } from '../../components'
 import { useStateValue, getObjectValue } from '../../libs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {
-  faPencilAlt,
-  faEye,
-  faTasks,
-  faThumbsUp,
-  faThumbsDown
-} from '@fortawesome/free-solid-svg-icons'
+import { faPencilAlt, faEye, faTasks, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import TopicManagementCard from './TopicManagementCard'
 
 const FETCH_USER = gql`
   query fetchUser($userId: uuid!) {
@@ -93,11 +88,6 @@ const Profile = ({ user, history }) => {
   }
   const userTopics = getObjectValue(userTopicsData, 'topic') || []
   const activityLogs = getObjectValue(activityLogsData, 'user_activity') || []
-  // const uniqueLogs = Array.from(new Set(activityLogs.map((a) => a.topic_id))).map((id) => {
-  //   return activityLogs.find((a) => a.topic_id === id)
-  // })
-
-  console.log('mytopics', userTopics)
 
   return (
     <Container>
@@ -124,47 +114,7 @@ const Profile = ({ user, history }) => {
             ) : (
               <div>
                 {userTopics.map((topic, index) => {
-                  return (
-                    <DejavuCard className='justify-content-between flex-column mb-2' key={index}>
-                      <div>
-                        <div className='font-weight-bold'>{topic.name}</div>
-                        <div>
-                          <small>{topic.description}</small>
-                        </div>
-                        <div className='small w-100 d-flex justify-content-between'>
-                          <div>
-                            {getObjectValue(topic, 'user_activities_aggregate.aggregate.count') ||
-                              '0'}{' '}
-                            takers
-                          </div>
-                          <span className='d-flex text-center justify-content-evenly'>
-                            <Author>
-                              <FontAwesomeIcon icon={faThumbsDown} />{' '}
-                              {topic.ratings.length > 0
-                                ? topic.ratings.filter((r) => r.type === 'downvote').length
-                                : 0}
-                              &nbsp;&nbsp;
-                              <FontAwesomeIcon icon={faThumbsUp} />{' '}
-                              {topic.ratings.length > 0
-                                ? topic.ratings.filter((r) => r.type === 'upvote').length
-                                : 0}
-                            </Author>
-                          </span>
-                        </div>
-                      </div>
-                      <div className='w-100 d-flex justify-content-end'>
-                        <div className='text-right w-100 d-flex justify-content-end'>
-                          <Button
-                            type='action'
-                            text='Manage'
-                            onClick={() => {
-                              history.push(`/topic/${topic.id}/manage`)
-                            }}
-                          />
-                        </div>
-                      </div>
-                    </DejavuCard>
-                  )
+                  return <TopicManagementCard topic={topic} key={index} history={history} />
                 })}
               </div>
             )}
@@ -301,10 +251,6 @@ const DejavuCard = styled.div`
   &:last-child {
     margin-bottom: 60px;
   }
-  /* justify-content: center;
-  padding: 20px;
-  width: 92%;
-   */
   border-radius: 6px;
   box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
