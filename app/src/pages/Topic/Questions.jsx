@@ -438,7 +438,8 @@ const AddQuestions = ({
         <>
           <Button
             className='form-control'
-            type={topic.is_published ? 'warning' : 'success'}
+            color={topic.is_published ? 'warning' : 'success'}
+            size='lg'
             onClick={async () => {
               await publishTopic({
                 variables: {
@@ -448,8 +449,9 @@ const AddQuestions = ({
               })
               await refetchTopic()
             }}
-            text={topic.is_published ? 'Unpublish' : 'Publish'}
-          />
+          >
+            {topic.is_published ? 'Unpublish' : 'Publish'}
+          </Button>
           <hr />
         </>
       ) : (
