@@ -92,8 +92,9 @@ const Profile = ({ user, history }) => {
   return (
     <Container>
       <ProfileTopBar className='p-4 pb-4 mb-2'>
-        <div>
+        <div className='d-flex justify-content-between'>
           <FontAwesomeIcon icon={faArrowLeft} onClick={() => history.goBack()} />
+          <FontAwesomeIcon icon={faPencilAlt} onClick={() => history.push('/edit-profile')} />
         </div>
         <ProfileInfo>
           {currentUser.avatar === undefined ? (

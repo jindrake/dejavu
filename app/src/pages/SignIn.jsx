@@ -5,9 +5,8 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import { withFirebase } from '../hocs'
 import { withRouter } from 'react-router-dom'
-import Alert from '../components/Alert'
 import { StyledInput, FormWrapper, OverlayLoader, Icon, HeaderText } from '../components'
-import { Button, Label } from 'reactstrap'
+import { Button, Label, Alert } from 'reactstrap'
 
 const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
   return (
@@ -56,7 +55,7 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
                 <br />
                 Study Buddy!
               </HeaderText>
-              {status ? <Alert {...status} data-cy='alert' /> : null}
+              {status ? <Alert className='dejavu-small-text mt-2 mb-1 p-1' color='danger'>{status.text}</Alert> : null}
               <FormItem>
                 <Label>
                   <div>
@@ -122,6 +121,7 @@ const Close = styled.div`
 
 const Hint = styled.span`
   margin-left: 6px;
+  color: red;
 `
 
 const FormItem = styled.div`

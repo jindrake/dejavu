@@ -216,8 +216,8 @@ const Result = ({
                   setRating('upvote')
                 }}
               >
-                <FaIcon icon={faThumbsUp} />&nbsp;
-                Upvote
+                <FaIcon icon={faThumbsUp} />
+                &nbsp; Upvote
               </Button>
               <Button
                 color={
@@ -231,8 +231,8 @@ const Result = ({
                   setRating('downvote')
                 }}
               >
-                <FaIcon icon={faThumbsDown} />&nbsp;
-                Downvote
+                <FaIcon icon={faThumbsDown} />
+                &nbsp; Downvote
               </Button>
             </RatingButtonsContainer>
             <hr />
@@ -277,7 +277,9 @@ const Result = ({
               >
                 Submit
               </Button>
-              <Button className='ml-3' color='secondary' onClick={() => showFeedbackScreen(false)}>Cancel</Button>
+              <Button className='ml-3' color='secondary' onClick={() => showFeedbackScreen(false)}>
+                Cancel
+              </Button>
             </div>
           </RatingCard>
         </IconsDiv>

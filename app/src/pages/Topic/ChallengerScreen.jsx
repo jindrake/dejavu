@@ -64,10 +64,7 @@ const ChallengerScreen = ({
           </HeaderText>
           <div>
             <Button
-              text={user ? 'Proceed' : 'Sign-in'}
-              center
-              type='primary'
-              className='mb-2'
+              color='primary'
               onClick={async () => {
                 if (user) {
                   // add user to session
@@ -81,14 +78,21 @@ const ChallengerScreen = ({
                   history.push('/sign-in?redirectUrl=' + encodeURIComponent(location.pathname))
                 }
               }}
-            />
+              size='sm'
+              className='pl-4 pr-4 mr-3'
+            >
+              {user ? 'Proceed' : 'Sign-in'}
+            </Button>
             <Button
-              text={'Exit'}
-              center
+              color='secondary'
               onClick={() => {
                 history.push('/')
               }}
-            />
+              size='sm'
+              className='pl-4 pr-4 mr-3'
+            >
+              Exit
+            </Button>
           </div>
         </Container>
       </Paper>

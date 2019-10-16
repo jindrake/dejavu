@@ -2,7 +2,8 @@ import React from 'react'
 import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faDizzy } from '@fortawesome/free-regular-svg-icons'
-import { Button } from '../components/Button'
+// import { Button } from '../components/Button'
+import { Button } from 'reactstrap'
 
 const NotFound = ({ history }) => {
   return (
@@ -16,9 +17,19 @@ const NotFound = ({ history }) => {
         PAGE NOT FOUND
       </TextContainer>
       <ButtonContainer>
-        <Button text={'Go Home'} type='warning' onClick={() => {
+        {/* <Button text={'Go Home'} type='warning' onClick={() => {
           history.push('/')
-        }} />
+        }} /> */}
+        <Button
+          color='secondary'
+          onClick={() => {
+            history.push('/')
+          }}
+          size='sm'
+          className='pl-4 pr-4 mr-3'
+        >
+          Exit
+        </Button>
       </ButtonContainer>
     </StyledContainer>
   )

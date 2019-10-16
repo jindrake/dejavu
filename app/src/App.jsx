@@ -95,12 +95,12 @@ const App = ({ firebase, history, location: { search } }) => {
     <ApolloProvider client={getInitializedApolloClient(authState.token)}>
       {loading && <OverlayLoader className='bg-transparent' />}
       {networkError && (
-        <Notification className='slideDown text-danger'>
+        <Notification className='dejavu-small-text slideDown text-danger mb-2'>
           {networkError.split(':').pop().trim()}
         </Notification>
       )}
       {operationSuccess && (
-        <Notification className='slideDown text-success'>
+        <Notification className='dejavu-small-text slideDown text-success mb-2'>
           {operationSuccess}
         </Notification>
       )}
