@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import compose from 'recompose/compose'
 import { useQuery, useSubscription } from '@apollo/react-hooks'
-import { faUserCircle, faComments, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { faUserCircle, faComments, faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
 import { Badge } from 'reactstrap'
 import { Formik } from 'formik'
 import * as yup from 'yup'
@@ -63,7 +63,7 @@ const Discussion = ({
   if (loading || topicCommentDataLoading) return <FullPageLoader />
 
   const topic = getObjectValue(data, 'topic[0]')
-  const comments = topicCommentData.topic_comment
+  const comments = topicCommentData && topicCommentData.topic_comment
   console.log(topic)
   console.log(comments)
 
@@ -150,11 +150,11 @@ const Discussion = ({
                     &nbsp;{`${topic.ratings && topic.ratings.filter(t => t.type === 'upvote').length}`}
                   </div>
                   &nbsp;
-                  {/* <div className='dejavu-small-text'>
+                  <div className='dejavu-small-text'>
                     <FaIcon icon={faThumbsDown} />
                     &nbsp;{`${topic.ratings && topic.ratings.filter(t => t.type === 'downvote').length}`}
                   </div>
-                  &nbsp; */}
+                  &nbsp;
                   <div className='dejavu-small-text'>
                     <FaIcon icon={faComments} />
                     &nbsp;{`${topic.comments.length}`}
@@ -183,6 +183,7 @@ const Discussion = ({
                   invalid={errors.name && touched.name}
                 />
                 <Badge
+                  color='primary'
                   onClick={handleSubmit}
                 >
                   <BasicFontSize>submit</BasicFontSize>

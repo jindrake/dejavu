@@ -427,6 +427,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                       // invalid={errors.name && touched.name}
                     />
                     <Badge
+                      color='primary'
                       onClick={handleSubmit}
                     >
                       <div>reply</div>
