@@ -2,8 +2,10 @@ import React from 'react'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { FETCH_FULL_TOPIC, UPDATE_TOPIC } from './queries'
 import { getObjectValue, useStateValue } from '../../libs'
-import { FullPageLoader, ContentCenter, Button, HeaderText } from '../../components'
-import { Badge, Label } from 'reactstrap'
+import { FullPageLoader, ContentCenter, HeaderText } from '../../components'
+import { Label, Button } from 'reactstrap'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 const ManageTopic = ({
   match: {
@@ -41,108 +43,110 @@ const ManageTopic = ({
   const topic = getObjectValue(data, 'topic[0]')
   console.log('Topic:', topic)
   return (
-    <div className='mb-5'>
-      <div className='d-flex'>
-        <Button text='Back' type='primary' onClick={() => history.push('/profile')} />
+    <div className='h-100 overflow-y-scroll'>
+      <div>
+        <FontAwesomeIcon icon={faArrowLeft} onClick={() => history.goBack()} />
       </div>
-      <ContentCenter className='mt-3'>
+      <ContentCenter>
         <HeaderText>Manage Topic</HeaderText>
       </ContentCenter>
-      <Label>
-        Title: <strong>{topic.name}</strong>
-        <br />
-        Description: <strong>{topic.description}</strong>
-      </Label>
-      <Label>
-        Target field:
-        <br />
-        {topic.target_fields && topic.target_fields.length
-          ? topic.target_fields.map((field, index) => {
-            return (
-              <h3 key={index}>
-                <Badge color='info' key={index} className='mx-3'>
-                  {field.field}
-                </Badge>
-              </h3>
-            )
-          })
-          : null}
-      </Label>
+      <Label>Title</Label>
+      <br />
+      <strong>{topic.name}</strong>
+      <br />
+      <Label>Description</Label>
+      <p className='dejavu-small-text'>{topic.description}</p>
       <hr />
-      <Button
-        text='See results'
-        type='primary'
-        className='mb-2 p-4'
-        onClick={() => {
-          history.push(`/topic/${id}/analytics`)
-        }}
-      />
-      <Button
-        text='List of allowed users'
-        type='primary'
-        onClick={() => {
-          history.push(`/topic/${id}/users`)
-        }}
-        className='mb-2 p-4'
-      />
-      <Button
-        text='Manage admins'
-        type='primary'
-        className='mb-2 p-4'
-        onClick={() => {
-          history.push(`/topic/${id}/admins`)
-        }}
-      />
-      <Button
-        text='Edit details'
-        type='primary'
-        className='mb-2 p-4'
-        onClick={() => {
-          history.push(`/topic/${id}/edit`)
-        }}
-      />
-      <Button
-        text='Edit questions'
-        type='primary'
-        className='mb-2 p-4'
-        onClick={() => {
-          history.push(`/topic/${id}/questions`)
-        }}
-      />
-      {/* <Button text='Edit target fields' className='mb-2 p-4' /> */}
-      <hr />
-      <Button
-        text={topic.is_published ? 'Unpublish' : 'Publish'}
-        className='mb-2 p-4'
-        type={topic.is_published ? 'warning' : 'success'}
-        onClick={async () => {
-          await updateTopic({
-            variables: {
-              id: id,
-              topic: {
-                is_published: !topic.is_published
+      <div className='d-flex flex-column overflow-y-scroll h-100'>
+        <Button
+          color='primary'
+          className='mb-2 '
+          size='lg'
+          onClick={() => {
+            history.push(`/topic/${id}/analytics`)
+          }}
+        >
+          See results
+        </Button>
+        <Button
+          color='primary'
+          onClick={() => {
+            history.push(`/topic/${id}/users`)
+          }}
+          className='mb-2 '
+          size='lg'
+        >
+          List of allowed users
+        </Button>
+        <Button
+          color='primary'
+          className='mb-2 '
+          size='lg'
+          onClick={() => {
+            history.push(`/topic/${id}/admins`)
+          }}
+        >
+          Manage admins
+        </Button>
+        <Button
+          color='primary'
+          className='mb-2 '
+          size='lg'
+          onClick={() => {
+            history.push(`/topic/${id}/edit`)
+          }}
+        >
+          Edit details
+        </Button>
+        <Button
+          color='primary'
+          className='mb-2 '
+          size='lg'
+          onClick={() => {
+            history.push(`/topic/${id}/questions`)
+          }}
+        >
+          Edit questions
+        </Button>
+        {/* <Button text='Edit target fields' className='mb-2 ' /> */}
+        <hr />
+        <Button
+          className='mb-2 '
+          size='lg'
+          color={topic.is_published ? 'warning' : 'success'}
+          onClick={async () => {
+            await updateTopic({
+              variables: {
+                id: id,
+                topic: {
+                  is_published: !topic.is_published
+                }
               }
-            }
-          })
-          await refetch()
-        }}
-      />
-      <Button
-        text={topic.is_private ? 'Make public' : 'Make private'}
-        className='mb-2 p-4'
-        type={topic.is_private ? 'success' : 'warning'}
-        onClick={async () => {
-          await updateTopic({
-            variables: {
-              id: id,
-              topic: {
-                is_private: !topic.is_private
+            })
+            await refetch()
+          }}
+        >
+          {topic.is_published ? 'Unpublish' : 'Publish'}
+        </Button>
+        <Button
+          className='mb-2 '
+          size='lg'
+          color={topic.is_private ? 'success' : 'warning'}
+          onClick={async () => {
+            await updateTopic({
+              variables: {
+                id: id,
+                topic: {
+                  is_private: !topic.is_private
+                }
               }
-            }
-          })
-          await refetch()
-        }}
-      />
+            })
+            await refetch()
+          }}
+        >
+          {topic.is_private ? 'Make public' : 'Make private'}
+        </Button>
+      </div>
     </div>
   )
 }

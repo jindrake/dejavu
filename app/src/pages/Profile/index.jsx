@@ -91,7 +91,7 @@ const Profile = ({ user, history }) => {
 
   return (
     <Container>
-      <ProfileTopBar className='p-4 pt-5 pb-4 mb-3'>
+      <ProfileTopBar className='p-4 pt-5 pb-4 mb-2'>
         <ProfileInfo>
           {currentUser.avatar === undefined ? (
             <AvatarContainer>{initials.toUpperCase()}</AvatarContainer>
@@ -105,8 +105,8 @@ const Profile = ({ user, history }) => {
         <ContentCenter className='h6'>{currentUser.email}</ContentCenter>
       </ProfileTopBar>
       <div className='mt-5'>
+        <div className='ml-3 mb-2 u'>Your created topics</div>
         <Wrapper>
-          <div className='ml-3'>Your created topics</div>
           <TopicsContainer>
             {userTopics.length === 0 ? (
               <Placeholder />
@@ -120,8 +120,8 @@ const Profile = ({ user, history }) => {
           </TopicsContainer>
         </Wrapper>
         <br />
+        <div className='ml-3 mb-2 u'>Activity Logs</div>
         <Wrapper>
-          <div className='ml-3'>Activity Logs</div>
           <TopicsContainer>
             {activityLogs.length === 0 ? (
               <div className='mt-5'>
@@ -158,7 +158,10 @@ const Profile = ({ user, history }) => {
                       break
                   }
                   return (
-                    <DejavuCard key={index} className='d-flex flex-row justify-content-start dejavu-small-text'>
+                    <DejavuCard
+                      key={index}
+                      className='d-flex flex-row justify-content-start dejavu-small-text'
+                    >
                       <ActivityIcon icon={icon} />
                       <Author className='d-flex flex-column justify-content-center'>
                         <div>
@@ -196,7 +199,7 @@ const AvatarContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #E7C3FF;
+  background: #e7c3ff;
   font-size: 7vh;
   font-family: 'Open Sans';
   font-weight: 700;
@@ -232,6 +235,7 @@ const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   height: 25vh;
+  overflow-y: scroll;
 `
 
 // const SectionTitle = styled.div`

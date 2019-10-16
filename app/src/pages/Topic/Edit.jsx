@@ -12,10 +12,12 @@ import { useQuery } from '@apollo/react-hooks'
 import { Formik } from 'formik'
 import { useStateValue, getObjectValue } from '../../libs'
 import * as yup from 'yup'
-import { OverlayLoader, Button, HeaderText, StyledInput } from '../../components'
-import { FormGroup, Label } from 'reactstrap'
+import { OverlayLoader, HeaderText, StyledInput, ContentCenter } from '../../components'
+import { FormGroup, Label, Button } from 'reactstrap'
 import uuid from 'uuid/v4'
 import { graphql } from '@apollo/react-hoc'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 const EditTopicScreen = ({
   match: {
@@ -124,75 +126,76 @@ const EditTopicScreen = ({
       }) => {
         console.log('ERRORS:', errors)
         return (
-          <div>
-            {(isSubmitting || loading) && <OverlayLoader />}
-            <div className='d-flex'>
-              <Button text='Go back' onClick={() => history.goBack()} />
+          <div className='h-100 d-flex flex-column justify-content-between'>
+            <div>
+              <div>
+                <FontAwesomeIcon icon={faArrowLeft} onClick={() => history.goBack()} />
+              </div>
+              {(isSubmitting || loading) && <OverlayLoader />}
+              <ContentCenter>
+                <HeaderText>Edit topic</HeaderText>
+              </ContentCenter>
+              <FormGroup>
+                <Label for='name'>
+                  <div>Title</div>
+                </Label>
+                <StyledInput
+                  type='text'
+                  name='name'
+                  placeholder='Enter title here ..'
+                  value={values.name}
+                  onChange={(e) => {
+                    setFieldValue('name', e.target.value)
+                    const uri = `${e.target.value.toLowerCase().replace(/[\W\s^-]/g, '-')}`
+                    const validateUri = uri.replace(/(-+|_+)/g, '')
+                    setFieldValue('uri', `${validateUri}-${uuid().substr(0, 4)}`)
+                  }}
+                  invalid={errors.name && touched.name}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for='description'>
+                  <div>Description</div>
+                </Label>
+                <StyledInput
+                  type='textarea'
+                  name='description'
+                  placeholder='Enter description here ..'
+                  value={values.description}
+                  onChange={(e) => {
+                    setFieldValue('description', e.target.value)
+                  }}
+                  invalid={errors.name && touched.name}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label for='fieldOfStudy'>
+                  <div>Target field</div>
+                </Label>
+                <StyledInput
+                  type='select'
+                  name='fieldOfStudy'
+                  data-cy='field-of-study'
+                  placeholder='Select field of study'
+                  onChange={(e) => {
+                    setFieldValue('fieldOfStudy', e.target.value)
+                  }}
+                  invalid={errors.fieldOfStudy && touched.fieldOfStudy}
+                  value={values.fieldOfStudy}
+                >
+                  <option value='' />
+                  {studyFields.enum_field &&
+                    studyFields.enum_field.map(({ field }) => (
+                      <option value={field} key={field}>
+                        {field}
+                      </option>
+                    ))}
+                </StyledInput>
+              </FormGroup>
             </div>
-            <HeaderText className='mt-3 mb-3'>Edit topic</HeaderText>
-            <FormGroup>
-              <Label for='name'>
-                <div>Title</div>
-              </Label>
-              <StyledInput
-                type='text'
-                name='name'
-                placeholder='Enter title here ..'
-                value={values.name}
-                onChange={(e) => {
-                  setFieldValue('name', e.target.value)
-                  const uri = `${e.target.value.toLowerCase().replace(/[\W\s^-]/g, '-')}`
-                  const validateUri = uri.replace(/(-+|_+)/g, '')
-                  setFieldValue('uri', `${validateUri}-${uuid().substr(0, 4)}`)
-                }}
-                invalid={errors.name && touched.name}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for='description'>
-                <div>Description</div>
-              </Label>
-              <StyledInput
-                type='textarea'
-                name='description'
-                placeholder='Enter description here ..'
-                value={values.description}
-                onChange={(e) => {
-                  setFieldValue('description', e.target.value)
-                }}
-                invalid={errors.name && touched.name}
-              />
-            </FormGroup>
-            <FormGroup>
-              <Label for='fieldOfStudy'>
-                <div>Target field</div>
-              </Label>
-              <StyledInput
-                type='select'
-                name='fieldOfStudy'
-                data-cy='field-of-study'
-                placeholder='Select field of study'
-                onChange={(e) => {
-                  setFieldValue('fieldOfStudy', e.target.value)
-                }}
-                invalid={errors.fieldOfStudy && touched.fieldOfStudy}
-                value={values.fieldOfStudy}
-              >
-                <option value='' />
-                {studyFields.enum_field &&
-                  studyFields.enum_field.map(({ field }) => (
-                    <option value={field} key={field}>
-                      {field}
-                    </option>
-                  ))}
-              </StyledInput>
-            </FormGroup>
-            <Button
-              data-cy='save_topic'
-              onClick={handleSubmit}
-              className='p-3 mt-3'
-              text='Save'
-            />
+            <Button onClick={handleSubmit} size='lg' color='primary'>
+              Save
+            </Button>
           </div>
         )
       }}

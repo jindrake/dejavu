@@ -34,7 +34,7 @@ import {
   RemoveButton
 } from '../../components/Topic'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCheckCircle, faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faCheckCircle, faTimes, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { withFirebase } from '../../hocs'
 
 const AddQuestions = ({
@@ -42,7 +42,8 @@ const AddQuestions = ({
     params: { id }
   },
   user,
-  firebase
+  firebase,
+  history
 }) => {
   const [currentQuestionPhoto, setCurrentQuestionPhoto] = useState(null)
   const [, globalDispatch] = useStateValue()
@@ -158,6 +159,9 @@ const AddQuestions = ({
 
   return (
     <StyledForm>
+      <div>
+        <FontAwesomeIcon icon={faArrowLeft} onClick={() => history.goBack()} />
+      </div>
       <Formik
         initialValues={{
           question: '',

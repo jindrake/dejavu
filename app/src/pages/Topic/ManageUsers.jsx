@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { FullPageLoader, Button, HeaderText } from '../../components'
+import { FullPageLoader, HeaderText, ContentCenter, StyledInput } from '../../components'
 import gql from 'graphql-tag'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
@@ -13,9 +13,9 @@ import {
   DELETE_TOPIC_USER,
   DELETE_ALL_TOPIC_USERS
 } from './queries'
-import { Input, InputGroup, InputGroupAddon } from 'reactstrap'
+import { InputGroup, Button, InputGroupAddon, Label } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 // user
 const UPDATE_TOPIC_USER = gql`
@@ -74,7 +74,8 @@ const ManageUsers = ({
     loading ||
     updateTopicLoading ||
     deleteTopicUserLoading ||
-    deleteAllTopicUsersLoading || whitelistLoading
+    deleteAllTopicUsersLoading ||
+    whitelistLoading
   ) {
     return <FullPageLoader />
   }
@@ -92,106 +93,115 @@ const ManageUsers = ({
 
   return (
     <div className='h-100'>
-      <div className='d-flex'>
-        <Button text='Go back' onClick={() => history.goBack()} />
+      <div>
+        <FontAwesomeIcon icon={faArrowLeft} onClick={() => history.goBack()} />
       </div>
-      <HeaderText className='mt-3'>Manage allowed users for {topic.name}</HeaderText>
+      <ContentCenter>
+        <HeaderText>Manage allowed users for {topic.name}</HeaderText>
+      </ContentCenter>
       <hr />
       {!topic.is_private ? (
         <div className='d-flex justify-content-between flex-column'>
-          <div className='p'>
+          <Label>
             This topic is currently <strong>Public</strong>. Every user can tackle it. Do you want
             to limit it to a specific set of users?
-          </div>
+          </Label>
           <Button
-            text='Make Private'
-            type='warning'
-            className='p-3 mt-3'
+            color='warning'
+            size='lg'
             onClick={async () => {
               await updateTopic({
                 variables: {
                   id: id,
                   topic: {
-                    is_published: !topic.is_published
+                    is_private: !topic.is_private
                   }
                 }
               })
               await refetch()
             }}
-          />
+          >
+            Make Private
+          </Button>
         </div>
       ) : (
-        <div>
-          <div className='p-2'>
-            Adding emails to the topic's <strong>allowed list</strong> will make the topic exclusive
-            to the emails included in the list.
-          </div>
-          <InputGroup>
-            <Input
-              invalid={!!inputError}
-              value={inputValue}
-              type='email'
-              placeholder='User Email'
-              onChange={(e) => {
-                setInputValue(e.target.value)
-              }}
-            />
-            <InputGroupAddon addonType='append'>
-              <Button
-                text='Add'
-                className='h3'
-                onClick={async () => {
-                  if (emailRegex.test(inputValue)) {
-                    await whitelistUser({
-                      variables: {
-                        topicUser: {
-                          topic_id: id,
-                          email: inputValue
-                        }
-                      }
-                    })
-                    await refetch()
-                    setInputValue('')
-                    setInputError(false)
-                    globalDispatch({
-                      operationSuccess: 'Whitelisted email'
-                    })
-                  } else {
-                    setInputError(true)
-                  }
+        <div className='h-100 d-flex flex-column'>
+          <div>
+            <Label>
+              Adding emails to the topic's <strong>allowed list</strong> will make the topic
+              exclusive to the emails included in the list.
+            </Label>
+            <InputGroup>
+              <StyledInput
+                invalid={!!inputError}
+                value={inputValue}
+                type='email'
+                placeholder='User Email'
+                onChange={(e) => {
+                  setInputValue(e.target.value)
                 }}
               />
-            </InputGroupAddon>
-          </InputGroup>
-          <hr />
-          <div className='px-3'>
-            {topic.users.map((user, index) => (
-              <div className='d-flex justify-content-between' key={index}>
-                {user.email}
-                <FontAwesomeIcon
-                  icon={faTimes}
-                  className='mt-2 text-warning'
+              <InputGroupAddon addonType='append'>
+                <Button
+                  text='Add'
+                  className=''
+                  color='link'
                   onClick={async () => {
-                    await deleteTopicUser({
-                      variables: {
-                        topicId: id,
-                        email: user.email
-                      }
-                    })
-                    await refetch()
-                    globalDispatch({
-                      operationSuccess: 'User removed from whitelist'
-                    })
+                    if (emailRegex.test(inputValue)) {
+                      await whitelistUser({
+                        variables: {
+                          topicUser: {
+                            topic_id: id,
+                            email: inputValue
+                          }
+                        }
+                      })
+                      await refetch()
+                      setInputValue('')
+                      setInputError(false)
+                      globalDispatch({
+                        operationSuccess: 'Whitelisted email'
+                      })
+                    } else {
+                      setInputError(true)
+                    }
                   }}
-                />
-              </div>
-            ))}
+                >
+                  ADD
+                </Button>
+              </InputGroupAddon>
+            </InputGroup>
+            <hr />
+            <div className='px-3'>
+              {topic.users.map((user, index) => (
+                <div className='d-flex justify-content-between' key={index}>
+                  {user.email}
+                  <FontAwesomeIcon
+                    icon={faTimes}
+                    className='mt-2 text-warning'
+                    onClick={async () => {
+                      await deleteTopicUser({
+                        variables: {
+                          topicId: id,
+                          email: user.email
+                        }
+                      })
+                      await refetch()
+                      globalDispatch({
+                        operationSuccess: 'User removed from whitelist'
+                      })
+                    }}
+                  />
+                </div>
+              ))}
+            </div>
           </div>
           {topic.users && topic.users.length ? (
-            <>
+            <div>
               <Button
-                text='Clear whitelist'
-                className='mt-3'
+                className='mt-3 w-100'
+                color='warning'
+                size='lg'
                 onClick={async (e) => {
                   e.preventDefault()
                   await deleteAllTopicUsers({
@@ -204,11 +214,13 @@ const ManageUsers = ({
                     operationSuccess: 'Cleared whitelist'
                   })
                 }}
-              />
-              <div className='p-2'>
+              >
+                Clear whitelist
+              </Button>
+              <Label>
                 Clearing the whitelist will allow anyone access to the private topic via url
-              </div>
-            </>
+              </Label>
+            </div>
           ) : null}
         </div>
       )}

@@ -287,6 +287,11 @@ export const Belt = styled.div`
   position: absolute;
   top: 6px;
   display: flex;
+  height: 100%;
+`
+
+export const BoldText = styled.span`
+  font-family: 'Proximanova semi bold';
 `
 
 export const Author = styled.div`
@@ -307,7 +312,7 @@ export const HomeCardWrapper = styled.div`
   /* color: #1a237e; */
   color: white;
   width: 50vw;
-  height: 23vh;
+  height: 35vh;
   /* @media screen and (min-width: 800px) {
     height: 30vw;
   } */

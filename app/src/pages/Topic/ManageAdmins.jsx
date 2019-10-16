@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import { FullPageLoader, Button, HeaderText } from '../../components'
+import { FullPageLoader, HeaderText, StyledInput, ContentCenter } from '../../components'
 import compose from 'recompose/compose'
 import { withRouter } from 'react-router-dom'
 import { useQuery, useMutation } from '@apollo/react-hooks'
 import { useStateValue, getObjectValue, emailRegex } from '../../libs'
 import { FETCH_TOPIC_WITH_ADMINS, INSERT_TOPIC_ADMIN, DELETE_TOPIC_ADMIN } from './queries'
-import { Input, InputGroup, InputGroupAddon } from 'reactstrap'
+import { InputGroup, InputGroupAddon, Button, Label } from 'reactstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes } from '@fortawesome/free-solid-svg-icons'
+import { faTimes, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 const ManageAdmins = ({
   history,
@@ -48,15 +48,17 @@ const ManageAdmins = ({
 
   return (
     <div className='h-100'>
-      <div className='d-flex'>
-        <Button text='Go back' onClick={() => history.goBack()} />
+      <div>
+        <FontAwesomeIcon icon={faArrowLeft} onClick={() => history.goBack()} />
       </div>
-      <HeaderText className='mt-3'>Manage admins for {topic.name}</HeaderText>
+      <ContentCenter>
+        <HeaderText className='mt-3'>Manage admins for {topic.name}</HeaderText>
+      </ContentCenter>
       <hr />
       <div>
-        <div className='p-2'>Add admins by email address</div>
+        <Label>Add admins by email address</Label>
         <InputGroup>
-          <Input
+          <StyledInput
             invalid={!!inputError}
             value={inputValue}
             type='email'
@@ -67,8 +69,7 @@ const ManageAdmins = ({
           />
           <InputGroupAddon addonType='append'>
             <Button
-              text='Add'
-              className='h3'
+              color='link'
               onClick={async () => {
                 if (emailRegex.test(inputValue)) {
                   await addAdmin({
@@ -87,7 +88,9 @@ const ManageAdmins = ({
                   setInputError(true)
                 }
               }}
-            />
+            >
+              ADD
+            </Button>
           </InputGroupAddon>
         </InputGroup>
         <hr />

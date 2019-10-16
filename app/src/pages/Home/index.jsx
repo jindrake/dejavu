@@ -16,10 +16,11 @@ import {
   Belt,
   TopicsContainer,
   PageLabel,
-  HeaderText
+  HeaderText,
+  BoldText
 } from '../../components'
 import { useQuery } from '@apollo/react-hooks'
-import { Button } from 'reactstrap'
+import { Button, Badge, Label } from 'reactstrap'
 
 const Home = ({ history }) => {
   const [{ user }, globalDispatch] = useStateValue()
@@ -83,8 +84,7 @@ const Home = ({ history }) => {
         <CreateButtonContainer className='mt-3'>
           <Button color='primary' id='button' onClick={() => history.push('/topic/create')}>
             {/* <AddIcon name='add' /> */}
-            <FontAwesomeIcon icon={faPlus} />{' '}
-            Create a Topic
+            <FontAwesomeIcon icon={faPlus} /> Create a Topic
           </Button>
         </CreateButtonContainer>
       </div>
@@ -101,26 +101,23 @@ const Home = ({ history }) => {
                   }}
                 >
                   <div className='font-weight-bold'>{session.topic.name}</div>
-                  <div className='dejavu-small-text'>
-                    status:&nbsp;
+                  <div>
+                    <Label className='text-white'>
+                      status
+                    </Label><br />
                     {session.current_user ? (
                       session.current_user_id === user.id ? (
-                        <span className='text-danger'>Your turn!</span>
+                        <BoldText className='border-bottom border-warning'>Your turn!</BoldText>
                       ) : (
-                        <span className='text-warning'>
+                        <BoldText className='border-bottom border-warning'>
                           Waiting for {session.current_user.first_name}
-                        </span>
+                        </BoldText>
                       )
                     ) : (
-                      <span className='text-success'>Finished</span>
+                      <BoldText className='border-bottom border-success'>Finished</BoldText>
                     )}
-                    <div className='mt-2 dejavu-small-text'>
-                      {new Date(session.updated_at).toDateString()}
-                    </div>
                     <div className='mt-3 dejavu-small-text'>
-                      {
-                        moment(new Date(session.updated_at)).fromNow()
-                      }
+                      {moment(new Date(session.updated_at)).fromNow()}
                     </div>
                   </div>
                 </HomeCardWrapper>
@@ -140,49 +137,46 @@ const Home = ({ history }) => {
                 <HomeCardWrapper
                   key={index}
                   onClick={() => {
-                    // if (user) {
-                    //   insertUserActivity({
-                    //     variables: {
-                    //       userActivity: {
-                    //         id: uuid(),
-                    //         activity_type: 'view',
-                    //         user_id: user.id,
-                    //         topic_id: topic.id
-                    //       }
-                    //     }
-                    //   })
-                    // }
                     history.push(`topic/${topic.id}`)
                   }}
                 >
                   <div className='font-weight-bold'>{topic.name}</div>
-                  <div>
+                  <div className='overflow-y-scroll'>
                     <small>{topic.description}</small>
                   </div>
                   <div>
                     <small>
                       {topic.target_fields &&
                         topic.target_fields.length &&
-                        topic.target_fields.map(({ field }, index) => <div key={index}>{field}</div>)}
+                        topic.target_fields.map(({ field }, index) => (
+                          <Badge
+                            className='text-lowercase font-weight-light'
+                            color='warning'
+                            key={index}
+                          >
+                            {field}
+                          </Badge>
+                        ))}
                     </small>
                   </div>
                   <div>
                     <div className='dejavu-small-text'>
-                      {/* {new Date(topic.created_at).toDateString()} */}
                       {moment(new Date(topic.created_at)).fromNow()}
                     </div>
                   </div>
                   <div className='d-flex flex-row justify-content-end text-center mr-3 dejavu-small-text'>
                     <div>
-                      <FontAwesomeIcon icon={faThumbsUp} />{' '}
-                      &nbsp;
-                      {topic.ratings.length > 0 ? topic.ratings.filter((r) => r.type === 'upvote').length : 0}
+                      <FontAwesomeIcon icon={faThumbsUp} /> &nbsp;
+                      {topic.ratings.length > 0
+                        ? topic.ratings.filter((r) => r.type === 'upvote').length
+                        : 0}
                     </div>
                     &nbsp;
                     <div>
-                      <FontAwesomeIcon icon={faThumbsDown} />{' '}
-                      &nbsp;
-                      {topic.ratings.length > 0 ? topic.ratings.filter((r) => r.type === 'downvote').length : 0}
+                      <FontAwesomeIcon icon={faThumbsDown} /> &nbsp;
+                      {topic.ratings.length > 0
+                        ? topic.ratings.filter((r) => r.type === 'downvote').length
+                        : 0}
                     </div>
                   </div>
                 </HomeCardWrapper>
@@ -210,10 +204,10 @@ const Wrapper = styled.div`
   position: absolute;
   display: flex;
   flex-direction: column;
-  bottom: 80px;
+  bottom: 40px;
   width: 100%;
   top: 0;
-  padding: 40px;
+  padding: 30px;
   padding-bottom: 0;
 `
 

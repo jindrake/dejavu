@@ -76,9 +76,6 @@ export const CenterText = styled.div`
 
 export const StyledForm = styled(Form)`
   width: 100%;
-  /* padding-left: 40px;
-  padding-right: 40px; */
-  padding-top: 30px;
   overflow-y: auto;
   height: 100%;
 `
