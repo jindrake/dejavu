@@ -37,9 +37,9 @@ export const INSERT_USER_ACTIVITY = gql`
 const Search = ({ user, history, insertUserActivity }) => {
   const [, globalDispatch] = useStateValue()
   const [searchValue, setSearchValue] = useState('')
-  const [searchByReliability, setSearchByReliability] = useState(false)
-  const [searchByConsistency, setSearchByConsistency] = useState(false)
-  const [sortByDateAsc, setToSortByDateAsc] = useState(false)
+  const [searchByReliability] = useState(false)
+  const [searchByConsistency] = useState(false)
+  const [sortByDateAsc] = useState(false)
   const { loading, error, data, refetch } = useQuery(FETCH_TOPIC, {
     variables: {
       query: {
@@ -130,7 +130,7 @@ const Search = ({ user, history, insertUserActivity }) => {
             <StyledNoResultDiv>No results found.</StyledNoResultDiv>
           ) : (
             <div>
-              <SortingDiv>
+              {/* <SortingDiv>
                 <InnerSortingDiv
                   onClick={() => {
                     console.log('consistency')
@@ -162,7 +162,7 @@ const Search = ({ user, history, insertUserActivity }) => {
                     {'unfold_more'}
                   </i>
                 </InnerSortingDiv>
-              </SortingDiv>
+              </SortingDiv> */}
               {data.topic &&
                 data.topic.map((topic) => {
                   const date = new Date(topic.created_at)
@@ -238,20 +238,20 @@ const StyledNoResultDiv = styled.div`
   margin-top: 10px;
 `
 
-const SortingDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  justify-content: space-evenly;
-  margin-top: 10px;
-`
-const InnerSortingDiv = styled.div`
-  /* font-size: 2vh; */
-  /* font-family: Helvetica; */
-  font-weight: bold;
-  display: flex;
-  
-`
+// const SortingDiv = styled.div`
+//   display: flex;
+//   flex-direction: row;
+//   width: 100%;
+//   justify-content: space-evenly;
+//   margin-top: 10px;
+// `
+// const InnerSortingDiv = styled.div`
+//   /* font-size: 2vh; */
+//   /* font-family: Helvetica; */
+//   font-weight: bold;
+//   display: flex;
+
+// `
 
 const RatingsDiv = styled.div`
   display: flex;
@@ -287,21 +287,24 @@ const StyledDiv = styled.div`
 `
 
 const Wrapper = styled.div`
-  background: linear-gradient(45deg, #7851a9, #815abc, #8964cf, #916ee3, #9878f8);
+  /* background: linear-gradient(45deg, #7851a9, #815abc, #8964cf, #916ee3, #9878f8); */
+  /* background-color: #5eb2fb; */
+  background-color: white;
+  box-shadow: 0 4px 4px -2px gray;
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin: 10px;
   padding: 1rem;
   height: 24vh;
-  width: 70vw;
-  border-radius: 6px;
+  width: 100%;
+  /* border-radius: 6px; */
   overflow-y: auto;
-  box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2);
+  /* box-shadow: 0 6px 0 0 rgba(0, 0, 0, 0.2); */
   animation: Bounce cubic-bezier(0.445, 0.05, 0.55, 0.95) both 600ms;
   animation-delay: ${({ n }) => n * 100 + 'ms'};
   z-index: -1;
-  color: #ffffff;
+  /* color: #ffffff; */
 `
 
 const RatingIcon = styled(FontAwesomeIcon)`
