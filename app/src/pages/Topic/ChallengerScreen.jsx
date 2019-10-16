@@ -5,8 +5,9 @@ import gql from 'graphql-tag'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 
-import { Button, HeaderText } from '../../components'
+import { HeaderText } from '../../components'
 import { Paper } from '../../components/Topic'
+import { Button } from 'reactstrap'
 
 const JOIN_SESSION = gql`
   mutation joinSession($sessionId: ID!) {
@@ -56,46 +57,42 @@ const ChallengerScreen = ({
     <Wrapper>
       <Paper>
         <Container>
-          <div className='mt-5'>
+          <div className='mt-5 pt-5'>
             You've been challenged by <strong>{userName}</strong> to tackle the topic:
-          </div>
-          <HeaderText className='mt-5'>
-            {topicName}
-          </HeaderText>
-          <div>
-            <Button
-              color='primary'
-              onClick={async () => {
-                if (user) {
-                  // add user to session
-                  await joinSession({
-                    variables: {
-                      sessionId
-                    }
-                  })
-                  history.push('/session/' + sessionId)
-                } else {
-                  history.push('/sign-in?redirectUrl=' + encodeURIComponent(location.pathname))
-                }
-              }}
-              size='sm'
-              className='pl-4 pr-4 mr-3'
-            >
-              {user ? 'Proceed' : 'Sign-in'}
-            </Button>
-            <Button
-              color='secondary'
-              onClick={() => {
-                history.push('/')
-              }}
-              size='sm'
-              className='pl-4 pr-4 mr-3'
-            >
-              Exit
-            </Button>
+            <HeaderText className='mt-5 dejavu-large-text'>{topicName}</HeaderText>
           </div>
         </Container>
       </Paper>
+      <div className='w-100 d-flex justify-content-between'>
+        <Button
+          color='secondary'
+          onClick={() => {
+            history.push('/')
+          }}
+          size='lg'
+        >
+          Exit
+        </Button>
+        <Button
+          color='primary'
+          onClick={async () => {
+            if (user) {
+              // add user to session
+              await joinSession({
+                variables: {
+                  sessionId
+                }
+              })
+              history.push('/session/' + sessionId)
+            } else {
+              history.push('/sign-in?redirectUrl=' + encodeURIComponent(location.pathname))
+            }
+          }}
+          size='lg'
+        >
+          {user ? 'Proceed' : 'Sign-in'}
+        </Button>
+      </div>
       {/* <ContentBetween>
         <Button
           text={'Exit'}

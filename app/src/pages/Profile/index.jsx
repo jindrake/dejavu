@@ -88,7 +88,7 @@ const Profile = ({ user, history }) => {
   }
   const userTopics = getObjectValue(userTopicsData, 'topic') || []
   const activityLogs = getObjectValue(activityLogsData, 'user_activity') || []
-
+  console.log('activity logs:', activityLogs)
   return (
     <Container>
       <ProfileTopBar className='p-4 pb-4 mb-2'>
