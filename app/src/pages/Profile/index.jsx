@@ -113,7 +113,9 @@ const Profile = ({ user, history }) => {
         <Wrapper>
           <TopicsContainer>
             {userTopics.length === 0 ? (
-              <Placeholder />
+              <div className='mt-5'>
+                <Placeholder />
+              </div>
             ) : (
               <div>
                 {userTopics.map((topic, index) => {
@@ -157,7 +159,10 @@ const Profile = ({ user, history }) => {
                       icon = faThumbsUp
                       activity = 'rated'
                       break
-
+                    case 'search':
+                      icon = faSearch
+                      activity = 'searched'
+                      break
                     default:
                       break
                   }
