@@ -84,7 +84,8 @@ const Home = ({ history }) => {
         <CreateButtonContainer className='mt-3'>
           <Button color='primary' id='button' onClick={() => history.push('/topic/create')}>
             {/* <AddIcon name='add' /> */}
-            <FontAwesomeIcon icon={faPlus} /> Create a Topic
+            <FontAwesomeIcon icon={faPlus} />{' '}
+            Create Topic
           </Button>
         </CreateButtonContainer>
       </div>

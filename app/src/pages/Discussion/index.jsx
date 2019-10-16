@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import compose from 'recompose/compose'
 import { useQuery, useSubscription } from '@apollo/react-hooks'
-import { faComments, faThumbsUp, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { faComments, faThumbsUp, faThumbsDown, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import { Formik } from 'formik'
 import * as yup from 'yup'
 import uuid from 'uuid/v4'
@@ -67,7 +67,7 @@ const Discussion = ({
   if (loading || topicCommentDataLoading) return <FullPageLoader />
 
   const topic = getObjectValue(data, 'topic[0]')
-  const comments = topicCommentData.topic_comment
+  const comments = topicCommentData && topicCommentData.topic_comment
   console.log(topic)
   console.log('Comments:', comments)
 
@@ -156,11 +156,11 @@ const Discussion = ({
                     {`${topic.ratings && topic.ratings.filter((t) => t.type === 'upvote').length}`}
                   </div>
                   &nbsp;
-                  {/* <div className='dejavu-small-text'>
+                  <div className='dejavu-small-text'>
                     <FaIcon icon={faThumbsDown} />
                     &nbsp;{`${topic.ratings && topic.ratings.filter(t => t.type === 'downvote').length}`}
                   </div>
-                  &nbsp; */}
+                  &nbsp;
                   <div className='dejavu-small-text'>
                     <FaIcon icon={faComments} />
                     &nbsp;{`${topic.comments.length}`}

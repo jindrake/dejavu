@@ -103,7 +103,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
               <div>
                 <div className='d-flex text-center justify-content-evenly dejavu-small-text mt-1'>
                   <div className='font-weight-bold'>{`${comment.user.first_name} ${comment.user.last_name}`}</div>
-                  &nbsp;<div className='text-primary'>{moment(new Date(comment.created_at)).fromNow()}</div>
+                  &nbsp;<div className='text-secondary'>{moment(new Date(comment.created_at)).fromNow()}</div>
                 </div>
                 <div className='dejavu-small-text pl-2'>{comment.content}</div>
               </div>
@@ -239,7 +239,9 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                   onClick={() => {
                     console.log('reply')
                     setclickedReply(true)
+                    setshowedReplies(true)
                   }}
+                  className='dejavu-small-text text-primary'
                 >
                 Reply
                 </div>
@@ -427,6 +429,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                       // invalid={errors.name && touched.name}
                     />
                     <Badge
+                      color='primary'
                       onClick={handleSubmit}
                     >
                       <div>reply</div>
