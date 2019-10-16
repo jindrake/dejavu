@@ -10,26 +10,26 @@ import uuid from 'uuid/v4'
 import { withRouter } from 'react-router-dom'
 import { useStateValue, getObjectValue } from '../../libs'
 import gql from 'graphql-tag'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import {
   StyledInput,
-  FormWrapper,
   StyledCheckbox,
   OverlayLoader,
-  Button,
+  // Button,
   FullPageLoader,
-  Icon,
-  HeaderText
+  HeaderText,
+  FaIcon
 } from '../../components'
-import { Label } from 'reactstrap'
+import { Label, Button } from 'reactstrap'
 
-const Close = styled.div`
-  position: absolute;
-  /* font-size: 20px; */
-  
-  opacity: 0.5;
-  right: 0;
-  top: 0;
-`
+// const Close = styled.div`
+//   position: absolute;
+//   /* font-size: 20px; */
+
+//   opacity: 0.5;
+//   right: 0;
+//   top: 0;
+// `
 
 const Hint = styled.span`
   margin-left: 6px;
@@ -172,8 +172,8 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
         firstName: currentUser.first_name,
         lastName: currentUser.last_name,
 
-        fieldOfStudy: currentUser.fields[0].field,
-        isStudent: currentUser.fields[0].has_finished
+        fieldOfStudy: currentUser.fields[0] && currentUser.fields[0].field,
+        isStudent: currentUser.fields[0] && currentUser.fields[0].has_finished
       }}
       validationSchema={yup.object().shape({
         email: yup
@@ -248,12 +248,12 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
         setFieldValue
       }) => {
         return (
-          <FormWrapper>
+          <div className='h-100'>
+            <div className='mt-3 mb-3' onClick={() => history.goBack()}>
+              <FaIcon icon={faArrowLeft} />
+            </div>
             {isSubmitting && <OverlayLoader />}
             <Form isSubmitting={isSubmitting}>
-              <Close onClick={() => history.push('/profile')}>
-                <Icon name='close' />
-              </Close>
               <HeaderText>Edit Profile Settings</HeaderText>
               <TwinItems className='mt-2'>
                 <FormItem>
@@ -338,16 +338,31 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
                 )}
               </FormItem>
               <ButtonGroup>
-                <Button onClick={() => history.goBack()} text='Cancel' type='action' />
+                {/* <Button onClick={() => history.goBack()} text='Cancel' type='action' /> */}
                 <Button
+                  color='secondary'
+                  onClick={() => history.goBack()}
+                  size='sm'
+                  className='pl-4 pr-4 mr-3'
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color='primary'
+                  onClick={handleSubmit}
+                  size='sm'
+                >
+                  Update profile
+                </Button>
+                {/* <Button
                   data-cy='submit-button'
                   onClick={handleSubmit}
                   text='Update Profile'
                   type='primary'
-                />
+                /> */}
               </ButtonGroup>
             </Form>
-          </FormWrapper>
+          </div>
         )
       }}
     </Formik>
