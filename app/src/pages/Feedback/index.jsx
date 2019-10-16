@@ -1,15 +1,17 @@
 import React from 'react'
-import { Input, Form, FormGroup, Label } from 'reactstrap'
 import { Formik } from 'formik'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
 import uuid from 'uuid/v4'
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
+import { Button, Input, Form, FormGroup, Label } from 'reactstrap'
+
 import styled from 'styled-components'
 
 import Alert from '../../components/Alert'
-import { Button, Icon, TopSection } from '../../components'
+import { TopSection, FaIcon } from '../../components'
 
 const CREATE_FEEDBACK = gql`
   mutation createFeedback($feedback: [feedback_insert_input!]!) {
@@ -67,32 +69,49 @@ const Feedback = ({ createFeedback, user, history }) => {
         return (
           <Form>
             <TopSection>
-              <Button text='Back' onClick={() => history.goBack()} />
+              <div onClick={() => history.goBack()}>
+                <FaIcon icon={faArrowLeft} />
+              </div>
             </TopSection>
-            <FeedbackTitle>FEEDBACK</FeedbackTitle>
-            <FeedbackClose onClick={() => history.push('/')}>
+            <div className='text-center'>FEEDBACK</div>
+            {/* <FeedbackClose onClick={() => history.push('/')}>
               <Icon name='close' />
-            </FeedbackClose>
+            </FeedbackClose> */}
             <hr />
             <FormGroup>
               <Label>How would you rate your experience?</Label>
-              <FeedbackButtonContainer>
-                <FeedbackNewButton
+              <div className='d-flex flex-row justify-content-center'>
+                {/* <Button
                   onClick={() => {
                     values.rating = 'Good'
                   }}
-                  type='primary'
+                  // type='primary'
                   text='It was great!'
-                />
+                /> */}
+                <Button
+                  color='primary'
+                  onClick={() => { values.rating = 'Good' }}
+                  size='sm'
+                  className='pl-4 pr-4 mr-3'
+                >
+                    It was great!
+                </Button>
                 <br />
-                <FeedbackNewButton
+                {/* <Button
                   onClick={() => {
                     values.rating = 'Bad'
                   }}
-                  type='action'
+                  // type='action'
                   text='It needs improvement'
-                />
-              </FeedbackButtonContainer>
+                /> */}
+                <Button
+                  color='primary'
+                  onClick={() => { values.rating = 'Bad' }}
+                  size='sm'
+                >
+                  It needs improvement
+                </Button>
+              </div>
             </FormGroup>
             <hr />
             {/* <ErrorText text={errors.rating && touched.rating} /> */}
@@ -111,11 +130,18 @@ const Feedback = ({ createFeedback, user, history }) => {
             </FormGroup>
             {status && <Alert {...status} />}
             <FeedbackSubmitDiv>
-              <FeedbackNewButton
+              {/* <FeedbackNewButton
                 text={isSubmitting ? 'Submitting...' : 'Submit'}
                 type='action'
                 onClick={handleSubmit}
-              />
+              /> */}
+              <Button
+                color='secondary'
+                onClick={handleSubmit}
+                size='sm'
+              >
+                Submit
+              </Button>
             </FeedbackSubmitDiv>
           </Form>
         )
@@ -124,37 +150,10 @@ const Feedback = ({ createFeedback, user, history }) => {
   )
 }
 
-const FeedbackTitle = styled.div`
-  
-  /* font-size: 1.25em; */
-  font-weight: 700;
-  text-align: center;
-`
-
-const FeedbackNewButton = styled(Button)`
-  margin-bottom: 20px;
-  width: 75%;
-  display: flex;
-  justify-content: center;
-`
-
-const FeedbackButtonContainer = styled.div`
-  display: flex;
-  align-content: center;
-  justify-content: center;
-`
-
-const FeedbackClose = styled.div`
-  position: absolute;
-  /* font-size: 20px; */
-  
-  opacity: 0.5;
-  right: .25em;
-  top: .25em;
-`
-
 const FeedbackText = styled(Input)`
-  background: linear-gradient(0deg, #95d6dc, #addee9, #c5e6f3, #dbeffa, #f0f8ff);
+  background: white;
+  boder: 2px solid grey;
+  border-radius: 5px;
 `
 
 const FeedbackSubmitDiv = styled(FormGroup)`

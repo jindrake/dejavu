@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import compose from 'recompose/compose'
 import withFirebase from '../../hocs/withFirebase'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { faThumbsDown, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
 
 import { useStateValue } from '../../libs'
@@ -84,7 +84,7 @@ const Home = ({ history }) => {
         <CreateButtonContainer className='mt-3'>
           <Button color='primary' id='button' onClick={() => history.push('/topic/create')}>
             {/* <AddIcon name='add' /> */}
-            <FontAwesomeIcon icon={faPlus} />{' '}
+            {/* <FontAwesomeIcon icon={faPlus} />{' '} */}
             Create Topic
           </Button>
         </CreateButtonContainer>

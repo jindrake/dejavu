@@ -9,7 +9,8 @@ const Body = styled.div`
   background-size: 200% 200%;
   background-color: #F9F9F9;
   position: absolute;
-  overflow: hidden;
+  scroll-behavior: smooth;
+  overflow-y: auto;
   width: 100%;
   height: 100%;
   display: flex;
