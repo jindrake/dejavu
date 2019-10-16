@@ -1,107 +1,100 @@
 import React, { useState } from 'react'
-import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faCompass } from '@fortawesome/free-regular-svg-icons'
+import { Button, Navbar, Nav } from 'reactstrap'
+// import Logo from '../../assets/itworks.png'
+import CheeseburgerMenu from 'cheeseburger-menu'
 import {
-  faTimes,
+  faBars,
   faSearch,
   faUserCircle,
   faHome,
   faSignOutAlt,
   faSignInAlt,
   faUserPlus,
-  faEdit,
   faBullhorn
 } from '@fortawesome/free-solid-svg-icons'
 
 import NavigationItem from './NavigationItem'
 
 const Navigation = ({ user, location, history }) => {
+  const [collapsed, collapse] = useState(false)
   const [active, setActive] = useState(false)
   let routes
 
   const userRoutes = [
-    { icon: faSearch, route: '/search', name: 'Search' },
-    { icon: faEdit, route: '/topic/create', name: 'Create' },
-    { icon: faUserCircle, route: '/profile', name: 'Profile' },
     { icon: faHome, route: '/', name: 'Home' },
-    { icon: faSignOutAlt, route: '/exit', name: 'Sign Out' },
-    { icon: faBullhorn, route: '/feedback', name: 'Feedback' }
+    { icon: faSearch, route: '/search', name: 'Search' },
+    { icon: faUserCircle, route: '/profile', name: 'Profile' },
+    { icon: faBullhorn, route: '/feedback', name: 'Feedback' },
+    { icon: faSignOutAlt, route: '/exit', name: 'Sign Out' }
   ]
 
   const noUserRoutes = [
-    { icon: faSearch, route: '/search', name: 'Search' },
-    { icon: faEdit, route: '/topic/create', name: 'Create' },
-    { icon: faUserCircle, route: '/profile', name: 'Profile' },
     { icon: faHome, route: '/', name: 'Home' },
+    { icon: faUserCircle, route: '/profile', name: 'Profile' },
+    { icon: faSearch, route: '/search', name: 'Search' },
     { icon: faSignInAlt, route: '/sign-in', name: 'Sign In' },
     { icon: faUserPlus, route: '/sign-up', name: 'Sign Up' }
   ]
 
   routes = user ? userRoutes : noUserRoutes
 
+  const openNav = () => {
+    collapse(true)
+  }
+
+  const closeNav = () => {
+    collapse(false)
+  }
+
   return (
     <div>
-      {<StyledIcon icon={faCompass} onClick={() => setActive(true)} />}
-      {active && (
-        <IconsDiv>
-          {/* <div className='bg-danger'> */}
-          <IconContainer>
-            {routes.map(({ icon, route, name }) => (
+      <Navbar className='faded' light expand='lg'>
+        <Button className='navbar text-dark border-0 bg-transparent' onClick={() => openNav()}>
+          <FontAwesomeIcon icon={faBars} size='lg' />
+        </Button>
+        <CheeseburgerMenu
+          isOpen={collapsed}
+          closeCallback={() => closeNav()}
+          navbar
+          width='42%'
+          className='flex-column text-light'
+          backgroundColor='#5eb2fb'
+        >
+          {/* <img src={Logo} class='justify-content-center text-center text-wrap img-fluid' alt='Dejavu' /> */}
+          <div className='justify-content-center text-center text-wrap mt-4 mb-3'>
+            <Button
+              color='dark'
+              className='border-0 rounded-0 bg-white text-dark'
+              id='button'
+              onClick={() => {
+                history.push('/topic/create')
+                closeNav()
+                setActive(true)
+              }}
+            >
+              Create Topic
+            </Button>
+          </div>
+          <Nav navbar vertical className='justify-content-left m-4'>
+            {routes.map((route) => (
               <NavigationItem
-                key={route}
-                icon={icon}
-                route={route}
-                name={name}
-                active={location.pathname === route}
+                active={active}
+                icon={route.icon}
+                name={route.name}
                 onClick={() => {
-                  setActive(false)
-                  history.push(route)
+                  history.push(route.route)
+                  closeNav()
+                  setActive(true)
                 }}
               />
             ))}
-            <NavigationItem icon={faTimes} onClick={() => setActive(false)} name='Close' />
-          </IconContainer>
-        </IconsDiv>
-      )}
+          </Nav>
+        </CheeseburgerMenu>
+      </Navbar>
     </div>
   )
 }
-
-const IconsDiv = styled.div`
-  height: 100vh;
-  width: 100vw;
-  position: fixed;
-  top: 0;
-  left: 0;
-  align-items: center;
-  background: rgba(0, 0, 0, 0.7);
-  z-index: 999999;
-  transition: transform 0.2s ease-out;
-`
-
-const StyledIcon = styled(FontAwesomeIcon)`
-  /* font-size: 8vh; */
-  width: 1em;
-  height: 1em;
-  bottom: 0;
-  right: 0;
-  margin-right: 10px;
-  margin-bottom: 10px;
-  position: fixed;
-  transition: transform 300ms ease-in-out;
-  z-index: 1000;
-  box-shadow: 5px 5px 5px #240a2b;
-  border-radius: 40px;
-  background: linear-gradient(#ffa726, #ff9800);
-`
-
-const IconContainer = styled.div`
-  text-align: right;
-  right: 0.25em;
-  bottom: 3em;
-  position: absolute;
-`
 
 export default withRouter(Navigation)
