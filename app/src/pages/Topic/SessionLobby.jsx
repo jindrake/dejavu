@@ -8,14 +8,13 @@ import { useQuery } from '@apollo/react-hooks'
 
 import { useStateValue, getObjectValue } from '../../libs'
 import {
-  Button,
+  // Button,
   HeaderText,
   ContentBetween,
-  ContentAround,
   FullPageLoader
 } from '../../components'
 import { Paper } from '../../components/Topic'
-import { Input } from 'reactstrap'
+import { Input, Button } from 'reactstrap'
 
 const ANSWER_QUESTION = gql`
   mutation answerQuestion($answers: [String!]!, $questionId: ID!, $userId: ID!, $sessionId: ID!) {
@@ -81,37 +80,39 @@ const SessionLobby = ({
 
   return (
     <Wrapper>
-      <Paper>
-        <QuestionContainer>
-          <HeaderText>
-            {/* <InputGroup> */}
-            Share URL to a friend you want to challenge
-            <hr />
-            <Input
-              disabled
-              value={`${
-                process.env.REACT_APP_URL
-              }/session/${sessionId}/challenge/${encodeURIComponent(
+      <Paper className='h-100 d-flex flex-column justify-content-between bg-danger'>
+        {/* <QuestionContainer className='bg-warning'> */}
+        {/* <HeaderText className='h-100 mt-4 d-flex flex-column justify-content-between bg-danger'> */}
+        {/* <InputGroup> */}
+        <HeaderText>
+          Share URL to a friend you want to challenge
+          <hr />
+          <Input
+            disabled
+            value={`${
+              process.env.REACT_APP_URL
+            }/session/${sessionId}/challenge/${encodeURIComponent(
+              user.first_name + ' ' + user.last_name
+            )}/topic/${encodeURIComponent(getObjectValue(data, 'session[0].topic.name'))}`}
+            className='mb-5'
+          />
+        </HeaderText>
+        <Button
+          className='w-100'
+          size='lg'
+          color={copySuccess ? 'success' : 'primary'}
+          onClick={() => {
+            navigator.clipboard.writeText(
+              `${process.env.REACT_APP_URL}/session/${sessionId}/challenge/${encodeURIComponent(
                 user.first_name + ' ' + user.last_name
-              )}/topic/${encodeURIComponent(getObjectValue(data, 'session[0].topic.name'))}`}
-              className='mb-5'
-            />
-            <ContentAround>
-              <Button
-                text={copySuccess ? 'Copied!' : 'Copy'}
-                type={copySuccess ? 'success' : ''}
-                onClick={() => {
-                  navigator.clipboard.writeText(
-                    `${
-                      process.env.REACT_APP_URL
-                    }/session/${sessionId}/challenge/${encodeURIComponent(
-                      user.first_name + ' ' + user.last_name
-                    )}/topic/${encodeURIComponent(getObjectValue(data, 'session[0].topic.name'))}`
-                  )
-                  setCopySuccess(true)
-                }}
-              />
-              {typeof navigator.share !== 'undefined' && (
+              )}/topic/${encodeURIComponent(getObjectValue(data, 'session[0].topic.name'))}`
+            )
+            setCopySuccess(true)
+          }}
+        >
+          {copySuccess ? 'Copied!' : 'Copy'}
+        </Button>
+        {/* {typeof navigator.share !== 'undefined' && (
                 <Button
                   text='Share'
                   onClick={(event) => {
@@ -122,38 +123,31 @@ const SessionLobby = ({
                     })
                   }}
                 />
-              )}
-            </ContentAround>
-          </HeaderText>
-        </QuestionContainer>
+              )} */}
+        {/* </HeaderText> */}
+        {/* </QuestionContainer> */}
       </Paper>
       <ContentBetween>
         <Button
-          text={'Exit'}
           onClick={() => {
             history.push('/')
           }}
-        />
+        >
+          Exit
+        </Button>
         <Button
-          text={'Proceed'}
-          type='primary'
+          color='primary'
           onClick={() => {
             // handleSubmit()
             history.push('/session/' + sessionId)
           }}
-        />
+        >
+          Proceed
+        </Button>
       </ContentBetween>
     </Wrapper>
   )
 }
-
-const QuestionContainer = styled.div`
-  height: 40%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  text-align: center;
-`
 
 const Wrapper = styled.div`
   display: flex;

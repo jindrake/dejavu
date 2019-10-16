@@ -37,9 +37,9 @@ const Discussion = ({
   insertTopicComment,
   insertTopicCommentRating
 }) => {
-  console.log('match', id)
   const [, globalDispatch] = useStateValue()
   const { data, loading, error } = useQuery(FETCH_TOPIC, {
+    skip: !id,
     variables: {
       topicId: id
     }
@@ -50,6 +50,7 @@ const Discussion = ({
     loading: topicCommentDataLoading,
     error: topicCommentDataError
   } = useSubscription(FETCH_TOPIC_COMMENTS, {
+    skip: !id,
     variables: {
       topicId: id
     }
@@ -67,7 +68,7 @@ const Discussion = ({
   if (loading || topicCommentDataLoading) return <FullPageLoader />
 
   const topic = getObjectValue(data, 'topic[0]')
-  const comments = topicCommentData && topicCommentData.topic_comment
+  const comments = topicCommentData ? topicCommentData.topic_comment : []
   console.log(topic)
   console.log('Comments:', comments)
 
@@ -200,6 +201,7 @@ const Discussion = ({
                   </Button>
                 </InputGroupAddon>
               </InputGroup>
+              {console.log('comments now are:', comments) && 1}
               {comments.map((comment) => {
                 return (
                   <Comment

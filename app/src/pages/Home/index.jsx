@@ -89,12 +89,12 @@ const Home = ({ history }) => {
           </Button>
         </CreateButtonContainer>
       </div>
-      <SectionWrapper>
-        <PageLabel>Your sessions</PageLabel>
-        <TopicsContainer>
-          <Belt>
-            {userSessions.length > 0 ? (
-              userSessions.map((session, index) => (
+      {userSessions.length ? (
+        <SectionWrapper>
+          <PageLabel>Your sessions</PageLabel>
+          <TopicsContainer>
+            <Belt>
+              {userSessions.map((session, index) => (
                 <HomeCardWrapper
                   key={index}
                   onClick={() => {
@@ -103,9 +103,8 @@ const Home = ({ history }) => {
                 >
                   <div className='font-weight-bold'>{session.topic.name}</div>
                   <div>
-                    <Label className='text-white'>
-                      status
-                    </Label><br />
+                    <Label className='text-white'>status</Label>
+                    <br />
                     {session.current_user ? (
                       session.current_user_id === user.id ? (
                         <BoldText className='border-bottom border-warning'>Your turn!</BoldText>
@@ -122,13 +121,11 @@ const Home = ({ history }) => {
                     </div>
                   </div>
                 </HomeCardWrapper>
-              ))
-            ) : (
-              <Placeholder text='Start a session by tackling a topic' />
-            )}
-          </Belt>
-        </TopicsContainer>
-      </SectionWrapper>
+              ))}
+            </Belt>
+          </TopicsContainer>
+        </SectionWrapper>
+      ) : null}
       <SectionWrapper>
         <PageLabel>Recent Topics</PageLabel>
         <TopicsContainer>

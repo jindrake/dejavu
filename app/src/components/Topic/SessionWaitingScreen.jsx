@@ -6,11 +6,12 @@ import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 import { useQuery } from '@apollo/react-hooks'
 
-import { Button, HeaderText, ContentBetween, FullPageLoader, ContentCenter } from '../../components'
+import { HeaderText, ContentBetween, FullPageLoader, ContentCenter } from '../../components'
 import { Paper } from '../../components/Topic'
 import { useStateValue } from '../../libs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faCheck, faTimes, faMinus } from '@fortawesome/free-solid-svg-icons'
+import { Button } from 'reactstrap'
 
 const ANSWER_QUESTION = gql`
   mutation answerQuestion($answers: [String!]!, $questionId: ID!, $userId: ID!, $sessionId: ID!) {
@@ -135,11 +136,12 @@ const SessionWaitingScreen = ({
       </Paper>
       <ContentBetween>
         <Button
-          text={'Exit'}
           onClick={() => {
             history.push('/')
           }}
-        />
+        >
+          Go to Homepage
+        </Button>
       </ContentBetween>
     </Wrapper>
   )

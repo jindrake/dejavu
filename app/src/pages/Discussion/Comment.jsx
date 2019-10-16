@@ -48,7 +48,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
   }
   if (loading) return <FullPageLoader />
 
-  console.log('Comment', comment)
+  console.log('>>>', comment)
   return (
     <Formik
       initialValues={{
