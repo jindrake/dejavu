@@ -23,18 +23,18 @@ const Navigation = ({ user, location, history }) => {
 
   const userRoutes = [
     { icon: faSearch, route: '/search', name: 'Search' },
+    { icon: faHome, route: '/', name: 'Home' },
     { icon: faEdit, route: '/topic/create', name: 'Create' },
     { icon: faUserCircle, route: '/profile', name: 'Profile' },
-    { icon: faHome, route: '/', name: 'Home' },
     { icon: faSignOutAlt, route: '/exit', name: 'Sign Out' },
     { icon: faBullhorn, route: '/feedback', name: 'Feedback' }
   ]
 
   const noUserRoutes = [
     { icon: faSearch, route: '/search', name: 'Search' },
+    { icon: faHome, route: '/', name: 'Home' },
     { icon: faEdit, route: '/topic/create', name: 'Create' },
     { icon: faUserCircle, route: '/profile', name: 'Profile' },
-    { icon: faHome, route: '/', name: 'Home' },
     { icon: faSignInAlt, route: '/sign-in', name: 'Sign In' },
     { icon: faUserPlus, route: '/sign-up', name: 'Sign Up' }
   ]
@@ -79,10 +79,12 @@ const IconsDiv = styled.div`
   background: rgba(0, 0, 0, 0.7);
   z-index: 999999;
   transition: transform 0.2s ease-out;
+  color: white;
+  font-size: 4vh;
 `
 
 const StyledIcon = styled(FontAwesomeIcon)`
-  /* font-size: 8vh; */
+  font-size: 9vh;
   width: 1em;
   height: 1em;
   bottom: 0;
@@ -94,7 +96,9 @@ const StyledIcon = styled(FontAwesomeIcon)`
   z-index: 1000;
   box-shadow: 5px 5px 5px #240a2b;
   border-radius: 40px;
-  background: linear-gradient(#ffa726, #ff9800);
+  background-color: #5eb2fb;
+  color: white;
+  /* background: linear-gradient(#ffa726, #ff9800); */
 `
 
 const IconContainer = styled.div`

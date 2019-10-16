@@ -6,10 +6,11 @@ import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { useStateValue, getObjectValue } from '../../libs'
-import { FullPageLoader, FaIcon, ContentBetween, HeaderText, ContentCenter } from '../../components'
+import { FullPageLoader, FaIcon, HeaderText, ContentCenter } from '../../components'
 import { Card, CardHeader, CardBody, Input, Button } from 'reactstrap'
-import { faCheck, faTimes, faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
+import { faCheck, faTimes, faThumbsUp, faThumbsDown, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import Img from 'react-image'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const FETCH_USER_ACTIVITY = gql`
   query fetchUserActivity($sessionId: uuid!) {
@@ -124,8 +125,11 @@ const Result = ({
   return (
     <Wrapper>
       {/* <Paper className='bg-transparent'> */}
+      <div>
+        <FontAwesomeIcon icon={faArrowLeft} onClick={() => history.push('/')} />
+      </div>
       <ContentCenter>
-        <HeaderText className='dejavu-large-text'>Result</HeaderText>
+        <HeaderText>Result</HeaderText>
       </ContentCenter>
       <div className='mt-3'>
         {answerActivities &&
@@ -280,19 +284,11 @@ const Result = ({
           </RatingCard>
         </IconsDiv>
       )}
-      <ContentBetween>
-        <Button color='primary' onClick={() => showFeedbackScreen(true)}>
-          Rate
-        </Button>
-        <Button
-          color='secondary'
-          onClick={() => {
-            history.push('/')
-          }}
-        >
-          Exit
-        </Button>
-      </ContentBetween>
+      {/* <ContentBetween> */}
+      <Button color='primary' onClick={() => showFeedbackScreen(true)} className='w-100' size='lg'>
+          Rate & Comment
+      </Button>
+      {/* </ContentBetween> */}
     </Wrapper>
   )
 }

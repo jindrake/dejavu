@@ -59,11 +59,12 @@ const TopicManagementCard = ({ topic, history }) => {
                 : 0}
               <Button
                 color='link'
+                size='lg'
                 onClick={() => {
                   history.push(`/topic/${topic.id}/manage`)
                 }}
               >
-                manage
+                MANAGE
               </Button>
             </div>
           </span>

@@ -110,7 +110,7 @@ const Routes = ({ userEmail, firebase }) => {
     <>
       <Route
         exact
-        path={['/', '/search', '/settings', '/profile', '/topic/create', '/topic/:id/questions']}
+        path={['/', '/search']}
         render={() => <Navigation user={user} />}
       />
       <Switch>

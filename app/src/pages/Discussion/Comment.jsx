@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
-import { Badge } from 'reactstrap'
+// import { Badge } from 'reactstrap'
 import { useSubscription } from '@apollo/react-hooks'
 import { graphql } from '@apollo/react-hoc'
 import compose from 'recompose/compose'
@@ -9,6 +9,7 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import uuid from 'uuid/v4'
 import moment from 'moment'
+import { Button, InputGroup, InputGroupAddon } from 'reactstrap'
 
 import {
   FETCH_COMMENT_REPLY,
@@ -56,10 +57,10 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
       validationSchema={yup.object().shape({
         reply: yup
           .string()
-        // .min(1, 'Enter Title at least 1 character')
-        // .required('Required'),
+          .min(1, 'Enter Title at least 1 character')
+          .required('Required')
       })}
-      onSubmit={async (values, { setSubmitting, setStatus, touched }) => {
+      onSubmit={async (values, { setSubmitting, setStatus, touched, resetForm }) => {
         console.log('reply: ', values)
         console.log('parentId', comment.id)
         console.log('id:', uuid())
@@ -78,6 +79,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
           })
           // setclickedReply(false)
           setshowedReplies(true)
+          resetForm()
         } catch (error) {
           console.error('error@topicedit1')
           globalDispatch({
@@ -107,7 +109,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                 </div>
                 <div className='dejavu-small-text pl-2'>{comment.content}</div>
               </div>
-              <div className='d-flex text-center justify-content-end dejavu-small-text border-bottom border-primary'>
+              <div className='d-flex text-center justify-content-end dejavu-small-text'>
                 <Stat>
                   <div
                     onClick={async () => {
@@ -235,6 +237,35 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                 </Stat>
               &nbsp;
               &nbsp;
+                {
+                  replies.length > 0 && (
+                    <div>
+                      {
+                        showedReplies
+                          ? <div
+                            onClick={() => {
+                              setshowedReplies(false)
+                              setclickedReply(false)
+                            }}
+                            className='dejavu-small-text font-weight-bold text-secondary'
+                          >
+                        Hide replies
+                          </div>
+                          : <div
+                            onClick={() => {
+                              setshowedReplies(true)
+                              setclickedReply(true)
+                            }}
+                            className='dejavu-small-text font-weight-bold text-secondary'
+                          >
+                        Show replies
+                          </div>
+                      }
+                    </div>
+                  )
+                }
+              &nbsp;
+              &nbsp;
                 <div
                   onClick={() => {
                     console.log('reply')
@@ -248,33 +279,6 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
               </div>
               {/* <div className='dejavu-small-text font-weight-bold text-secondary'>Hide replies</div>
               <div className='dejavu-small-text font-weight-bold text-secondary'>Hide replies</div> */}
-              {
-                replies.length > 0 && (
-                  <div>
-                    {
-                      showedReplies
-                        ? <div
-                          onClick={() => {
-                            setshowedReplies(false)
-                            setclickedReply(false)
-                          }}
-                          className='dejavu-small-text font-weight-bold text-secondary'
-                        >
-                        Hide replies
-                        </div>
-                        : <div
-                          onClick={() => {
-                            setshowedReplies(true)
-                            setclickedReply(true)
-                          }}
-                          className='dejavu-small-text font-weight-bold text-secondary'
-                        >
-                        Show replies
-                        </div>
-                    }
-                  </div>
-                )
-              }
               {
                 showedReplies && replies.map(r => (
                   <div key={r.id} className='p-1'>
@@ -346,7 +350,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                           >
                             <FaIcon icon={faThumbsUp} />
                           </div>
-                          {`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'upvote').length}`}
+                          &nbsp;{`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'upvote').length}`}
                         </Stat>
                     &nbsp;
                         <Stat>
@@ -407,7 +411,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                           >
                             <FaIcon icon={faThumbsDown} />
                           </div>
-                          {`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'downvote').length}`}
+                          &nbsp;{`${r.topic_comment_ratings && r.topic_comment_ratings.filter(t => t.rating === 'downvote').length}`}
                         </Stat>
                       </div>
                     </ReplyDiv>
@@ -417,7 +421,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
               {
                 clickedReply && (
                   <div className='mt-1 ml-3 mr-3'>
-                    <StyledInput
+                    {/* <StyledInput
                       border='true'
                       type='text'
                       name='reply'
@@ -433,7 +437,30 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                       onClick={handleSubmit}
                     >
                       <div>reply</div>
-                    </Badge>
+                    </Badge> */}
+                    <InputGroup className='d-flex align-items-end mb-2'>
+                      <StyledInput
+                        type='text'
+                        name='reply'
+                        placeholder='Write a reply...'
+                        value={values.comment}
+                        onChange={(e) => {
+                        // console.log('CHANGING:', e.target.value)
+                          setFieldValue('reply', e.target.value)
+                        }}
+                        invalid={errors.name && touched.name}
+                      />
+                      <InputGroupAddon addonType='prepend'>
+                        <Button
+                        // className='sm-50'
+                          color='link'
+                          onClick={handleSubmit}
+                          size='sm'
+                        >
+                        Reply
+                        </Button>
+                      </InputGroupAddon>
+                    </InputGroup>
                   </div>
                 )
               }

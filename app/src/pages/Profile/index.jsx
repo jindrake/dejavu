@@ -14,7 +14,7 @@ import {
 import { FullPageLoader, Placeholder, ContentCenter, DejavuCard } from '../../components'
 import { useStateValue, getObjectValue } from '../../libs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPencilAlt, faSearch, faTasks, faThumbsUp } from '@fortawesome/free-solid-svg-icons'
+import { faPencilAlt, faSearch, faTasks, faThumbsUp, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import TopicManagementCard from './TopicManagementCard'
 
 const FETCH_USER = gql`
@@ -91,7 +91,11 @@ const Profile = ({ user, history }) => {
 
   return (
     <Container>
-      <ProfileTopBar className='p-4 pt-5 pb-4 mb-2'>
+      <ProfileTopBar className='p-4 pb-4 mb-2'>
+        <div className='d-flex justify-content-between'>
+          <FontAwesomeIcon icon={faArrowLeft} onClick={() => history.goBack()} />
+          <FontAwesomeIcon icon={faPencilAlt} onClick={() => history.push('/edit-profile')} />
+        </div>
         <ProfileInfo>
           {currentUser.avatar === undefined ? (
             <AvatarContainer>{initials.toUpperCase()}</AvatarContainer>

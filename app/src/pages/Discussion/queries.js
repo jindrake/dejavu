@@ -77,7 +77,7 @@ export const DELETE_COMMENT_RATING = gql`
 
 export const FETCH_TOPIC_COMMENTS = gql`
   subscription fetchTopicComment($topicId: uuid) {
-    topic_comment(where: {topic_id: {_eq: $topicId }, parent_comment_id: {_is_null: true} }) {
+    topic_comment(order_by: {created_at: desc}, where: {topic_id: {_eq: $topicId }, parent_comment_id: {_is_null: true} }) {
       id
       content
       created_at

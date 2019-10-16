@@ -22,11 +22,11 @@ import {
   Stat,
   HeaderText,
   IconsDiv,
-  StyledInput
+  StyledInput,
+  TopSection
 } from '../../components'
 import { Button, Label, InputGroup, InputGroupAddon, Badge } from 'reactstrap'
 import Comment from './Comment'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 
 const Discussion = ({
   user,
@@ -78,10 +78,10 @@ const Discussion = ({
       }}
       validationSchema={yup.object().shape({
         comment: yup.string()
-        // .min(1, 'Enter Title at least 1 character')
-        // .required('Required'),
+          .min(1, 'Enter Title at least 1 character')
+          .required('Required')
       })}
-      onSubmit={async (values, { setSubmitting, setStatus, touched }) => {
+      onSubmit={async (values, { setSubmitting, setStatus, touched, resetForm }) => {
         console.log('content: ', values.comment)
         console.log('topicId:', id)
         console.log('userId:', user.id)
@@ -96,6 +96,8 @@ const Discussion = ({
               }
             }
           })
+          // window.scrollTo(0, document.body.scrollHeight || document.documentElement.scrollHeight)
+          resetForm()
         } catch (error) {
           console.error('error@topicedit1')
           globalDispatch({
@@ -117,9 +119,15 @@ const Discussion = ({
       }) => {
         return (
           <div>
-            <div>
+            {/* <div>
               <FontAwesomeIcon icon={faArrowLeft} onClick={() => history.goBack()} />
-            </div>
+            </div> */}
+            {/* <FlexWrapper> */}
+            <TopSection>
+              <div onClick={() => history.goBack()}>
+                <FaIcon icon={faArrowLeft} />
+              </div>
+            </TopSection>
             <DejavuCard>
               <Stat>
                 {/* <FaIcon icon={faUserCircle} />
@@ -169,7 +177,7 @@ const Discussion = ({
               </IconsDiv>
             </DejavuCard>
             <div>
-              <InputGroup className='mb-2'>
+              <InputGroup className='d-flex align-items-end mb-2'>
                 <StyledInput
                   type='text'
                   name='comment'
@@ -181,13 +189,14 @@ const Discussion = ({
                   }}
                   invalid={errors.name && touched.name}
                 />
-                <InputGroupAddon>
+                <InputGroupAddon addonType='prepend'>
                   <Button
-                    color='primary'
+                    // className='sm-50'
+                    color='link'
                     onClick={handleSubmit}
-                    // size='lg'
+                    size='sm'
                   >
-                    SUBMIT
+                    Submit
                   </Button>
                 </InputGroupAddon>
               </InputGroup>

@@ -31,7 +31,13 @@ export const ReplyDiv = styled.div`
   padding: 5px;
   margin-bottom: 2px;
   background: #eaebed;
-  ${''}
+`
+
+export const FlexWrapper = styled.div`
+  display: flex;
+  height: 100%;
+  flex-direction: column;
+  overflow-y: auto;
 `
 
 export const TopicWrapper = styled.div`
@@ -66,7 +72,6 @@ export const StyledInput = styled(Input)`
   padding-right: 12px;
   border-radius: 6px; */
   outline: none !important;
-  /* border: ${props => props.border ? '1px solid grey' : 'none !important'}; */
   /* outline: 0; */
   background-color: transparent !important;
   border-bottom: 1px solid black !important;
