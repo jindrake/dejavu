@@ -48,11 +48,11 @@ const TopicPreview = ({ n, user, topic, history, insertUserActivity }) => {
       <div>{date.toDateString()}</div>
       <div>
         <div>
-          <StyledIcon name='thumb_up' />{'  '}
+          <StyledIcon name='thumb_up' />&nbsp;
           {ratings.length > 0 ? ratings.filter((r) => r.type === 'upvote').length : 0}
         </div>
         <div>
-          <StyledIcon name='thumb_down' />{'  '}
+          <StyledIcon name='thumb_down' />&nbsp;
           {ratings.length > 0 ? ratings.filter((r) => r.type === 'downvote').length : 0}
         </div>
       </div>
