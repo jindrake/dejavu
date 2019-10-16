@@ -16,6 +16,7 @@ import { useStateValue, getObjectValue } from '../../libs'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPencilAlt, faSearch, faTasks, faThumbsUp, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 import TopicManagementCard from './TopicManagementCard'
+import moment from 'moment'
 
 const FETCH_USER = gql`
   query fetchUser($userId: uuid!) {
@@ -113,7 +114,9 @@ const Profile = ({ user, history }) => {
         <Wrapper>
           <TopicsContainer>
             {userTopics.length === 0 ? (
-              <Placeholder />
+              <div className='mt-5'>
+                <Placeholder />
+              </div>
             ) : (
               <div>
                 {userTopics.map((topic, index) => {
@@ -157,7 +160,10 @@ const Profile = ({ user, history }) => {
                       icon = faThumbsUp
                       activity = 'rated'
                       break
-
+                    case 'search':
+                      icon = faSearch
+                      activity = 'searched'
+                      break
                     default:
                       break
                   }
@@ -175,7 +181,8 @@ const Profile = ({ user, history }) => {
                               ? log.question.topics[0].topic.name
                               : log.topic.name}
                           </strong>
-                          {'  '} on {date.toISOString().split('T')[0]}
+                          <br />
+                          <small>{moment(new Date(date)).fromNow()}</small>
                         </div>
                       </Author>
                     </DejavuCard>

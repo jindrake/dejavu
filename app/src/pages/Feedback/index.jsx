@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Formik } from 'formik'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
@@ -22,6 +22,9 @@ const CREATE_FEEDBACK = gql`
 `
 
 const Feedback = ({ createFeedback, user, history }) => {
+  const [good, setGood] = useState(false)
+  const [bad, setBad] = useState(false)
+
   return (
     <Formik
       initialValues={{
@@ -89,8 +92,12 @@ const Feedback = ({ createFeedback, user, history }) => {
                   text='It was great!'
                 /> */}
                 <Button
-                  color='primary'
-                  onClick={() => { values.rating = 'Good' }}
+                  color={good ? 'success' : 'primary'}
+                  onClick={() => {
+                    setGood(true)
+                    setBad(false)
+                    values.rating = 'Good'
+                  }}
                   size='sm'
                   className='pl-4 pr-4 mr-3'
                 >
@@ -105,8 +112,12 @@ const Feedback = ({ createFeedback, user, history }) => {
                   text='It needs improvement'
                 /> */}
                 <Button
-                  color='primary'
-                  onClick={() => { values.rating = 'Bad' }}
+                  color={bad ? 'danger' : 'primary'}
+                  onClick={() => {
+                    setGood(false)
+                    setBad(true)
+                    values.rating = 'Bad'
+                  }}
                   size='sm'
                 >
                   It needs improvement
@@ -136,9 +147,9 @@ const Feedback = ({ createFeedback, user, history }) => {
                 onClick={handleSubmit}
               /> */}
               <Button
-                color='secondary'
+                color='primary'
                 onClick={handleSubmit}
-                size='sm'
+                size='lg w-100'
               >
                 Submit
               </Button>
