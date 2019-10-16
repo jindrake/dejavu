@@ -8,14 +8,14 @@ import { useQuery } from '@apollo/react-hooks'
 
 import { useStateValue, getObjectValue } from '../../libs'
 import {
-  Button,
+  // Button,
   HeaderText,
   ContentBetween,
   ContentAround,
   FullPageLoader
 } from '../../components'
 import { Paper } from '../../components/Topic'
-import { Input } from 'reactstrap'
+import { Input, Button } from 'reactstrap'
 
 const ANSWER_QUESTION = gql`
   mutation answerQuestion($answers: [String!]!, $questionId: ID!, $userId: ID!, $sessionId: ID!) {
@@ -97,7 +97,7 @@ const SessionLobby = ({
               className='mb-5'
             />
             <ContentAround>
-              <Button
+              {/* <Button
                 text={copySuccess ? 'Copied!' : 'Copy'}
                 type={copySuccess ? 'success' : ''}
                 onClick={() => {
@@ -110,10 +110,28 @@ const SessionLobby = ({
                   )
                   setCopySuccess(true)
                 }}
-              />
+              /> */}
+              <Button
+                color='primary'
+                onClick={() => {
+                  navigator.clipboard.writeText(
+                    `${
+                      process.env.REACT_APP_URL
+                    }/session/${sessionId}/challenge/${encodeURIComponent(
+                      user.first_name + ' ' + user.last_name
+                    )}/topic/${encodeURIComponent(getObjectValue(data, 'session[0].topic.name'))}`
+                  )
+                  setCopySuccess(true)
+                }}
+                size='sm'
+                className='pl-4 pr-4 mr-3'
+              >
+                {copySuccess ? 'Copied!' : 'Copy'}
+                {/* {copySuccess ? 'success' : ''} */}
+              </Button>
               {typeof navigator.share !== 'undefined' && (
                 <Button
-                  text='Share'
+                  color='primary'
                   onClick={(event) => {
                     event.preventDefault()
                     navigator.share({
@@ -121,7 +139,11 @@ const SessionLobby = ({
                       url: process.env.REACT_APP_URL + '/session/' + sessionId
                     })
                   }}
-                />
+                  size='sm'
+                  className='pl-4 pr-4 mr-3'
+                >
+                  Share
+                </Button>
               )}
             </ContentAround>
           </HeaderText>
@@ -129,19 +151,24 @@ const SessionLobby = ({
       </Paper>
       <ContentBetween>
         <Button
-          text={'Exit'}
-          onClick={() => {
-            history.push('/')
-          }}
-        />
+          color='secondary'
+          onClick={() => history.goBack()}
+          size='sm'
+          className='pl-4 pr-4 mr-3'
+        >
+          Exit
+        </Button>
         <Button
-          text={'Proceed'}
-          type='primary'
+          color='primary'
           onClick={() => {
             // handleSubmit()
             history.push('/session/' + sessionId)
           }}
-        />
+          size='sm'
+          className='pl-4 pr-4 mr-3'
+        >
+          Proceed
+        </Button>
       </ContentBetween>
     </Wrapper>
   )
