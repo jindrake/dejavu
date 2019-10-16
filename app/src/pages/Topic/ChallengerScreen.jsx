@@ -5,8 +5,9 @@ import gql from 'graphql-tag'
 import compose from 'recompose/compose'
 import { graphql } from '@apollo/react-hoc'
 
-import { Button, HeaderText } from '../../components'
+import { HeaderText } from '../../components'
 import { Paper } from '../../components/Topic'
+import { Button } from 'reactstrap'
 
 const JOIN_SESSION = gql`
   mutation joinSession($sessionId: ID!) {
