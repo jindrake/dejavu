@@ -6,7 +6,7 @@ import { useQuery } from '@apollo/react-hooks'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { useStateValue, getObjectValue } from '../../libs'
-import { FullPageLoader, FaIcon, ContentBetween, HeaderText } from '../../components'
+import { FullPageLoader, FaIcon, ContentBetween, HeaderText, ContentCenter } from '../../components'
 import { Card, CardHeader, CardBody, Input, Button } from 'reactstrap'
 import { faCheck, faTimes, faThumbsUp, faThumbsDown } from '@fortawesome/free-solid-svg-icons'
 import Img from 'react-image'
@@ -124,7 +124,9 @@ const Result = ({
   return (
     <Wrapper>
       {/* <Paper className='bg-transparent'> */}
-      <HeaderText className='dejavu-large-text'>Result</HeaderText>
+      <ContentCenter>
+        <HeaderText className='dejavu-large-text'>Result</HeaderText>
+      </ContentCenter>
       <div className='mt-3'>
         {answerActivities &&
           answerActivities.map((res, index) => {
@@ -210,8 +212,8 @@ const Result = ({
                   setRating('upvote')
                 }}
               >
-                <FaIcon icon={faThumbsUp} />&nbsp;
-                Upvote
+                <FaIcon icon={faThumbsUp} />
+                &nbsp; Upvote
               </Button>
               <Button
                 color={
@@ -225,8 +227,8 @@ const Result = ({
                   setRating('downvote')
                 }}
               >
-                <FaIcon icon={faThumbsDown} />&nbsp;
-                Downvote
+                <FaIcon icon={faThumbsDown} />
+                &nbsp; Downvote
               </Button>
             </RatingButtonsContainer>
             <hr />
@@ -271,7 +273,9 @@ const Result = ({
               >
                 Submit
               </Button>
-              <Button className='ml-3' color='secondary' onClick={() => showFeedbackScreen(false)}>Cancel</Button>
+              <Button className='ml-3' color='secondary' onClick={() => showFeedbackScreen(false)}>
+                Cancel
+              </Button>
             </div>
           </RatingCard>
         </IconsDiv>

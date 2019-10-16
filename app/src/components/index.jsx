@@ -136,22 +136,21 @@ export const ContentAround = styled.div`
 `
 
 export const Notification = styled.div`
-  width: 97%;
   display: flex;
   text-align: center;
   padding-left: 2vh;
   padding-right: 2vh;
   flex-direction: column;
   justify-content: center;
-  /* font-size: 15px; */
   left: 1vh;
   right: 2vh;
   z-index: 2;
   background: white;
   top: 1vh;
-  border-radius: 2vh;
+  border-radius: 1vh;
   height: 8%;
-  box-shadow: 0 0 5px #353434;
+  box-shadow: 0 0 3px #353434;
+  font-weight: bold;
 `
 
 export const ContentBetween = styled.div`

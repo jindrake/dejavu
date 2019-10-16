@@ -7,7 +7,6 @@ import { Formik } from 'formik'
 import * as yup from 'yup'
 import { withRouter } from 'react-router-dom'
 import gql from 'graphql-tag'
-import Alert from '../components/Alert'
 import {
   StyledInput,
   FormWrapper,
@@ -19,7 +18,7 @@ import {
 } from '../components'
 import { useStateValue } from '../libs'
 import uuid from 'uuid/v4'
-import { Button, Label } from 'reactstrap'
+import { Button, Label, Alert } from 'reactstrap'
 
 const CREATE_USER = gql`
   mutation createUser($user: [user_insert_input!]!) {
@@ -199,7 +198,7 @@ const SignUp = ({ firebase, history }) => {
                 <br />
                 study buddies!
               </HeaderText>
-              {status && <Alert {...status} />}
+              {status && <Alert className='dejavu-small-text mt-2 mb-1 p-1' color='danger'>{status.text}</Alert>}
               <TwinItems>
                 <FormItem>
                   <Label for='firstName'>
@@ -336,6 +335,7 @@ const Close = styled.div`
 
 const Hint = styled.span`
   margin-left: 6px;
+  color: red;
 `
 
 const FormItem = styled.div`
