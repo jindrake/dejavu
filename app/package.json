@@ -18,7 +18,6 @@
     "apollo-link-error": "^1.1.11",
     "apollo-link-http": "^1.5.15",
     "apollo-utilities": "^1.3.2",
-    "cheeseburger-menu": "^0.0.13",
     "firebase": "^6.2.0",
     "formik": "^1.5.7",
     "graphql": "^14.3.1",

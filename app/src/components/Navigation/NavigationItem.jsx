@@ -1,15 +1,33 @@
 import React from 'react'
+import styled from 'styled-components'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { NavItem } from 'reactstrap'
 
 const NavigationItem = ({ icon, onClick, active, name }) => (
-  <NavItem
-    className='mb-2 text-wrap'
-    active={active}
-    onClick={onClick} >
-    <FontAwesomeIcon className='list-inline-item' icon={icon} size='xs' />
-    <p className='list-inline-item dejavu-small-text'>{name}</p>
-  </NavItem>
+  <Wrapper onClick={onClick} active={active}>
+    <FontAwesomeIcon icon={icon} style={{ width: '1em' }} />
+    <Name>
+      {name}
+    </Name>
+  </Wrapper>
 )
+
+const Name = styled.div`
+  /* font-size: 3vh; */
+  margin-left: 3vh;
+  right: .25em;
+`
+
+const Wrapper = styled.div`
+  
+  /* font-size: 4vh; */
+  display: flex;
+  opacity: ${({ active }) => (active ? 1 : 0.5)};
+  align-items: center;
+  transition: 200ms;
+  z-index: 99999;
+  padding: 10;
+  height: 5vh;
+  margin: 10px;
+`
 
 export default NavigationItem
