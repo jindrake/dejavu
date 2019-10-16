@@ -76,11 +76,11 @@ const IconsDiv = styled.div`
   top: 0;
   left: 0;
   align-items: center;
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   z-index: 999999;
   transition: transform 0.2s ease-out;
   color: white;
-  font-size: 4vh;
+  font-size: 3vh;
 `
 
 const StyledIcon = styled(FontAwesomeIcon)`
