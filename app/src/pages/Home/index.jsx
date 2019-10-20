@@ -11,7 +11,6 @@ import { FETCH_HOT_TOPICS, FETCH_RECENT_TOPICS, FETCH_USER_SESSIONS } from './qu
 import {
   FullPageLoader,
   // Icon,
-  Placeholder,
   HomeCardWrapper,
   Belt,
   TopicsContainer,
@@ -130,8 +129,8 @@ const Home = ({ history }) => {
         <PageLabel>Recent Topics</PageLabel>
         <TopicsContainer>
           <Belt>
-            {recentTopics.length > 0 ? (
-              recentTopics.map((topic, index) => (
+            {recentTopics.length > 0
+              ? recentTopics.map((topic, index) => (
                 <HomeCardWrapper
                   key={index}
                   onClick={() => {
@@ -145,16 +144,16 @@ const Home = ({ history }) => {
                   <div>
                     <small>
                       {topic.target_fields &&
-                        topic.target_fields.length &&
-                        topic.target_fields.map(({ field }, index) => (
-                          <Badge
-                            className='text-lowercase font-weight-light'
-                            color='warning'
-                            key={index}
-                          >
-                            {field}
-                          </Badge>
-                        ))}
+                          topic.target_fields.length &&
+                          topic.target_fields.map(({ field }, index) => (
+                            <Badge
+                              className='text-lowercase font-weight-light'
+                              color='warning'
+                              key={index}
+                            >
+                              {field}
+                            </Badge>
+                          ))}
                     </small>
                   </div>
                   <div>
@@ -169,7 +168,7 @@ const Home = ({ history }) => {
                         ? topic.ratings.filter((r) => r.type === 'upvote').length
                         : 0}
                     </div>
-                    &nbsp;
+                      &nbsp;
                     <div>
                       <FontAwesomeIcon icon={faThumbsDown} /> &nbsp;
                       {topic.ratings.length > 0
@@ -179,9 +178,7 @@ const Home = ({ history }) => {
                   </div>
                 </HomeCardWrapper>
               ))
-            ) : (
-              <Placeholder />
-            )}
+              : null}
           </Belt>
         </TopicsContainer>
       </SectionWrapper>

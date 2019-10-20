@@ -8,7 +8,7 @@ import { useQuery } from '@apollo/react-hooks'
 
 import { useStateValue } from '../../libs'
 import { HeaderText, ContentBetween, OverlayLoader, ContentCenter } from '../../components'
-import { Paper } from '../../components/Topic'
+import { Paper, Loader } from '../../components/Topic'
 import SessionWaitingScreen from '../../components/Topic/SessionWaitingScreen'
 import Img from 'react-image'
 import { Button } from 'reactstrap'
@@ -132,11 +132,12 @@ const AnswerQuestion = ({
     <Wrapper>
       <Paper loadingPercentage={timer * 10}>
         {question.img_url ? (
-          <div>
+          <div className='overflow-y-scroll'>
             <Img
               src={[question.img_url, 'http://via.placeholder.com/300x300']}
               alt='question img'
               style={{ borderRadius: '5px', width: '100%', marginTop: '20px' }}
+              loader={() => <Loader />}
             />
             <ContentCenter className='mt-3 mb-3'>
               <HeaderText>{question.question}</HeaderText>
