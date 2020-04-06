@@ -119,8 +119,6 @@ const CREATE_USER_FIELD_RELATIONSHIP = gql`
 `
 
 const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelationship, createUserTopicRelationship }) => {
-  console.log('EDIT PROFILE PAGE')
-  console.log(user)
   const [, globalDispatch] = useStateValue()
   const { data, loading: fieldsLoading, error: fieldsError } = useQuery(FETCH_FIELDS)
 
@@ -129,16 +127,16 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
       userId: user.id
     }
   })
-  // console.log('DATA:', userData.user)
-  // console.log(getObjectValue(userData, 'user[0]'))
+  //
+  //
   const currentUser = getObjectValue(userData, 'user[0]')
-  console.log(currentUser)
+
   // const { data: mutationData, loading: mutationLoading, error: mutationError } = useMutation(
   //   UPDATE_USER
   // )
-  // console.log(user.fields[0].has_finished)
+  //
   // const fieldOfStudyId = user.fields[0].id
-  // console.log(fieldOfStudyId)
+  //
   if (fieldsLoading) {
     return <FullPageLoader />
   }
@@ -194,7 +192,7 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
       })}
       onSubmit={(values, { setSubmitting, setStatus }) => {
         setSubmitting(true)
-        console.log('Values:', values)
+
         updateUser({
           variables: {
             id: user.id,
@@ -228,12 +226,12 @@ const EditProfile = ({ firebase, user, history, updateUser, deleteUserTopicRelat
           })
           .then((res) => {
             setSubmitting(false)
-            console.log('RESSSSS:', res)
+
             history.goBack()
           })
           .catch((err) => {
             setSubmitting(false)
-            console.log(err.message)
+
             setStatus({ type: 'error', text: err.message })
           })
       }}

@@ -82,7 +82,7 @@ const AnswerQuestion = ({
   }
 
   const question = data.next_session_question ? JSON.parse(data.next_session_question) : null
-  console.log('Data question: ', data.next_session_question)
+
   if (!loading && !error && !question) {
     history.push(`/result/${sessionId}`)
   }

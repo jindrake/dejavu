@@ -13,7 +13,6 @@ const App = ({ firebase, history, location: { search } }) => {
   const [{ loading, networkError, operationSuccess }, globalDispatch] = useStateValue()
   useEffect(() => {
     const listener = firebase.auth.onAuthStateChanged(async (user) => {
-      console.log('<< AuthStateChange user >>:', user)
       if (user) {
         try {
           const token = await user.getIdToken()
@@ -27,8 +26,6 @@ const App = ({ firebase, history, location: { search } }) => {
             }
             setAuthState({ user, token })
             if (search.startsWith('?redirectUrl=')) {
-              console.log(search)
-              console.log('>>>> redirecting:', decodeURIComponent(search.substr(13)))
               history.push(decodeURIComponent(search.substr(13)))
             }
           } else {
@@ -44,8 +41,6 @@ const App = ({ firebase, history, location: { search } }) => {
               if (hasuraClaim) {
                 setAuthState({ user, token })
                 if (search.startsWith('?redirectUrl=')) {
-                  console.log(search)
-                  console.log('>>>> redirecting:', decodeURIComponent(search.substr(13)))
                   history.push(decodeURIComponent(search.substr(13)))
                 }
               }
@@ -69,10 +64,7 @@ const App = ({ firebase, history, location: { search } }) => {
 
   if (networkError) {
     if (networkError.includes('JWTExpired')) {
-      console.log('JWT EXPIRED')
-      firebase.auth.currentUser.getIdToken().then((res) => {
-        console.log('RESULT:', res)
-      })
+      firebase.auth.currentUser.getIdToken()
       window.location.reload()
     } else {
       setTimeout(() => {

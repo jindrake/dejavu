@@ -33,8 +33,6 @@ const TopicManagementCard = ({ topic, history }) => {
     return <FullPageLoader />
   }
 
-  console.log(data)
-
   return (
     <DejavuCard className='justify-content-between flex-column mb-2'>
       <div>

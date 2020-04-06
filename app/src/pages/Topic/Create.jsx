@@ -87,7 +87,6 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
           }
         })
           .then((res) => {
-            console.log(res)
             return createTopicFieldRelationship({
               variables: {
                 topicField: {
@@ -99,16 +98,14 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
             })
           })
           .then((res) => {
-            console.log(res)
             setSubmitting(false)
             history.push(`/topic/${topicId}/questions`)
           })
           .catch((error) => {
             setSubmitting(false)
-            console.log(error.message)
+
             setStatus({ type: 'error', text: error.message })
           })
-        console.log(values)
       }}
     >
       {({

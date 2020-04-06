@@ -76,8 +76,6 @@ const SessionLobby = ({
     history.push('/')
   }
 
-  console.log(data)
-
   return (
     <Wrapper>
       <Paper className='h-100 d-flex flex-column justify-content-between bg-danger'>

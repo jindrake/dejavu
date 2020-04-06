@@ -36,9 +36,8 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
     }
   })
 
-  console.log('DATA:', data)
   const replies = data && data.topic_comment
-  console.log(replies)
+
   if (error) {
     console.error('error@topic:2')
     globalDispatch({
@@ -48,7 +47,6 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
   }
   if (loading) return <FullPageLoader />
 
-  console.log('>>>', comment)
   return (
     <Formik
       initialValues={{
@@ -61,10 +59,6 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
           .required('Required')
       })}
       onSubmit={async (values, { setSubmitting, setStatus, touched, resetForm }) => {
-        console.log('reply: ', values)
-        console.log('parentId', comment.id)
-        console.log('id:', uuid())
-        console.log('userId:', user.id)
         try {
           await insertTopicComment({
             variables: {
@@ -113,16 +107,14 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                 <Stat>
                   <div
                     onClick={async () => {
-                      console.log('ahshs')
-                      // console.log('ratings:', comment.topic_comment_ratings)
+                      //
                       // const userIdRatings = comment.topic_comment_ratings.map(cr => cr.user_id)
-                      // console.log('IDS', userIdRatings)
-                      console.log('ggg', comment.topic_comment_ratings)
+                      //
+
                       const filterRating = comment.topic_comment_ratings.filter(trating => trating.user_id === user.id)
-                      console.log('xxxxxx', filterRating)
+
                       try {
                         if (filterRating.length > 0 && filterRating[0].rating === 'downvote') {
-                          console.log('DELETE!')
                           await deleteCommentRating({
                             variables: {
                               topicCommentId: comment.id,
@@ -159,7 +151,6 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                           })
                         }
                       } catch (error) {
-                        console.log(error)
                         globalDispatch({
                           networkError: error.message
                         })
@@ -179,14 +170,13 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                   <div
                     onClick={async () => {
                       // const userIdRatings = comment.topic_comment_ratings.map(cr => cr.user_id)
-                      // console.log('IDS', userIdRatings)
-                      // console.log('click')
-                      console.log('ggg', comment.topic_comment_ratings)
+                      //
+                      //
+
                       const filterRating = comment.topic_comment_ratings.filter(trating => trating.user_id === user.id)
-                      console.log('xxxxxx', filterRating)
+
                       try {
                         if (filterRating.length > 0 && filterRating[0].rating === 'upvote') {
-                          console.log('DELETE!')
                           await deleteCommentRating({
                             variables: {
                               topicCommentId: comment.id,
@@ -223,7 +213,6 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                           })
                         }
                       } catch (error) {
-                        console.log(error)
                         globalDispatch({
                           networkError: error.message
                         })
@@ -268,7 +257,6 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
               &nbsp;
                 <div
                   onClick={() => {
-                    console.log('reply')
                     setclickedReply(true)
                     setshowedReplies(true)
                   }}
@@ -296,15 +284,13 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                           <div
                             onClick={async () => {
                             // const userIdRatings = r.topic_comment_ratings.map(cr => cr.user_id)
-                            // console.log('IDS', userIdRatings)
-                            // console.log('ahshs')
+                            //
+                            //
 
-                              console.log('ggg', r.topic_comment_ratings)
                               const filterRating = r.topic_comment_ratings.filter(trating => trating.user_id === user.id)
-                              console.log('xxxxxx', filterRating)
+
                               try {
                                 if (filterRating.length > 0 && filterRating[0].rating === 'downvote') {
-                                  console.log('DELETE!')
                                   await deleteCommentRating({
                                     variables: {
                                       topicCommentId: r.id,
@@ -341,7 +327,6 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                                   })
                                 }
                               } catch (error) {
-                                console.log(error)
                                 globalDispatch({
                                   networkError: error.message
                                 })
@@ -357,15 +342,13 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                           <div
                             onClick={async () => {
                             // const userIdRatings = r.topic_comment_ratings.map(cr => cr.user_id)
-                            // console.log('IDS', userIdRatings)
-                            // console.log('ahshs')
+                            //
+                            //
 
-                              console.log('ggg', r.topic_comment_ratings)
                               const filterRating = r.topic_comment_ratings.filter(trating => trating.user_id === user.id)
-                              console.log('xxxxxx', filterRating)
+
                               try {
                                 if (filterRating.length > 0 && filterRating[0].rating === 'upvote') {
-                                  console.log('DELETE!')
                                   await deleteCommentRating({
                                     variables: {
                                       topicCommentId: r.id,
@@ -402,7 +385,6 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                                   })
                                 }
                               } catch (error) {
-                                console.log(error)
                                 globalDispatch({
                                   networkError: error.message
                                 })
@@ -445,7 +427,7 @@ const Comment = ({ comment, topicId, insertTopicCommentRating, deleteCommentRati
                         placeholder='Write a reply...'
                         value={values.comment}
                         onChange={(e) => {
-                        // console.log('CHANGING:', e.target.value)
+                        //
                           setFieldValue('reply', e.target.value)
                         }}
                         invalid={errors.name && touched.name}

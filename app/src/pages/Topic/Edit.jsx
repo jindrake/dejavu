@@ -28,7 +28,7 @@ const EditTopicScreen = ({
   deleteTopicFieldRelationship,
   createTopicFieldRelationship
 }) => {
-  // console.log(history.location.state.topicId)
+  //
   const [, globalDispatch] = useStateValue()
   const { data, loading, error } = useQuery(FETCH_FULL_TOPIC, {
     variables: {
@@ -58,9 +58,9 @@ const EditTopicScreen = ({
   }
 
   const topic = getObjectValue(data, 'topic[0]')
-  console.log('TOPIC:', topic)
+
   const fieldOfStudyId = topic.target_fields[0]
-  console.log(fieldOfStudyId)
+
   return (
     <Formik
       initialValues={{
@@ -77,7 +77,6 @@ const EditTopicScreen = ({
         fieldOfStudy: yup.string().required('Required')
       })}
       onSubmit={async (values, { setSubmitting, setStatus, touched }) => {
-        console.log(values, touched)
         try {
           await updateTopic({
             variables: {
@@ -124,7 +123,6 @@ const EditTopicScreen = ({
         handleSubmit,
         isSubmitting
       }) => {
-        console.log('ERRORS:', errors)
         return (
           <div className='h-100 d-flex flex-column justify-content-between'>
             <div>

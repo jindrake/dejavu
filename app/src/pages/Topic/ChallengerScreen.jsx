@@ -51,8 +51,8 @@ const ChallengerScreen = ({
   //   history.push('/')
   // }
 
-  // console.log(data)
-  console.log(location.pathname)
+  //
+
   return (
     <Wrapper>
       <Paper>

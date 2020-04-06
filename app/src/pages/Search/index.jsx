@@ -133,7 +133,7 @@ const Search = ({ user, history, insertUserActivity }) => {
               {/* <SortingDiv>
                 <InnerSortingDiv
                   onClick={() => {
-                    console.log('consistency')
+
                     setSearchByConsistency(!searchByConsistency)
                   }}
                   clicked={searchByConsistency}
@@ -142,7 +142,7 @@ const Search = ({ user, history, insertUserActivity }) => {
                 </InnerSortingDiv>
                 <InnerSortingDiv
                   onClick={() => {
-                    console.log('reliability')
+
                     setSearchByReliability(!searchByReliability)
                   }}
                   clicked={searchByReliability}
@@ -151,7 +151,7 @@ const Search = ({ user, history, insertUserActivity }) => {
                 </InnerSortingDiv>
                 <InnerSortingDiv
                   onClick={() => {
-                    console.log('date')
+
                     setToSortByDateAsc(!sortByDateAsc)
                     refetch()
                   }}
@@ -166,7 +166,7 @@ const Search = ({ user, history, insertUserActivity }) => {
               {data.topic &&
                 data.topic.map((topic) => {
                   const date = new Date(topic.created_at)
-                  console.log(topic.ratings)
+
                   return (
                     <Wrapper
                       key={topic.id}
@@ -182,12 +182,6 @@ const Search = ({ user, history, insertUserActivity }) => {
                               }
                             }
                           })
-                            .then((res) => {
-                              console.log(res)
-                            })
-                            .catch((err) => {
-                              console.log(err.message)
-                            })
                         }
                         history.push({
                           pathname: `topic/${topic.id}`
@@ -238,46 +232,12 @@ const StyledNoResultDiv = styled.div`
   margin-top: 10px;
 `
 
-// const SortingDiv = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   width: 100%;
-//   justify-content: space-evenly;
-//   margin-top: 10px;
-// `
-// const InnerSortingDiv = styled.div`
-//   /* font-size: 2vh; */
-//   /* font-family: Helvetica; */
-//   font-weight: bold;
-//   display: flex;
-
-// `
-
 const RatingsDiv = styled.div`
   display: flex;
   flex-direction: row;
   justify-content: flex-end;
   margin-right: 10px;
 `
-
-// const Title = styled.div`
-//   font-weight: 700;
-//   max-height: 60%;
-//   /* font-family: Helvetica; */
-//   /* font-size: 3vh; */
-//   padding-left: 10px;
-//   margin: 2px;
-// `
-
-// const Description = styled.div`
-//   opacity: 0.8;
-//   line-height: 20px;
-//   max-height: 60%;
-//   /* font-family: Helvetica; */
-//   /* font-size: 2vh; */
-//   padding-left: 15px;
-//   margin: 2px;
-// `
 
 const StyledDiv = styled.div`
   display: flex;
@@ -308,21 +268,7 @@ const Wrapper = styled.div`
 `
 
 const RatingIcon = styled(FontAwesomeIcon)`
-
 `
-// const StyledInput = styled.input`
-//   background-color: white;
-//   width: 90vw;
-//   height: 3vw;
-//   font-size: 22px;
-//   font-family: Helvetica;
-//   font-weight: bold;
-//   opacity: 1;
-//   padding-left: 20px;
-//   border-radius: 10px;
-//   border:1px solid white;
-//   margin: 10px;
-// `
 
 export default compose(
   withRouter,

@@ -59,7 +59,6 @@ const SessionWaitingScreen = ({
     (sessionUser) => sessionUser.id !== user.id
   )[0]
 
-  console.log('Data:', partialResult)
   return (
     <Wrapper>
       <Paper>
@@ -91,7 +90,7 @@ const SessionWaitingScreen = ({
                 const otherUserAnswerObject = questionData.userAnswers
                   .filter((answer) => answer.user_id !== user.id)
                   .pop()
-                console.log('ans object:', userAnswerObject)
+
                 const userAnswers =
                   userAnswerObject && userAnswerObject.answer
                     ? JSON.parse(userAnswerObject.answer)

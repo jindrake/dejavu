@@ -43,7 +43,6 @@ const FETCH_FIELDS = gql`
 `
 
 const SignUp = ({ firebase, history }) => {
-  console.log('UR IN SIGNUP:')
   const [, globalDispatch] = useStateValue()
   const { data, loading: fieldsLoading, error: fieldsError } = useQuery(FETCH_FIELDS)
   const [createUser, { loading: createUserLoading }] = useMutation(CREATE_USER)

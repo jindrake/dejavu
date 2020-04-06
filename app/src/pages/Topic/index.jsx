@@ -42,7 +42,7 @@ const Topic = ({
           type: 'solo'
         }
       })
-      console.log('Session id:', data.create_session)
+
       history.push('/session/' + data.create_session)
     } catch (error) {
       console.error('error@topic:1')
@@ -61,7 +61,7 @@ const Topic = ({
           type: 'duo'
         }
       })
-      console.log('Session id:', data.create_session)
+
       history.push('/session/' + data.create_session + '/lobby')
     } catch (error) {
       console.error('error@topic:2')
@@ -88,7 +88,7 @@ const Topic = ({
     0,
     Math.ceil(unshuffledQuestionIds.length / 2)
   )
-  console.log(unshuffledQuestionIds, halfSubset)
+
   return (
     <Wrapper>
       <TopSection>

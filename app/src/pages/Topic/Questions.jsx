@@ -155,8 +155,6 @@ const AddQuestions = ({
     setTopicId(topic.id)
   }
 
-  console.log(topicQuestions)
-
   return (
     <StyledForm>
       <div>
@@ -193,7 +191,7 @@ const AddQuestions = ({
             const questionId = uuid()
             let correctAnswers = values.choices.filter((_, index) => !!values.correctAnswers[index])
             let dummyAnswers = values.choices.filter((_, index) => !values.correctAnswers[index])
-            console.log('IMG:', currentQuestionPhoto)
+
             await insertQuestion({
               variables: {
                 questionObject: {
@@ -232,7 +230,6 @@ const AddQuestions = ({
               uploadTask.on(
                 'state_changed',
                 (snapshot) => {
-                  console.log(snapshot.bytesTransferred, snapshot.totalBytes)
                   if (snapshot.bytesTransferred === snapshot.totalBytes) {
                     setCurrentQuestionPhoto(null)
                     globalDispatch({
@@ -241,7 +238,6 @@ const AddQuestions = ({
                   }
                 },
                 (error) => {
-                  console.log(error)
                   throw error
                 },
                 async () => {
@@ -249,7 +245,7 @@ const AddQuestions = ({
                     .ref(`images/${user.id}`)
                     .child(`${currentQuestionPhoto.name}-${photoId}`)
                     .getDownloadURL()
-                  console.log(url)
+
                   await updateQuestion({
                     variables: {
                       questionId: questionId,
@@ -261,7 +257,6 @@ const AddQuestions = ({
                 }
               )
             } else {
-              console.log('setsubmit false in else')
               globalDispatch({
                 loading: false
               })
@@ -372,7 +367,6 @@ const AddQuestions = ({
                         <Label className='text-danger'>{errors.correctAnswers}</Label>
                       </FormText>
                     )}
-                    {1 && console.log(values)}
                     {values.choices && values.choices.length > 0 ? (
                       values.choices.map((_, index) => (
                         <div key={index}>

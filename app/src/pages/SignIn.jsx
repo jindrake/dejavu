@@ -26,7 +26,6 @@ const SignIn = ({ firebase, history, location: { search }, ...rest }) => {
           .required('Required')
       })}
       onSubmit={(values, { setSubmitting, setStatus }) => {
-        console.log(values)
         setSubmitting(true)
         firebase
           .doSignInWithEmailAndPassword(values.signInEmail, values.signInPassword)

@@ -24,7 +24,7 @@ import { Button, Badge, Label } from 'reactstrap'
 const Home = ({ history }) => {
   const [{ user }, globalDispatch] = useStateValue()
   // const date = moment()
-  // console.log()
+  //
   const {
     data: recentTopicsData,
     loading: recentTopicsLoading,
@@ -71,7 +71,6 @@ const Home = ({ history }) => {
     userSessionsData && userSessionsData.get_user_sessions
       ? JSON.parse(userSessionsData.get_user_sessions)
       : []
-  console.log('User sessions:', userSessions)
 
   return (
     <Wrapper>

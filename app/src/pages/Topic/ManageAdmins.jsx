@@ -43,7 +43,7 @@ const ManageAdmins = ({
     })
     return null
   }
-  console.log(data)
+
   const topic = getObjectValue(data, 'topic[0]')
 
   return (

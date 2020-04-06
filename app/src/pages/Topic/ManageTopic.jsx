@@ -41,7 +41,7 @@ const ManageTopic = ({
   }
   if (loading || updateTopicLoading) return <FullPageLoader />
   const topic = getObjectValue(data, 'topic[0]')
-  console.log('Topic:', topic)
+
   return (
     <div className='h-100 overflow-y-scroll'>
       <div>

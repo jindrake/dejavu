@@ -119,7 +119,7 @@ const Result = ({
     return <FullPageLoader />
   }
   const answerActivities = data.user_activity
-  console.log('answerActivities:', answerActivities, rating)
+
   const previousRating = getObjectValue(ratingData, 'user_activity[0].topic.ratings[0].type')
   const session = getObjectValue(sessionData, 'session[0]')
   return (

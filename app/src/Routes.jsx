@@ -81,7 +81,7 @@ const Routes = ({ userEmail, firebase }) => {
   }
   console.warn('Routes user is:', user)
 
-  // console.log(window.screen)
+  //
   // if (window.screen.width >= 1024) {
   //   return <LandingPage />
   // }
@@ -90,17 +90,15 @@ const Routes = ({ userEmail, firebase }) => {
   if (user) {
     // eslint-disable-next-line
     Notification.requestPermission().then(function (result) {
-      console.log('RESULT:', result)
+
       if (result === 'denied') {
-        console.log('Permission wasn\'t granted. Allow a retry.')
         return
       }
       if (result === 'default') {
-        console.log('The permission request was dismissed.')
+
       }
     })
 
-    console.log('USER:', user)
     if ('serviceWorker' in navigator) {
       registerSubscriber(user.id).catch(err => console.error(err))
     }

@@ -56,7 +56,7 @@ const Discussion = ({
     }
   })
 
-  // console.log('DATA:', topicCommentData)
+  //
   const componentError = error || topicCommentDataError
   if (componentError) {
     console.error('error@discussion')
@@ -69,8 +69,6 @@ const Discussion = ({
 
   const topic = getObjectValue(data, 'topic[0]')
   const comments = topicCommentData ? topicCommentData.topic_comment : []
-  console.log(topic)
-  console.log('Comments:', comments)
 
   return (
     <Formik
@@ -83,9 +81,6 @@ const Discussion = ({
           .required('Required')
       })}
       onSubmit={async (values, { setSubmitting, setStatus, touched, resetForm }) => {
-        console.log('content: ', values.comment)
-        console.log('topicId:', id)
-        console.log('userId:', user.id)
         try {
           await insertTopicComment({
             variables: {
@@ -185,7 +180,6 @@ const Discussion = ({
                   placeholder='Write a comment...'
                   value={values.comment}
                   onChange={(e) => {
-                    console.log('CHANGING:', e.target.value)
                     setFieldValue('comment', e.target.value)
                   }}
                   invalid={errors.name && touched.name}
@@ -201,7 +195,6 @@ const Discussion = ({
                   </Button>
                 </InputGroupAddon>
               </InputGroup>
-              {console.log('comments now are:', comments) && 1}
               {comments.map((comment) => {
                 return (
                   <Comment

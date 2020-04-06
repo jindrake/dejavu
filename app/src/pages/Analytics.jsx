@@ -73,7 +73,6 @@ const Analytics = ({
     return <FullPageLoader />
   }
 
-  console.log(analyticsData)
   const topic = getObjectValue(topicData, 'topic[0]')
   const rankings = resultsData.get_topic_rankings ? JSON.parse(resultsData.get_topic_rankings) : []
   return (
