@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."topic_comment" DROP COLUMN "session_id" CASCADE
-  type: run_sql

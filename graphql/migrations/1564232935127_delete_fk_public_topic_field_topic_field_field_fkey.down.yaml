@@ -1,4 +1,0 @@
-- args:
-    sql: alter table "public"."topic_field" add foreign key ("field") references "public"."enum_field"("field")
-      on update restrict on delete restrict;
-  type: run_sql

@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."question" DROP COLUMN "img_url";
-  type: run_sql

@@ -1,9 +1,0 @@
-- args:
-    sql: ALTER TABLE ONLY "public"."user" ALTER COLUMN "status" SET DEFAULT 'accepted';
-  type: run_sql
-- args:
-    sql: ALTER TABLE "public"."user" ALTER COLUMN "status" DROP NOT NULL;
-  type: run_sql
-- args:
-    sql: COMMENT ON COLUMN "public"."user"."status" IS ''
-  type: run_sql

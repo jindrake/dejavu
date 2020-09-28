@@ -1,6 +1,0 @@
-- args:
-    relationship: session_questions
-    table:
-      name: session
-      schema: public
-  type: drop_relationship

@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."question" DROP COLUMN "answer" CASCADE
-  type: run_sql

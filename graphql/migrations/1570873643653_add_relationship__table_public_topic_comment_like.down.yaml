@@ -1,6 +1,0 @@
-- args:
-    relationship: topic_comment
-    table:
-      name: topic_comment_like
-      schema: public
-  type: drop_relationship

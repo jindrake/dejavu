@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."topic" DROP COLUMN "is_featured"
-  type: run_sql

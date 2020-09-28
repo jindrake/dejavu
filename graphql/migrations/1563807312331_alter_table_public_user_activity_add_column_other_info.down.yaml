@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."user_activity" DROP COLUMN "other_info"
-  type: run_sql

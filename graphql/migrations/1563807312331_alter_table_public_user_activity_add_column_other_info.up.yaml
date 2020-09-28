@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."user_activity" ADD COLUMN "other_info" text NULL
-  type: run_sql

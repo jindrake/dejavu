@@ -1,6 +1,0 @@
-- args:
-    sql: "\n           alter table \"public\".\"session\"\n           add constraint
-      \"session_topic_id_fkey\" \n           foreign key (\"topic_id\") \n           references
-      \"public\".\"topic\"\n           (\"id\") on update restrict on delete restrict;\n
-      \     "
-  type: run_sql

@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."topic_comment" DROP COLUMN "created_at";
-  type: run_sql

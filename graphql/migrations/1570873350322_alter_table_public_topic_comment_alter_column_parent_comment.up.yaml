@@ -1,6 +1,0 @@
-- args:
-    sql: COMMENT ON COLUMN "public"."topic_comment"."parent_comment" IS E''
-  type: run_sql
-- args:
-    sql: alter table "public"."topic_comment" rename column "parent_comment" to "parent_commen_id";
-  type: run_sql

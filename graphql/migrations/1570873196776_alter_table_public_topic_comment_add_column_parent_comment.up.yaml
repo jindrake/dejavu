@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."topic_comment" ADD COLUMN "parent_comment" uuid NULL;
-  type: run_sql

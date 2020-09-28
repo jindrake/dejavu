@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."question" ADD COLUMN "img_url" text NULL;
-  type: run_sql

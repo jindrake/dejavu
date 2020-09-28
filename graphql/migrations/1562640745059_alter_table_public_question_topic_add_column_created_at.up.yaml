@@ -1,4 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."question_topic" ADD COLUMN "created_at" timestamptz
-      NULL
-  type: run_sql

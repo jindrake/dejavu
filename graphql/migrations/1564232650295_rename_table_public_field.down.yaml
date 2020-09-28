@@ -1,3 +1,0 @@
-- args:
-    sql: alter table "public"."user_field" rename to "field";
-  type: run_sql

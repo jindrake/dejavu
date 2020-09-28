@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."feedback" ADD COLUMN "user_id" uuid NOT NULL
-  type: run_sql

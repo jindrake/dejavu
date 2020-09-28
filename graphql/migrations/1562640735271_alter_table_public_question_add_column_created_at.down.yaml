@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."question" DROP COLUMN "created_at"
-  type: run_sql

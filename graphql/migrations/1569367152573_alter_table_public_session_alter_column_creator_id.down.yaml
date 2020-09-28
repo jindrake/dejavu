@@ -1,6 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."session" ALTER COLUMN "creator_id" DROP NOT NULL;
-  type: run_sql
-- args:
-    sql: COMMENT ON COLUMN "public"."session"."creator_id" IS E'null'
-  type: run_sql

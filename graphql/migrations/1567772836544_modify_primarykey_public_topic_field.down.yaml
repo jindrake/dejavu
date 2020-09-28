@@ -1,6 +1,0 @@
-- args:
-    sql: alter table "public"."topic_field" drop constraint "topic_field_pkey";
-  type: run_sql
-- sql: "alter table \"public\".\"topic_field\"\n    add constraint \"topic_field_pkey\"
-    \n    primary key ( \"field\", \"topic_id\", \"id\" );"
-  type: run_sql

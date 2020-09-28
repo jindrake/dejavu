@@ -1,7 +1,0 @@
-- args:
-    sql: alter table "public"."question_topic" drop constraint "question_topic_pkey";
-  type: run_sql
-- args:
-    sql: "alter table \"public\".\"question_topic\"\n    add constraint \"question_topic_pkey\"
-      \n    primary key ( \"id\", \"topic_id\", \"question_id\" );"
-  type: run_sql

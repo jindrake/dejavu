@@ -1,6 +1,0 @@
-- args:
-    sql: COMMENT ON COLUMN "public"."session"."current_user" IS E'null'
-  type: run_sql
-- args:
-    sql: alter table "public"."session" rename column "current_user_id" to "current_user";
-  type: run_sql

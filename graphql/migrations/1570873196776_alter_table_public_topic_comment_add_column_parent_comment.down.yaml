@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."topic_comment" DROP COLUMN "parent_comment";
-  type: run_sql

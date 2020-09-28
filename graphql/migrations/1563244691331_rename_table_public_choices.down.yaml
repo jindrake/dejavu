@@ -1,3 +1,0 @@
-- args:
-    sql: alter table "public"."answer" rename to "choices";
-  type: run_sql

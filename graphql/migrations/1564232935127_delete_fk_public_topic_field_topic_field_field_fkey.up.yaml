@@ -1,3 +1,0 @@
-- args:
-    sql: alter table "public"."topic_field" drop constraint "topic_field_field_fkey";
-  type: run_sql

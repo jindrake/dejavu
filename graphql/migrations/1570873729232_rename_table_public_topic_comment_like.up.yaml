@@ -1,3 +1,0 @@
-- args:
-    sql: alter table "public"."topic_comment_like" rename to "topic_comment_rating";
-  type: run_sql

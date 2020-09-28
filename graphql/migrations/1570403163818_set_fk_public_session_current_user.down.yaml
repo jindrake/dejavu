@@ -1,4 +1,0 @@
-- args:
-    sql: "\n          alter table \"public\".\"session\" drop constraint \"session_current_user_fkey\"\n
-      \     "
-  type: run_sql

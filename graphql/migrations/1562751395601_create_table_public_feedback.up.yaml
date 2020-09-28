@@ -1,8 +1,0 @@
-- args:
-    sql: CREATE TABLE "public"."feedback"("content" text NOT NULL, "id" uuid NOT NULL,
-      PRIMARY KEY ("id") , UNIQUE ("id"));
-  type: run_sql
-- args:
-    name: feedback
-    schema: public
-  type: add_existing_table_or_view

@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."session" ADD COLUMN "type" text NOT NULL DEFAULT 'solo';
-  type: run_sql

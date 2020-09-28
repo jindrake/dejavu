@@ -1,5 +1,0 @@
-- args:
-    sql: |-
-      DROP TRIGGER IF EXISTS "set_public_topic_user_updated_at" ON "public"."topic_user";
-      ALTER TABLE "public"."topic_user" DROP COLUMN "updated_at";
-  type: run_sql

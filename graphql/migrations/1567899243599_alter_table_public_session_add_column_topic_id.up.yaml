@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."session" ADD COLUMN "topic_id" uuid NULL;
-  type: run_sql

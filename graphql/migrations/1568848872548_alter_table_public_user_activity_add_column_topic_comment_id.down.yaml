@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."user_activity" DROP COLUMN "topic_comment_id";
-  type: run_sql

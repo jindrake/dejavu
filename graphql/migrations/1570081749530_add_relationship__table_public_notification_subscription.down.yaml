@@ -1,6 +1,0 @@
-- args:
-    relationship: user
-    table:
-      name: notification_subscription
-      schema: public
-  type: drop_relationship

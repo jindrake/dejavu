@@ -1,3 +1,0 @@
-- args:
-    sql: ALTER TABLE "public"."user_activity" ADD COLUMN "topic_comment_id" uuid NULL;
-  type: run_sql
