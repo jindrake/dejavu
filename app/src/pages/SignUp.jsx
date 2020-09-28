@@ -16,18 +16,35 @@ import {
   Icon,
   HeaderText
 } from '../components'
-import { useStateValue } from '../libs'
+import { useStateValue, getObjectValue } from '../libs'
 import uuid from 'uuid/v4'
 import { Button, Label, Alert } from 'reactstrap'
 
 const CREATE_USER = gql`
-  mutation createUser($user: [user_insert_input!]!) {
-    insert_user(objects: $user) {
-      affected_rows
-      returning {
+  mutation createUser(
+    $userid: String!
+    $fieldid: String!
+    $email: String!
+    $firstname: String!
+    $lastname: String!
+    $field: String!
+    $hasfinished: Boolean!
+  ) {
+    createFirebaseUser(
+      input: {
+        userid: $userid
+        fieldid: $fieldid
+        email: $email
+        firstname: $firstname
+        lastname: $lastname
+        field: $field
+        hasfinished: $hasfinished
+      }
+    ) {
+      user {
         id
-        first_name
-        last_name
+        firstName
+        lastName
         email
       }
     }
@@ -36,8 +53,13 @@ const CREATE_USER = gql`
 
 const FETCH_FIELDS = gql`
   query fetchFields {
-    enum_field(order_by: { field: asc }) {
-      field
+    # enum_field(order_by: { field: asc }) {
+    #   field
+    # }
+    enumFields(orderBy: FIELD_ASC) {
+      nodes {
+        field
+      }
     }
   }
 `
@@ -70,10 +92,7 @@ const SignUp = ({ firebase, history }) => {
         isStudent: true
       }}
       validationSchema={yup.object().shape({
-        email: yup
-          .string()
-          .email('Invalid email')
-          .required('Required'),
+        email: yup.string().email('Invalid email').required('Required'),
         password: yup
           .string()
           .min(8, 'Password must be at least 8 characters')
@@ -96,29 +115,19 @@ const SignUp = ({ firebase, history }) => {
             return result.user.getIdTokenResult()
           })
           .then((idTokenResult) => {
-            const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
-            if (hasuraClaim && !createUserLoading) {
+            const dejavuClaims = idTokenResult.claims['dejavu_claims']
+            if (dejavuClaims && !createUserLoading) {
               console.warn('CREATING USER@1')
               window.localStorage.setItem('newUser', true)
               return createUser({
                 variables: {
-                  user: [
-                    {
-                      email: values.email,
-                      first_name: values.firstName,
-                      last_name: values.lastName,
-                      id: hasuraClaim['x-hasura-user-id'],
-                      fields: {
-                        data: [
-                          {
-                            field: values.fieldOfStudy,
-                            has_finished: values.isStudent,
-                            id: uuid()
-                          }
-                        ]
-                      }
-                    }
-                  ]
+                  email: values.email,
+                  firstname: values.firstName,
+                  lastname: values.lastName,
+                  userid: dejavuClaims['user_id'],
+                  fieldid: uuid(),
+                  hasfinished: !values.isStudent,
+                  field: values.fieldOfStudy
                 }
               })
             } else {
@@ -130,30 +139,20 @@ const SignUp = ({ firebase, history }) => {
                 // Force refresh to pick up the latest custom claims changes.
                 // const token = await result.user.getIdToken(true)
                 const idTokenResult = await firebaseUser.getIdTokenResult(true)
-                const hasuraClaim = await idTokenResult.claims['https://hasura.io/jwt/claims']
-                // if there's no hasuraClaim but token exists, maintain authState({loading: true}) state
-                if (hasuraClaim && !createUserLoading) {
+                const dejavuClaims = await idTokenResult.claims['dejavu_claims']
+                // if there's no dejavuClaims but token exists, maintain authState({loading: true}) state
+                if (dejavuClaims && !createUserLoading) {
                   console.warn('CREATING USER@2')
                   try {
                     await createUser({
                       variables: {
-                        user: [
-                          {
-                            email: values.email,
-                            first_name: values.firstName,
-                            last_name: values.lastName,
-                            id: hasuraClaim['x-hasura-user-id'],
-                            fields: {
-                              data: [
-                                {
-                                  field: values.fieldOfStudy,
-                                  has_finished: values.isStudent,
-                                  id: uuid()
-                                }
-                              ]
-                            }
-                          }
-                        ]
+                        email: values.email,
+                        firstname: values.firstName,
+                        lastname: values.lastName,
+                        userid: dejavuClaims['user_id'],
+                        fieldid: uuid(),
+                        hasfinished: !values.isStudent,
+                        field: values.fieldOfStudy
                       }
                     })
                     window.localStorage.setItem('newUser', true)
@@ -197,7 +196,11 @@ const SignUp = ({ firebase, history }) => {
                 <br />
                 study buddies!
               </HeaderText>
-              {status && <Alert className='dejavu-small-text mt-2 mb-1 p-1' color='danger'>{status.text}</Alert>}
+              {status && (
+                <Alert className='dejavu-small-text mt-2 mb-1 p-1' color='danger'>
+                  {status.text}
+                </Alert>
+              )}
               <TwinItems>
                 <FormItem>
                   <Label for='firstName'>
@@ -258,8 +261,8 @@ const SignUp = ({ firebase, history }) => {
                   value={values.fieldOfStudy}
                 >
                   <option value='' />
-                  {data.enum_field &&
-                    data.enum_field.map(({ field }) => (
+                  {getObjectValue(data, 'enumFields.nodes') &&
+                    data.enumFields.nodes.map(({ field }) => (
                       <option value={field} key={field}>
                         {field}
                       </option>
@@ -372,7 +375,4 @@ const Form = styled.form`
   transition: 300ms;
 `
 
-export default compose(
-  withRouter,
-  withFirebase()
-)(SignUp)
+export default compose(withRouter, withFirebase())(SignUp)

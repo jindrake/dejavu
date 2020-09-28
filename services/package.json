@@ -16,6 +16,7 @@
     "start:dev": "nodemon server.js"
   },
   "dependencies": {
+    "@graphile-contrib/pg-simplify-inflector": "^6.0.0",
     "@sentry/node": "^5.6.2",
     "apollo-boost": "^0.4.4",
     "apollo-server-express": "^2.9.3",
@@ -23,11 +24,17 @@
     "cors": "^2.8.5",
     "dotenv": "^8.1.0",
     "express": "^4.17.1",
+    "firebase-admin": "^9.2.0",
     "graphql": "^14.5.4",
     "graphql-tools": "^4.0.5",
     "node-fetch": "^2.6.0",
     "nodemon": "^1.19.3",
+    "postgraphile": "^4.9.0",
+    "postgraphile-plugin-nested-mutations": "^1.0.1",
     "uuid": "^3.3.3",
     "web-push": "^3.4.0"
+  },
+  "resolutions": {
+    "**/graphql": "14.5.4"
   }
 }

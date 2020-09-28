@@ -17,13 +17,9 @@ const App = ({ firebase, history, location: { search } }) => {
         try {
           const token = await user.getIdToken()
           const idTokenResult = await user.getIdTokenResult()
-          const hasuraClaim = idTokenResult.claims['https://hasura.io/jwt/claims']
+          const dejavuClaim = idTokenResult.claims['dejavu_claims']
           // TODO: remove after dev
-          if (hasuraClaim) {
-            if (!hasuraClaim['x-hasura-user-id'].includes('-')) {
-              window.alert('OLD ACCOUNT, change dummy email until we change firebase console')
-              firebase.doSignOut()
-            }
+          if (dejavuClaim) {
             setAuthState({ user, token })
             if (search.startsWith('?redirectUrl=')) {
               history.push(decodeURIComponent(search.substr(13)))
@@ -36,7 +32,7 @@ const App = ({ firebase, history, location: { search } }) => {
               // Force refresh to pick up the latest custom claims changes.
               const token = await user.getIdToken(true)
               const idTokenResult = await user.getIdTokenResult(true)
-              const hasuraClaim = await idTokenResult.claims['https://hasura.io/jwt/claims']
+              const hasuraClaim = await idTokenResult.claims['dejavu_claims']
               // if there's no hasuraClaim but token exists, maintain authState({loading: true}) state
               if (hasuraClaim) {
                 setAuthState({ user, token })
@@ -48,6 +44,7 @@ const App = ({ firebase, history, location: { search } }) => {
           }
         } catch (error) {
           console.error('error@app1')
+          console.error(error)
         }
       } else {
         setAuthState({ user: null })

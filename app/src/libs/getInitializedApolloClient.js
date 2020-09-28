@@ -32,7 +32,7 @@ export default (token) => {
 
   let httpLink = createHttpLink({
     uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
-    credentials: 'include',
+    // credentials: 'include',
     headers: token ? { Authorization: `Bearer ${token}` } : {}
   })
 

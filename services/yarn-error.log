@@ -1,11 +1,11 @@
 Arguments: 
-  /home/jethro/.nvm/versions/node/v10.15.3/bin/node /usr/share/yarn/bin/yarn.js lint
+  /home/jethro/.nvm/versions/node/v10.15.3/bin/node /usr/share/yarn/bin/yarn.js
 
 PATH: 
   /home/jethro/.nvm/versions/node/v10.15.3/bin:/home/jethro/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
 
 Yarn version: 
-  1.16.0
+  1.21.1
 
 Node version: 
   10.15.3
@@ -14,12 +14,12 @@ Platform:
   linux x64
 
 Trace: 
-  SyntaxError: /home/jethro/thesis/services/package.json: Unexpected token } in JSON at position 290
+  SyntaxError: /home/jethro/thesis/services/package.json: Unexpected token } in JSON at position 916
       at JSON.parse (<anonymous>)
       at /usr/share/yarn/lib/cli.js:1625:59
       at Generator.next (<anonymous>)
-      at step (/usr/share/yarn/lib/cli.js:304:30)
-      at /usr/share/yarn/lib/cli.js:315:13
+      at step (/usr/share/yarn/lib/cli.js:310:30)
+      at /usr/share/yarn/lib/cli.js:321:13
 
 npm manifest: 
   {
@@ -35,7 +35,28 @@ npm manifest:
     "scripts": {
       "lint": "standard",
       "lint:fix": "standard --fix",
-      "test": "jest"
+      "test": "jest",
+      "start": "node server.js",
+      "start:dev": "nodemon server.js"
+    },
+    "dependencies": {
+      "@graphile-contrib/pg-simplify-inflector": "^6.0.0",
+      "@sentry/node": "^5.6.2",
+      "apollo-boost": "^0.4.4",
+      "apollo-server-express": "^2.9.3",
+      "body-parser": "^1.19.0",
+      "cors": "^2.8.5",
+      "dotenv": "^8.1.0",
+      "express": "^4.17.1",
+      "firebase-admin": "^9.2.0",
+      "graphql": "^14.5.4",
+      "graphql-tools": "^4.0.5",
+      "node-fetch": "^2.6.0",
+      "nodemon": "^1.19.3",
+      "postgraphile": "^4.9.0",
+      "postgraphile-plugin-nested-mutations": "^1.0.1",
+      "uuid": "^3.3.3",
+      "web-push": "^3.4.0"
     },
   }
 

@@ -36,15 +36,18 @@ import { registerSubscriber } from './SubscribeWebPush'
 
 const FETCH_USER = gql`
   query fetchUser($email: String!) {
-    user(where: { email: { _eq: $email } }) {
-      email
-      first_name
-      last_name
-      id
-      fields {
-        field
+    users(condition: { email: $email }) {
+      nodes {
+        email
+        firstName
+        lastName
         id
-        has_finished
+        userFields {
+          nodes {
+            field
+            hasFinished
+          }
+        }
       }
     }
   }
@@ -70,9 +73,9 @@ const Routes = ({ userEmail, firebase }) => {
     return null
   }
 
-  if (!user && getObjectValue(data, 'user[0]')) {
+  if (!user && getObjectValue(data, 'users.nodes[0]')) {
     globalDispatch({
-      user: getObjectValue(data, 'user[0]')
+      user: getObjectValue(data, 'users.nodes[0]')
     })
   }
 
