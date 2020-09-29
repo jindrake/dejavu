@@ -32,7 +32,7 @@ import compose from 'recompose/compose'
 import ManageTopic from './pages/Topic/ManageTopic'
 import ManageAdmins from './pages/Topic/ManageAdmins'
 
-import { registerSubscriber } from './SubscribeWebPush'
+// import { registerSubscriber } from './SubscribeWebPush'
 
 const FETCH_USER = gql`
   query fetchUser($email: String!) {
@@ -102,9 +102,9 @@ const Routes = ({ userEmail, firebase }) => {
       }
     })
 
-    if ('serviceWorker' in navigator) {
-      registerSubscriber(user.id).catch(err => console.error(err))
-    }
+    // if ('serviceWorker' in navigator) {
+    //   registerSubscriber(user.id).catch(err => console.error(err))
+    // }
   }
 
   return (

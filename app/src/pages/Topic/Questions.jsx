@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Formik, FieldArray } from 'formik'
 import { withRouter } from 'react-router-dom'
 import { FormText, FormGroup, Label, Button, InputGroup, InputGroupAddon } from 'reactstrap'
 import compose from 'recompose/compose'
-import { useQuery, useMutation, useSubscription } from '@apollo/react-hooks'
+import { useQuery, useMutation } from '@apollo/react-hooks'
 import uuid from 'uuid/v4'
 import { getObjectValue, useStateValue } from '../../libs'
 import Img from 'react-image'
@@ -12,10 +12,9 @@ import {
   INSERT_QUESTION,
   FETCH_TOPIC,
   FETCH_TOPIC_QUESTIONS,
-  FETCH_USER_PREVIOUS_QUESTIONS,
-  INSERT_QUESTION_TOPIC_RELATIONSHIP,
   PUBLISH_TOPIC,
-  UPDATE_QUESTION
+  UPDATE_QUESTION,
+  INSERT_QUESTION_ANSWERS
 } from './queries'
 import {
   OverlayLoader,
@@ -46,15 +45,22 @@ const AddQuestions = ({
   history
 }) => {
   const [currentQuestionPhoto, setCurrentQuestionPhoto] = useState(null)
-  const [, globalDispatch] = useStateValue()
+  const [{ networkError }, globalDispatch] = useStateValue()
   const [numberOfQuestions, setNumberOfQuestions] = useState(0)
   const [field, setField] = useState(null)
   const [topicId, setTopicId] = useState(null)
-  const [previousQuestions, setPreviousQuestions] = useState(null)
+  const [topicQuestions, setTopicQuestions] = useState([])
+
   const [
     insertQuestion,
     { error: insertQuestionError, loading: insertQuestionLoading }
   ] = useMutation(INSERT_QUESTION)
+
+  const [
+    insertQuestionAnswers,
+    { error: insertQuestionAnswersError, loading: insertQuestionAnswersLoading }
+  ] = useMutation(INSERT_QUESTION_ANSWERS)
+
   const [publishTopic, { loading: publishTopicLoading, error: publishTopicError }] = useMutation(
     PUBLISH_TOPIC
   )
@@ -62,7 +68,7 @@ const AddQuestions = ({
     data: topicQuestionsData,
     error: topicQuestionsError,
     loading: topicQuestionsLoading
-  } = useSubscription(FETCH_TOPIC_QUESTIONS, {
+  } = useQuery(FETCH_TOPIC_QUESTIONS, {
     skip: !id,
     variables: {
       topicId: id
@@ -72,17 +78,7 @@ const AddQuestions = ({
     removeQuestion,
     { error: removeQuestionError, loading: removeQuestionLoading }
   ] = useMutation(REMOVE_QUESTION)
-  const {
-    data: userQuestionsData,
-    loading: userQuestionsLoading,
-    error: userQuestionsError
-  } = useQuery(FETCH_USER_PREVIOUS_QUESTIONS, {
-    skip: !topicId || !user,
-    variables: { creatorId: user.id, topicId: topicId }
-  })
-  const [addQuestion, { loading: addQuestionLoading, error: addQuestionError }] = useMutation(
-    INSERT_QUESTION_TOPIC_RELATIONSHIP
-  )
+
   const [
     updateQuestion,
     { loading: updateQuestionLoading, error: updateQuestionError }
@@ -99,15 +95,12 @@ const AddQuestions = ({
     }
   })
 
-  console.log(
-    fetchTopicLoading,
-    insertQuestionLoading,
-    publishTopicLoading,
-    topicQuestionsLoading,
-    removeQuestionLoading,
-    userQuestionsLoading,
-    addQuestionLoading
-  )
+  useEffect(() => {
+    if (getObjectValue(topicQuestionsData, 'questionTopics.nodes')) {
+      setTopicQuestions(topicQuestionsData.questionTopics.nodes)
+      setNumberOfQuestions(topicQuestionsData.questionTopics.nodes.length)
+    }
+  }, [topicQuestionsData])
 
   const componentError =
     fetchTopicError ||
@@ -115,12 +108,11 @@ const AddQuestions = ({
     publishTopicError ||
     topicQuestionsError ||
     removeQuestionError ||
-    userQuestionsError ||
-    addQuestionError ||
-    updateQuestionError
+    updateQuestionError ||
+    insertQuestionAnswersError
 
-  if (componentError) {
-    console.error('error@questions:1')
+  if (componentError && !networkError) {
+    console.error('error@questions:1:', componentError)
     globalDispatch({
       networkError: componentError.message
     })
@@ -131,25 +123,16 @@ const AddQuestions = ({
     fetchTopicLoading ||
     insertQuestionLoading ||
     publishTopicLoading ||
-    // topicQuestionsLoading ||
+    topicQuestionsLoading ||
     removeQuestionLoading ||
-    userQuestionsLoading ||
-    addQuestionLoading ||
-    updateQuestionLoading
+    updateQuestionLoading ||
+    insertQuestionAnswersLoading
   ) {
     return <OverlayLoader />
   }
-  if (userQuestionsData && userQuestionsData.get_topic_suggested_questions && !previousQuestions) {
-    setPreviousQuestions(JSON.parse(userQuestionsData.get_topic_suggested_questions) || [])
-  }
-
-  const topicQuestions = topicQuestionsData ? topicQuestionsData.question_topic : []
-  if (topicQuestions.length !== numberOfQuestions) {
-    setNumberOfQuestions(topicQuestions.length)
-  }
-  const topic = getObjectValue(fetchTopicData, 'topic[0]')
-  if (!field && getObjectValue(topic, 'target_fields[0].field')) {
-    setField(getObjectValue(topic, 'target_fields[0].field'))
+  const topic = getObjectValue(fetchTopicData, 'topics.nodes[0]')
+  if (!field && getObjectValue(topic, 'topicFields.nodes[0].field')) {
+    setField(getObjectValue(topic, 'topicFields.nodes[0].field'))
   }
   if (!topicId && topic.id) {
     setTopicId(topic.id)
@@ -165,7 +148,8 @@ const AddQuestions = ({
           question: '',
           choices: [],
           correctAnswers: [],
-          newChoiceValue: ''
+          newChoiceValue: '',
+          topicId: topicId || id
         }}
         validate={(values) => {
           let errors = {}
@@ -189,34 +173,57 @@ const AddQuestions = ({
           })
           try {
             const questionId = uuid()
+            const submitTopicId = values.topicId
             let correctAnswers = values.choices.filter((_, index) => !!values.correctAnswers[index])
             let dummyAnswers = values.choices.filter((_, index) => !values.correctAnswers[index])
-
+            console.log(
+              '>>>>> answers:',
+              correctAnswers.map((answer) => ({
+                answer,
+                id: uuid(),
+                isCorrect: true
+              })),
+              dummyAnswers.map((answer) => ({
+                answer,
+                id: uuid()
+              }))
+            )
             await insertQuestion({
               variables: {
-                questionObject: {
-                  question: values.question,
-                  creator_id: user.id,
-                  type: 'multiple_choice',
-                  id: questionId,
-                  answers: {
-                    data: [
-                      ...correctAnswers.map((answer) => ({
-                        answer,
-                        id: uuid(),
-                        is_correct: true
-                      })),
-                      ...dummyAnswers.map((answer) => ({
-                        answer,
-                        id: uuid()
-                      }))
-                    ]
+                input: {
+                  question: {
+                    id: questionId,
+                    question: values.question,
+                    type: 'multiple_choice',
+                    creatorId: user.id,
+                    questionTopics: {
+                      create: [
+                        {
+                          topicId: submitTopicId,
+                          id: questionId
+                        }
+                      ]
+                    }
                   }
-                },
-                questionTopic: {
-                  id: uuid(),
-                  question_id: questionId,
-                  topic_id: topic.id
+                }
+              }
+            })
+            await insertQuestionAnswers({
+              variables: {
+                input: {
+                  answers: [
+                    ...correctAnswers.map((answer) => ({
+                      answer,
+                      id: uuid(),
+                      isCorrect: true
+                    })),
+                    ...dummyAnswers.map((answer) => ({
+                      answer,
+                      id: uuid(),
+                      isCorrect: false
+                    }))
+                  ],
+                  questionId
                 }
               }
             })
@@ -248,9 +255,11 @@ const AddQuestions = ({
 
                   await updateQuestion({
                     variables: {
-                      questionId: questionId,
-                      data: {
-                        img_url: url
+                      input: {
+                        id: questionId,
+                        patch: {
+                          imgUrl: url
+                        }
                       }
                     }
                   })
@@ -432,19 +441,23 @@ const AddQuestions = ({
         <>
           <Button
             className='form-control'
-            color={topic.is_published ? 'warning' : 'success'}
+            color={topic.isPublished ? 'warning' : 'success'}
             size='lg'
             onClick={async () => {
               await publishTopic({
                 variables: {
-                  topicId: topic.id,
-                  isPublished: !topic.is_published
+                  input: {
+                    id: topic.id || id,
+                    patch: {
+                      isPublished: !topic.isPublished
+                    }
+                  }
                 }
               })
-              await refetchTopic()
+              refetchTopic()
             }}
           >
-            {topic.is_published ? 'Unpublish' : 'Publish'}
+            {topic.isPublished ? 'Unpublish' : 'Publish'}
           </Button>
           <hr />
         </>
@@ -455,13 +468,13 @@ const AddQuestions = ({
       )}
       <CurrentQuestionsSection>
         <PageLabel>{numberOfQuestions} Questions</PageLabel>
-        {topicQuestions.map(({ question, id }, index) => {
-          const dummyAnswers = question.answers
-            .filter((answer) => !answer.is_correct)
+        {topicQuestions.map(({ question }, index) => {
+          const dummyAnswers = question.answers.nodes
+            .filter((answer) => !answer.isCorrect)
             .map((answer) => answer.answer)
             .join(', ')
-          const correctAnswers = question.answers
-            .filter((answer) => answer.is_correct)
+          const correctAnswers = question.answers.nodes
+            .filter((answer) => answer.isCorrect)
             .map((answer) => answer.answer)
             .join(', ')
           return (
@@ -471,14 +484,22 @@ const AddQuestions = ({
                 onClick={() => {
                   removeQuestion({
                     variables: {
-                      id
+                      input: {
+                        questionId: question.id,
+                        topicId: topicId || id
+                      }
                     }
+                  }).then(() => {
+                    const copyOfTopicQuestions = Object.assign([], topicQuestions)
+                    copyOfTopicQuestions.splice(index, 1)
+                    setTopicQuestions(copyOfTopicQuestions)
+                    setNumberOfQuestions(copyOfTopicQuestions.length)
                   })
                 }}
               />
-              {question.img_url && (
+              {question.imgUrl && (
                 <Img
-                  src={[question.img_url, 'http://via.placeholder.com/300x300']}
+                  src={[question.imgUrl, 'http://via.placeholder.com/300x300']}
                   alt='question img'
                   style={{ borderRadius: '5px', width: '100%' }}
                 />
@@ -496,56 +517,8 @@ const AddQuestions = ({
           )
         })}
       </CurrentQuestionsSection>
-      {field && (
-        <CurrentQuestionsSection>
-          <PageLabel>Select from your previous questions</PageLabel>
-          {previousQuestions &&
-            previousQuestions.map((question, index) => {
-              const dummyAnswers = question.answers
-                .filter((answer) => !answer.is_correct)
-                .map((answer) => answer.answer)
-                .join(', ')
-              const correctAnswers = question.answers
-                .filter((answer) => answer.is_correct)
-                .map((answer) => answer.answer)
-                .join(', ')
-              return (
-                <DejavuCard
-                  key={`questions:${index}`}
-                  onClick={async () => {
-                    await addQuestion({
-                      variables: {
-                        questionTopic: {
-                          id: uuid(),
-                          topic_id: topicId,
-                          question_id: question.id
-                        }
-                      }
-                    })
-                    const questions = Object.assign([], previousQuestions)
-                    questions.splice(index, 1)
-                    setPreviousQuestions(questions)
-                  }}
-                >
-                  <strong>{question.question}</strong>
-                  <br />
-                  <Label>correct answers</Label>
-                  <br />
-                  {correctAnswers}
-                  <br />
-                  <Label>wrong answers</Label>
-                  <br />
-                  {dummyAnswers}
-                </DejavuCard>
-              )
-            })}
-        </CurrentQuestionsSection>
-      )}
     </StyledForm>
   )
 }
 
-export default compose(
-  withRouter,
-  withFirebase()
-)(AddQuestions)
+export default compose(withRouter, withFirebase())(AddQuestions)

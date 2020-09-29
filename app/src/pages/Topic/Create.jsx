@@ -20,16 +20,18 @@ import { faArrowLeft } from '@fortawesome/free-solid-svg-icons'
 
 const FETCH_FIELDS = gql`
   query fetchFields {
-    enum_field(order_by: { field: asc }) {
-      field
+    enumFields (orderBy: FIELD_ASC) {
+      nodes {
+        field
+      }
     }
   }
 `
 
 const CREATE_TOPIC = gql`
-  mutation createTopic($topic: topic_insert_input!) {
-    insert_topic(objects: [$topic]) {
-      returning {
+  mutation createTopic($input: CreateTopicInput!) {
+    createTopic(input: $input) {
+      topic {
         id
         name
         description
@@ -39,9 +41,11 @@ const CREATE_TOPIC = gql`
 `
 
 const CREATE_TOPIC_FIELD_RELATIONSHIP = gql`
-  mutation createTopicFieldRelationship($topicField: [topic_field_insert_input!]!) {
-    insert_topic_field(objects: $topicField) {
-      affected_rows
+  mutation createTopicFieldRelationship($input: CreateTopicFieldInput!) {
+    createTopicField(input: $input) {
+      topicField {
+        id
+      }
     }
   }
 `
@@ -61,7 +65,7 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
         name: '',
         description: '',
         isPrivate: false,
-        fieldOfStudy: user.fields.length ? user.fields[0].field : ''
+        fieldOfStudy: getObjectValue(user, 'fields.length') ? user.fields[0].field : ''
       }}
       validationSchema={yup.object().shape({
         name: yup
@@ -77,22 +81,26 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
         const topicId = uuid()
         createTopic({
           variables: {
-            topic: {
-              name: values.name,
-              creator_id: user.id,
-              description: values.description,
-              id: topicId,
-              is_private: values.isPrivate
+            input: {
+              topic: {
+                name: values.name,
+                creatorId: user.id,
+                description: values.description,
+                id: topicId,
+                isPrivate: values.isPrivate
+              }
             }
           }
         })
           .then((res) => {
             return createTopicFieldRelationship({
               variables: {
-                topicField: {
-                  id: uuid(),
-                  field: values.fieldOfStudy,
-                  topic_id: getObjectValue(res, 'data.insert_topic.returning[0].id')
+                input: {
+                  topicField: {
+                    id: uuid(),
+                    field: values.fieldOfStudy,
+                    topicId: getObjectValue(res, 'data.createTopic.topic.id')
+                  }
                 }
               }
             })
@@ -168,8 +176,8 @@ const CreateTopicScreen = ({ user, createTopic, history, createTopicFieldRelatio
                   value={values.fieldOfStudy}
                 >
                   <option value='' />
-                  {data.enum_field &&
-                    data.enum_field.map(({ field }) => (
+                  {getObjectValue(data, 'enumFields.nodes') &&
+                    data.enumFields.nodes.map(({ field }) => (
                       <option value={field} key={field}>
                         {field}
                       </option>

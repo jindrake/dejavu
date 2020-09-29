@@ -22,19 +22,19 @@ const Navigation = ({ user, location, history }) => {
   let routes
 
   const userRoutes = [
-    { icon: faSearch, route: '/search', name: 'Search' },
+    { icon: faSearch, route: '/search', name: 'Search', disabled: true },
     { icon: faHome, route: '/', name: 'Home' },
     { icon: faEdit, route: '/topic/create', name: 'Create' },
-    { icon: faUserCircle, route: '/profile', name: 'Profile' },
+    { icon: faUserCircle, route: '/profile', name: 'Profile', disabled: true },
     { icon: faSignOutAlt, route: '/exit', name: 'Sign Out' },
-    { icon: faBullhorn, route: '/feedback', name: 'Feedback' }
+    { icon: faBullhorn, route: '/feedback', name: 'Feedback', disabled: true }
   ]
 
   const noUserRoutes = [
-    { icon: faSearch, route: '/search', name: 'Search' },
+    { icon: faSearch, route: '/search', name: 'Search', disabled: true },
     { icon: faHome, route: '/', name: 'Home' },
     { icon: faEdit, route: '/topic/create', name: 'Create' },
-    { icon: faUserCircle, route: '/profile', name: 'Profile' },
+    { icon: faUserCircle, route: '/profile', name: 'Profile', disabled: true },
     { icon: faSignInAlt, route: '/sign-in', name: 'Sign In' },
     { icon: faUserPlus, route: '/sign-up', name: 'Sign Up' }
   ]
@@ -48,7 +48,7 @@ const Navigation = ({ user, location, history }) => {
         <IconsDiv>
           {/* <div className='bg-danger'> */}
           <IconContainer>
-            {routes.map(({ icon, route, name }) => (
+            {routes.map(({ icon, route, name, disabled }) => (
               <NavigationItem
                 key={route}
                 icon={icon}
@@ -56,8 +56,10 @@ const Navigation = ({ user, location, history }) => {
                 name={name}
                 active={location.pathname === route}
                 onClick={() => {
-                  setActive(false)
-                  history.push(route)
+                  if (!disabled) {
+                    setActive(false)
+                    history.push(route)
+                  }
                 }}
               />
             ))}

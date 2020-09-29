@@ -1,20 +1,17 @@
 import gql from 'graphql-tag'
 
 export const REMOVE_QUESTION = gql`
-  mutation removeQuestion($id: uuid!) {
-    delete_question_topic(where: { id: { _eq: $id } }) {
-      affected_rows
-      returning {
-        id
-      }
+  mutation removeQuestion($input: DeleteQuestionTopicInput!) {
+    deleteQuestionTopic(input: $input) {
+      clientMutationId
     }
   }
 `
 
 export const UPDATE_QUESTION = gql`
-  mutation updateQuestion($questionId: uuid, $data: question_set_input) {
-    update_question(where: {id: {_eq: $questionId}}, _set: $data) {
-      affected_rows
+  mutation updateQuestion($input: UpdateQuestionInput!) {
+    updateQuestion(input: $input) {
+      clientMutationId
     }
   }
 `
@@ -39,28 +36,37 @@ export const DELETE_ALL_TOPIC_USERS = gql`
 
 export const INSERT_QUESTION = gql`
   mutation insertQuestion(
-    $questionObject: [question_insert_input!]!
-    $questionTopic: [question_topic_insert_input!]!
+    $input: CreateQuestionInput!
   ) {
-    insert_question(objects: $questionObject) {
-      affected_rows
-      returning {
+    createQuestion(input: $input) {
+      question {
         answers {
-          answer
-          id
+          nodes {
+            answer
+            id
+          }
         }
         creator {
-          first_name
-          last_name
+          firstName
+          lastName
           id
         }
       }
     }
-    insert_question_topic(objects: $questionTopic) {
-      affected_rows
+  }
+`
+
+export const INSERT_QUESTION_ANSWERS = gql`
+  mutation insertQuestionAnswers($input: CreateQuestionAnswersInput!) {
+    createQuestionAnswers (input: $input) {
+      boolean
     }
   }
 `
+
+// export const INSERT_QUESTION_TOPIC = gql`
+//   # mutation insertQuestionTopic($input: )
+// `
 
 export const INSERT_TOPIC_ADMIN = gql`
   mutation insertTopicAdmin($email: String, $topicId: ID!) {
@@ -79,30 +85,40 @@ export const DELETE_TOPIC_ADMIN = gql`
 `
 
 export const INSERT_QUESTION_TOPIC_RELATIONSHIP = gql`
-  mutation insertQuestionTopicRelationship($questionTopic: [question_topic_insert_input!]!) {
-    insert_question_topic(objects: $questionTopic) {
-      affected_rows
+  mutation insertQuestionTopicRelationship($input: CreateQuestionTopicInput!) {
+    createQuestionTopic(input: $input) {
+      questionTopic {
+        id
+      }
     }
   }
 `
 
 export const FETCH_TOPIC = gql`
-  query fetchTopic($id: uuid) {
-    topic(where: { id: { _eq: $id } }) {
-      id
-      is_published
-      is_private
-      name
-      ratings {
+  query fetchTopic($id: UUID) {
+    topics(condition: { id: $id }) {
+      nodes {
         id
-        type
-      }
-      questions {
-        id
-      }
-      target_fields {
-        id
-        field
+        isPublished
+        isPrivate
+        name
+        topicRatings {
+          nodes {
+            id
+            type
+          }
+        }
+        questionTopics {
+          nodes {
+            id
+          }
+        }
+        topicFields {
+          nodes {
+            id
+            field
+          }
+        }
       }
     }
   }
@@ -150,18 +166,35 @@ export const FETCH_TOPIC_WITH_ADMINS = gql`
 `
 
 export const FETCH_TOPIC_QUESTIONS = gql`
-  subscription fetchTopicQuestions($topicId: uuid) {
-    question_topic(where: { topic: { id: { _eq: $topicId } } }) {
-      id
-      question {
-        answers {
-          answer
-          is_correct
-          id
-        }
-        question
-        img_url
+  query fetchTopicQuestions($topicId: UUID) {
+    # question_topic(where: { topic: { id: { _eq: $topicId } } }) {
+    #   id
+    #   question {
+    #     answers {
+    #       answer
+    #       is_correct
+    #       id
+    #     }
+    #     question
+    #     img_url
+    #     id
+    #   }
+    # }
+    questionTopics(condition: {topicId: $topicId}) {
+      nodes {
         id
+        question {
+          question
+          imgUrl
+          id
+          answers {
+            nodes {
+              isCorrect
+              id
+              answer
+            }
+          }
+        }
       }
     }
   }
@@ -224,9 +257,9 @@ export const INSERT_USER_ACTIVITY = gql`
 `
 
 export const PUBLISH_TOPIC = gql`
-  mutation publishTopic($topicId: uuid!, $isPublished: Boolean!) {
-    update_topic(_set: { is_published: $isPublished }, where: { id: { _eq: $topicId } }) {
-      affected_rows
+  mutation publishTopic($input: UpdateTopicInput!) {
+    updateTopic(input: $input) {
+      clientMutationId
     }
   }
 `

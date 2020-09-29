@@ -49,6 +49,9 @@ app.use(
         role: 'dejavu_user',
         'jwt.claims.user_id': decodedToken.dejavu_claims.user_id
       }
+    },
+    graphileBuildOptions: {
+      nestedMutationsSimpleFieldNames: true
     }
   })
 )
