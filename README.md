@@ -2,15 +2,15 @@
 * node
 * yarn
 
-## Environment variables
-create file `/app/.env`
-```
-SKIP_PREFLIGHT_CHECK=true
-```
-
-## To start the app initially
+## To start the app
 * In the root
 
   * `yarn` to install all the dependencies on all the workspaces
-  * `cd /services && yarn start` to start the server
-* To run the frontend, go to `/app` directory and `yarn start`
+  * `cd /services/sql`
+    * run the `.sql` files in the order of: 
+      * public-schema.sql
+      * functions.sql
+      * access.sql
+
+* to start the server go to ` /services` directory and execute command `yarn start`
+* To run the frontend, go to `/app` directory and execute command`yarn start`
